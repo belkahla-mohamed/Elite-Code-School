@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Eye, EyeOff, Loader2 } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, Loader2, Users, GraduationCap } from "lucide-react";
 
 type Role = "parent" | "teacher" | null;
 
@@ -59,13 +59,17 @@ export default function LoginPage() {
           <p className="mt-3 text-ink-soft">Choisissez votre espace</p>
           <div className="mt-8 grid gap-4">
             <button onClick={() => setRole("parent")} className="rounded-brand border-2 border-[#E8EEF6] bg-white p-6 text-left transition hover:border-sky hover:shadow-lg group">
-              <span className="text-5xl">👨‍👩‍👧</span>
-              <h3 className="mt-3 font-display text-xl font-black group-hover:text-sky transition">Parent</h3>
+              <div className="flex size-14 items-center justify-center rounded-2xl bg-sky/10 text-sky group-hover:bg-sky group-hover:text-white transition">
+                <Users className="size-7" />
+              </div>
+              <h3 className="mt-4 font-display text-xl font-black group-hover:text-sky transition">Parent</h3>
               <p className="text-sm text-ink-soft">Accéder au portfolio de votre enfant</p>
             </button>
             <button onClick={() => setRole("teacher")} className="rounded-brand border-2 border-[#E8EEF6] bg-white p-6 text-left transition hover:border-sky hover:shadow-lg group">
-              <span className="text-5xl">👩‍🏫</span>
-              <h3 className="mt-3 font-display text-xl font-black group-hover:text-sky transition">Enseignant</h3>
+              <div className="flex size-14 items-center justify-center rounded-2xl bg-lime/10 text-lime group-hover:bg-lime group-hover:text-white transition">
+                <GraduationCap className="size-7" />
+              </div>
+              <h3 className="mt-4 font-display text-xl font-black group-hover:text-sky transition">Enseignant</h3>
               <p className="text-sm text-ink-soft">Gérer les élèves et les projets</p>
             </button>
           </div>
