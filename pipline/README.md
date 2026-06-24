@@ -10,14 +10,14 @@
 |---------|--------|-------|
 | [01 — Project Setup](CHAPTER_01_PROJECT_SETUP.md) | ✅ Completed | 9/9 |
 | [02 — Database Schema](CHAPTER_02_DATABASE_SCHEMA.md) | ✅ Completed | 7/7 |
-| [03 — Design System](CHAPTER_03_DESIGN_SYSTEM.md) | ⬜ Not started | 13 |
-| [04 — Layout & Navigation](CHAPTER_04_LAYOUT_NAVIGATION.md) | ⬜ Not started | 9 |
-| [05 — Public Pages](CHAPTER_05_PUBLIC_PAGES.md) | ⬜ Not started | 9 |
-| [06 — Enrollment Flow](CHAPTER_06_ENROLLMENT_FLOW.md) | ⬜ Not started | 11 |
-| [07 — Authentication](CHAPTER_07_AUTHENTICATION.md) | ⬜ Not started | 10 |
-| [08 — Parent Portal](CHAPTER_08_PARENT_PORTAL.md) | ⬜ Not started | 10 |
-| [09 — Admin Dashboard](CHAPTER_09_ADMIN_DASHBOARD.md) | ⬜ Not started | 13 |
-| [10 — Deployment & Polish](CHAPTER_10_DEPLOYMENT_POLISH.md) | ⬜ Not started | 12 |
+| [03 — Design System](CHAPTER_03_DESIGN_SYSTEM.md) | ✅ Completed | 13/13 |
+| [04 — Layout & Navigation](CHAPTER_04_LAYOUT_NAVIGATION.md) | ✅ Completed | 9/9 |
+| [05 — Public Pages](CHAPTER_05_PUBLIC_PAGES.md) | ✅ Completed | 9/9 |
+| [06 — Enrollment Flow](CHAPTER_06_ENROLLMENT_FLOW.md) | ✅ Completed | 11/11 |
+| [07 — Authentication](CHAPTER_07_AUTHENTICATION.md) | ✅ Completed | 10/10 |
+| [08 — Parent Portal](CHAPTER_08_PARENT_PORTAL.md) | ⏭️ Skipped | — |
+| [09 — Admin Dashboard](CHAPTER_09_ADMIN_DASHBOARD.md) | ✅ Completed | 12/13 |
+| [10 — Deployment & Polish](CHAPTER_10_DEPLOYMENT_POLISH.md) | ✅ Completed | 8/12 |
 | **Total** | | **103 tasks** |
 
 ---
