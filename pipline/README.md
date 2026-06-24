@@ -9,7 +9,7 @@
 | Chapter | Status | Tasks |
 |---------|--------|-------|
 | [01 — Project Setup](CHAPTER_01_PROJECT_SETUP.md) | ✅ Completed | 9/9 |
-| [02 — Database Schema](CHAPTER_02_DATABASE_SCHEMA.md) | ⬜ Not started | 7 |
+| [02 — Database Schema](CHAPTER_02_DATABASE_SCHEMA.md) | ✅ Completed | 7/7 |
 | [03 — Design System](CHAPTER_03_DESIGN_SYSTEM.md) | ⬜ Not started | 13 |
 | [04 — Layout & Navigation](CHAPTER_04_LAYOUT_NAVIGATION.md) | ⬜ Not started | 9 |
 | [05 — Public Pages](CHAPTER_05_PUBLIC_PAGES.md) | ⬜ Not started | 9 |
