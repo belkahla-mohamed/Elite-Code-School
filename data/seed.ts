@@ -128,7 +128,7 @@ export const teachers: Teacher[] = [
   {
     id: "teacher-demo",
     fullName: "Nadia Coach",
-    email: "teacher.nadia@example.com",
+    email: "nadia@elitecodeschool.ma",
     specialty: "Robotique & Scratch",
     secretHash: hashSecret("TEACHER-2026"),
     status: "active",

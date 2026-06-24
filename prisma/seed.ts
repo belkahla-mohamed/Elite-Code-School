@@ -1,4 +1,9 @@
 import { PrismaClient } from "@prisma/client";
+import { createHash } from "crypto";
+
+function hashSecret(secret: string) {
+  return createHash("sha256").update(secret).digest("hex");
+}
 
 const prisma = new PrismaClient();
 
@@ -285,7 +290,7 @@ async function main() {
       fullName: "Nadia Coach",
       email: "nadia@elitecodeschool.ma",
       specialty: "Robotique & IA",
-      secretHash: "coach-secret-nadia",
+      secretHash: hashSecret("TEACHER-2026"),
       status: "active",
     },
   });
