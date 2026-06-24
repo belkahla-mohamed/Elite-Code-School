@@ -1,0 +1,44 @@
+# Elite Code School — Development Pipeline
+
+> **10 chapters • 103 tasks • Full-stack Next.js application**
+
+---
+
+## Progress Overview
+
+| Chapter | Status | Tasks |
+|---------|--------|-------|
+| [01 — Project Setup](CHAPTER_01_PROJECT_SETUP.md) | ✅ Completed | 9/9 |
+| [02 — Database Schema](CHAPTER_02_DATABASE_SCHEMA.md) | ⬜ Not started | 7 |
+| [03 — Design System](CHAPTER_03_DESIGN_SYSTEM.md) | ⬜ Not started | 13 |
+| [04 — Layout & Navigation](CHAPTER_04_LAYOUT_NAVIGATION.md) | ⬜ Not started | 9 |
+| [05 — Public Pages](CHAPTER_05_PUBLIC_PAGES.md) | ⬜ Not started | 9 |
+| [06 — Enrollment Flow](CHAPTER_06_ENROLLMENT_FLOW.md) | ⬜ Not started | 11 |
+| [07 — Authentication](CHAPTER_07_AUTHENTICATION.md) | ⬜ Not started | 10 |
+| [08 — Parent Portal](CHAPTER_08_PARENT_PORTAL.md) | ⬜ Not started | 10 |
+| [09 — Admin Dashboard](CHAPTER_09_ADMIN_DASHBOARD.md) | ⬜ Not started | 13 |
+| [10 — Deployment & Polish](CHAPTER_10_DEPLOYMENT_POLISH.md) | ⬜ Not started | 12 |
+| **Total** | | **103 tasks** |
+
+---
+
+## How to Use
+
+1. **Start with Chapter 1** and work through each task sequentially
+2. Mark tasks as done by changing `[ ]` to `[x]`
+3. After completing a chapter, update its status in this README
+4. Use each chapter file as context prompts for your AI assistant (OpenCode, Codex, etc.)
+
+## Task Format
+
+```
+### [ ] T1.1 — Task description
+Explanation of what this task involves and why it matters.
+```
+
+When a task is complete, update it to:
+
+```
+### [x] T1.1 — Task description
+Done.
+```

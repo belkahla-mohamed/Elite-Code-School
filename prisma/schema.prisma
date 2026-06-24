@@ -1,0 +1,163 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ProgramLevel {
+  debutant
+  intermediaire
+  avance
+
+  @@map("program_level")
+}
+
+enum RequestStatus {
+  pending
+  accepted
+  refused
+
+  @@map("request_status")
+}
+
+enum ProjectStatus {
+  done
+  progress
+  planned
+
+  @@map("project_status")
+}
+
+enum TeacherStatus {
+  active
+  inactive
+
+  @@map("teacher_status")
+}
+
+model Program {
+  id           String   @id
+  title        String
+  ageRange     String   @map("age_range")
+  level        ProgramLevel
+  description  String
+  tools        String[]
+  priceMonthly Int?     @map("price_monthly")
+  icon         String   @default("🧩")
+  color        String   @default("accent")
+  sortOrder    Int      @default(0) @map("sort_order")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  students          Student[]
+  inscriptionRequests InscriptionRequest[]
+
+  @@map("programs")
+}
+
+model InscriptionRequest {
+  id               String        @id @default(uuid()) @db.Uuid
+  studentFirstName String        @map("student_first_name")
+  studentLastName  String        @map("student_last_name")
+  age              Int
+  schoolLevel      String?       @map("school_level")
+  programId        String        @map("program_id")
+  program          Program       @relation(fields: [programId], references: [id])
+  parentPhone      String        @map("parent_phone")
+  parentEmail      String        @map("parent_email")
+  message          String?
+  status           RequestStatus @default(pending)
+  createdAt        DateTime      @default(now()) @map("created_at")
+
+  @@index([status])
+  @@map("inscription_requests")
+}
+
+model Student {
+  id              String   @id @default(uuid()) @db.Uuid
+  slug            String   @unique
+  firstName       String   @map("first_name")
+  lastName        String   @map("last_name")
+  age             Int
+  avatar          String
+  avatarGradient  String   @default("linear-gradient(135deg,#4f46e5,#06b6d4)") @map("avatar_gradient")
+  programId       String   @map("program_id")
+  program         Program  @relation(fields: [programId], references: [id])
+  levelLabel      String   @map("level_label")
+  joinDateLabel   String   @map("join_date_label")
+  hours           Int      @default(0)
+  isPublic        Boolean  @default(true) @map("is_public")
+  parentEmail     String   @map("parent_email")
+  parentSecretHash String  @map("parent_secret_hash")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  projects       Project[]
+  certifications Certification[]
+  galleryItems   GalleryItem[]
+
+  @@index([slug])
+  @@index([isPublic])
+  @@map("students")
+}
+
+model Teacher {
+  id          String        @id @default(uuid()) @db.Uuid
+  fullName    String        @map("full_name")
+  email       String        @unique
+  specialty   String?
+  secretHash  String        @map("secret_hash")
+  status      TeacherStatus @default(active)
+  createdAt   DateTime      @default(now()) @map("created_at")
+
+  @@index([email])
+  @@index([status])
+  @@map("teachers")
+}
+
+model Project {
+  id          String        @id @default(uuid()) @db.Uuid
+  studentId   String        @map("student_id") @db.Uuid
+  student     Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  title       String
+  description String
+  tags        String[]
+  status      ProjectStatus @default(progress)
+  progress    Int           @default(0)
+  dateLabel   String        @map("date_label")
+  emoji       String        @default("💼")
+  gradient    String        @default("linear-gradient(135deg,#4f46e5,#818cf8)")
+  createdAt   DateTime      @default(now()) @map("created_at")
+
+  @@index([studentId])
+  @@map("projects")
+}
+
+model Certification {
+  id         String   @id @default(uuid()) @db.Uuid
+  studentId  String   @map("student_id") @db.Uuid
+  student    Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  title      String
+  mention    String   @default("Validé")
+  dateLabel  String   @map("date_label")
+  emoji      String   @default("🏅")
+  gradient   String   @default("linear-gradient(135deg,#f59e0b,#f97316)")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([studentId])
+  @@map("certifications")
+}
+
+model GalleryItem {
+  id         String   @id @default(uuid()) @db.Uuid
+  studentId  String   @map("student_id") @db.Uuid
+  student    Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  label      String
+  emoji      String   @default("📸")
+  gradient   String   @default("linear-gradient(135deg,#06b6d4,#0ea5e9)")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([studentId])
+  @@map("gallery_items")
+}

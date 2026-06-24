@@ -1,0 +1,2462 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Elite Code School — Robotique, Coding & IA pour enfants</title>
+  <meta name="description" content="Elite Code School à Marrakech — école de robotique, programmation et intelligence artificielle pour enfants de 7 à 17 ans. Inscription ouverte." />
+  <meta property="og:title" content="Elite Code School" />
+  <meta property="og:description" content="Apprenez la robotique, le code et l'IA dès 7 ans à Marrakech." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Design tokens ── */
+    :root {
+      --ink:        #0d0f14;
+      --ink-soft:   #3a3f50;
+      --surface:    #f6f7fb;
+      --white:      #ffffff;
+      --accent:     #4f46e5;      /* indigo vif */
+      --accent-2:   #06b6d4;      /* cyan */
+      --accent-3:   #f59e0b;      /* ambre */
+      --glow:       rgba(79,70,229,.18);
+      --radius:     14px;
+      --radius-sm:  8px;
+      --mono:       'JetBrains Mono', monospace;
+      --display:    'Syne', sans-serif;
+      --body:       'Space Grotesk', sans-serif;
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--body);
+      background: var(--white);
+      color: var(--ink);
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+
+    /* ── Utility ── */
+    .container { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+    .tag {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: .72rem;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      background: var(--glow);
+      color: var(--accent);
+      padding: 5px 12px;
+      border-radius: 99px;
+      border: 1px solid rgba(79,70,229,.25);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--body);
+      font-size: .95rem;
+      font-weight: 600;
+      padding: 13px 28px;
+      border-radius: 99px;
+      cursor: pointer;
+      border: none;
+      transition: transform .18s, box-shadow .18s, opacity .18s;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary {
+      background: var(--accent);
+      color: var(--white);
+      box-shadow: 0 6px 28px rgba(79,70,229,.35);
+    }
+    .btn-primary:hover { box-shadow: 0 10px 38px rgba(79,70,229,.45); }
+    .btn-outline {
+      background: transparent;
+      color: var(--ink);
+      border: 2px solid rgba(13,15,20,.18);
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(13,15,20,.08);
+      transition: box-shadow .2s;
+    }
+    nav.scrolled { box-shadow: 0 4px 24px rgba(0,0,0,.08); }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--display);
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -.01em;
+    }
+    .logo-icon {
+      width: 38px; height: 38px;
+      background: var(--accent);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+      font-family: var(--mono);
+      font-size: .9rem;
+      font-weight: 500;
+    }
+    .logo span { color: var(--accent); }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      font-size: .9rem;
+      font-weight: 500;
+    }
+    .nav-links a { color: var(--ink-soft); transition: color .15s; }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-cta { display: flex; align-items: center; gap: 12px; }
+    .lang-switcher {
+      display: flex; gap: 4px;
+      background: var(--surface);
+      border-radius: 99px;
+      padding: 4px;
+    }
+    .lang-switcher button {
+      border: none; cursor: pointer;
+      background: transparent;
+      font-family: var(--mono);
+      font-size: .72rem;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 99px;
+      color: var(--ink-soft);
+      transition: all .15s;
+    }
+    .lang-switcher button.active {
+      background: var(--white);
+      color: var(--accent);
+      box-shadow: 0 1px 6px rgba(0,0,0,.1);
+    }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 6px; background: none; border: none; }
+    .hamburger span { width: 22px; height: 2px; background: var(--ink); border-radius: 2px; transition: all .25s; display: block; }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 100px 0 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 60% 40%, rgba(79,70,229,.09) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 80% 70%, rgba(6,182,212,.07) 0%, transparent 60%);
+    }
+    .hero-grid-lines {
+      position: absolute; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(79,70,229,.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(79,70,229,.05) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+    }
+    .hero-inner {
+      position: relative; z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .hero-eyebrow { margin-bottom: 20px; }
+    h1 {
+      font-family: var(--display);
+      font-size: clamp(2.6rem, 5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -.02em;
+      margin-bottom: 20px;
+    }
+    h1 .highlight {
+      color: var(--accent);
+      position: relative;
+      display: inline-block;
+    }
+    h1 .highlight::after {
+      content: '';
+      position: absolute;
+      bottom: 4px; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      border-radius: 2px;
+      opacity: .4;
+    }
+    .hero-desc {
+      font-size: 1.1rem;
+      color: var(--ink-soft);
+      max-width: 480px;
+      margin-bottom: 32px;
+      line-height: 1.7;
+    }
+    .hero-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .hero-trust {
+      margin-top: 44px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .trust-item { display: flex; align-items: center; gap: 8px; font-size: .88rem; color: var(--ink-soft); }
+    .trust-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-2); flex-shrink: 0; }
+
+    /* Hero visual */
+    .hero-visual {
+      position: relative;
+    }
+    .hero-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: 0 20px 60px rgba(0,0,0,.12);
+      overflow: hidden;
+      border: 1px solid rgba(13,15,20,.07);
+    }
+    .hero-card-header {
+      background: var(--ink);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-r { background: #ff5f57; }
+    .dot-y { background: #ffbd2e; }
+    .dot-g { background: #28c841; }
+    .hero-card-header span { font-family: var(--mono); font-size: .75rem; color: #888; margin-left: 8px; }
+    .code-block {
+      padding: 20px;
+      font-family: var(--mono);
+      font-size: .82rem;
+      line-height: 2;
+      background: #0d0f14;
+      color: #e2e8f0;
+    }
+    .c-purple { color: #c084fc; }
+    .c-cyan   { color: #67e8f9; }
+    .c-green  { color: #86efac; }
+    .c-yellow { color: #fde68a; }
+    .c-gray   { color: #64748b; }
+    .c-orange { color: #fdba74; }
+
+    .floating-badges {
+      position: absolute;
+      top: -16px; right: -16px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .fbadge {
+      background: var(--white);
+      border: 1px solid rgba(13,15,20,.1);
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      font-size: .8rem;
+      font-weight: 600;
+      box-shadow: 0 4px 16px rgba(0,0,0,.1);
+      display: flex; align-items: center; gap: 8px;
+      white-space: nowrap;
+    }
+    .fbadge-icon { font-size: 1rem; }
+
+    /* ── STATS ── */
+    #stats {
+      background: var(--ink);
+      padding: 60px 0;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+    }
+    .stat-cell {
+      padding: 36px 28px;
+      text-align: center;
+      border-right: 1px solid rgba(255,255,255,.07);
+    }
+    .stat-cell:last-child { border-right: none; }
+    .stat-num {
+      font-family: var(--display);
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: var(--white);
+      line-height: 1;
+    }
+    .stat-num span { color: var(--accent-2); }
+    .stat-label { font-size: .85rem; color: rgba(255,255,255,.45); margin-top: 6px; }
+
+    /* ── SECTION titles ── */
+    .section-header { text-align: center; margin-bottom: 56px; }
+    .section-header .tag { margin-bottom: 16px; }
+    h2 {
+      font-family: var(--display);
+      font-size: clamp(1.9rem, 3.5vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -.02em;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+    .section-sub {
+      font-size: 1.05rem;
+      color: var(--ink-soft);
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    /* ── FORMATIONS ── */
+    #formations { padding: 100px 0; background: var(--surface); }
+    .programs-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .prog-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 32px;
+      border: 1px solid rgba(13,15,20,.07);
+      transition: transform .2s, box-shadow .2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .prog-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,.1); }
+    .prog-card.featured {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent), 0 16px 48px var(--glow);
+    }
+    .prog-badge {
+      position: absolute; top: 16px; right: 16px;
+      background: var(--accent); color: var(--white);
+      font-family: var(--mono); font-size: .7rem; font-weight: 500;
+      padding: 4px 10px; border-radius: 99px;
+    }
+    .prog-icon {
+      width: 52px; height: 52px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+    .prog-icon.blue { background: rgba(79,70,229,.1); }
+    .prog-icon.cyan { background: rgba(6,182,212,.1); }
+    .prog-icon.amber { background: rgba(245,158,11,.1); }
+    .prog-icon.green { background: rgba(34,197,94,.1); }
+    .prog-icon.rose  { background: rgba(244,63,94,.1); }
+    .prog-icon.purple{ background: rgba(168,85,247,.1); }
+    .prog-card h3 {
+      font-family: var(--display);
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .prog-age {
+      font-family: var(--mono);
+      font-size: .75rem;
+      color: var(--accent-2);
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+    .prog-card p { font-size: .9rem; color: var(--ink-soft); line-height: 1.6; margin-bottom: 20px; }
+    .prog-tools {
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+    .tool-tag {
+      font-family: var(--mono);
+      font-size: .7rem;
+      background: var(--surface);
+      color: var(--ink-soft);
+      padding: 4px 10px;
+      border-radius: 99px;
+      border: 1px solid rgba(13,15,20,.09);
+    }
+
+    /* ── HARDWARE ── */
+    #materiel { padding: 100px 0; }
+    .hardware-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .hw-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 28px 20px;
+      text-align: center;
+      border: 1px solid transparent;
+      transition: all .2s;
+      cursor: default;
+    }
+    .hw-card:hover {
+      border-color: rgba(79,70,229,.25);
+      background: white;
+      box-shadow: 0 8px 32px rgba(79,70,229,.1);
+      transform: translateY(-2px);
+    }
+    .hw-emoji { font-size: 2.2rem; margin-bottom: 12px; display: block; }
+    .hw-name { font-weight: 600; font-size: .95rem; margin-bottom: 4px; }
+    .hw-desc { font-size: .8rem; color: var(--ink-soft); }
+
+    /* ── COMPÉTITION ── */
+    #competition {
+      padding: 100px 0;
+      background: var(--ink);
+      position: relative;
+      overflow: hidden;
+    }
+    .comp-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 60% at 20% 50%, rgba(79,70,229,.15) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 80% 20%, rgba(6,182,212,.1) 0%, transparent 60%);
+    }
+    .comp-inner {
+      position: relative; z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .comp-left h2 { color: var(--white); }
+    .comp-left p { color: rgba(255,255,255,.6); font-size: 1.05rem; margin: 16px 0 32px; line-height: 1.7; }
+    .comp-features { display: flex; flex-direction: column; gap: 16px; margin-bottom: 36px; }
+    .comp-feat {
+      display: flex; align-items: flex-start; gap: 14px;
+    }
+    .comp-feat-icon {
+      width: 36px; height: 36px; flex-shrink: 0;
+      background: rgba(255,255,255,.07);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+    }
+    .comp-feat-text strong { color: var(--white); font-size: .95rem; display: block; margin-bottom: 2px; }
+    .comp-feat-text span { font-size: .85rem; color: rgba(255,255,255,.5); }
+    .comp-right {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: var(--radius);
+      padding: 36px;
+    }
+    .mars-header { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+    .mars-logo {
+      width: 52px; height: 52px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem;
+    }
+    .mars-header h3 { font-family: var(--display); font-size: 1.2rem; font-weight: 700; color: var(--white); }
+    .mars-header span { font-family: var(--mono); font-size: .75rem; color: var(--accent-2); }
+    .timeline { display: flex; flex-direction: column; gap: 0; }
+    .tl-item {
+      display: flex; gap: 16px;
+      padding-bottom: 20px;
+      position: relative;
+    }
+    .tl-item:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      left: 15px; top: 32px;
+      width: 2px;
+      bottom: 0;
+      background: rgba(255,255,255,.1);
+    }
+    .tl-dot {
+      width: 32px; height: 32px; flex-shrink: 0;
+      border-radius: 50%;
+      background: rgba(255,255,255,.08);
+      border: 2px solid rgba(255,255,255,.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .85rem;
+      position: relative; z-index: 1;
+    }
+    .tl-dot.active { background: var(--accent); border-color: var(--accent); }
+    .tl-content strong { font-size: .9rem; color: var(--white); display: block; }
+    .tl-content span { font-size: .82rem; color: rgba(255,255,255,.45); }
+
+    /* ── INSCRIPTION / FORMULAIRE ── */
+    #inscription { padding: 100px 0; background: var(--surface); }
+    .form-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.3fr;
+      gap: 60px;
+      align-items: start;
+    }
+    .form-info h2 { text-align: left; margin-bottom: 16px; }
+    .form-info p { color: var(--ink-soft); font-size: 1.05rem; line-height: 1.7; margin-bottom: 28px; }
+    .info-points { display: flex; flex-direction: column; gap: 12px; }
+    .info-pt {
+      display: flex; align-items: center; gap: 12px;
+      font-size: .92rem; color: var(--ink-soft);
+    }
+    .info-pt::before {
+      content: '';
+      width: 20px; height: 20px; flex-shrink: 0;
+      border-radius: 50%;
+      background: rgba(79,70,229,.12);
+      border: 1.5px solid rgba(79,70,229,.3);
+      background-image: url("data:image/svg+xml,%3Csvg width='10' height='8' viewBox='0 0 10 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 4L3.5 6.5L9 1' stroke='%234f46e5' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+    .enroll-form {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 40px;
+      box-shadow: 0 8px 40px rgba(0,0,0,.08);
+      border: 1px solid rgba(13,15,20,.07);
+    }
+    .form-group { margin-bottom: 20px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group label {
+      display: block;
+      font-size: .85rem;
+      font-weight: 600;
+      margin-bottom: 7px;
+      color: var(--ink);
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      font-family: var(--body);
+      font-size: .95rem;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid rgba(13,15,20,.12);
+      background: var(--surface);
+      color: var(--ink);
+      transition: border-color .15s, box-shadow .15s;
+      outline: none;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--glow);
+      background: var(--white);
+    }
+    .form-group textarea { resize: vertical; min-height: 90px; }
+    .form-submit { width: 100%; justify-content: center; font-size: 1rem; padding: 15px; margin-top: 8px; }
+    .form-note { text-align: center; font-size: .8rem; color: var(--ink-soft); margin-top: 12px; }
+    #form-success {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+    }
+    #form-success .success-icon { font-size: 3rem; margin-bottom: 16px; }
+    #form-success h3 { font-family: var(--display); font-size: 1.4rem; margin-bottom: 8px; }
+    #form-success p { color: var(--ink-soft); }
+
+    /* ── TÉMOIGNAGES ── */
+    #temoignages { padding: 100px 0; }
+    .testi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .testi-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 28px;
+      border: 1px solid rgba(13,15,20,.06);
+    }
+    .stars { color: var(--accent-3); font-size: 1rem; margin-bottom: 14px; letter-spacing: 2px; }
+    .testi-text { font-size: .93rem; color: var(--ink-soft); line-height: 1.7; margin-bottom: 20px; font-style: italic; }
+    .testi-author { display: flex; align-items: center; gap: 12px; }
+    .avatar {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      font-size: .9rem;
+      color: var(--white);
+      flex-shrink: 0;
+    }
+    .av-1 { background: linear-gradient(135deg, #4f46e5, #818cf8); }
+    .av-2 { background: linear-gradient(135deg, #06b6d4, #0ea5e9); }
+    .av-3 { background: linear-gradient(135deg, #f59e0b, #f97316); }
+    .av-4 { background: linear-gradient(135deg, #22c55e, #10b981); }
+    .av-5 { background: linear-gradient(135deg, #a855f7, #7c3aed); }
+    .av-6 { background: linear-gradient(135deg, #f43f5e, #e11d48); }
+    .author-name { font-weight: 600; font-size: .9rem; }
+    .author-role { font-size: .78rem; color: var(--ink-soft); }
+
+    /* ── FAQ ── */
+    #faq { padding: 100px 0; background: var(--surface); }
+    .faq-list { max-width: 720px; margin: 0 auto; }
+    .faq-item {
+      border-bottom: 1px solid rgba(13,15,20,.1);
+    }
+    .faq-q {
+      width: 100%;
+      background: none; border: none; cursor: pointer;
+      text-align: left;
+      padding: 22px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--body);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--ink);
+      gap: 16px;
+    }
+    .faq-arrow {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--white);
+      border: 1.5px solid rgba(13,15,20,.12);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: .75rem;
+      transition: transform .25s, background .2s;
+    }
+    .faq-item.open .faq-arrow { transform: rotate(180deg); background: var(--accent); border-color: var(--accent); color: white; }
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .35s ease, padding .25s;
+    }
+    .faq-item.open .faq-a { max-height: 300px; }
+    .faq-a p { padding-bottom: 22px; color: var(--ink-soft); font-size: .93rem; line-height: 1.7; }
+
+    /* ── CONTACT ── */
+    #contact { padding: 100px 0; }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: start;
+    }
+    .contact-info h2 { text-align: left; margin-bottom: 16px; }
+    .contact-info p { color: var(--ink-soft); line-height: 1.7; margin-bottom: 32px; }
+    .contact-items { display: flex; flex-direction: column; gap: 20px; }
+    .contact-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .contact-ic {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      background: rgba(79,70,229,.08);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .contact-ic-text strong { font-size: .95rem; display: block; margin-bottom: 2px; }
+    .contact-ic-text span { font-size: .88rem; color: var(--ink-soft); }
+    .map-placeholder {
+      border-radius: var(--radius);
+      overflow: hidden;
+      height: 300px;
+      background: var(--surface);
+      border: 1px solid rgba(13,15,20,.08);
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column;
+      gap: 12px;
+      color: var(--ink-soft);
+      font-size: .9rem;
+    }
+    .map-placeholder .map-pin { font-size: 2rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ink);
+      padding: 60px 0 32px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+    .footer-brand .logo { color: var(--white); margin-bottom: 14px; }
+    .footer-brand p { font-size: .88rem; color: rgba(255,255,255,.45); line-height: 1.7; max-width: 260px; }
+    .footer-social { display: flex; gap: 10px; margin-top: 20px; }
+    .soc-btn {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      background: rgba(255,255,255,.07);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .85rem; color: rgba(255,255,255,.5);
+      transition: all .15s;
+      border: none; cursor: pointer;
+    }
+    .soc-btn:hover { background: var(--accent); color: var(--white); }
+    .footer-col h4 { font-size: .85rem; font-weight: 600; color: rgba(255,255,255,.6); text-transform: uppercase; letter-spacing: .06em; font-family: var(--mono); margin-bottom: 16px; }
+    .footer-col ul { display: flex; flex-direction: column; gap: 10px; }
+    .footer-col a { font-size: .88rem; color: rgba(255,255,255,.4); transition: color .15s; }
+    .footer-col a:hover { color: var(--white); }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,.07);
+      padding-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-bottom p { font-size: .82rem; color: rgba(255,255,255,.3); }
+
+    /* ── BACK TO TOP ── */
+    #btt {
+      position: fixed; bottom: 28px; right: 28px; z-index: 50;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: white;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; border: none;
+      box-shadow: 0 6px 20px rgba(79,70,229,.4);
+      opacity: 0; pointer-events: none;
+      transition: opacity .2s, transform .2s;
+      font-size: 1rem;
+    }
+    #btt.visible { opacity: 1; pointer-events: auto; }
+    #btt:hover { transform: translateY(-3px); }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: var(--ink);
+      color: var(--white);
+      padding: 12px 24px;
+      border-radius: 99px;
+      font-size: .88rem;
+      font-weight: 500;
+      box-shadow: 0 8px 32px rgba(0,0,0,.2);
+      opacity: 0;
+      transition: opacity .25s, transform .25s;
+      pointer-events: none;
+      z-index: 200;
+      white-space: nowrap;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ── ANIMATIONS ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .fade-up.in { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      .programs-grid { grid-template-columns: 1fr 1fr; }
+      .hardware-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .nav-links, .nav-cta .btn { display: none; }
+      .hamburger { display: flex; }
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-visual { display: none; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .stat-cell { border-right: none; border-bottom: 1px solid rgba(255,255,255,.07); }
+      .programs-grid { grid-template-columns: 1fr; }
+      .comp-inner { grid-template-columns: 1fr; }
+      .form-layout { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .testi-grid { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+    }
+
+    /* ── Mobile menu ── */
+    #mobile-menu {
+      display: none;
+      position: fixed; inset: 0; z-index: 99;
+      background: var(--white);
+      padding: 100px 24px 40px;
+      flex-direction: column;
+      gap: 20px;
+    }
+    #mobile-menu.open { display: flex; }
+    #mobile-menu a {
+      font-size: 1.3rem;
+      font-weight: 600;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(13,15,20,.08);
+    }
+
+    /* cursor blink in code */
+    .cursor {
+      display: inline-block;
+      width: 2px; height: 14px;
+      background: var(--accent-2);
+      vertical-align: middle;
+      margin-left: 2px;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fade-up { opacity: 1; transform: none; transition: none; }
+      .cursor { animation: none; }
+    }
+
+    /* ══════════════════════════════════════════════
+       PORTFOLIO PAGE — overlay full-screen
+    ══════════════════════════════════════════════ */
+    #portfolio-overlay {
+      position: fixed; inset: 0; z-index: 300;
+      background: var(--white);
+      overflow-y: auto;
+      display: none;
+      opacity: 0;
+      transition: opacity .25s;
+    }
+    #portfolio-overlay.open { display: block; }
+    #portfolio-overlay.visible { opacity: 1; }
+
+    /* ── Portfolio nav ── */
+    .pf-topbar {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(13,15,20,.07);
+      padding: 0 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+    .pf-topbar-left { display: flex; align-items: center; gap: 16px; }
+    .pf-back {
+      display: flex; align-items: center; gap: 8px;
+      font-size: .88rem; font-weight: 600; color: var(--ink-soft);
+      background: var(--surface); border: none; cursor: pointer;
+      padding: 8px 14px; border-radius: 99px;
+      transition: color .15s, background .15s;
+    }
+    .pf-back:hover { color: var(--accent); background: var(--glow); }
+    .pf-title-bar { font-family: var(--display); font-size: 1rem; font-weight: 800; }
+
+    /* ── Student selector ── */
+    .pf-student-tabs {
+      display: flex; gap: 8px; overflow-x: auto; padding: 20px 24px 0;
+      scrollbar-width: none;
+    }
+    .pf-student-tabs::-webkit-scrollbar { display: none; }
+    .pf-stab {
+      flex-shrink: 0;
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 18px; border-radius: 99px;
+      border: 1.5px solid rgba(13,15,20,.1);
+      background: var(--white); cursor: pointer;
+      transition: all .2s; font-family: var(--body); font-size: .88rem; font-weight: 500;
+    }
+    .pf-stab .pf-av {
+      width: 30px; height: 30px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .78rem; font-weight: 700; color: var(--white); flex-shrink: 0;
+    }
+    .pf-stab:hover { border-color: var(--accent); color: var(--accent); }
+    .pf-stab.active { background: var(--accent); border-color: var(--accent); color: var(--white); }
+    .pf-stab.active .pf-av { background: rgba(255,255,255,.25) !important; }
+
+    /* ── Portfolio body ── */
+    .pf-body { max-width: 1160px; margin: 0 auto; padding: 32px 24px 80px; }
+
+    /* ── Profile header ── */
+    .pf-profile {
+      display: grid; grid-template-columns: auto 1fr auto;
+      gap: 28px; align-items: center;
+      background: linear-gradient(135deg, var(--ink) 0%, #1e2235 100%);
+      border-radius: var(--radius);
+      padding: 36px 40px;
+      margin-bottom: 32px;
+      position: relative; overflow: hidden;
+    }
+    .pf-profile::before {
+      content: '';
+      position: absolute; top: -40px; right: -40px;
+      width: 220px; height: 220px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(79,70,229,.25) 0%, transparent 70%);
+    }
+    .pf-avatar-big {
+      width: 90px; height: 90px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; font-weight: 800; color: var(--white);
+      border: 3px solid rgba(255,255,255,.2);
+      flex-shrink: 0;
+      position: relative; z-index: 1;
+    }
+    .pf-profile-info { position: relative; z-index: 1; }
+    .pf-profile-info h2 { font-family: var(--display); font-size: 1.8rem; font-weight: 800; color: var(--white); margin-bottom: 6px; }
+    .pf-meta { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 8px; }
+    .pf-chip {
+      display: flex; align-items: center; gap: 6px;
+      font-size: .8rem; color: rgba(255,255,255,.6);
+      background: rgba(255,255,255,.08); padding: 4px 12px; border-radius: 99px;
+    }
+    .pf-stats-mini {
+      display: flex; flex-direction: column; gap: 10px;
+      position: relative; z-index: 1;
+    }
+    .pf-mini-stat { text-align: right; }
+    .pf-mini-stat strong { display: block; font-family: var(--display); font-size: 1.6rem; font-weight: 800; color: var(--white); line-height: 1; }
+    .pf-mini-stat span { font-size: .75rem; color: rgba(255,255,255,.45); }
+
+    /* ── Section tabs ── */
+    .pf-tabs {
+      display: flex; gap: 4px; margin-bottom: 28px;
+      background: var(--surface); border-radius: 12px; padding: 4px;
+    }
+    .pf-tab {
+      flex: 1; padding: 10px 14px; border: none; cursor: pointer;
+      border-radius: 9px; font-family: var(--body); font-size: .88rem; font-weight: 500;
+      color: var(--ink-soft); background: transparent;
+      transition: all .2s; display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .pf-tab:hover { color: var(--accent); }
+    .pf-tab.active { background: var(--white); color: var(--accent); box-shadow: 0 2px 10px rgba(0,0,0,.08); font-weight: 600; }
+    .pf-tab-icon { font-size: 1rem; }
+
+    /* ── Tab panels ── */
+    .pf-panel { display: none; }
+    .pf-panel.active { display: block; }
+
+    /* ── Projects grid ── */
+    .pf-proj-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    }
+    .pf-proj-card {
+      background: var(--white); border-radius: var(--radius);
+      border: 1px solid rgba(13,15,20,.07);
+      overflow: hidden; transition: transform .2s, box-shadow .2s;
+    }
+    .pf-proj-card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(0,0,0,.1); }
+    .pf-proj-thumb {
+      height: 160px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem;
+      position: relative; overflow: hidden;
+    }
+    .pf-proj-status {
+      position: absolute; top: 12px; right: 12px;
+      font-family: var(--mono); font-size: .68rem; font-weight: 600;
+      padding: 4px 10px; border-radius: 99px;
+    }
+    .status-done { background: rgba(34,197,94,.15); color: #16a34a; }
+    .status-progress { background: rgba(245,158,11,.15); color: #b45309; }
+    .status-planned { background: rgba(99,102,241,.12); color: var(--accent); }
+    .pf-proj-body { padding: 18px 20px 20px; }
+    .pf-proj-body h4 { font-size: 1rem; font-weight: 700; margin-bottom: 5px; }
+    .pf-proj-body p { font-size: .83rem; color: var(--ink-soft); line-height: 1.55; margin-bottom: 14px; }
+    .pf-proj-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+    .pf-proj-tag {
+      font-family: var(--mono); font-size: .68rem;
+      background: var(--surface); color: var(--ink-soft);
+      padding: 3px 8px; border-radius: 99px; border: 1px solid rgba(13,15,20,.08);
+    }
+    .pf-proj-footer { display: flex; justify-content: space-between; align-items: center; }
+    .pf-proj-date { font-family: var(--mono); font-size: .72rem; color: var(--ink-soft); }
+    .pf-view-btn {
+      font-size: .78rem; font-weight: 600; color: var(--accent);
+      background: var(--glow); border: none; cursor: pointer;
+      padding: 5px 12px; border-radius: 99px;
+    }
+
+    /* ── Progress bar (for in-progress projects) ── */
+    .pf-progress-bar { margin-bottom: 14px; }
+    .pf-progress-label { display: flex; justify-content: space-between; font-size: .75rem; color: var(--ink-soft); margin-bottom: 5px; }
+    .pf-progress-track { height: 6px; background: var(--surface); border-radius: 99px; overflow: hidden; }
+    .pf-progress-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: width 1s ease; }
+
+    /* ── Certificates ── */
+    .pf-cert-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .pf-cert-card {
+      border-radius: var(--radius); overflow: hidden;
+      border: 1px solid rgba(13,15,20,.07);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .pf-cert-card:hover { transform: translateY(-3px); box-shadow: 0 10px 32px rgba(0,0,0,.1); }
+    .pf-cert-visual {
+      padding: 40px 32px;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .pf-cert-visual::before {
+      content: '';
+      position: absolute; inset: 8px;
+      border: 1.5px solid rgba(255,255,255,.3);
+      border-radius: 8px;
+      pointer-events: none;
+    }
+    .pf-cert-icon { font-size: 2.8rem; margin-bottom: 12px; display: block; }
+    .pf-cert-visual h3 { font-family: var(--display); font-size: 1.1rem; font-weight: 800; color: var(--white); margin-bottom: 4px; }
+    .pf-cert-visual p { font-size: .8rem; color: rgba(255,255,255,.7); }
+    .pf-cert-footer { padding: 16px 20px; background: var(--white); display: flex; justify-content: space-between; align-items: center; }
+    .pf-cert-date { font-family: var(--mono); font-size: .75rem; color: var(--ink-soft); }
+    .pf-cert-dl {
+      font-size: .78rem; font-weight: 600; color: var(--accent);
+      background: var(--glow); border: none; cursor: pointer;
+      padding: 6px 14px; border-radius: 99px; transition: background .15s;
+    }
+    .pf-cert-dl:hover { background: var(--accent); color: white; }
+
+    /* ── Skills ── */
+    .pf-skills-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+    .pf-skill-group { background: var(--surface); border-radius: var(--radius); padding: 24px; }
+    .pf-skill-group h4 { font-size: .88rem; font-weight: 700; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+    .pf-skill-item { margin-bottom: 14px; }
+    .pf-skill-label { display: flex; justify-content: space-between; font-size: .83rem; font-weight: 500; margin-bottom: 6px; }
+    .pf-skill-level { font-family: var(--mono); font-size: .7rem; color: var(--ink-soft); }
+    .pf-skill-track { height: 8px; background: rgba(13,15,20,.08); border-radius: 99px; overflow: hidden; }
+    .pf-skill-fill { height: 100%; border-radius: 99px; width: 0; transition: width 1.2s ease; }
+    .pf-badges-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+    .pf-badge-pill {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 16px; border-radius: 99px;
+      font-size: .82rem; font-weight: 600;
+      border: 1.5px solid;
+    }
+    .pf-badge-pill .bp-icon { font-size: 1.1rem; }
+
+    /* ── Gallery ── */
+    .pf-gallery-grid { columns: 3; gap: 12px; }
+    .pf-gallery-item {
+      break-inside: avoid; margin-bottom: 12px;
+      border-radius: var(--radius-sm); overflow: hidden;
+      cursor: pointer; position: relative;
+    }
+    .pf-gallery-item:hover .pf-gallery-over { opacity: 1; }
+    .pf-gal-img {
+      width: 100%; display: block;
+      border-radius: var(--radius-sm);
+      transition: transform .3s;
+    }
+    .pf-gallery-item:hover .pf-gal-img { transform: scale(1.03); }
+    .pf-gallery-over {
+      position: absolute; inset: 0;
+      background: rgba(13,15,20,.55);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity .2s;
+      border-radius: var(--radius-sm);
+    }
+    .pf-gallery-over span { color: white; font-size: 1.5rem; }
+    .pf-gal-placeholder {
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 8px;
+      font-size: .82rem; color: var(--ink-soft);
+      border-radius: var(--radius-sm);
+      border: 1.5px dashed rgba(13,15,20,.15);
+      transition: border-color .2s, color .2s;
+    }
+    .pf-gal-placeholder:hover { border-color: var(--accent); color: var(--accent); }
+    .pf-gal-placeholder .pg-icon { font-size: 1.8rem; }
+
+    /* ── Timeline (parcours) ── */
+    .pf-timeline { position: relative; padding-left: 32px; }
+    .pf-timeline::before {
+      content: '';
+      position: absolute; left: 11px; top: 8px; bottom: 8px;
+      width: 2px; background: rgba(13,15,20,.08); border-radius: 2px;
+    }
+    .pf-tl-event { position: relative; margin-bottom: 28px; }
+    .pf-tl-dot {
+      position: absolute; left: -26px; top: 4px;
+      width: 22px; height: 22px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .72rem; border: 2px solid;
+    }
+    .pf-tl-body {
+      background: var(--surface); border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      border: 1px solid rgba(13,15,20,.06);
+    }
+    .pf-tl-body strong { font-size: .95rem; display: block; margin-bottom: 3px; }
+    .pf-tl-body p { font-size: .83rem; color: var(--ink-soft); margin-bottom: 8px; }
+    .pf-tl-date { font-family: var(--mono); font-size: .7rem; color: var(--ink-soft); }
+
+    /* ── Lightbox ── */
+    #pf-lightbox {
+      display: none; position: fixed; inset: 0; z-index: 500;
+      background: rgba(13,15,20,.9);
+      align-items: center; justify-content: center;
+    }
+    #pf-lightbox.open { display: flex; }
+    #pf-lightbox-img {
+      max-width: 80vw; max-height: 80vh;
+      border-radius: var(--radius);
+      object-fit: contain;
+    }
+    #pf-lb-close {
+      position: absolute; top: 24px; right: 24px;
+      background: rgba(255,255,255,.1); border: none; cursor: pointer;
+      color: white; font-size: 1.4rem; width: 44px; height: 44px;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ── Responsive portfolio ── */
+    @media (max-width: 900px) {
+      .pf-proj-grid { grid-template-columns: 1fr 1fr; }
+      .pf-cert-grid { grid-template-columns: 1fr; }
+      .pf-skills-layout { grid-template-columns: 1fr; }
+      .pf-gallery-grid { columns: 2; }
+      .pf-profile { grid-template-columns: auto 1fr; }
+      .pf-stats-mini { display: none; }
+    }
+    @media (max-width: 600px) {
+      .pf-proj-grid { grid-template-columns: 1fr; }
+      .pf-gallery-grid { columns: 2; }
+      .pf-tabs { overflow-x: auto; }
+      .pf-profile { grid-template-columns: 1fr; text-align: center; }
+      .pf-avatar-big { margin: 0 auto; }
+      .pf-meta { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ NAVIGATION ══════════════════════════════════════════════ -->
+<nav id="navbar">
+  <div class="container nav-inner">
+    <a href="#" class="logo">
+      <div class="logo-icon">&lt;/&gt;</div>
+      Elite <span>Code</span> School
+    </a>
+    <ul class="nav-links">
+      <li><a href="#formations">Formations</a></li>
+      <li><a href="#materiel">Matériel</a></li>
+      <li><a href="#competition">Compétition</a></li>
+      <li><a href="#temoignages">Avis</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="#" onclick="openPortfolio(event)" style="color:var(--accent);font-weight:600">🎓 Portfolios</a></li>
+    </ul>
+    <div class="nav-cta">
+      <div class="lang-switcher">
+        <button class="active" onclick="switchLang('fr',this)">FR</button>
+        <button onclick="switchLang('ar',this)">AR</button>
+        <button onclick="switchLang('en',this)">EN</button>
+      </div>
+      <a href="#inscription" class="btn btn-primary">S'inscrire</a>
+    </div>
+    <button class="hamburger" id="ham" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<div id="mobile-menu">
+  <a href="#formations" onclick="closeMobile()">Formations</a>
+  <a href="#materiel" onclick="closeMobile()">Matériel</a>
+  <a href="#competition" onclick="closeMobile()">Compétition</a>
+  <a href="#temoignages" onclick="closeMobile()">Avis</a>
+  <a href="#faq" onclick="closeMobile()">FAQ</a>
+  <a href="#contact" onclick="closeMobile()">Contact</a>
+  <a href="#" onclick="closeMobile();openPortfolio(event)" style="color:var(--accent);font-weight:700">🎓 Portfolios élèves</a>
+  <a href="#inscription" onclick="closeMobile()" class="btn btn-primary" style="justify-content:center;margin-top:12px">S'inscrire maintenant</a>
+</div>
+
+<!-- ══ HERO ═════════════════════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-lines"></div>
+  <div class="container">
+    <div class="hero-inner">
+      <div class="hero-content fade-up">
+        <div class="hero-eyebrow">
+          <span class="tag">🇲🇦 Marrakech · Depuis 2020</span>
+        </div>
+        <h1>
+          Apprendre à coder,<br>
+          créer, <span class="highlight">innover</span>
+        </h1>
+        <p class="hero-desc">
+          Elite Code School forme les enfants de <strong>7 à 17 ans</strong> à la robotique, 
+          la programmation et l'intelligence artificielle — pour qu'ils deviennent les créateurs 
+          de demain, pas seulement les utilisateurs.
+        </p>
+        <div class="hero-actions">
+          <a href="#inscription" class="btn btn-primary">
+            <span>Inscrire mon enfant</span>
+            <span>→</span>
+          </a>
+          <a href="#formations" class="btn btn-outline">Voir les formations</a>
+        </div>
+        <div class="hero-trust">
+          <div class="trust-item"><span class="trust-dot"></span>+300 élèves formés</div>
+          <div class="trust-item"><span class="trust-dot" style="background:var(--accent-3)"></span>6 formations disponibles</div>
+          <div class="trust-item"><span class="trust-dot" style="background:#22c55e"></span>7 kits hardware</div>
+        </div>
+      </div>
+
+      <div class="hero-visual fade-up" style="transition-delay:.2s">
+        <div class="floating-badges">
+          <div class="fbadge"><span class="fbadge-icon">🤖</span> Robotique mBot</div>
+          <div class="fbadge"><span class="fbadge-icon">🧠</span> IA & Machine Learning</div>
+          <div class="fbadge"><span class="fbadge-icon">🏆</span> Mission Planète Mars</div>
+        </div>
+        <div class="hero-card">
+          <div class="hero-card-header">
+            <div class="dot dot-r"></div>
+            <div class="dot dot-y"></div>
+            <div class="dot dot-g"></div>
+            <span>robot_mars.py</span>
+          </div>
+          <div class="code-block">
+<span class="c-purple">from</span> <span class="c-cyan">mbot</span> <span class="c-purple">import</span> Robot, Sensor<br>
+<span class="c-purple">import</span> <span class="c-cyan">ai_vision</span> <span class="c-purple">as</span> ai<br>
+<br>
+<span class="c-gray"># Mission Planète Mars 🚀</span><br>
+<span class="c-cyan">robot</span> = Robot(<span class="c-yellow">"Explorer-1"</span>)<br>
+<span class="c-cyan">camera</span> = Sensor.<span class="c-orange">camera</span>()<br>
+<br>
+<span class="c-purple">def</span> <span class="c-green">explore_mars</span>():<br>
+&nbsp;&nbsp;<span class="c-cyan">obstacles</span> = ai.<span class="c-orange">detect</span>(camera)<br>
+&nbsp;&nbsp;<span class="c-purple">if</span> obstacles:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;robot.<span class="c-orange">avoid</span>()<br>
+&nbsp;&nbsp;<span class="c-purple">else</span>:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;robot.<span class="c-orange">forward</span>(<span class="c-yellow">50</span>)<br>
+<br>
+explore_mars()<span class="cursor"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ STATS ═════════════════════════════════════════════════════ -->
+<section id="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-cell fade-up">
+        <div class="stat-num">300<span>+</span></div>
+        <div class="stat-label">Élèves formés</div>
+      </div>
+      <div class="stat-cell fade-up" style="transition-delay:.1s">
+        <div class="stat-num">6</div>
+        <div class="stat-label">Formations actives</div>
+      </div>
+      <div class="stat-cell fade-up" style="transition-delay:.2s">
+        <div class="stat-num">7</div>
+        <div class="stat-label">Kits hardware disponibles</div>
+      </div>
+      <div class="stat-cell fade-up" style="transition-delay:.3s">
+        <div class="stat-num">4<span>e</span></div>
+        <div class="stat-label">Édition Mission Mars</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FORMATIONS ════════════════════════════════════════════════ -->
+<section id="formations">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="tag">Nos formations</span>
+      <h2>6 parcours, un seul objectif</h2>
+      <p class="section-sub">Des curricula structurés, adaptés à chaque tranche d'âge, allant des bases du code jusqu'à l'IA avancée.</p>
+    </div>
+    <div class="programs-grid">
+      <div class="prog-card fade-up">
+        <div class="prog-icon blue">🧩</div>
+        <div class="prog-age">ÂGES 7–10</div>
+        <h3>Scratch & Créativité</h3>
+        <p>Introduction à la logique algorithmique via le jeu et la création de stories animées et de mini-jeux interactifs.</p>
+        <div class="prog-tools">
+          <span class="tool-tag">Scratch</span>
+          <span class="tool-tag">Micro:bit</span>
+        </div>
+      </div>
+      <div class="prog-card featured fade-up" style="transition-delay:.1s">
+        <span class="prog-badge">⭐ Populaire</span>
+        <div class="prog-icon cyan">🤖</div>
+        <div class="prog-age">ÂGES 10–14</div>
+        <h3>Robotique mBot</h3>
+        <p>Programmation physique de robots, capteurs, défis d'obstacles et participation aux compétitions internes.</p>
+        <div class="prog-tools">
+          <span class="tool-tag">mBot</span>
+          <span class="tool-tag">Arduino</span>
+          <span class="tool-tag">Thymio</span>
+        </div>
+      </div>
+      <div class="prog-card fade-up" style="transition-delay:.2s">
+        <div class="prog-icon amber">💡</div>
+        <div class="prog-age">ÂGES 11–15</div>
+        <h3>Arduino & IoT</h3>
+        <p>Électronique appliquée, projets domotiques, systèmes d'alarme, capteurs de température et connexion réseau.</p>
+        <div class="prog-tools">
+          <span class="tool-tag">Arduino</span>
+          <span class="tool-tag">Raspberry Pi</span>
+          <span class="tool-tag">Dadabit AI</span>
+        </div>
+      </div>
+      <div class="prog-card fade-up" style="transition-delay:.05s">
+        <div class="prog-icon green">🐍</div>
+        <div class="prog-age">ÂGES 12–16</div>
+        <h3>Python & Data</h3>
+        <p>Programmation Python, manipulation de données, visualisations et introduction aux algorithmes de tri et recherche.</p>
+        <div class="prog-tools">
+          <span class="tool-tag">Python</span>
+          <span class="tool-tag">VS Code</span>
+          <span class="tool-tag">Pandas</span>
+        </div>
+      </div>
+      <div class="prog-card fade-up" style="transition-delay:.15s">
+        <div class="prog-icon rose">🌐</div>
+        <div class="prog-age">ÂGES 13–17</div>
+        <h3>Web Development</h3>
+        <p>Création de sites web complets : HTML, CSS, JavaScript, responsive design et déploiement d'un projet personnel.</p>
+        <div class="prog-tools">
+          <span class="tool-tag">HTML/CSS</span>
+          <span class="tool-tag">JavaScript</span>
+          <span class="tool-tag">React</span>
+        </div>
+      </div>
+      <div class="prog-card fade-up" style="transition-delay:.25s">
+        <div class="prog-icon purple">🧠</div>
+        <div class="prog-age">ÂGES 14–17</div>
+        <h3>Intelligence Artificielle</h3>
+        <p>Machine learning, vision par ordinateur, NLP et projets réels avec VinciBot et Dadabit AI sur données réelles.</p>
+        <div class="prog-tools">
+          <span class="tool-tag">VinciBot</span>
+          <span class="tool-tag">Dadabit AI</span>
+          <span class="tool-tag">Python ML</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ HARDWARE ══════════════════════════════════════════════════ -->
+<section id="materiel">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="tag">Matériel pédagogique</span>
+      <h2>7 kits, du physique au virtuel</h2>
+      <p class="section-sub">Chaque formation utilise le matériel adapté à l'apprentissage concret et au développement des compétences pratiques.</p>
+    </div>
+    <div class="hardware-grid">
+      <div class="hw-card fade-up">
+        <span class="hw-emoji">🤖</span>
+        <div class="hw-name">mBot</div>
+        <div class="hw-desc">Robot éducatif programmable, idéal pour la robotique débutant et les compétitions.</div>
+      </div>
+      <div class="hw-card fade-up" style="transition-delay:.07s">
+        <span class="hw-emoji">🦋</span>
+        <div class="hw-name">Thymio</div>
+        <div class="hw-desc">Robot suisse open-source avec capteurs intégrés, parfait pour l'initiation à la robotique comportementale.</div>
+      </div>
+      <div class="hw-card fade-up" style="transition-delay:.14s">
+        <span class="hw-emoji">🎨</span>
+        <div class="hw-name">VinciBot</div>
+        <div class="hw-desc">Robot IA éducatif combinant vision par ordinateur et apprentissage automatique en temps réel.</div>
+      </div>
+      <div class="hw-card fade-up" style="transition-delay:.21s">
+        <span class="hw-emoji">🧠</span>
+        <div class="hw-name">Dadabit AI</div>
+        <div class="hw-desc">Plateforme IA dédiée à l'éducation : reconnaissance d'images, sons, visages pour les projets enfants.</div>
+      </div>
+      <div class="hw-card fade-up" style="transition-delay:.07s">
+        <span class="hw-emoji">⚡</span>
+        <div class="hw-name">Arduino</div>
+        <div class="hw-desc">Microcontrôleur open-source pour l'électronique, l'IoT et la domotique de façon accessible.</div>
+      </div>
+      <div class="hw-card fade-up" style="transition-delay:.14s">
+        <span class="hw-emoji">🔬</span>
+        <div class="hw-name">Micro:bit</div>
+        <div class="hw-desc">Nano-ordinateur éducatif BBC pour les premières expériences en code et électronique embarquée.</div>
+      </div>
+      <div class="hw-card fade-up" style="transition-delay:.21s">
+        <span class="hw-emoji">🍓</span>
+        <div class="hw-name">Raspberry Pi</div>
+        <div class="hw-desc">Mini-ordinateur Linux complet pour les projets avancés : serveurs, IA, vision, systèmes embarqués.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ COMPÉTITION ════════════════════════════════════════════════ -->
+<section id="competition">
+  <div class="comp-bg"></div>
+  <div class="container">
+    <div class="comp-inner">
+      <div class="comp-left fade-up">
+        <span class="tag" style="background:rgba(6,182,212,.15);color:var(--accent-2);border-color:rgba(6,182,212,.3)">Compétition annuelle</span>
+        <h2>Mission<br>Planète Mars</h2>
+        <p>Notre compétition phare réunit les élèves dans un défi captivant : programmer un robot capable d'explorer une surface martienne simulée, éviter les obstacles et accomplir des missions scientifiques.</p>
+        <div class="comp-features">
+          <div class="comp-feat">
+            <div class="comp-feat-icon">🚀</div>
+            <div class="comp-feat-text">
+              <strong>Défi de navigation autonome</strong>
+              <span>Les robots traversent un parcours Mars avec capteurs et algorithmes IA</span>
+            </div>
+          </div>
+          <div class="comp-feat">
+            <div class="comp-feat-icon">👥</div>
+            <div class="comp-feat-text">
+              <strong>Travail en équipes</strong>
+              <span>Groupes de 2 à 4 élèves, développement des soft skills et collaboration</span>
+            </div>
+          </div>
+          <div class="comp-feat">
+            <div class="comp-feat-icon">🏆</div>
+            <div class="comp-feat-text">
+              <strong>Récompenses et certification</strong>
+              <span>Trophées, diplômes et portfolio numérique pour chaque participant</span>
+            </div>
+          </div>
+        </div>
+        <a href="#inscription" class="btn btn-primary">Inscrire à la prochaine édition →</a>
+      </div>
+      <div class="comp-right fade-up" style="transition-delay:.15s">
+        <div class="mars-header">
+          <div class="mars-logo">🔴</div>
+          <div>
+            <h3>Mission Planète Mars</h3>
+            <span>4ème Édition — 2025</span>
+          </div>
+        </div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-dot active">✓</div>
+            <div class="tl-content">
+              <strong>Inscriptions ouvertes</strong>
+              <span>Janvier → Mars 2025</span>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot active">✓</div>
+            <div class="tl-content">
+              <strong>Phase d'entraînement</strong>
+              <span>Avril → Mai 2025 · Ateliers hebdomadaires</span>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot" style="background:rgba(79,70,229,.3);border-color:var(--accent)">🏁</div>
+            <div class="tl-content">
+              <strong>Compétition finale</strong>
+              <span>Juin 2025 · Marrakech</span>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot">🏆</div>
+            <div class="tl-content">
+              <strong>Cérémonie de remise des prix</strong>
+              <span>Juillet 2025 · Remise portfolios & diplômes</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ INSCRIPTION ════════════════════════════════════════════════ -->
+<section id="inscription">
+  <div class="container">
+    <div class="form-layout">
+      <div class="form-info fade-up">
+        <span class="tag">Inscription</span>
+        <h2>Rejoindre Elite Code School</h2>
+        <p>Remplissez le formulaire ci-contre et notre équipe pédagogique vous contactera sous 24h pour vous orienter vers la formation la plus adaptée à votre enfant.</p>
+        <div class="info-points">
+          <div class="info-pt">Cours en petits groupes (max. 8 élèves)</div>
+          <div class="info-pt">Matériel fourni pendant les séances</div>
+          <div class="info-pt">Suivi personnalisé et portfolio numérique</div>
+          <div class="info-pt">Cours en français, arabe ou anglais</div>
+          <div class="info-pt">Essai gratuit disponible sur demande</div>
+          <div class="info-pt">Certificat de complétion officiel</div>
+        </div>
+      </div>
+      <div class="fade-up" style="transition-delay:.15s">
+        <div class="enroll-form">
+          <div id="form-content">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Prénom de l'élève *</label>
+                <input type="text" id="f-prenom" placeholder="Karim" required />
+              </div>
+              <div class="form-group">
+                <label>Nom de famille *</label>
+                <input type="text" id="f-nom" placeholder="Benali" required />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Âge de l'élève *</label>
+                <select id="f-age">
+                  <option value="">-- Sélectionner --</option>
+                  <option>7 ans</option><option>8 ans</option><option>9 ans</option>
+                  <option>10 ans</option><option>11 ans</option><option>12 ans</option>
+                  <option>13 ans</option><option>14 ans</option><option>15 ans</option>
+                  <option>16 ans</option><option>17 ans</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Niveau scolaire</label>
+                <select id="f-niveau">
+                  <option value="">-- Sélectionner --</option>
+                  <option>Primaire (CE)</option>
+                  <option>Collège</option>
+                  <option>Lycée</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Formation souhaitée *</label>
+              <select id="f-formation">
+                <option value="">-- Choisir une formation --</option>
+                <option>Scratch & Créativité (7–10 ans)</option>
+                <option>Robotique mBot (10–14 ans)</option>
+                <option>Arduino & IoT (11–15 ans)</option>
+                <option>Python & Data (12–16 ans)</option>
+                <option>Web Development (13–17 ans)</option>
+                <option>Intelligence Artificielle (14–17 ans)</option>
+                <option>Mission Planète Mars (Compétition)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Téléphone du parent *</label>
+              <input type="tel" id="f-tel" placeholder="+212 6XX XXX XXX" />
+            </div>
+            <div class="form-group">
+              <label>Email *</label>
+              <input type="email" id="f-email" placeholder="parent@email.com" />
+            </div>
+            <div class="form-group">
+              <label>Message (optionnel)</label>
+              <textarea id="f-msg" placeholder="Questions, disponibilités, niveau actuel…"></textarea>
+            </div>
+            <button class="btn btn-primary form-submit" onclick="submitForm()">
+              Envoyer la demande d'inscription →
+            </button>
+            <p class="form-note">📌 Réponse sous 24h · Essai gratuit disponible sur demande</p>
+          </div>
+          <div id="form-success">
+            <div class="success-icon">🎉</div>
+            <h3>Demande envoyée !</h3>
+            <p>Notre équipe vous contactera dans les <strong>24 heures</strong> pour confirmer l'inscription et vous donner toutes les informations pratiques.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TÉMOIGNAGES ════════════════════════════════════════════════ -->
+<section id="temoignages">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="tag">Témoignages</span>
+      <h2>Ce que disent les familles</h2>
+      <p class="section-sub">Les retours de nos élèves et de leurs parents après leur parcours chez Elite Code School.</p>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card fade-up">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text">"Mon fils de 12 ans a complètement changé son rapport à la technologie. En 3 mois, il a construit son propre robot et participé à la compétition Mars. Il est fier de lui !"</p>
+        <div class="testi-author">
+          <div class="avatar av-1">FA</div>
+          <div><div class="author-name">Fatima Alaoui</div><div class="author-role">Maman d'Youssef, 12 ans</div></div>
+        </div>
+      </div>
+      <div class="testi-card fade-up" style="transition-delay:.1s">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text">"L'équipe pédagogique est exceptionnelle. Ma fille a appris Python en 2 mois et maintenant elle crée ses propres jeux. La méthode par projets est vraiment efficace."</p>
+        <div class="testi-author">
+          <div class="avatar av-2">KE</div>
+          <div><div class="author-name">Khalid El Fassi</div><div class="author-role">Papa de Mariam, 14 ans</div></div>
+        </div>
+      </div>
+      <div class="testi-card fade-up" style="transition-delay:.2s">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text">"Meilleure décision que j'ai prise pour mes enfants. Les deux participent maintenant — l'un en Scratch, l'autre en IA. L'ambiance est motivante et l'encadrement sérieux."</p>
+        <div class="testi-author">
+          <div class="avatar av-3">NB</div>
+          <div><div class="author-name">Nadia Berrada</div><div class="author-role">Maman de Adam & Sara</div></div>
+        </div>
+      </div>
+      <div class="testi-card fade-up" style="transition-delay:.05s">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text">"J'avais peur que ce soit trop difficile pour mon fils de 8 ans. Mais le cours Scratch est parfaitement adapté — il adore les sessions et ne veut plus partir !"</p>
+        <div class="testi-author">
+          <div class="avatar av-4">MO</div>
+          <div><div class="author-name">Mohammed Ouali</div><div class="author-role">Papa de Ilias, 8 ans</div></div>
+        </div>
+      </div>
+      <div class="testi-card fade-up" style="transition-delay:.15s">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text">"Le portfolio numérique est une vraie valeur ajoutée. Ma fille peut montrer ses projets aux concours scolaires et c'est déjà un avantage pour son orientation."</p>
+        <div class="testi-author">
+          <div class="avatar av-5">HL</div>
+          <div><div class="author-name">Houda Lamrani</div><div class="author-role">Maman de Inès, 16 ans</div></div>
+        </div>
+      </div>
+      <div class="testi-card fade-up" style="transition-delay:.25s">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text">"On a commencé par la robotique mBot et maintenant mon fils fait de l'IA. La progression est bien pensée, les formateurs sont passionnés et ça se ressent."</p>
+        <div class="testi-author">
+          <div class="avatar av-6">YC</div>
+          <div><div class="author-name">Yassine Chaoui</div><div class="author-role">Papa de Hamza, 15 ans</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FAQ ═══════════════════════════════════════════════════════ -->
+<section id="faq">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="tag">Questions fréquentes</span>
+      <h2>Tout ce que vous devez savoir</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          À partir de quel âge peut-on s'inscrire ?
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-a"><p>Nos formations débutent dès 7 ans avec le parcours Scratch & Créativité. Chaque formation est conçue pour une tranche d'âge spécifique afin d'adapter le niveau de complexité et les outils utilisés. Le parcours IA est réservé aux 14-17 ans.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Faut-il des connaissances préalables en informatique ?
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-a"><p>Aucun prérequis n'est nécessaire pour les cours débutants (Scratch, mBot). Les formations avancées (Python, IA) supposent une base en programmation, que nous évaluons lors d'un entretien de placement gratuit.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Le matériel est-il fourni ou faut-il l'acheter ?
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-a"><p>Tout le matériel (robots, kits électroniques, ordinateurs) est fourni pendant les séances en école. Pour certains parcours avancés, un kit personnel est recommandé pour pratiquer à la maison — nous proposons des kits à prix préférentiel.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Combien y a-t-il d'élèves par groupe ?
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-a"><p>Les groupes sont volontairement limités à 8 élèves maximum pour garantir un suivi personnalisé et une interaction optimale avec le formateur. Cette approche boutique est au cœur de notre pédagogie.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Y a-t-il un essai gratuit possible ?
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-a"><p>Oui ! Nous offrons une séance d'essai gratuite pour tout nouveau candidat. C'est l'occasion de découvrir l'environnement, rencontrer le formateur et valider que la formation correspond aux attentes. Mentionnez-le dans le formulaire d'inscription.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Dans quelle langue se déroulent les cours ?
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-a"><p>Les cours sont disponibles en français, arabe dialectal (darija) ou anglais selon la préférence de l'élève. La documentation technique est en français et en anglais. Précisez votre langue préférée lors de l'inscription.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Que reçoit l'enfant à la fin de la formation ?
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-a"><p>Chaque élève reçoit un certificat de complétion officiel, un portfolio numérique rassemblant tous ses projets, et une lettre de recommandation si besoin. La participation à Mission Planète Mars donne lieu à un diplôme de compétition.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CONTACT ════════════════════════════════════════════════════ -->
+<section id="contact">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="contact-info fade-up">
+        <span class="tag">Nous contacter</span>
+        <h2>Venez nous rendre visite</h2>
+        <p>Notre équipe est disponible du lundi au samedi pour répondre à toutes vos questions et vous accueillir pour une visite de l'école.</p>
+        <div class="contact-items">
+          <div class="contact-item">
+            <div class="contact-ic">📍</div>
+            <div class="contact-ic-text">
+              <strong>Adresse</strong>
+              <span>Marrakech, Maroc · Quartier Guéliz</span>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-ic">📞</div>
+            <div class="contact-ic-text">
+              <strong>Téléphone / WhatsApp</strong>
+              <span>+212 6XX XXX XXX</span>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-ic">✉️</div>
+            <div class="contact-ic-text">
+              <strong>Email</strong>
+              <span>contact@elitecodeschool.ma</span>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-ic">🕐</div>
+            <div class="contact-ic-text">
+              <strong>Horaires</strong>
+              <span>Lun – Ven : 9h–19h · Sam : 9h–14h</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="fade-up" style="transition-delay:.15s">
+        <div class="map-placeholder">
+          <span class="map-pin">📍</span>
+          <strong>Elite Code School — Marrakech</strong>
+          <span style="font-size:.82rem;color:var(--ink-soft)">Remplacez par une iframe Google Maps</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══════════════════════════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo">
+          <div class="logo-icon">&lt;/&gt;</div>
+          Elite <span>Code</span> School
+        </div>
+        <p>Former les enfants du Maroc aux technologies de demain — robotique, code et intelligence artificielle.</p>
+        <div class="footer-social">
+          <button class="soc-btn" title="Facebook">f</button>
+          <button class="soc-btn" title="Instagram">📸</button>
+          <button class="soc-btn" title="YouTube">▶</button>
+          <button class="soc-btn" title="WhatsApp">💬</button>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Formations</h4>
+        <ul>
+          <li><a href="#formations">Scratch & Créativité</a></li>
+          <li><a href="#formations">Robotique mBot</a></li>
+          <li><a href="#formations">Arduino & IoT</a></li>
+          <li><a href="#formations">Python & Data</a></li>
+          <li><a href="#formations">Web Development</a></li>
+          <li><a href="#formations">Intelligence Artificielle</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>École</h4>
+        <ul>
+          <li><a href="#competition">Mission Mars</a></li>
+          <li><a href="#materiel">Matériel</a></li>
+          <li><a href="#temoignages">Témoignages</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Infos pratiques</h4>
+        <ul>
+          <li><a href="#inscription">S'inscrire</a></li>
+          <li><a href="#">Tarifs</a></li>
+          <li><a href="#">Planning</a></li>
+          <li><a href="#">Essai gratuit</a></li>
+          <li><a href="#">Espace parent</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Elite Code School · Marrakech, Maroc · Tous droits réservés</p>
+      <p style="font-family:var(--mono);font-size:.75rem">made with &lt;/&gt; &amp; ❤</p>
+    </div>
+  </div>
+</footer>
+
+<!-- Back to top -->
+<button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Haut de page">↑</button>
+
+<!-- ══ PORTFOLIO OVERLAY ════════════════════════════════════════ -->
+<div id="portfolio-overlay">
+
+  <!-- Topbar -->
+  <div class="pf-topbar">
+    <div class="pf-topbar-left">
+      <button class="pf-back" onclick="closePortfolio()">← Retour au site</button>
+      <div class="pf-title-bar">🎓 Portfolios Élèves — Elite Code School</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-family:var(--mono);font-size:.75rem;color:var(--ink-soft)">Accès sécurisé</span>
+      <div style="width:8px;height:8px;border-radius:50%;background:#22c55e"></div>
+    </div>
+  </div>
+
+  <!-- Student selector tabs -->
+  <div class="pf-student-tabs" id="student-tabs"></div>
+
+  <!-- Portfolio body -->
+  <div class="pf-body" id="pf-body"></div>
+</div>
+
+<!-- Lightbox -->
+<div id="pf-lightbox" onclick="closeLightbox()">
+  <button id="pf-lb-close" onclick="closeLightbox()">✕</button>
+  <img id="pf-lightbox-img" src="" alt="Photo projet" />
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- ══ SCRIPTS ════════════════════════════════════════════════════ -->
+<script>
+  // ── Navbar scroll ──
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 20);
+    document.getElementById('btt').classList.toggle('visible', window.scrollY > 400);
+  });
+
+  // ── Mobile menu ──
+  const ham = document.getElementById('ham');
+  const mob = document.getElementById('mobile-menu');
+  ham.addEventListener('click', () => {
+    mob.classList.toggle('open');
+    const spans = ham.querySelectorAll('span');
+    const isOpen = mob.classList.contains('open');
+    spans[0].style.transform = isOpen ? 'translateY(7px) rotate(45deg)' : '';
+    spans[1].style.opacity  = isOpen ? '0' : '1';
+    spans[2].style.transform = isOpen ? 'translateY(-7px) rotate(-45deg)' : '';
+  });
+  function closeMobile() {
+    mob.classList.remove('open');
+    ham.querySelectorAll('span').forEach(s => { s.style.transform=''; s.style.opacity=''; });
+  }
+
+  // ── Fade in on scroll ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); observer.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // ── FAQ toggle ──
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  // ── Form submit ──
+  function submitForm() {
+    const prenom = document.getElementById('f-prenom').value.trim();
+    const nom    = document.getElementById('f-nom').value.trim();
+    const age    = document.getElementById('f-age').value;
+    const form   = document.getElementById('f-formation').value;
+    const email  = document.getElementById('f-email').value.trim();
+    const tel    = document.getElementById('f-tel').value.trim();
+
+    if (!prenom || !nom || !age || !form || !email || !tel) {
+      showToast('⚠️ Veuillez remplir tous les champs obligatoires');
+      return;
+    }
+    if (!email.includes('@')) {
+      showToast('⚠️ Email invalide');
+      return;
+    }
+
+    // Simulation envoi
+    document.getElementById('form-content').style.display = 'none';
+    document.getElementById('form-success').style.display = 'block';
+    showToast('✅ Inscription envoyée avec succès !');
+  }
+
+  // ── Toast ──
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  // ── Lang switcher (demo) ──
+  const translations = {
+    fr: { hero: 'Apprendre à coder,\ncréer, innover', cta: 'Inscrire mon enfant' },
+    ar: { hero: 'تعلّم البرمجة\nوالابتكار والذكاء', cta: 'تسجيل طفلي' },
+    en: { hero: 'Learn to code,\ncreate, innovate', cta: 'Enroll my child' }
+  };
+  function switchLang(lang, btn) {
+    document.querySelectorAll('.lang-switcher button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    showToast(`🌐 Langue : ${btn.textContent}`);
+  }
+
+  // ── Stats counter animation ──
+  function animateCount(el, target, suffix='') {
+    let current = 0;
+    const step = Math.ceil(target / 40);
+    const timer = setInterval(() => {
+      current = Math.min(current + step, target);
+      el.textContent = current + suffix;
+      if (current >= target) clearInterval(timer);
+    }, 40);
+  }
+  const statsObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const nums = e.target.querySelectorAll('.stat-num');
+        nums[0] && animateCount(nums[0], 300, '+');
+        nums[1] && animateCount(nums[1], 6);
+        nums[2] && animateCount(nums[2], 7);
+        statsObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  const statsGrid = document.querySelector('.stats-grid');
+  if (statsGrid) statsObs.observe(statsGrid);
+
+  // ══════════════════════════════════════════════
+  //   PORTFOLIO SYSTEM
+  // ══════════════════════════════════════════════
+
+  const STUDENTS = [
+    {
+      id: 1,
+      name: "Youssef Alaoui",
+      age: 14,
+      level: "Robotique mBot · Niveau 2",
+      formation: "Robotique & Arduino",
+      avatar: "YA",
+      avatarBg: "linear-gradient(135deg,#4f46e5,#818cf8)",
+      joinDate: "Sept. 2023",
+      projects_count: 5,
+      certs_count: 3,
+      hours: 120,
+      projects: [
+        { id:"p1", title:"Robot éviteur d'obstacles", emoji:"🤖", bg:"linear-gradient(135deg,#4f46e5,#818cf8)",
+          desc:"Robot autonome programmé avec mBot capable de détecter et éviter les obstacles en temps réel grâce aux capteurs ultrason.",
+          tags:["mBot","C++","Capteurs"], status:"done", date:"Mars 2024", progress:100 },
+        { id:"p2", title:"Système d'alarme maison", emoji:"🔔", bg:"linear-gradient(135deg,#f59e0b,#ef4444)",
+          desc:"Système d'alarme complet avec capteur de mouvement PIR, LED, buzzer et alerte SMS via module GSM.",
+          tags:["Arduino","IoT","Électronique"], status:"done", date:"Déc. 2023", progress:100 },
+        { id:"p3", title:"Station météo connectée", emoji:"🌡️", bg:"linear-gradient(135deg,#06b6d4,#0ea5e9)",
+          desc:"Station météo affichant température, humidité et pression atmosphérique sur écran LCD avec historique.",
+          tags:["Arduino","DHT22","LCD"], status:"done", date:"Fév. 2024", progress:100 },
+        { id:"p4", title:"Robot Mission Mars", emoji:"🔴", bg:"linear-gradient(135deg,#ef4444,#f97316)",
+          desc:"Robot conçu pour la compétition Mission Planète Mars — navigation autonome sur surface simulée avec évitement IA.",
+          tags:["mBot","IA","Compétition"], status:"progress", date:"En cours", progress:75 },
+        { id:"p5", title:"Mini-jeu Arcade Scratch", emoji:"🕹️", bg:"linear-gradient(135deg,#22c55e,#10b981)",
+          desc:"Jeu de type Space Invaders développé sur Scratch avec score, niveaux progressifs et effets sonores.",
+          tags:["Scratch","Game Design"], status:"done", date:"Nov. 2023", progress:100 },
+      ],
+      certs: [
+        { title:"Robotique mBot — Niveau 1", emoji:"🤖", bg:"linear-gradient(135deg,#4f46e5,#6366f1)", date:"Déc. 2023", mention:"Très Bien" },
+        { title:"Arduino & Électronique", emoji:"⚡", bg:"linear-gradient(135deg,#f59e0b,#f97316)", date:"Mars 2024", mention:"Bien" },
+        { title:"Mission Planète Mars 3ème édition", emoji:"🏆", bg:"linear-gradient(135deg,#ef4444,#b91c1c)", date:"Juin 2024", mention:"2ème place" },
+      ],
+      skills: {
+        tech: [
+          { name:"Programmation mBot / C++", level:80, color:"#4f46e5" },
+          { name:"Arduino & Électronique", level:70, color:"#f59e0b" },
+          { name:"Scratch", level:95, color:"#22c55e" },
+          { name:"Python (débutant)", level:40, color:"#06b6d4" },
+        ],
+        soft: [
+          { name:"Résolution de problèmes", level:85, color:"#a855f7" },
+          { name:"Travail en équipe", level:90, color:"#f43f5e" },
+          { name:"Créativité", level:80, color:"#f59e0b" },
+          { name:"Présentation orale", level:65, color:"#22c55e" },
+        ],
+        badges: [
+          { label:"Robotiste", icon:"🤖", color:"#4f46e5", bg:"rgba(79,70,229,.1)" },
+          { label:"Électronicien", icon:"⚡", color:"#f59e0b", bg:"rgba(245,158,11,.1)" },
+          { label:"Compétiteur", icon:"🏆", color:"#ef4444", bg:"rgba(239,68,68,.1)" },
+          { label:"Créatif", icon:"🎨", color:"#a855f7", bg:"rgba(168,85,247,.1)" },
+        ]
+      },
+      timeline: [
+        { emoji:"🎓", label:"Inscription à Elite Code School", date:"Septembre 2023", detail:"Découverte de la robotique avec mBot — niveau débutant", color:"#22c55e", borderColor:"rgba(34,197,94,.3)" },
+        { emoji:"🏅", label:"Premier projet : Robot éviteur", date:"Novembre 2023", detail:"Réalisation du premier robot autonome avec capteurs ultrason", color:"#4f46e5", borderColor:"rgba(79,70,229,.3)" },
+        { emoji:"⚡", label:"Formation Arduino", date:"Décembre 2023", detail:"Initiation à l'électronique et aux microcontrôleurs Arduino", color:"#f59e0b", borderColor:"rgba(245,158,11,.3)" },
+        { emoji:"🏆", label:"Compétition Mission Mars — 2ème place", date:"Juin 2024", detail:"Finaliste de la 3ème édition Mission Planète Mars avec son équipe", color:"#ef4444", borderColor:"rgba(239,68,68,.3)" },
+        { emoji:"🚀", label:"Projet Mission Mars 4e édition", date:"En cours", detail:"Préparation du robot pour la prochaine compétition avec module IA", color:"#06b6d4", borderColor:"rgba(6,182,212,.3)" },
+      ],
+      gallery: [
+        { type:"emoji", emoji:"🤖", label:"Robot éviteur terminé", bg:"linear-gradient(135deg,#4f46e5,#818cf8)", h:180 },
+        { type:"emoji", emoji:"🔔", label:"Système d'alarme", bg:"linear-gradient(135deg,#f59e0b,#ef4444)", h:140 },
+        { type:"emoji", emoji:"🏆", label:"Cérémonie Mission Mars", bg:"linear-gradient(135deg,#ef4444,#b91c1c)", h:200 },
+        { type:"emoji", emoji:"🌡️", label:"Station météo", bg:"linear-gradient(135deg,#06b6d4,#0284c7)", h:140 },
+        { type:"emoji", emoji:"👥", label:"Atelier en équipe", bg:"linear-gradient(135deg,#22c55e,#059669)", h:160 },
+        { type:"emoji", emoji:"🎤", label:"Présentation finale", bg:"linear-gradient(135deg,#a855f7,#7c3aed)", h:180 },
+        { type:"add", label:"Ajouter une photo", h:140 },
+      ]
+    },
+    {
+      id: 2,
+      name: "Mariam El Fassi",
+      age: 15,
+      level: "Python & IA · Niveau 1",
+      formation: "Python, Web & IA",
+      avatar: "ME",
+      avatarBg: "linear-gradient(135deg,#06b6d4,#0ea5e9)",
+      joinDate: "Jan. 2024",
+      projects_count: 4,
+      certs_count: 2,
+      hours: 80,
+      projects: [
+        { id:"p1", title:"Site web portfolio personnel", emoji:"🌐", bg:"linear-gradient(135deg,#06b6d4,#0ea5e9)",
+          desc:"Site web personnel responsive en HTML, CSS et JavaScript présentant ses projets, compétences et parcours scolaire.",
+          tags:["HTML","CSS","JavaScript"], status:"done", date:"Avr. 2024", progress:100 },
+        { id:"p2", title:"Jeu de Quiz Python", emoji:"🐍", bg:"linear-gradient(135deg,#22c55e,#10b981)",
+          desc:"Application Python en ligne de commande : quiz à choix multiples sur les capitales du monde avec score et chrono.",
+          tags:["Python","CLI","Logique"], status:"done", date:"Mars 2024", progress:100 },
+        { id:"p3", title:"Détecteur d'émotions IA", emoji:"😊", bg:"linear-gradient(135deg,#a855f7,#7c3aed)",
+          desc:"Application IA qui analyse les expressions faciales via la webcam et reconnaît 7 émotions en temps réel.",
+          tags:["Python","Dadabit AI","Vision"], status:"progress", date:"En cours", progress:60 },
+        { id:"p4", title:"Dashboard météo React", emoji:"☀️", bg:"linear-gradient(135deg,#f59e0b,#f97316)",
+          desc:"Application React qui affiche la météo en temps réel de n'importe quelle ville via l'API OpenWeather.",
+          tags:["React","API","CSS"], status:"planned", date:"Prévu Juil. 2024", progress:10 },
+      ],
+      certs: [
+        { title:"Développement Web — HTML/CSS/JS", emoji:"🌐", bg:"linear-gradient(135deg,#06b6d4,#0ea5e9)", date:"Avr. 2024", mention:"Excellent" },
+        { title:"Python Fondamentaux", emoji:"🐍", bg:"linear-gradient(135deg,#22c55e,#059669)", date:"Mars 2024", mention:"Très Bien" },
+      ],
+      skills: {
+        tech: [
+          { name:"HTML / CSS / JavaScript", level:85, color:"#06b6d4" },
+          { name:"Python", level:65, color:"#22c55e" },
+          { name:"React (débutant)", level:30, color:"#f59e0b" },
+          { name:"IA & Dadabit", level:50, color:"#a855f7" },
+        ],
+        soft: [
+          { name:"Design & Esthétique", level:90, color:"#f43f5e" },
+          { name:"Autonomie", level:85, color:"#4f46e5" },
+          { name:"Documentation", level:80, color:"#06b6d4" },
+          { name:"Curiosité / Recherche", level:95, color:"#22c55e" },
+        ],
+        badges: [
+          { label:"Web Developer", icon:"🌐", color:"#06b6d4", bg:"rgba(6,182,212,.1)" },
+          { label:"Pythoniste", icon:"🐍", color:"#22c55e", bg:"rgba(34,197,94,.1)" },
+          { label:"Designeuse", icon:"🎨", color:"#f43f5e", bg:"rgba(244,63,94,.1)" },
+          { label:"Future IA Dev", icon:"🧠", color:"#a855f7", bg:"rgba(168,85,247,.1)" },
+        ]
+      },
+      timeline: [
+        { emoji:"🎓", label:"Inscription à Elite Code School", date:"Janvier 2024", detail:"Début du parcours Web — HTML & CSS", color:"#22c55e", borderColor:"rgba(34,197,94,.3)" },
+        { emoji:"🌐", label:"Premier site web en ligne !", date:"Avril 2024", detail:"Site portfolio responsive publié et présenté en classe", color:"#06b6d4", borderColor:"rgba(6,182,212,.3)" },
+        { emoji:"🐍", label:"Passage au Python", date:"Mars 2024", detail:"Développement de jeux et scripts Python — quiz, calcul, fichiers", color:"#22c55e", borderColor:"rgba(34,197,94,.3)" },
+        { emoji:"🧠", label:"Début IA avec Dadabit", date:"Juin 2024", detail:"Projet détecteur d'émotions en cours avec reconnaissance faciale", color:"#a855f7", borderColor:"rgba(168,85,247,.3)" },
+      ],
+      gallery: [
+        { type:"emoji", emoji:"🌐", label:"Site web portfolio", bg:"linear-gradient(135deg,#06b6d4,#0ea5e9)", h:200 },
+        { type:"emoji", emoji:"💻", label:"Session coding", bg:"linear-gradient(135deg,#22c55e,#059669)", h:150 },
+        { type:"emoji", emoji:"😊", label:"Projet IA émotions", bg:"linear-gradient(135deg,#a855f7,#7c3aed)", h:160 },
+        { type:"emoji", emoji:"🎤", label:"Présentation site", bg:"linear-gradient(135deg,#f59e0b,#f97316)", h:140 },
+        { type:"add", label:"Ajouter une photo", h:160 },
+        { type:"add", label:"Ajouter une photo", h:140 },
+      ]
+    },
+    {
+      id: 3,
+      name: "Adam Berrada",
+      age: 9,
+      level: "Scratch · Niveau 2",
+      formation: "Scratch & Micro:bit",
+      avatar: "AB",
+      avatarBg: "linear-gradient(135deg,#f59e0b,#f97316)",
+      joinDate: "Oct. 2023",
+      projects_count: 6,
+      certs_count: 1,
+      hours: 60,
+      projects: [
+        { id:"p1", title:"Jeu de plateforme Scratch", emoji:"🎮", bg:"linear-gradient(135deg,#f59e0b,#f97316)",
+          desc:"Jeu de plateforme complet avec personnage animé, ennemis, collectibles, vies et 3 niveaux progressifs.",
+          tags:["Scratch","Game","Animation"], status:"done", date:"Jan. 2024", progress:100 },
+        { id:"p2", title:"Histoire interactive animée", emoji:"📖", bg:"linear-gradient(135deg,#22c55e,#10b981)",
+          desc:"Conte interactif dont tu es le héros — 4 fins différentes selon les choix du lecteur avec décors animés.",
+          tags:["Scratch","Narration","Design"], status:"done", date:"Nov. 2023", progress:100 },
+        { id:"p3", title:"Quiz des animaux", emoji:"🦁", bg:"linear-gradient(135deg,#06b6d4,#0ea5e9)",
+          desc:"Quiz éducatif sur les animaux du monde avec sons, images et score. Partagé avec ses camarades de classe.",
+          tags:["Scratch","Quiz","Sons"], status:"done", date:"Déc. 2023", progress:100 },
+        { id:"p4", title:"Lumière réactive Micro:bit", emoji:"💡", bg:"linear-gradient(135deg,#a855f7,#7c3aed)",
+          desc:"Programme Micro:bit qui fait clignoter les LEDs selon les sons environnants — réagit à la musique.",
+          tags:["Micro:bit","MakeCode","Capteurs"], status:"done", date:"Fév. 2024", progress:100 },
+        { id:"p5", title:"Carte de voeux animée", emoji:"💌", bg:"linear-gradient(135deg,#f43f5e,#e11d48)",
+          desc:"Carte de vœux Scratch animée avec message personnalisable, confettis et musique — offerte à sa famille.",
+          tags:["Scratch","Animation","Créativité"], status:"done", date:"Mars 2024", progress:100 },
+        { id:"p6", title:"Robot danseur Scratch", emoji:"🕺", bg:"linear-gradient(135deg,#4f46e5,#818cf8)",
+          desc:"Robot qui danse selon le rythme d'une musique — projet en cours avec synchronisation avancée.",
+          tags:["Scratch","Musique","Animation"], status:"progress", date:"En cours", progress:45 },
+      ],
+      certs: [
+        { title:"Scratch Créativité — Niveau 1", emoji:"🧩", bg:"linear-gradient(135deg,#f59e0b,#f97316)", date:"Jan. 2024", mention:"Excellent — Élève du mois !" },
+      ],
+      skills: {
+        tech: [
+          { name:"Scratch — Blocs & Événements", level:90, color:"#f59e0b" },
+          { name:"Animation & Design", level:80, color:"#f43f5e" },
+          { name:"Micro:bit / MakeCode", level:55, color:"#a855f7" },
+          { name:"Logique algorithmique", level:70, color:"#22c55e" },
+        ],
+        soft: [
+          { name:"Créativité", level:98, color:"#f59e0b" },
+          { name:"Enthousiasme", level:100, color:"#f43f5e" },
+          { name:"Persévérance", level:85, color:"#4f46e5" },
+          { name:"Partage & Collaboration", level:90, color:"#22c55e" },
+        ],
+        badges: [
+          { label:"Super Créatif", icon:"🎨", color:"#f59e0b", bg:"rgba(245,158,11,.1)" },
+          { label:"Storyteller", icon:"📖", color:"#22c55e", bg:"rgba(34,197,94,.1)" },
+          { label:"Élève du mois", icon:"⭐", color:"#f43f5e", bg:"rgba(244,63,94,.1)" },
+          { label:"Game Maker", icon:"🎮", color:"#4f46e5", bg:"rgba(79,70,229,.1)" },
+        ]
+      },
+      timeline: [
+        { emoji:"🎓", label:"Première séance Scratch", date:"Octobre 2023", detail:"Premier programme : un chat qui dit bonjour ! Très enthousiasmé", color:"#f59e0b", borderColor:"rgba(245,158,11,.3)" },
+        { emoji:"📖", label:"Première histoire interactive", date:"Novembre 2023", detail:"Histoire de 4 fins — présentée avec fierté à ses parents", color:"#22c55e", borderColor:"rgba(34,197,94,.3)" },
+        { emoji:"⭐", label:"Élu Élève du Mois !", date:"Décembre 2023", detail:"Reconnu pour son enthousiasme, sa créativité et son aide aux camarades", color:"#f43f5e", borderColor:"rgba(244,63,94,.3)" },
+        { emoji:"💡", label:"Découverte du Micro:bit", date:"Février 2024", detail:"Premier circuit électronique et programme sur Micro:bit", color:"#a855f7", borderColor:"rgba(168,85,247,.3)" },
+        { emoji:"🎮", label:"Jeu de plateforme publié", date:"Mars 2024", detail:"Jeu complet avec 3 niveaux — partagé sur la communauté Scratch", color:"#4f46e5", borderColor:"rgba(79,70,229,.3)" },
+      ],
+      gallery: [
+        { type:"emoji", emoji:"🎮", label:"Jeu de plateforme", bg:"linear-gradient(135deg,#f59e0b,#f97316)", h:160 },
+        { type:"emoji", emoji:"⭐", label:"Remise prix Élève du mois", bg:"linear-gradient(135deg,#f43f5e,#e11d48)", h:200 },
+        { type:"emoji", emoji:"💡", label:"Atelier Micro:bit", bg:"linear-gradient(135deg,#a855f7,#7c3aed)", h:140 },
+        { type:"emoji", emoji:"📖", label:"Histoire animée", bg:"linear-gradient(135deg,#22c55e,#059669)", h:180 },
+        { type:"emoji", emoji:"😄", label:"En pleine création", bg:"linear-gradient(135deg,#4f46e5,#818cf8)", h:150 },
+        { type:"add", label:"Ajouter une photo", h:160 },
+      ]
+    }
+  ];
+
+  let currentStudent = 0;
+  let currentTab = 'projects';
+  let skillsAnimated = false;
+
+  function openPortfolio(e) {
+    e && e.preventDefault();
+    const ov = document.getElementById('portfolio-overlay');
+    ov.classList.add('open');
+    requestAnimationFrame(() => ov.classList.add('visible'));
+    document.body.style.overflow = 'hidden';
+    renderStudentTabs();
+    loadStudent(0);
+  }
+
+  function closePortfolio() {
+    const ov = document.getElementById('portfolio-overlay');
+    ov.classList.remove('visible');
+    setTimeout(() => { ov.classList.remove('open'); document.body.style.overflow = ''; }, 250);
+  }
+
+  function renderStudentTabs() {
+    const wrap = document.getElementById('student-tabs');
+    wrap.innerHTML = STUDENTS.map((s, i) => `
+      <button class="pf-stab ${i === currentStudent ? 'active' : ''}" onclick="loadStudent(${i})">
+        <div class="pf-av" style="background:${s.avatarBg}">${s.avatar}</div>
+        ${s.name}
+      </button>
+    `).join('');
+  }
+
+  function loadStudent(idx) {
+    currentStudent = idx;
+    currentTab = 'projects';
+    skillsAnimated = false;
+    document.querySelectorAll('.pf-stab').forEach((b,i) => b.classList.toggle('active', i===idx));
+    renderPortfolio(STUDENTS[idx]);
+    document.getElementById('pf-body').scrollTop = 0;
+    document.getElementById('portfolio-overlay').scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function renderPortfolio(s) {
+    document.getElementById('pf-body').innerHTML = `
+      ${renderProfile(s)}
+      ${renderTabs()}
+      <div id="pf-panel-projects" class="pf-panel ${currentTab==='projects'?'active':''}">
+        ${renderProjects(s)}
+      </div>
+      <div id="pf-panel-progress" class="pf-panel ${currentTab==='progress'?'active':''}">
+        ${renderInProgress(s)}
+      </div>
+      <div id="pf-panel-certs" class="pf-panel ${currentTab==='certs'?'active':''}">
+        ${renderCerts(s)}
+      </div>
+      <div id="pf-panel-skills" class="pf-panel ${currentTab==='skills'?'active':''}">
+        ${renderSkills(s)}
+      </div>
+      <div id="pf-panel-parcours" class="pf-panel ${currentTab==='parcours'?'active':''}">
+        ${renderParcours(s)}
+      </div>
+      <div id="pf-panel-gallery" class="pf-panel ${currentTab==='gallery'?'active':''}">
+        ${renderGallery(s)}
+      </div>
+    `;
+    if (currentTab === 'skills') triggerSkillBars();
+  }
+
+  function renderProfile(s) {
+    return `
+    <div class="pf-profile">
+      <div class="pf-avatar-big" style="background:${s.avatarBg}">${s.avatar}</div>
+      <div class="pf-profile-info">
+        <h2>${s.name}</h2>
+        <div style="font-size:.9rem;color:rgba(255,255,255,.7);margin-bottom:8px">${s.level}</div>
+        <div class="pf-meta">
+          <span class="pf-chip">📅 ${s.age} ans</span>
+          <span class="pf-chip">📚 ${s.formation}</span>
+          <span class="pf-chip">🗓 Depuis ${s.joinDate}</span>
+          <span class="pf-chip">⏱ ${s.hours}h de code</span>
+        </div>
+      </div>
+      <div class="pf-stats-mini">
+        <div class="pf-mini-stat"><strong>${s.projects_count}</strong><span>Projets</span></div>
+        <div class="pf-mini-stat"><strong>${s.certs_count}</strong><span>Certificats</span></div>
+        <div class="pf-mini-stat"><strong>${s.hours}h</strong><span>De code</span></div>
+      </div>
+    </div>`;
+  }
+
+  function renderTabs() {
+    const tabs = [
+      { id:'projects',  icon:'💼', label:'Projets' },
+      { id:'progress',  icon:'🔧', label:'En cours' },
+      { id:'certs',     icon:'🏅', label:'Certificats' },
+      { id:'skills',    icon:'⚡', label:'Compétences' },
+      { id:'parcours',  icon:'📅', label:'Parcours' },
+      { id:'gallery',   icon:'🖼️', label:'Galerie' },
+    ];
+    return `<div class="pf-tabs">
+      ${tabs.map(t => `
+        <button class="pf-tab ${currentTab===t.id?'active':''}" onclick="switchTab('${t.id}')">
+          <span class="pf-tab-icon">${t.icon}</span> ${t.label}
+        </button>`).join('')}
+    </div>`;
+  }
+
+  function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.pf-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.pf-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.pf-tab').forEach(b => {
+      if (b.textContent.toLowerCase().includes(tab === 'projects' ? 'projets' :
+          tab === 'progress' ? 'cours' : tab === 'certs' ? 'certificat' :
+          tab === 'skills' ? 'comp' : tab === 'parcours' ? 'parcours' : 'galerie')) {
+        b.classList.add('active');
+      }
+    });
+    // simpler approach: re-render
+    const s = STUDENTS[currentStudent];
+    renderPortfolio(s);
+    if (tab === 'skills') setTimeout(triggerSkillBars, 100);
+  }
+
+  function renderProjects(s) {
+    const done = s.projects.filter(p => p.status === 'done');
+    if (!done.length) return '<p style="color:var(--ink-soft);padding:20px 0">Aucun projet terminé pour le moment.</p>';
+    return `<div class="pf-proj-grid">${done.map(p => renderProjCard(p)).join('')}</div>`;
+  }
+
+  function renderInProgress(s) {
+    const wip = s.projects.filter(p => p.status !== 'done');
+    if (!wip.length) return '<p style="color:var(--ink-soft);padding:20px 0">Tous les projets sont terminés 🎉</p>';
+    return `<div class="pf-proj-grid">${wip.map(p => renderProjCard(p)).join('')}</div>`;
+  }
+
+  function renderProjCard(p) {
+    const statusLabel = p.status === 'done' ? 'Terminé' : p.status === 'progress' ? 'En cours' : 'Planifié';
+    const statusClass = p.status === 'done' ? 'status-done' : p.status === 'progress' ? 'status-progress' : 'status-planned';
+    const progressBar = p.status !== 'done' ? `
+      <div class="pf-progress-bar">
+        <div class="pf-progress-label"><span>Avancement</span><span>${p.progress}%</span></div>
+        <div class="pf-progress-track"><div class="pf-progress-fill" style="width:${p.progress}%;background:${p.status==='planned'?'var(--accent)':'linear-gradient(90deg,var(--accent),var(--accent-2))'}"></div></div>
+      </div>` : '';
+    return `
+    <div class="pf-proj-card">
+      <div class="pf-proj-thumb" style="background:${p.bg}">
+        <span style="font-size:3rem">${p.emoji}</span>
+        <span class="pf-proj-status ${statusClass}">${statusLabel}</span>
+      </div>
+      <div class="pf-proj-body">
+        <h4>${p.title}</h4>
+        <p>${p.desc}</p>
+        ${progressBar}
+        <div class="pf-proj-tags">${p.tags.map(t => `<span class="pf-proj-tag">${t}</span>`).join('')}</div>
+        <div class="pf-proj-footer">
+          <span class="pf-proj-date">📅 ${p.date}</span>
+          <button class="pf-view-btn" onclick="showToast('📂 Projet : ${p.title}')">Voir détails →</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function renderCerts(s) {
+    if (!s.certs.length) return '<p style="color:var(--ink-soft);padding:20px 0">Aucun certificat obtenu pour le moment.</p>';
+    return `<div class="pf-cert-grid">${s.certs.map(c => `
+      <div class="pf-cert-card">
+        <div class="pf-cert-visual" style="background:${c.bg}">
+          <span class="pf-cert-icon">${c.emoji}</span>
+          <h3>${c.title}</h3>
+          <p>Elite Code School · Marrakech</p>
+          <p style="margin-top:8px;font-family:var(--mono);font-size:.75rem;color:rgba(255,255,255,.9);background:rgba(255,255,255,.15);display:inline-block;padding:4px 12px;border-radius:99px">${c.mention}</p>
+        </div>
+        <div class="pf-cert-footer">
+          <span class="pf-cert-date">📅 ${c.date}</span>
+          <button class="pf-cert-dl" onclick="showToast('📥 Téléchargement du certificat : ${c.title}')">Télécharger PDF</button>
+        </div>
+      </div>`).join('')}</div>`;
+  }
+
+  function renderSkills(s) {
+    return `
+    <div class="pf-skills-layout">
+      <div class="pf-skill-group">
+        <h4>⚡ Compétences techniques</h4>
+        ${s.skills.tech.map(sk => `
+          <div class="pf-skill-item">
+            <div class="pf-skill-label">
+              <span>${sk.name}</span>
+              <span class="pf-skill-level">${sk.level}%</span>
+            </div>
+            <div class="pf-skill-track">
+              <div class="pf-skill-fill skill-bar-anim" data-width="${sk.level}" style="background:${sk.color}"></div>
+            </div>
+          </div>`).join('')}
+      </div>
+      <div class="pf-skill-group">
+        <h4>🌟 Compétences transversales</h4>
+        ${s.skills.soft.map(sk => `
+          <div class="pf-skill-item">
+            <div class="pf-skill-label">
+              <span>${sk.name}</span>
+              <span class="pf-skill-level">${sk.level}%</span>
+            </div>
+            <div class="pf-skill-track">
+              <div class="pf-skill-fill skill-bar-anim" data-width="${sk.level}" style="background:${sk.color}"></div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>
+    <div class="pf-skill-group" style="margin-top:20px">
+      <h4>🏅 Badges obtenus</h4>
+      <div class="pf-badges-row">
+        ${s.skills.badges.map(b => `
+          <div class="pf-badge-pill" style="color:${b.color};background:${b.bg};border-color:${b.color}40">
+            <span class="bp-icon">${b.icon}</span>${b.label}
+          </div>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  function triggerSkillBars() {
+    document.querySelectorAll('.skill-bar-anim').forEach(bar => {
+      const w = bar.getAttribute('data-width');
+      setTimeout(() => { bar.style.width = w + '%'; }, 50);
+    });
+  }
+
+  function renderParcours(s) {
+    return `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start">
+      <div>
+        <h4 style="font-family:var(--display);font-size:1rem;font-weight:700;margin-bottom:20px">📅 Chronologie du parcours</h4>
+        <div class="pf-timeline">
+          ${s.timeline.map(ev => `
+            <div class="pf-tl-event">
+              <div class="pf-tl-dot" style="background:${ev.color}22;border-color:${ev.borderColor};color:${ev.color}">${ev.emoji}</div>
+              <div class="pf-tl-body">
+                <strong>${ev.label}</strong>
+                <p>${ev.detail}</p>
+                <span class="pf-tl-date">📅 ${ev.date}</span>
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>
+      <div>
+        <h4 style="font-family:var(--display);font-size:1rem;font-weight:700;margin-bottom:20px">📊 Résumé du parcours</h4>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="background:var(--surface);border-radius:var(--radius-sm);padding:20px">
+            <div style="font-size:.8rem;color:var(--ink-soft);margin-bottom:4px">Durée totale</div>
+            <div style="font-family:var(--display);font-size:1.5rem;font-weight:800">${s.hours} heures</div>
+          </div>
+          <div style="background:var(--surface);border-radius:var(--radius-sm);padding:20px">
+            <div style="font-size:.8rem;color:var(--ink-soft);margin-bottom:4px">Projets réalisés</div>
+            <div style="font-family:var(--display);font-size:1.5rem;font-weight:800">${s.projects.filter(p=>p.status==='done').length} / ${s.projects.length}</div>
+          </div>
+          <div style="background:var(--surface);border-radius:var(--radius-sm);padding:20px">
+            <div style="font-size:.8rem;color:var(--ink-soft);margin-bottom:4px">Certifications</div>
+            <div style="font-family:var(--display);font-size:1.5rem;font-weight:800">${s.certs_count} diplômes</div>
+          </div>
+          <div style="background:linear-gradient(135deg,var(--accent),#818cf8);border-radius:var(--radius-sm);padding:20px;color:white">
+            <div style="font-size:.8rem;color:rgba(255,255,255,.7);margin-bottom:4px">Prochaine étape</div>
+            <div style="font-size:.95rem;font-weight:600">${s.timeline[s.timeline.length-1].label}</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function renderGallery(s) {
+    return `
+    <div style="margin-bottom:20px;display:flex;align-items:center;justify-content:space-between">
+      <h4 style="font-family:var(--display);font-size:1rem;font-weight:700">📸 Photos & Réalisations</h4>
+      <button class="btn btn-outline" style="font-size:.8rem;padding:8px 18px" onclick="showToast('📤 Fonction d\\'upload disponible en version admin')">+ Ajouter des photos</button>
+    </div>
+    <div class="pf-gallery-grid">
+      ${s.gallery.map((g, i) => {
+        if (g.type === 'add') return `
+          <div class="pf-gallery-item pf-gal-placeholder" style="height:${g.h}px" onclick="showToast('📤 Cliquez sur Ajouter des photos pour uploader')">
+            <span class="pg-icon">📷</span>
+            <span>${g.label}</span>
+          </div>`;
+        return `
+          <div class="pf-gallery-item" style="height:${g.h}px" onclick="openLightbox('${g.emoji}','${g.label}','${g.bg}')">
+            <div class="pf-gal-img" style="width:100%;height:100%;background:${g.bg};display:flex;align-items:center;justify-content:center;font-size:3.5rem;border-radius:var(--radius-sm)">${g.emoji}</div>
+            <div class="pf-gallery-over"><span>🔍</span></div>
+          </div>`;
+      }).join('')}
+    </div>`;
+  }
+
+  function openLightbox(emoji, label, bg) {
+    const lb = document.getElementById('pf-lightbox');
+    // create a canvas to show as image
+    const canvas = document.createElement('canvas');
+    canvas.width = 600; canvas.height = 400;
+    const ctx = canvas.getContext('2d');
+    const grd = ctx.createLinearGradient(0,0,600,400);
+    grd.addColorStop(0, '#4f46e5'); grd.addColorStop(1, '#818cf8');
+    ctx.fillStyle = grd; ctx.fillRect(0,0,600,400);
+    ctx.font = '120px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(emoji, 300, 180);
+    ctx.fillStyle = 'rgba(255,255,255,.85)';
+    ctx.font = 'bold 22px sans-serif';
+    ctx.fillText(label, 300, 330);
+    document.getElementById('pf-lightbox-img').src = canvas.toDataURL();
+    lb.classList.add('open');
+  }
+  function closeLightbox() { document.getElementById('pf-lightbox').classList.remove('open'); }
+
+</script>
+</body>
+</html>
