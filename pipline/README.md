@@ -1,6 +1,6 @@
 # Elite Code School — Development Pipeline
 
-> **10 chapters • 103 tasks • Full-stack Next.js application**
+> **15 chapters • ~130 tasks • Full-stack Next.js application**
 
 ---
 
@@ -18,7 +18,12 @@
 | [08 — Parent Portal](CHAPTER_08_PARENT_PORTAL.md) | ⏭️ Skipped | — |
 | [09 — Admin Dashboard](CHAPTER_09_ADMIN_DASHBOARD.md) | ✅ Completed | 12/13 |
 | [10 — Deployment & Polish](CHAPTER_10_DEPLOYMENT_POLISH.md) | ✅ Completed | 8/12 |
-| **Total** | | **103 tasks** |
+| [11 — Student Dashboard](CHAPTER_11_STUDENT_DASHBOARD.md) | ⬜ Not started | 0/7 |
+| [12 — File Uploads](CHAPTER_12_FILE_UPLOADS.md) | ⬜ Not started | 0/6 |
+| [13 — Parent Portal Enhancement](CHAPTER_13_PARENT_PORTAL_ENHANCEMENT.md) | ⬜ Not started | 0/5 |
+| [14 — Admin CRUD Complete](CHAPTER_14_ADMIN_CRUD.md) | ⬜ Not started | 0/6 |
+| [15 — Security & Performance](CHAPTER_15_SECURITY_PERFORMANCE.md) | ⬜ Not started | 0/6 |
+| **Total** | | **~130 tasks** |
 
 ---
 
