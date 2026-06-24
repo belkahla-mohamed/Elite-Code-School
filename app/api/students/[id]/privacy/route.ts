@@ -7,15 +7,19 @@ type Props = {
 };
 
 export async function PATCH(request: Request, { params }: Props) {
-  const { id } = await params;
-  const parentStudentId = await getParentStudentId();
-  const isAdmin = await isAdminAuthenticated();
+  try {
+    const { id } = await params;
+    const parentStudentId = await getParentStudentId();
+    const isAdmin = await isAdminAuthenticated();
 
-  if (!isAdmin && parentStudentId !== id) {
-    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+    if (!isAdmin && parentStudentId !== id) {
+      return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+    }
+
+    const { isPublic } = await request.json();
+    const student = await updateStudentPrivacy(id, Boolean(isPublic));
+    return NextResponse.json({ student });
+  } catch (e: any) {
+    return NextResponse.json({ error: e.message ?? "Erreur serveur" }, { status: 500 });
   }
-
-  const { isPublic } = await request.json();
-  const student = await updateStudentPrivacy(id, Boolean(isPublic));
-  return NextResponse.json({ student });
 }

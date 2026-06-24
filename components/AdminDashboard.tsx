@@ -9,6 +9,7 @@ export function AdminDashboard() {
   const [message, setMessage] = useState("");
   const [createdSecret, setCreatedSecret] = useState<string | null>(null);
   const [createdTeacherSecret, setCreatedTeacherSecret] = useState<string | null>(null);
+  const [loading, setLoading] = useState({ login: false, teacher: false, enroll: "" });
 
   useEffect(() => {
     void load();
@@ -35,6 +36,7 @@ export function AdminDashboard() {
 
   async function login(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setLoading((l) => ({ ...l, login: true }));
     const response = await fetch("/api/auth/admin", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -43,16 +45,19 @@ export function AdminDashboard() {
 
     if (!response.ok) {
       setMessage("Mot de passe incorrect.");
+      setLoading((l) => ({ ...l, login: false }));
       return;
     }
 
     setPassword("");
     setMessage("Session admin ouverte.");
+    setLoading((l) => ({ ...l, login: false }));
     await load();
   }
 
   async function createTeacherAccount(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setLoading((l) => ({ ...l, teacher: true }));
     const form = new FormData(event.currentTarget);
     const response = await fetch("/api/teachers", {
       method: "POST",
@@ -67,16 +72,19 @@ export function AdminDashboard() {
     const result = await response.json();
     if (!response.ok) {
       setMessage(result.error ?? "Création teacher impossible.");
+      setLoading((l) => ({ ...l, teacher: false }));
       return;
     }
 
     setMessage("Teacher créé. Secret généré à transmettre une seule fois.");
     setCreatedTeacherSecret(result.teacherSecret);
     event.currentTarget.reset();
+    setLoading((l) => ({ ...l, teacher: false }));
     await load();
   }
 
   async function updateRequest(id: string, action: "accept" | "refuse") {
+    setLoading((l) => ({ ...l, enroll: id }));
     const response = await fetch(`/api/inscriptions/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -85,10 +93,12 @@ export function AdminDashboard() {
     const result = await response.json();
     if (!response.ok) {
       setMessage(result.error ?? "Action impossible.");
+      setLoading((l) => ({ ...l, enroll: "" }));
       return;
     }
     setMessage(action === "accept" ? "Demande acceptée, élève + accès parent créés." : "Demande refusée.");
     setCreatedSecret(result.parentSecret ?? null);
+    setLoading((l) => ({ ...l, enroll: "" }));
     await load();
   }
 
@@ -142,7 +152,7 @@ export function AdminDashboard() {
         <p className="mt-2 text-sm text-ink-soft">Mot de passe demo: <code className="font-mono">admin123</code>. Change-le dans <code className="font-mono">ADMIN_PASSWORD</code>.</p>
         <form onSubmit={login} className="mt-6 flex flex-col gap-4">
           <input value={password} onChange={(event) => setPassword(event.target.value)} type="password" placeholder="Mot de passe admin" className="rounded-brand-sm border border-ink/15 bg-surface px-4 py-3 outline-none focus:border-accent focus:ring-4 focus:ring-accent/15" />
-          <button className="btn-primary">Entrer</button>
+          <button className="btn-primary" disabled={loading.login}>{loading.login ? "Connexion..." : "Entrer"}</button>
         </form>
         {message && <p className="mt-4 rounded-brand-sm bg-red-50 p-3 text-sm text-red-700">{message}</p>}
       </div>
@@ -186,7 +196,7 @@ export function AdminDashboard() {
           <input name="fullName" required placeholder="Nom complet" className="rounded-brand-sm border border-ink/10 px-3 py-2 text-sm" />
           <input name="email" required type="email" placeholder="Email teacher" className="rounded-brand-sm border border-ink/10 px-3 py-2 text-sm" />
           <input name="specialty" placeholder="Spécialité" className="rounded-brand-sm border border-ink/10 px-3 py-2 text-sm" />
-          <button className="btn-primary px-4 py-2">Créer</button>
+          <button className="btn-primary px-4 py-2" disabled={loading.teacher}>{loading.teacher ? "Création..." : "Créer"}</button>
         </form>
         <div className="mt-5 grid gap-3 md:grid-cols-2">
           {snapshot.teachers.map((teacher) => (
@@ -214,8 +224,8 @@ export function AdminDashboard() {
               </div>
               {request.status === "pending" && (
                 <div className="mt-4 flex gap-2">
-                  <button onClick={() => updateRequest(request.id, "accept")} className="btn-primary px-4 py-2">Accepter</button>
-                  <button onClick={() => updateRequest(request.id, "refuse")} className="btn-outline px-4 py-2">Refuser</button>
+                  <button onClick={() => updateRequest(request.id, "accept")} className="btn-primary px-4 py-2" disabled={loading.enroll === request.id}>{loading.enroll === request.id ? "..." : "Accepter"}</button>
+                  <button onClick={() => updateRequest(request.id, "refuse")} className="btn-outline px-4 py-2" disabled={loading.enroll === request.id}>{loading.enroll === request.id ? "..." : "Refuser"}</button>
                 </div>
               )}
             </article>

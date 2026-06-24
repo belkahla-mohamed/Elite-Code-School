@@ -37,8 +37,27 @@ const trustBadges = ["No prep required", "Portfolio visible", "Parent privacy", 
 export default async function HomePage() {
   const [programs, portfolios] = await Promise.all([getPrograms(), getPublicPortfolios()]);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    name: "Elite Code School",
+    description: "Coding, robotique et IA pour les 7–17 ans à Marrakech",
+    url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://elitecodeschool.ma",
+    address: { "@type": "PostalAddress", addressLocality: "Marrakech", addressCountry: "MA" },
+    areaServed: "Marrakech",
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Programmes STEM",
+      itemListElement: programs.map((p) => ({
+        "@type": "Offer",
+        itemOffered: { "@type": "Course", name: p.title, description: p.description },
+      })),
+    },
+  };
+
   return (
     <div className="overflow-hidden bg-white">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <section className="bg-white pt-28">
         <div className="container-shell grid items-center gap-10 pb-14 lg:grid-cols-[.95fr_1.05fr]">
           <div>
