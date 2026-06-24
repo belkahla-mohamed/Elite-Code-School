@@ -6,7 +6,7 @@
 
 ## Tasks
 
-### [ ] T6.1 — Create Enrollment Form (`app/enroll/page.tsx`)
+### [x] T6.1 — Create Enrollment Form (`app/enroll/page.tsx`)
 Multi-step form with progress indicator (steps 1-4):
 
 **Step 1: Child Information**
@@ -30,19 +30,19 @@ Multi-step form with progress indicator (steps 1-4):
 - Loading state during submission
 - Zod validation on all fields across all steps
 
-### [ ] T6.2 — Create EnrollmentForm component (`components/forms/EnrollmentForm.tsx`)
+### [x] T6.2 — Create EnrollmentForm component (`components/forms/EnrollmentForm.tsx`)
 - State management for multi-step form
 - Navigation: Previous/Next buttons
 - Step validation before proceeding
 - Data stored in component state until final submit
 
-### [ ] T6.3 — Create Enrollment confirmation page (`app/enroll/confirmation/page.tsx`)
+### [x] T6.3 — Create Enrollment confirmation page (`app/enroll/confirmation/page.tsx`)
 - Success message: "Your enrollment request has been received!"
 - Reference number display
 - Email confirmation note: "We will contact you at the email provided."
 - CTA: "Back to Home" and "Browse Curricula"
 
-### [ ] T6.4 — Create POST API route (`POST /api/public/enroll`)
+### [x] T6.4 — Create POST API route (`POST /api/public/enroll`)
 - Accept enrollment form data
 - Validate with Zod schema
 - Check age against curriculum age range (RG4, RG5)
@@ -51,23 +51,23 @@ Multi-step form with progress indicator (steps 1-4):
 - Return success response with reference ID
 - Handle duplicate submission prevention (rate limit or email check)
 
-### [ ] T6.5 — Create Enrollment status check (`GET /api/public/enroll/:id/status`)
+### [x] T6.5 — Create Enrollment status check (`GET /api/public/enroll/:id/status`)
 - Allow visitors to check enrollment status using reference ID
 - Return: status (pending/accepted/rejected), basic info
 
-### [ ] T6.6 — Create Admin Enrollment list page (`app/admin/enrollments/page.tsx`)
+### [x] T6.6 — Create Admin Enrollment list page (`app/admin/enrollments/page.tsx`)
 - Fetch all enrollments (`GET /api/admin/enrollments`)
 - Filter tabs: All | Pending | Accepted | Rejected
 - Table with columns: child name, age, curriculum, parent email, date, status
 - Pending rows highlighted or with action buttons (Accept / Reject)
 - Count badge on "Pending" tab
 
-### [ ] T6.7 — Create Admin enrollment detail view
+### [x] T6.7 — Create Admin enrollment detail view
 - Expandable row or modal showing full enrollment details
 - Child info, parent contact, curriculum chosen, admin notes field
 - Accept / Reject buttons
 
-### [ ] T6.8 — Implement Accept Enrollment API (`PUT /api/admin/enrollments/:id/accept`)
+### [x] T6.8 — Implement Accept Enrollment API (`PUT /api/admin/enrollments/:id/accept`)
 - Validate admin auth
 - Transaction: 
   1. Generate unique `access_secret` for parent
@@ -77,18 +77,18 @@ Multi-step form with progress indicator (steps 1-4):
 - Send confirmation email to parent with access secret
 - Return updated enrollment + student ID
 
-### [ ] T6.9 — Implement Reject Enrollment API (`PUT /api/admin/enrollments/:id/reject`)
+### [x] T6.9 — Implement Reject Enrollment API (`PUT /api/admin/enrollments/:id/reject`)
 - Validate admin auth
 - Update enrollment status → "rejected"
 - Optional admin notes field (reason for rejection)
 - Send rejection notification email
 
-### [ ] T6.10 — Create Admin enrollment stats in Dashboard
+### [x] T6.10 — Create Admin enrollment stats in Dashboard
 - Card: "Pending Enrollments" with count
 - Alert/warning if count > 0
 - Quick link to enrollments page
 
-### [ ] T6.11 — Create Email notification service (`lib/mail.ts`)
+### [x] T6.11 — Create Email notification service (`lib/mail.ts`)
 - Send enrollment confirmation to parent (when request submitted)
 - Send acceptance email with access secret
 - Send rejection email with optional reason
@@ -96,7 +96,7 @@ Multi-step form with progress indicator (steps 1-4):
 
 ---
 
-**Progress**: `0 / 11 tasks completed`
+**Progress**: `11 / 11 tasks completed`
 
 **Next**: → [Chapter 7: Authentication System](CHAPTER_07_AUTHENTICATION.md)
 

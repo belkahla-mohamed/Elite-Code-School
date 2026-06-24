@@ -1,28 +1,30 @@
 import { NextResponse } from "next/server";
 import { acceptInscriptionRequest, refuseInscriptionRequest } from "@/lib/store";
-import { isAdminAuthenticated } from "@/lib/auth";
 
-type Props = {
-  params: Promise<{ id: string }>;
-};
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const { action } = await request.json();
 
-export async function PATCH(request: Request, { params }: Props) {
-  if (!(await isAdminAuthenticated())) {
-    return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+    if (action === "accept") {
+      const result = await acceptInscriptionRequest(id);
+      return NextResponse.json({
+        student: result.student,
+        parentSecret: result.parentSecret,
+        message: "Inscription acceptée. Le parent peut se connecter.",
+      });
+    }
+
+    if (action === "reject") {
+      const result = await refuseInscriptionRequest(id);
+      return NextResponse.json({ request: result, message: "Demande refusée." });
+    }
+
+    return NextResponse.json({ error: "Action invalide" }, { status: 400 });
+  } catch (e: any) {
+    return NextResponse.json({ error: e.message ?? "Erreur serveur" }, { status: 500 });
   }
-
-  const { id } = await params;
-  const body = await request.json();
-
-  if (body.action === "accept") {
-    const result = await acceptInscriptionRequest(id);
-    return NextResponse.json(result);
-  }
-
-  if (body.action === "refuse") {
-    const result = await refuseInscriptionRequest(id);
-    return NextResponse.json({ request: result });
-  }
-
-  return NextResponse.json({ error: "Action invalide" }, { status: 400 });
 }
