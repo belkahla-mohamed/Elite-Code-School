@@ -15,7 +15,7 @@ export const projectSchema = z.object({
   title: z.string().trim().min(2),
   description: z.string().trim().min(5),
   tags: z.array(z.string().trim().min(1)).default([]),
-  status: z.enum(["done", "progress", "planned"]).default("progress"),
+  status: z.enum(["pending", "done", "progress", "planned"]).default("progress"),
   progress: z.coerce.number().int().min(0).max(100).default(0),
   dateLabel: z.string().trim().default("En cours"),
   emoji: z.string().trim().default("💼"),

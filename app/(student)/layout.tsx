@@ -2,6 +2,7 @@ import Link from "next/link";
 
 const links = [
   { href: "/student/dashboard", label: "Tableau de bord", icon: "📊" },
+  { href: "/student/projects", label: "Mes projets", icon: "💼" },
   { href: "/student/missions", label: "Missions", icon: "🎯" },
   { href: "/student/badges", label: "Badges", icon: "🏅" },
 ];
