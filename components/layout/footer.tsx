@@ -36,7 +36,7 @@ export function Footer() {
               <a href="mailto:contact@elitecodeschool.ma" className="flex items-center gap-2 text-sm text-ink-soft hover:text-sky transition">
                 <Mail className="size-4" /> contact@elitecodeschool.ma
               </a>
-              <a href="tel:+212600000000" className="flex items-center gap-2 text-sm text-ink-soft hover:text-sky transition">
+              <a href="tel:+212600000000" suppressHydrationWarning className="flex items-center gap-2 text-sm text-ink-soft hover:text-sky transition">
                 <Phone className="size-4" /> +212 600 000 000
               </a>
               <span className="flex items-center gap-2 text-sm text-ink-soft">
