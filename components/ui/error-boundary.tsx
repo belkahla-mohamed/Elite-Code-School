@@ -1,56 +1,32 @@
 "use client";
 
 import { Component, type ReactNode } from "react";
-import { AlertTriangle } from "lucide-react";
-import { Button } from "./button";
 
-interface ErrorBoundaryProps {
-  children: ReactNode;
-  fallback?: ReactNode;
-}
+type Props = { children: ReactNode; fallback?: ReactNode };
+type State = { hasError: boolean };
 
-interface ErrorBoundaryState {
-  hasError: boolean;
-  error?: Error;
-}
+export class ErrorBoundary extends Component<Props, State> {
+  state: State = { hasError: false };
 
-class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  constructor(props: ErrorBoundaryProps) {
-    super(props);
-    this.state = { hasError: false };
+  static getDerivedStateFromError() {
+    return { hasError: true };
   }
 
-  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    return { hasError: true, error };
+  componentDidCatch(error: Error) {
+    console.error("ErrorBoundary caught:", error);
   }
-
-  handleRetry = () => {
-    this.setState({ hasError: false, error: undefined });
-  };
 
   render() {
     if (this.state.hasError) {
-      if (this.props.fallback) return this.props.fallback;
-
-      return (
-        <div className="flex flex-col items-center justify-center text-center py-16 px-6">
-          <AlertTriangle className="size-12 text-coral mb-4" />
-          <h3 className="font-display font-black text-xl text-ink mb-2">
-            Une erreur est survenue
-          </h3>
-          <p className="font-body text-sm text-ink-soft max-w-sm mb-6">
-            Quelque chose s&apos;est mal passé. Veuillez réessayer.
-          </p>
-          <Button variant="primary" onClick={this.handleRetry}>
+      return this.props.fallback ?? (
+        <div className="rounded-brand bg-red-50 p-6 text-center">
+          <p className="font-bold text-red-700">Une erreur est survenue</p>
+          <button onClick={() => this.setState({ hasError: false })} className="mt-3 text-sm text-sky hover:underline">
             Réessayer
-          </Button>
+          </button>
         </div>
       );
     }
-
     return this.props.children;
   }
 }
-
-export { ErrorBoundary };
-export type { ErrorBoundaryProps };

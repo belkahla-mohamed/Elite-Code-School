@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Search, Plus, Eye } from "lucide-react";
+import { CardSkeleton } from "@/components/ui/skeleton";
 
 interface Student {
   id: string;
@@ -54,7 +55,9 @@ export default function StudentsPage() {
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-ink-soft">Chargement...</div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => <CardSkeleton key={i} />)}
+        </div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-12 text-ink-soft">Aucun élève trouvé.</div>
       ) : (
