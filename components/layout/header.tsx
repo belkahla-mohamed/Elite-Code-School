@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { HeaderClient } from "./header-client";
-import { ThemeToggle } from "@/components/ui/theme-provider";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const navLinks = [
   { href: "/", label: "Accueil" },

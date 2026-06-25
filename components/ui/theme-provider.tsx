@@ -1,7 +1,6 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { Moon, Sun } from "lucide-react";
 
 type Theme = "light" | "dark";
 
@@ -38,14 +37,5 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     <ThemeCtx.Provider value={{ theme, toggle }}>
       {children}
     </ThemeCtx.Provider>
-  );
-}
-
-export function ThemeToggle() {
-  const { theme, toggle } = useTheme();
-  return (
-    <button onClick={toggle} className="flex size-9 items-center justify-center rounded-full bg-surface text-ink-soft hover:text-sky transition" title="Changer le thème">
-      {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
-    </button>
   );
 }
