@@ -23,6 +23,7 @@ import type {
   Teacher
 } from "@/lib/types";
 import { slugify } from "@/lib/utils";
+import { addActivity } from "@/lib/activity-log";
 
 type DemoStore = {
   requests: InscriptionRequest[];
@@ -252,6 +253,7 @@ export async function acceptInscriptionRequest(id: string) {
       createdAt: new Date().toISOString()
     };
     store.students.unshift(student);
+    addActivity("student", "Inscription acceptée", `${student.firstName} ${student.lastName} a rejoint le programme ${student.programId}`);
     return { student: withPortfolio(student), parentSecret };
   }
 
@@ -287,6 +289,7 @@ export async function acceptInscriptionRequest(id: string) {
   if (studentError) throw studentError;
 
   await supabase.from("inscription_requests").update({ status: "accepted" }).eq("id", id);
+  addActivity("student", "Inscription acceptée", `${request.student_first_name} ${request.student_last_name} a rejoint le programme`);
   return { student: mapStudentPortfolio({ ...student, projects: [], certifications: [], gallery_items: [] }, await getPrograms()), parentSecret };
 }
 
@@ -295,6 +298,7 @@ export async function refuseInscriptionRequest(id: string) {
     const request = demoStore().requests.find((item) => item.id === id);
     if (!request) throw new Error("Demande introuvable");
     request.status = "refused";
+    addActivity("request", "Inscription refusée", `${request.studentFirstName} ${request.studentLastName}`);
     return request;
   }
 
@@ -306,6 +310,7 @@ export async function refuseInscriptionRequest(id: string) {
     .single();
 
   if (error) throw error;
+  addActivity("request", "Inscription refusée", `${data.student_first_name} ${data.student_last_name}`);
   return mapRequest(data);
 }
 
@@ -409,13 +414,17 @@ export async function updateStudent(id: string, data: { firstName?: string; last
 export async function deleteStudent(id: string) {
   if (!hasSupabaseConfig()) {
     const store = demoStore();
+    const student = store.students.find((s) => s.id === id);
     store.students = store.students.filter((s) => s.id !== id);
     store.projects = store.projects.filter((p) => p.studentId !== id);
     store.certifications = store.certifications.filter((c) => c.studentId !== id);
     store.gallery = store.gallery.filter((g) => g.studentId !== id);
+    if (student) addActivity("student", "Élève supprimé", `${student.firstName} ${student.lastName}`);
     return;
   }
   const supabase = getSupabaseAdmin();
+  const { data: student } = await supabase.from("students").select("first_name, last_name").eq("id", id).single();
+  if (student) addActivity("student", "Élève supprimé", `${student.first_name} ${student.last_name}`);
   await Promise.all([
     supabase.from("projects").delete().eq("student_id", id),
     supabase.from("certifications").delete().eq("student_id", id),

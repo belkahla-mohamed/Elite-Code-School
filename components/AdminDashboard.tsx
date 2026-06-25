@@ -7,9 +7,10 @@ export function AdminDashboard() {
   const [snapshot, setSnapshot] = useState<DashboardSnapshot | null>(null);
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-  const [createdSecret, setCreatedSecret] = useState<string | null>(null);
-  const [createdTeacherSecret, setCreatedTeacherSecret] = useState<string | null>(null);
+  const [createdSecret, setCreatedSecret] = useState("");
+  const [createdTeacherSecret, setCreatedTeacherSecret] = useState("");
   const [loading, setLoading] = useState({ login: false, teacher: false, enroll: "" });
+  const [activities, setActivities] = useState<any[]>([]);
 
   useEffect(() => {
     void load();
@@ -31,6 +32,9 @@ export function AdminDashboard() {
       students: studentsData.students,
       teachers: teachersData.teachers,
       programs: []
+    });
+    fetch("/api/activity-log").then((r) => r.json()).then((data) => {
+      if (data.activities) setActivities(data.activities);
     });
   }
 
@@ -232,6 +236,23 @@ export function AdminDashboard() {
           ))}
         </div>
       </section>
+
+      {activities.length > 0 && (
+        <section className="mb-10 rounded-brand border border-ink/10 bg-white p-6">
+          <h2 className="font-display text-2xl font-bold">⚡ Activité récente</h2>
+          <div className="mt-4 space-y-2">
+            {activities.slice(0, 8).map((a) => (
+              <div key={a.id} className="flex items-center gap-3 text-sm">
+                <span className="flex size-7 items-center justify-center rounded-full bg-sky/10 text-xs">
+                  {a.type === "student" ? "👤" : a.type === "request" ? "📋" : "📦"}
+                </span>
+                <span className="flex-1">{a.description}</span>
+                <span className="text-xs text-ink-soft">{new Date(a.createdAt).toLocaleDateString("fr-FR")}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="grid gap-5">
         <h2 className="font-display text-2xl font-bold">Élèves & portfolios</h2>
