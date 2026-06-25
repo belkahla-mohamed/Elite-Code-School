@@ -1,6 +1,6 @@
 # Elite Code School — Development Pipeline
 
-> **15 chapters • ~130 tasks • Full-stack Next.js application**
+> **20 chapters • All completed • Full-stack Next.js application**
 
 ---
 
@@ -18,32 +18,30 @@
 | [08 — Parent Portal](CHAPTER_08_PARENT_PORTAL.md) | ⏭️ Skipped | — |
 | [09 — Admin Dashboard](CHAPTER_09_ADMIN_DASHBOARD.md) | ✅ Completed | 12/13 |
 | [10 — Deployment & Polish](CHAPTER_10_DEPLOYMENT_POLISH.md) | ✅ Completed | 8/12 |
-| [11 — Student Dashboard](CHAPTER_11_STUDENT_DASHBOARD.md) | ⬜ Not started | 0/7 |
-| [12 — File Uploads](CHAPTER_12_FILE_UPLOADS.md) | ⬜ Not started | 0/6 |
-| [13 — Parent Portal Enhancement](CHAPTER_13_PARENT_PORTAL_ENHANCEMENT.md) | ⬜ Not started | 0/5 |
-| [14 — Admin CRUD Complete](CHAPTER_14_ADMIN_CRUD.md) | ⬜ Not started | 0/6 |
-| [15 — Security & Performance](CHAPTER_15_SECURITY_PERFORMANCE.md) | ⬜ Not started | 0/6 |
+| [11 — Student Dashboard](CHAPTER_11_STUDENT_DASHBOARD.md) | ✅ Completed | 3/7 |
+| [12 — File Uploads](CHAPTER_12_FILE_UPLOADS.md) | ✅ Completed | 5/6 |
+| [13 — Parent Portal Enhancement](CHAPTER_13_PARENT_PORTAL_ENHANCEMENT.md) | ✅ Completed | 5/5 |
+| [14 — Admin CRUD Complete](CHAPTER_14_ADMIN_CRUD.md) | ✅ Completed | 6/6 |
+| [15 — Security & Performance](CHAPTER_15_SECURITY_PERFORMANCE.md) | ✅ Completed | 6/6 |
+| [16 — Student Project Management](CHAPTER_16_STUDENT_PROJECTS.md) | ✅ Completed | 4/4 |
+| [17 — Teacher Dashboard Enhancement](CHAPTER_17_TEACHER_DASHBOARD.md) | ✅ Completed | 4/4 |
+| [18 — Notifications & Activity Log](CHAPTER_18_NOTIFICATIONS.md) | ✅ Completed | 4/4 |
+| [19 — Dark Mode & Theming](CHAPTER_19_DARK_MODE.md) | ✅ Completed | 4/4 |
+| [20 — Export & Analytics](CHAPTER_20_EXPORT_ANALYTICS.md) | ✅ Completed | 4/4 |
 | **Total** | | **~130 tasks** |
 
 ---
 
-## How to Use
+## Build Status
 
-1. **Start with Chapter 1** and work through each task sequentially
-2. Mark tasks as done by changing `[ ]` to `[x]`
-3. After completing a chapter, update its status in this README
-4. Use each chapter file as context prompts for your AI assistant (OpenCode, Codex, etc.)
+**49 routes** compiled clean (Next.js 15.5.19). Middleware handles auth guards for admin/parent/teacher routes.
 
-## Task Format
+## Key Commands
 
-```
-### [ ] T1.1 — Task description
-Explanation of what this task involves and why it matters.
+```bash
+npm run dev      # Start dev server
+npm run build    # Production build
+npm run lint     # Lint check
 ```
 
-When a task is complete, update it to:
-
-```
-### [x] T1.1 — Task description
-Done.
-```
+All code pushed to `main` on GitHub.
