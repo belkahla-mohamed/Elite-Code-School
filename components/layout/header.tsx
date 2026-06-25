@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { HeaderClient } from "./header-client";
+import { ThemeToggle } from "@/components/ui/theme-provider";
 
 const navLinks = [
   { href: "/", label: "Accueil" },
@@ -22,7 +23,9 @@ export function Header() {
           </span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-1">
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <nav className="hidden md:flex items-center gap-1">
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -39,6 +42,7 @@ export function Header() {
             Connexion
           </Link>
         </nav>
+        </div>
 
         <HeaderClient navLinks={navLinks} />
       </div>

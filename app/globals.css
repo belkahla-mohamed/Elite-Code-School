@@ -8,6 +8,19 @@
   --font-body: "Nunito";
   --font-display: "Fredoka";
   --font-mono: "JetBrains Mono";
+  --bg: #ffffff;
+  --bg-surface: #F8FAFC;
+  --text: #171717;
+  --text-soft: #64748B;
+  --border: #E6EEF8;
+}
+
+html[data-dark] {
+  --bg: #0F172A;
+  --bg-surface: #1E293B;
+  --text: #F1F5F9;
+  --text-soft: #94A3B8;
+  --border: #334155;
 }
 
 * {

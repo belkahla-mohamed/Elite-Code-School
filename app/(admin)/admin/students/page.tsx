@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Search, Plus, Eye } from "lucide-react";
+import { Search, Plus, Eye, Download } from "lucide-react";
 import { CardSkeleton } from "@/components/ui/skeleton";
+import { downloadCsv } from "@/lib/csv-export";
 
 interface Student {
   id: string;
@@ -39,9 +40,16 @@ export default function StudentsPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="font-display text-3xl font-black text-ink">Élèves</h1>
-        <span className="rounded-full bg-surface px-4 py-1.5 text-sm font-bold text-ink-soft">
-          {students.length} élèves
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="rounded-full bg-surface px-4 py-1.5 text-sm font-bold text-ink-soft">
+            {students.length} élèves
+          </span>
+          {students.length > 0 && (
+            <button onClick={() => downloadCsv(students.map((s) => ({ Prénom: s.firstName, Nom: s.lastName, Âge: s.age, Niveau: s.levelLabel, Heures: s.hours, Email: s.parentEmail })), "eleves.csv")} className="btn-outline py-1.5 text-xs">
+              <Download className="mr-1 inline size-3" /> CSV
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="relative mb-6">
