@@ -409,7 +409,8 @@ export async function addProject(studentId: string, payload: Omit<Project, "id" 
       progress: payload.progress,
       date_label: payload.dateLabel,
       emoji: payload.emoji,
-      gradient: payload.gradient
+      gradient: payload.gradient,
+      cover_image: payload.coverImage ?? null
     })
     .select("*")
     .single();
@@ -433,7 +434,8 @@ export async function addCertification(studentId: string, payload: Omit<Certific
       mention: payload.mention,
       date_label: payload.dateLabel,
       emoji: payload.emoji,
-      gradient: payload.gradient
+      gradient: payload.gradient,
+      image_url: payload.imageUrl ?? null
     })
     .select("*")
     .single();
@@ -492,7 +494,8 @@ function mapProject(row: any): Project {
     progress: row.progress,
     dateLabel: row.date_label,
     emoji: row.emoji,
-    gradient: row.gradient
+    gradient: row.gradient,
+    coverImage: row.cover_image ?? undefined
   };
 }
 
@@ -504,7 +507,8 @@ function mapCertification(row: any): Certification {
     mention: row.mention,
     dateLabel: row.date_label,
     emoji: row.emoji,
-    gradient: row.gradient
+    gradient: row.gradient,
+    imageUrl: row.image_url ?? undefined
   };
 }
 

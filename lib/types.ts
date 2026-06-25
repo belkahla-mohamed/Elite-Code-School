@@ -40,6 +40,7 @@ export type Project = {
   dateLabel: string;
   emoji: string;
   gradient: string;
+  coverImage?: string;
 };
 
 export type Certification = {
@@ -50,6 +51,7 @@ export type Certification = {
   dateLabel: string;
   emoji: string;
   gradient: string;
+  imageUrl?: string;
 };
 
 export type GalleryItem = {

@@ -31,6 +31,8 @@ export default function StudentDetailPage() {
   const [student, setStudent] = useState<Student | null>(null);
   const [loading, setLoading] = useState(true);
   const [confirmDelete, setConfirmDelete] = useState<{ type: string; name: string; id: string } | null>(null);
+  const [projectCover, setProjectCover] = useState("");
+  const [certifImage, setCertifImage] = useState("");
 
   useEffect(() => {
     fetch(`/api/students/${id}`).then((r) => r.json()).then((data) => {
@@ -60,11 +62,13 @@ export default function StudentDetailPage() {
         dateLabel: form.get("dateLabel"),
         emoji: form.get("emoji") || "💼",
         gradient: "linear-gradient(135deg,#2563EB,#06B6D4)",
+        coverImage: projectCover || undefined,
       }),
     });
     if (res.ok) {
       showToast("Projet ajouté", "success");
       e.currentTarget.reset();
+      setProjectCover("");
       reload();
     }
   }
@@ -81,11 +85,13 @@ export default function StudentDetailPage() {
         dateLabel: form.get("dateLabel"),
         emoji: form.get("emoji") || "🏅",
         gradient: "linear-gradient(135deg,#84CC16,#2DD4BF)",
+        imageUrl: certifImage || undefined,
       }),
     });
     if (res.ok) {
       showToast("Certificat ajouté", "success");
       e.currentTarget.reset();
+      setCertifImage("");
       reload();
     }
   }
@@ -186,7 +192,14 @@ export default function StudentDetailPage() {
             <option value="done">Terminé</option>
           </select>
           <input name="progress" type="number" min="0" max="100" defaultValue="40" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none" />
-          <button type="submit" className="btn-primary py-2 sm:col-span-2"><Plus className="mr-1 inline size-4" /> Ajouter</button>
+          <div className="sm:col-span-2 flex items-center gap-3">
+            <FileUpload folder={`projects/${id}`} onUploaded={(url) => { setProjectCover(url); showToast("Cover ajoutée", "success"); }}>
+              <span className="inline-flex items-center gap-1 rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm font-semibold text-ink-soft hover:border-sky transition">
+                {projectCover ? "✅ Cover" : "🖼️ Cover"}
+              </span>
+            </FileUpload>
+            <button type="submit" className="flex-1 btn-primary py-2"><Plus className="mr-1 inline size-4" /> Ajouter</button>
+          </div>
         </form>
       </section>
 
@@ -207,7 +220,14 @@ export default function StudentDetailPage() {
           <input name="title" required placeholder="Titre" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none" />
           <input name="mention" required placeholder="Mention" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none" />
           <input name="dateLabel" placeholder="Date" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none" />
-          <button type="submit" className="btn-primary py-2"><Plus className="mr-1 inline size-4" /> Ajouter</button>
+          <div className="flex items-center gap-3">
+            <FileUpload folder={`certifications/${id}`} onUploaded={(url) => { setCertifImage(url); showToast("Image ajoutée", "success"); }}>
+              <span className="inline-flex items-center gap-1 rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm font-semibold text-ink-soft hover:border-sky transition">
+                {certifImage ? "✅ Image" : "🖼️ Image"}
+              </span>
+            </FileUpload>
+            <button type="submit" className="flex-1 btn-primary py-2"><Plus className="mr-1 inline size-4" /> Ajouter</button>
+          </div>
         </form>
       </section>
 

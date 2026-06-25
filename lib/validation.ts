@@ -19,7 +19,8 @@ export const projectSchema = z.object({
   progress: z.coerce.number().int().min(0).max(100).default(0),
   dateLabel: z.string().trim().default("En cours"),
   emoji: z.string().trim().default("💼"),
-  gradient: z.string().trim().default("linear-gradient(135deg,#4f46e5,#818cf8)")
+  gradient: z.string().trim().default("linear-gradient(135deg,#4f46e5,#818cf8)"),
+  coverImage: z.string().trim().optional(),
 });
 
 export const certificationSchema = z.object({
@@ -27,7 +28,8 @@ export const certificationSchema = z.object({
   mention: z.string().trim().default("Validé"),
   dateLabel: z.string().trim().default("Cette année"),
   emoji: z.string().trim().default("🏅"),
-  gradient: z.string().trim().default("linear-gradient(135deg,#f59e0b,#f97316)")
+  gradient: z.string().trim().default("linear-gradient(135deg,#f59e0b,#f97316)"),
+  imageUrl: z.string().trim().optional(),
 });
 
 export const gallerySchema = z.object({
