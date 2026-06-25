@@ -444,7 +444,7 @@ export async function addCertification(studentId: string, payload: Omit<Certific
 
 export async function addGalleryItem(studentId: string, payload: Omit<GalleryItem, "id" | "studentId">) {
   if (!hasSupabaseConfig()) {
-    const item: GalleryItem = { ...payload, id: `gal-${Date.now()}`, studentId };
+    const item: GalleryItem = { ...payload, imageUrl: payload.imageUrl, id: `gal-${Date.now()}`, studentId };
     demoStore().gallery.unshift(item);
     return item;
   }
@@ -455,7 +455,8 @@ export async function addGalleryItem(studentId: string, payload: Omit<GalleryIte
       student_id: studentId,
       label: payload.label,
       emoji: payload.emoji,
-      gradient: payload.gradient
+      gradient: payload.gradient,
+      image_url: payload.imageUrl ?? null
     })
     .select("*")
     .single();
@@ -513,7 +514,8 @@ function mapGalleryItem(row: any): GalleryItem {
     studentId: row.student_id,
     label: row.label,
     emoji: row.emoji,
-    gradient: row.gradient
+    gradient: row.gradient,
+    imageUrl: row.image_url ?? undefined
   };
 }
 

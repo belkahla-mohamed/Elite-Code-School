@@ -58,6 +58,7 @@ export type GalleryItem = {
   label: string;
   emoji: string;
   gradient: string;
+  imageUrl?: string;
 };
 
 export type Student = {

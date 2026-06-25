@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Trash2, Plus, Loader2 } from "lucide-react";
+import { ArrowLeft, Trash2, Plus, Loader2, Camera, X } from "lucide-react";
 import { showToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { FileUpload } from "@/components/ui/file-upload";
+import NextImage from "next/image";
 
 interface Student {
   id: string;
@@ -13,6 +15,7 @@ interface Student {
   lastName: string;
   age: number;
   avatar: string;
+  avatarGradient: string;
   levelLabel: string;
   hours: number;
   isPublic: boolean;
@@ -36,6 +39,12 @@ export default function StudentDetailPage() {
     });
   }, [id]);
 
+  function reload() {
+    fetch(`/api/students/${id}`).then((r) => r.json()).then((data) => {
+      setStudent(data.student ?? data);
+    });
+  }
+
   async function addProject(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
@@ -56,8 +65,7 @@ export default function StudentDetailPage() {
     if (res.ok) {
       showToast("Projet ajouté", "success");
       e.currentTarget.reset();
-      const data = await fetch(`/api/students/${id}`).then((r) => r.json());
-      setStudent(data.student ?? data);
+      reload();
     }
   }
 
@@ -78,8 +86,19 @@ export default function StudentDetailPage() {
     if (res.ok) {
       showToast("Certificat ajouté", "success");
       e.currentTarget.reset();
-      const data = await fetch(`/api/students/${id}`).then((r) => r.json());
-      setStudent(data.student ?? data);
+      reload();
+    }
+  }
+
+  async function addGalleryImage(url: string) {
+    const res = await fetch(`/api/students/${id}/gallery`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ label: "Upload", imageUrl: url }),
+    });
+    if (res.ok) {
+      showToast("Image ajoutée", "success");
+      reload();
     }
   }
 
@@ -88,24 +107,32 @@ export default function StudentDetailPage() {
     const res = await fetch(`${endpoint}?id=${itemId}`, { method: "DELETE" });
     if (res.ok) {
       showToast("Supprimé", "info");
-      const data = await fetch(`/api/students/${id}`).then((r) => r.json());
-      setStudent(data.student ?? data);
+      reload();
     }
     setConfirmDelete(null);
   }
 
-  if (loading) return <div className="text-center py-12 text-ink-soft">Chargement...</div>;
-  if (!student) return <div className="text-center py-12 text-ink-soft">Élève introuvable.</div>;
+  if (loading) return <div className="py-12 text-center text-ink-soft">Chargement...</div>;
+  if (!student) return <div className="py-12 text-center text-ink-soft">Élève introuvable.</div>;
 
   return (
     <div>
-      <button onClick={() => router.back()} className="inline-flex items-center gap-2 text-sm font-bold text-ink-soft hover:text-sky transition mb-6">
+      <button onClick={() => router.back()} className="mb-6 inline-flex items-center gap-2 text-sm font-bold text-ink-soft transition hover:text-sky">
         <ArrowLeft className="size-4" /> Retour
       </button>
 
-      <div className="flex items-center gap-4 mb-8">
-        <div className="flex size-16 items-center justify-center rounded-2xl bg-sky font-display text-2xl font-black text-white">
-          {student.avatar}
+      <div className="mb-8 flex items-center gap-4">
+        <div className="group relative">
+          <div
+            className="flex size-16 items-center justify-center rounded-2xl font-display text-2xl font-black text-white"
+            style={{ background: student.avatarGradient }}>
+            {student.avatar}
+          </div>
+          <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/40 opacity-0 transition group-hover:opacity-100">
+            <FileUpload folder={`avatars/${id}`} onUploaded={(url) => showToast("Avatar mis à jour", "success")}>
+              <Camera className="size-5 text-white" />
+            </FileUpload>
+          </div>
         </div>
         <div>
           <h1 className="font-display text-3xl font-black text-ink">{student.firstName} {student.lastName}</h1>
@@ -113,20 +140,43 @@ export default function StudentDetailPage() {
         </div>
       </div>
 
+      {/* Gallery */}
+      <section className="mb-8">
+        <h2 className="mb-4 font-display text-xl font-black">Galerie ({student.gallery.length})</h2>
+        <div className="mb-4 flex flex-wrap gap-3">
+          {student.gallery.map((g: any) => (
+            <div key={g.id} className="group relative h-24 w-24 overflow-hidden rounded-brand-sm border-2 border-[#E8EEF6] bg-surface">
+              {g.imageUrl ? (
+                <NextImage src={g.imageUrl} alt={g.label} fill className="object-cover" />
+              ) : (
+                <div className="flex h-full items-center justify-center text-3xl" style={{ background: g.gradient }}>
+                  {g.emoji}
+                </div>
+              )}
+            </div>
+          ))}
+          <div className="flex h-24 w-24 items-center justify-center rounded-brand-sm border-2 border-dashed border-[#E8EEF6] bg-white">
+            <FileUpload folder={`gallery/${id}`} onUploaded={addGalleryImage}>
+              <Plus className="size-6 text-ink-soft" />
+            </FileUpload>
+          </div>
+        </div>
+      </section>
+
       {/* Projects */}
       <section className="mb-8">
-        <h2 className="font-display text-xl font-black mb-4">Projets ({student.projects.length})</h2>
-        <div className="space-y-2 mb-4">
+        <h2 className="mb-4 font-display text-xl font-black">Projets ({student.projects.length})</h2>
+        <div className="mb-4 space-y-2">
           {student.projects.map((p: any) => (
             <div key={p.id} className="flex items-center justify-between rounded-brand-sm border-2 border-[#E8EEF6] bg-white px-4 py-3">
-              <span className="font-bold text-sm">{p.emoji} {p.title}</span>
+              <span className="text-sm font-bold">{p.emoji} {p.title}</span>
               <button onClick={() => setConfirmDelete({ type: "project", name: p.title, id: p.id })} className="text-coral hover:text-coral/80">
                 <Trash2 className="size-4" />
               </button>
             </div>
           ))}
         </div>
-        <form onSubmit={addProject} className="rounded-brand border-2 border-[#E8EEF6] bg-white p-4 grid gap-3 sm:grid-cols-2">
+        <form onSubmit={addProject} className="grid gap-3 rounded-brand border-2 border-[#E8EEF6] bg-white p-4 sm:grid-cols-2">
           <input name="title" required placeholder="Titre du projet" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none" />
           <input name="description" required placeholder="Description" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none" />
           <input name="tags" placeholder="Tags (virgule)" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none" />
@@ -136,28 +186,28 @@ export default function StudentDetailPage() {
             <option value="done">Terminé</option>
           </select>
           <input name="progress" type="number" min="0" max="100" defaultValue="40" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none" />
-          <button type="submit" className="sm:col-span-2 btn-primary py-2"><Plus className="size-4 inline mr-1" /> Ajouter</button>
+          <button type="submit" className="btn-primary py-2 sm:col-span-2"><Plus className="mr-1 inline size-4" /> Ajouter</button>
         </form>
       </section>
 
       {/* Certifications */}
       <section>
-        <h2 className="font-display text-xl font-black mb-4">Certifications ({student.certifications.length})</h2>
-        <div className="space-y-2 mb-4">
+        <h2 className="mb-4 font-display text-xl font-black">Certifications ({student.certifications.length})</h2>
+        <div className="mb-4 space-y-2">
           {student.certifications.map((c: any) => (
             <div key={c.id} className="flex items-center justify-between rounded-brand-sm border-2 border-[#E8EEF6] bg-white px-4 py-3">
-              <span className="font-bold text-sm">{c.emoji} {c.title} — {c.mention}</span>
+              <span className="text-sm font-bold">{c.emoji} {c.title} — {c.mention}</span>
               <button onClick={() => setConfirmDelete({ type: "certification", name: c.title, id: c.id })} className="text-coral hover:text-coral/80">
                 <Trash2 className="size-4" />
               </button>
             </div>
           ))}
         </div>
-        <form onSubmit={addCertification} className="rounded-brand border-2 border-[#E8EEF6] bg-white p-4 grid gap-3 sm:grid-cols-2">
+        <form onSubmit={addCertification} className="grid gap-3 rounded-brand border-2 border-[#E8EEF6] bg-white p-4 sm:grid-cols-2">
           <input name="title" required placeholder="Titre" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none" />
           <input name="mention" required placeholder="Mention" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none" />
           <input name="dateLabel" placeholder="Date" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none" />
-          <button type="submit" className="btn-primary py-2"><Plus className="size-4 inline mr-1" /> Ajouter</button>
+          <button type="submit" className="btn-primary py-2"><Plus className="mr-1 inline size-4" /> Ajouter</button>
         </form>
       </section>
 

@@ -33,7 +33,8 @@ export const certificationSchema = z.object({
 export const gallerySchema = z.object({
   label: z.string().trim().min(2),
   emoji: z.string().trim().default("📸"),
-  gradient: z.string().trim().default("linear-gradient(135deg,#06b6d4,#0ea5e9)")
+  gradient: z.string().trim().default("linear-gradient(135deg,#06b6d4,#0ea5e9)"),
+  imageUrl: z.string().trim().optional(),
 });
 
 export const teacherSchema = z.object({
