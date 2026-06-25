@@ -467,6 +467,15 @@ export async function addGalleryItem(studentId: string, payload: Omit<GalleryIte
   return mapGalleryItem(data);
 }
 
+export async function getCertificationById(certId: string) {
+  const snapshot = await getDashboardSnapshot();
+  for (const student of snapshot.students) {
+    const cert = student.certifications.find((c) => c.id === certId);
+    if (cert) return { certification: cert, student: { firstName: student.firstName, lastName: student.lastName } };
+  }
+  return null;
+}
+
 function mapRequest(row: any): InscriptionRequest {
   return {
     id: row.id,
