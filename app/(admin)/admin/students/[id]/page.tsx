@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Trash2, Plus, Loader2, Camera, X } from "lucide-react";
+import { ArrowLeft, Trash2, Plus, Loader2, Camera, X, Pencil } from "lucide-react";
 import { showToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { FileUpload } from "@/components/ui/file-upload";
@@ -33,6 +33,10 @@ export default function StudentDetailPage() {
   const [confirmDelete, setConfirmDelete] = useState<{ type: string; name: string; id: string } | null>(null);
   const [projectCover, setProjectCover] = useState("");
   const [certifImage, setCertifImage] = useState("");
+  const [editOpen, setEditOpen] = useState(false);
+  const [editForm, setEditForm] = useState({ firstName: "", lastName: "", age: 0, levelLabel: "", hours: 0, parentEmail: "" });
+  const [saving, setSaving] = useState(false);
+  const [deleteStudentConfirm, setDeleteStudentConfirm] = useState(false);
 
   useEffect(() => {
     fetch(`/api/students/${id}`).then((r) => r.json()).then((data) => {
@@ -111,11 +115,33 @@ export default function StudentDetailPage() {
   async function deleteItem(type: string, itemId: string) {
     const endpoint = type === "project" ? `/api/students/${id}/projects` : `/api/students/${id}/certifications`;
     const res = await fetch(`${endpoint}?id=${itemId}`, { method: "DELETE" });
-    if (res.ok) {
-      showToast("Supprimé", "info");
-      reload();
-    }
+    if (res.ok) { showToast("Supprimé", "info"); reload(); }
     setConfirmDelete(null);
+  }
+
+  function openEdit() {
+    if (!student) return;
+    setEditForm({ firstName: student.firstName, lastName: student.lastName, age: student.age, levelLabel: student.levelLabel, hours: student.hours, parentEmail: student.parentEmail });
+    setEditOpen(true);
+  }
+
+  async function saveEdit() {
+    setSaving(true);
+    const res = await fetch(`/api/students/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(editForm),
+    });
+    if (res.ok) { showToast("Élève modifié", "success"); setEditOpen(false); reload(); }
+    else { const j = await res.json(); showToast(j.error ?? "Erreur", "error"); }
+    setSaving(false);
+  }
+
+  async function deleteStudent() {
+    const res = await fetch(`/api/students/${id}`, { method: "DELETE" });
+    if (res.ok) { showToast("Élève supprimé", "info"); router.push("/admin/students"); }
+    else { const j = await res.json(); showToast(j.error ?? "Erreur", "error"); }
+    setDeleteStudentConfirm(false);
   }
 
   if (loading) return <div className="py-12 text-center text-ink-soft">Chargement...</div>;
@@ -143,6 +169,10 @@ export default function StudentDetailPage() {
         <div>
           <h1 className="font-display text-3xl font-black text-ink">{student.firstName} {student.lastName}</h1>
           <p className="text-sm text-ink-soft">{student.age} ans · {student.levelLabel} · {student.hours}h</p>
+        </div>
+        <div className="ml-auto flex gap-2">
+          <button onClick={openEdit} className="btn-outline py-2"><Pencil className="mr-1 inline size-4" /> Modifier</button>
+          <button onClick={() => setDeleteStudentConfirm(true)} className="rounded-brand-sm bg-coral px-4 py-2 text-sm font-bold text-white hover:bg-coral/90 transition"><Trash2 className="mr-1 inline size-4" /> Supprimer</button>
         </div>
       </div>
 
@@ -239,6 +269,38 @@ export default function StudentDetailPage() {
           onCancel={() => setConfirmDelete(null)}
           onConfirm={() => deleteItem(confirmDelete.type, confirmDelete.id)}
         />
+      )}
+
+      {deleteStudentConfirm && (
+        <ConfirmDialog
+          title="Supprimer cet élève ?"
+          description={`${student.firstName} ${student.lastName} et toutes ses données seront supprimés définitivement.`}
+          confirmLabel="Supprimer"
+          onCancel={() => setDeleteStudentConfirm(false)}
+          onConfirm={deleteStudent}
+        />
+      )}
+
+      {editOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4" onClick={() => setEditOpen(false)}>
+          <div className="w-full max-w-md rounded-brand bg-white p-6 shadow-card" onClick={(e) => e.stopPropagation()}>
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="font-display text-xl font-bold">Modifier l'élève</h2>
+              <button onClick={() => setEditOpen(false)}><X className="size-5 text-ink-soft" /></button>
+            </div>
+            <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <input value={editForm.firstName} onChange={(e) => setEditForm({ ...editForm, firstName: e.target.value })} placeholder="Prénom" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none" />
+                <input value={editForm.lastName} onChange={(e) => setEditForm({ ...editForm, lastName: e.target.value })} placeholder="Nom" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none" />
+              </div>
+              <input value={editForm.age} onChange={(e) => setEditForm({ ...editForm, age: Number(e.target.value) })} type="number" placeholder="Âge" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none w-full" />
+              <input value={editForm.levelLabel} onChange={(e) => setEditForm({ ...editForm, levelLabel: e.target.value })} placeholder="Niveau" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none w-full" />
+              <input value={editForm.hours} onChange={(e) => setEditForm({ ...editForm, hours: Number(e.target.value) })} type="number" placeholder="Heures" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none w-full" />
+              <input value={editForm.parentEmail} onChange={(e) => setEditForm({ ...editForm, parentEmail: e.target.value })} type="email" placeholder="Email parent" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none w-full" />
+            </div>
+            <button onClick={saveEdit} disabled={saving} className="btn-primary mt-4 w-full py-2">{saving ? "Enregistrement..." : "Enregistrer"}</button>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -1,4 +1,5 @@
 export type ProgramLevel = "debutant" | "intermediaire" | "avance";
+export type ProgramColor = "accent" | "cyan" | "amber" | "green" | "rose" | "purple";
 export type RequestStatus = "pending" | "accepted" | "refused";
 export type ProjectStatus = "done" | "progress" | "planned";
 export type TeacherStatus = "active" | "inactive";
@@ -12,7 +13,7 @@ export type Program = {
   tools: string[];
   priceMonthly?: number;
   icon: string;
-  color: "accent" | "cyan" | "amber" | "green" | "rose" | "purple";
+  color: ProgramColor;
 };
 
 export type InscriptionRequest = {

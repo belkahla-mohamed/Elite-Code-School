@@ -15,6 +15,8 @@ import type {
   GalleryItem,
   InscriptionRequest,
   Program,
+  ProgramColor,
+  ProgramLevel,
   Project,
   Student,
   StudentPortfolio,
@@ -376,6 +378,85 @@ export async function getStudentById(id: string) {
 
   if (error) throw error;
   return data ? mapStudentPortfolio(data, programs) : null;
+}
+
+export async function updateStudent(id: string, data: { firstName?: string; lastName?: string; age?: number; levelLabel?: string; hours?: number; parentEmail?: string; programId?: string }) {
+  if (!hasSupabaseConfig()) {
+    const student = demoStore().students.find((s) => s.id === id);
+    if (!student) throw new Error("Élève introuvable");
+    if (data.firstName !== undefined) student.firstName = data.firstName;
+    if (data.lastName !== undefined) student.lastName = data.lastName;
+    if (data.age !== undefined) student.age = data.age;
+    if (data.levelLabel !== undefined) student.levelLabel = data.levelLabel;
+    if (data.hours !== undefined) student.hours = data.hours;
+    if (data.parentEmail !== undefined) student.parentEmail = data.parentEmail;
+    if (data.programId !== undefined) student.programId = data.programId;
+    return withPortfolio(student);
+  }
+  const { error } = await getSupabaseAdmin().from("students").update({
+    ...(data.firstName !== undefined && { first_name: data.firstName }),
+    ...(data.lastName !== undefined && { last_name: data.lastName }),
+    ...(data.age !== undefined && { age: data.age }),
+    ...(data.levelLabel !== undefined && { level_label: data.levelLabel }),
+    ...(data.hours !== undefined && { hours: data.hours }),
+    ...(data.parentEmail !== undefined && { parent_email: data.parentEmail }),
+    ...(data.programId !== undefined && { program_id: data.programId }),
+  }).eq("id", id);
+  if (error) throw error;
+  return getStudentById(id);
+}
+
+export async function deleteStudent(id: string) {
+  if (!hasSupabaseConfig()) {
+    const store = demoStore();
+    store.students = store.students.filter((s) => s.id !== id);
+    store.projects = store.projects.filter((p) => p.studentId !== id);
+    store.certifications = store.certifications.filter((c) => c.studentId !== id);
+    store.gallery = store.gallery.filter((g) => g.studentId !== id);
+    return;
+  }
+  const supabase = getSupabaseAdmin();
+  await Promise.all([
+    supabase.from("projects").delete().eq("student_id", id),
+    supabase.from("certifications").delete().eq("student_id", id),
+    supabase.from("gallery_items").delete().eq("student_id", id),
+    supabase.from("students").delete().eq("id", id),
+  ]);
+}
+
+export async function createProgram(data: { title: string; ageRange: string; level: ProgramLevel; description: string; priceMonthly: number; icon: string; color: ProgramColor; tools?: string[] }) {
+  if (!hasSupabaseConfig()) {
+    const program: Program = { id: `prog-${Date.now()}`, ...data, tools: data.tools ?? [] };
+    return program;
+  }
+  const { error } = await getSupabaseAdmin().from("programs").insert({
+    title: data.title, age_range: data.ageRange, level: data.level,
+    description: data.description, price_monthly: data.priceMonthly,
+    icon: data.icon, color: data.color, tools: data.tools ?? [], sort_order: 99,
+  });
+  if (error) throw error;
+  return data;
+}
+
+export async function updateProgram(id: string, data: { title?: string; ageRange?: string; level?: ProgramLevel; description?: string; priceMonthly?: number; icon?: string; color?: ProgramColor; tools?: string[] }) {
+  if (!hasSupabaseConfig()) return;
+  const { error } = await getSupabaseAdmin().from("programs").update({
+    ...(data.title !== undefined && { title: data.title }),
+    ...(data.ageRange !== undefined && { age_range: data.ageRange }),
+    ...(data.level !== undefined && { level: data.level }),
+    ...(data.description !== undefined && { description: data.description }),
+    ...(data.priceMonthly !== undefined && { price_monthly: data.priceMonthly }),
+    ...(data.icon !== undefined && { icon: data.icon }),
+    ...(data.color !== undefined && { color: data.color }),
+    ...(data.tools !== undefined && { tools: data.tools }),
+  }).eq("id", id);
+  if (error) throw error;
+}
+
+export async function deleteProgram(id: string) {
+  if (!hasSupabaseConfig()) return;
+  const { error } = await getSupabaseAdmin().from("programs").delete().eq("id", id);
+  if (error) throw error;
 }
 
 export async function updateStudentPrivacy(id: string, isPublic: boolean) {
