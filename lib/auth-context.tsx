@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
 
-export type UserRole = "admin" | "teacher" | "parent" | null;
+export type UserRole = "admin" | "parent" | null;
 
 interface AuthUser {
   id: string;

@@ -1,10 +1,10 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getDashboardSnapshot, getPublicPortfolios } from "@/lib/store";
-import { isAdminAuthenticated, isTeacherAuthenticated } from "@/lib/auth";
+import { isAdminAuthenticated } from "@/lib/auth";
 
 export async function GET() {
   try {
-    if ((await isAdminAuthenticated()) || (await isTeacherAuthenticated())) {
+    if (await isAdminAuthenticated()) {
       const snapshot = await getDashboardSnapshot();
       return NextResponse.json({ students: snapshot.students });
     }

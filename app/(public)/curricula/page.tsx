@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { getPrograms } from "@/lib/store";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Programmes",
@@ -30,13 +30,13 @@ export default async function CurriculaPage() {
             <Link
               key={program.id}
               href={`/curricula/${program.id}`}
-              className={`rounded-brand border-2 bg-white p-8 transition hover:-translate-y-0.5 ${colors[i % colors.length]}`}
+              className={`rounded-brand border-2 bg-white dark:bg-surface p-8 transition hover:-translate-y-0.5 ${colors[i % colors.length]}`}
             >
               <span className="text-4xl">{program.icon}</span>
-              <h3 className="mt-4 font-display text-2xl font-black">{program.title}</h3>
+              <h3 className="mt-4 font-display text-2xl font-black text-ink">{program.title}</h3>
               <p className="mt-3 text-sm font-semibold leading-6 text-ink-soft">{program.description}</p>
               <div className="mt-6 flex items-center justify-between">
-                <span className="rounded-full bg-surface px-4 py-1.5 text-xs font-bold text-ink-soft">
+                <span className="rounded-full bg-body px-4 py-1.5 text-xs font-bold text-ink-soft">
                   {program.ageRange}
                 </span>
                 <span className="flex items-center gap-1 font-black text-sm text-sky">

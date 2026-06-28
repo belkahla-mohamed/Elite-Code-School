@@ -2,7 +2,6 @@ export type ProgramLevel = "debutant" | "intermediaire" | "avance";
 export type ProgramColor = "accent" | "cyan" | "amber" | "green" | "rose" | "purple";
 export type RequestStatus = "pending" | "accepted" | "refused";
 export type ProjectStatus = "pending" | "done" | "progress" | "planned";
-export type TeacherStatus = "active" | "inactive";
 
 export type Program = {
   id: string;
@@ -89,19 +88,8 @@ export type StudentPortfolio = Student & {
   gallery: GalleryItem[];
 };
 
-export type Teacher = {
-  id: string;
-  fullName: string;
-  email: string;
-  specialty?: string;
-  secretHash: string;
-  status: TeacherStatus;
-  createdAt: string;
-};
-
 export type DashboardSnapshot = {
   requests: InscriptionRequest[];
   students: StudentPortfolio[];
-  teachers: Teacher[];
   programs: Program[];
 };

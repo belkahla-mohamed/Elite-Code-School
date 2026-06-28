@@ -16,7 +16,7 @@ export function ParentNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="border-b-2 border-[#E8EEF6] bg-white">
+    <nav className="border-b-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface">
       <div className="container-shell flex h-14 items-center gap-1 overflow-x-auto">
         {parentLinks.map((link) => {
           const isActive = pathname === link.href;

@@ -46,16 +46,6 @@ create table if not exists public.students (
   created_at timestamptz not null default now()
 );
 
-create table if not exists public.teachers (
-  id uuid primary key default gen_random_uuid(),
-  full_name text not null,
-  email text not null unique,
-  specialty text,
-  secret_hash text not null,
-  status text not null default 'active' check (status in ('active', 'inactive')),
-  created_at timestamptz not null default now()
-);
-
 create table if not exists public.projects (
   id uuid primary key default gen_random_uuid(),
   student_id uuid not null references public.students(id) on delete cascade,
@@ -93,8 +83,6 @@ create table if not exists public.gallery_items (
 create index if not exists inscription_requests_status_idx on public.inscription_requests(status);
 create index if not exists students_slug_idx on public.students(slug);
 create index if not exists students_public_idx on public.students(is_public) where is_public = true;
-create index if not exists teachers_email_idx on public.teachers(lower(email));
-create index if not exists teachers_status_idx on public.teachers(status);
 create index if not exists projects_student_id_idx on public.projects(student_id);
 create index if not exists certifications_student_id_idx on public.certifications(student_id);
 create index if not exists gallery_items_student_id_idx on public.gallery_items(student_id);
@@ -102,7 +90,6 @@ create index if not exists gallery_items_student_id_idx on public.gallery_items(
 alter table public.programs enable row level security;
 alter table public.inscription_requests enable row level security;
 alter table public.students enable row level security;
-alter table public.teachers enable row level security;
 alter table public.projects enable row level security;
 alter table public.certifications enable row level security;
 alter table public.gallery_items enable row level security;

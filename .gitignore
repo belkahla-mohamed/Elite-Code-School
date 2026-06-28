@@ -13,3 +13,7 @@ nul
 
 .supabase
 supabase/.temp
+
+# Playwright
+playwright-report/
+test-results/

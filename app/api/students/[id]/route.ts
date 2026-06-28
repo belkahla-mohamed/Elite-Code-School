@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { isAdminAuthenticated, isTeacherAuthenticated, getParentStudentId } from "@/lib/auth";
+import { isAdminAuthenticated, getParentStudentId } from "@/lib/auth";
 import { updateStudent, deleteStudent, getStudentById } from "@/lib/store";
 
 type Props = { params: Promise<{ id: string }> };
@@ -8,9 +8,8 @@ export async function GET(_request: Request, { params }: Props) {
   try {
     const { id } = await params;
     const isAdmin = await isAdminAuthenticated();
-    const isTeacher = await isTeacherAuthenticated();
     const parentId = await getParentStudentId();
-    if (!isAdmin && !isTeacher && parentId !== id) {
+    if (!isAdmin && parentId !== id) {
       return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
     }
     const student = await getStudentById(id);

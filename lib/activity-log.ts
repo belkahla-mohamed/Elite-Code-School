@@ -2,7 +2,7 @@ const globalLog = globalThis as unknown as { ecsActivityLog?: ActivityEntry[] };
 
 export type ActivityEntry = {
   id: string;
-  type: "student" | "project" | "certification" | "request" | "teacher";
+  type: "student" | "project" | "certification" | "request";
   action: string;
   description: string;
   createdAt: string;

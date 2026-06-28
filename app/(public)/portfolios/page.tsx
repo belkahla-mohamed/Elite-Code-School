@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Users } from "lucide-react";
 import { getPublicPortfolios } from "@/lib/store";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Portfolios",
@@ -37,14 +37,14 @@ export default async function PortfoliosPage() {
             <Link
               key={student.id}
               href={`/portfolio/${student.slug}`}
-              className="rounded-brand border-2 border-[#E8EEF6] bg-white p-6 transition hover:border-sky hover:-translate-y-0.5"
+              className="rounded-brand border-2 border-border bg-white dark:bg-surface p-6 transition hover:border-sky hover:-translate-y-0.5"
             >
               <div className="flex items-center gap-4">
                 <div className={`flex size-14 items-center justify-center rounded-2xl font-display text-xl font-black text-white ${avatars[i % avatars.length]}`}>
                   {student.avatar}
                 </div>
                 <div>
-                  <h3 className="font-display text-lg font-black">{student.firstName} {student.lastName}</h3>
+                  <h3 className="font-display text-lg font-black text-ink">{student.firstName} {student.lastName}</h3>
                   <p className="text-xs font-bold text-ink-soft">{student.levelLabel}</p>
                 </div>
               </div>

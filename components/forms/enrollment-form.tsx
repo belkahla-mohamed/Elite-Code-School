@@ -69,7 +69,7 @@ export function EnrollmentForm({ programs }: Props) {
             type="button"
             onClick={() => setStep(index)}
             className={`rounded-brand-sm border px-4 py-3 text-left text-sm font-extrabold ${
-              step === index ? "border-sky bg-sky/10 text-sky" : "border-[#E6EEF8] bg-white text-ink-soft"
+              step === index ? "border-sky bg-sky/10 text-sky" : "border-[#E6EEF8] dark:border-border bg-white dark:bg-surface text-ink-soft"
             }`}
           >
             <span className="block font-mono text-xs">0{index + 1}</span>
@@ -87,7 +87,7 @@ export function EnrollmentForm({ programs }: Props) {
           <Field name="studentLastName" label="Nom *" placeholder="Benali" required />
           <label className="flex flex-col gap-2 text-sm font-semibold">
             Âge *
-            <select name="age" required className="rounded-brand-sm border-2 border-[#E8EEF6] bg-white px-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none">
+            <select name="age" required className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface px-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none">
               <option value="">-- Sélectionner --</option>
               {ageOptions.map((a) => <option key={a} value={a}>{a} ans</option>)}
             </select>
@@ -102,14 +102,14 @@ export function EnrollmentForm({ programs }: Props) {
         <p className="mt-2 text-sm text-ink-soft">Choisis le parcours le plus proche. L&apos;équipe ajuste après contact.</p>
         <label className="mt-6 flex flex-col gap-2 text-sm font-semibold">
           Formation souhaitée *
-          <select name="programId" required className="rounded-brand-sm border-2 border-[#E8EEF6] bg-white px-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none">
+          <select name="programId" required className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface px-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none">
             <option value="">-- Choisir une formation --</option>
             {programs.map((p) => (
               <option key={p.id} value={p.id}>{p.title} · {p.ageRange} · {p.priceMonthly} DH/mois</option>
             ))}
           </select>
         </label>
-        <div className="mt-5 rounded-brand-sm border-2 border-[#E8EEF6] bg-surface p-4 text-sm text-ink-soft">
+        <div className="mt-5 rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-surface p-4 text-sm text-ink-soft">
           Si tu hésites, choisis le parcours qui plaît le plus à l&apos;enfant. On confirmera par téléphone.
         </div>
       </div>
@@ -124,7 +124,7 @@ export function EnrollmentForm({ programs }: Props) {
         </div>
         <label className="mt-4 flex flex-col gap-2 text-sm font-semibold">
           Message
-          <textarea name="message" className="min-h-24 rounded-brand-sm border-2 border-[#E8EEF6] bg-white px-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none" placeholder="Questions, disponibilités, niveau actuel…" />
+          <textarea name="message" className="min-h-24 rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface px-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none" placeholder="Questions, disponibilités, niveau actuel…" />
         </label>
       </div>
 
@@ -167,7 +167,7 @@ function ReviewStep({ programs }: { programs: Program[] }) {
         <p className="text-sm text-ink-soft">
           Les champs seront pré-remplis automatiquement à partir des étapes précédentes. Tu peux modifier une étape en cliquant sur le numéro correspondant ci-dessus.
         </p>
-        <div className="rounded-brand-sm border-2 border-[#E8EEF6] bg-surface p-4">
+        <div className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-surface p-4">
           <p className="text-sm font-bold text-ink">En résumé:</p>
           <ul className="mt-2 space-y-1 text-sm text-ink-soft">
             <li>1. Informations de l&apos;élève (prénom, nom, âge, niveau)</li>
@@ -188,7 +188,7 @@ function Field({ label, name, placeholder, type = "text", required = false }: {
     <label className="flex flex-col gap-2 text-sm font-semibold">
       {label}
       <input name={name} required={required} type={type} placeholder={placeholder}
-        className="rounded-brand-sm border-2 border-[#E8EEF6] bg-white px-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none" />
+        className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface px-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none" />
     </label>
   );
 }

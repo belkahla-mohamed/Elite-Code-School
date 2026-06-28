@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
 import { Target, Heart, Lightbulb, Users } from "lucide-react";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "À propos",
@@ -11,7 +11,7 @@ export default function AboutPage() {
     <div className="py-20">
       <section className="container-shell text-center mb-20">
         <span className="tag">À propos</span>
-        <h1 className="font-display text-5xl font-black tracking-[-0.04em] text-ink mt-4">
+        <h1 className="font-display text-3xl sm:text-5xl font-black tracking-[-0.04em] text-ink mt-4">
           Former la prochaine génération de créateurs
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg font-semibold leading-8 text-ink-soft">
@@ -20,7 +20,7 @@ export default function AboutPage() {
         </p>
       </section>
 
-      <section className="bg-surface py-20">
+      <section className="bg-body py-20">
         <div className="container-shell grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           {[
             { icon: Target, title: "Mission", text: "Rendre la tech accessible, ludique et formatrice pour chaque enfant, quel que soit son niveau." },
@@ -28,9 +28,9 @@ export default function AboutPage() {
             { icon: Lightbulb, title: "Approche", text: "Projets concrets, robots, missions et défis — pas de cours magistraux, que du pratique." },
             { icon: Users, title: "Encadrement", text: "Des coachs formés, un suivi parent clair et des classes à effectif réduit." },
           ].map(({ icon: Icon, title, text }) => (
-            <article key={title} className="rounded-brand border-2 border-[#E8EEF6] bg-white p-8 text-center">
+            <article key={title} className="rounded-brand border-2 border-border bg-white dark:bg-surface p-8 text-center">
               <Icon className="mx-auto size-10 text-sky" />
-              <h3 className="mt-5 font-display text-xl font-black">{title}</h3>
+              <h3 className="mt-5 font-display text-xl font-black text-ink">{title}</h3>
               <p className="mt-3 text-sm font-semibold leading-6 text-ink-soft">{text}</p>
             </article>
           ))}
@@ -39,7 +39,7 @@ export default function AboutPage() {
 
       <section className="py-20">
         <div className="container-shell max-w-3xl text-center">
-          <h2 className="font-display text-4xl font-black tracking-[-0.04em]">Notre approche pédagogique</h2>
+          <h2 className="font-display text-4xl font-black tracking-[-0.04em] text-ink">Notre approche pédagogique</h2>
           <div className="mt-10 space-y-6 text-left">
             {[
               ["Apprentissage par projet", "Chaque élève construit des projets concrets: robots, jeux, applications web, modèles IA."],
@@ -50,7 +50,7 @@ export default function AboutPage() {
               <div key={title} className="flex gap-4 items-start">
                 <span className="mt-1 size-2 rounded-full bg-sky shrink-0" />
                 <div>
-                  <h3 className="font-display text-lg font-black">{title}</h3>
+                  <h3 className="font-display text-lg font-black text-ink">{title}</h3>
                   <p className="text-sm font-semibold text-ink-soft">{text}</p>
                 </div>
               </div>

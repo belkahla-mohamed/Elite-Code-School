@@ -1,6 +1,6 @@
-import type { Metadata } from "next";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { QuickContactForm } from "@/components/QuickContactForm";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -12,7 +12,7 @@ export default function ContactPage() {
     <div className="py-20">
       <section className="container-shell text-center mb-16">
         <span className="tag">Contact</span>
-        <h1 className="font-display text-5xl font-black tracking-[-0.04em] text-ink mt-4">
+        <h1 className="font-display text-3xl sm:text-5xl font-black tracking-[-0.04em] text-ink mt-4">
           Contactez-nous
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg font-semibold leading-8 text-ink-soft">
@@ -20,7 +20,7 @@ export default function ContactPage() {
         </p>
       </section>
 
-      <section className="container-shell grid gap-12 lg:grid-cols-[.6fr_1fr]">
+      <section className="container-shell grid gap-10 lg:grid-cols-[.6fr_1fr]">
         <div className="space-y-8">
           {[
             { icon: Mail, label: "Email", value: "contact@elitecodeschool.ma", href: "mailto:contact@elitecodeschool.ma" },
@@ -43,8 +43,8 @@ export default function ContactPage() {
           ))}
         </div>
 
-        <div className="rounded-brand border-2 border-[#E8EEF6] bg-white p-8">
-          <h3 className="font-display text-xl font-black mb-6">Envoyer un message</h3>
+        <div className="rounded-brand border-2 border-border bg-white dark:bg-surface p-8">
+          <h3 className="font-display text-xl font-black mb-6 text-ink">Envoyer un message</h3>
           <QuickContactForm />
         </div>
       </section>

@@ -16,7 +16,6 @@ async function main() {
   await prisma.project.deleteMany();
   await prisma.inscriptionRequest.deleteMany();
   await prisma.student.deleteMany();
-  await prisma.teacher.deleteMany();
   await prisma.program.deleteMany();
 
   // Programs
@@ -29,15 +28,6 @@ async function main() {
     { id: "intelligence-artificielle", title: "Intelligence Artificielle", ageRange: "14–17 ans", level: "avance", description: "Vision, machine learning, projets IA éducatifs et robotique VinciBot.", tools: ["VinciBot", "Dadabit AI", "Python ML"], priceMonthly: 950, icon: "🧠", color: "purple", sortOrder: 6 },
   ]});
   console.log("  ✅ Programs");
-
-  // Teacher
-  await prisma.teacher.create({ data: {
-    id: "teacher-demo", fullName: "Nadia Coach", email: "nadia@elitecodeschool.ma",
-    specialty: "Robotique & Scratch", secretHash: hashSecret("TEACHER-2026"),
-    status: "active", createdAt: new Date("2024-01-15"),
-  }});
-  console.log("  ✅ Teacher");
-
   // Students
   await prisma.student.create({ data: {
     id: "stu-youssef", slug: "youssef-alaoui", firstName: "Youssef", lastName: "Alaoui", age: 14,

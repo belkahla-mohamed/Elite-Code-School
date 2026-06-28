@@ -26,12 +26,12 @@ function Toggle({ checked, onChange, label, disabled = false }: ToggleProps) {
         className={cn(
           "relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent",
           "transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-sky/30",
-          checked ? "bg-sky" : "bg-[#E8EEF6]"
+          checked ? "bg-sky" : "bg-[#E8EEF6] dark:bg-slate-600"
         )}
       >
         <span
           className={cn(
-            "pointer-events-none inline-block size-5 rounded-full bg-white shadow-sm",
+            "pointer-events-none inline-block size-5 rounded-full bg-white dark:bg-slate-200 shadow-sm",
             "transition-transform duration-200",
             checked ? "translate-x-5" : "translate-x-0"
           )}

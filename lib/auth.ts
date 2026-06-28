@@ -3,7 +3,6 @@ import { createHash, randomBytes } from "crypto";
 
 const ADMIN_COOKIE = "ecs_admin";
 const PARENT_COOKIE = "ecs_parent_student";
-const TEACHER_COOKIE = "ecs_teacher";
 
 const JWT_SECRET = process.env.AUTH_COOKIE_SECRET ?? "elite-code-school-dev-secret";
 
@@ -45,16 +44,11 @@ export async function isAdminAuthenticated() {
 
 export async function getParentStudentId() {
   const jar = await cookies();
-  return jar.get(PARENT_COOKIE)?.value;
-}
-
-export async function getTeacherId() {
-  const jar = await cookies();
-  return jar.get(TEACHER_COOKIE)?.value;
-}
-
-export async function isTeacherAuthenticated() {
-  return Boolean(await getTeacherId());
+  const token = jar.get(PARENT_COOKIE)?.value;
+  if (!token) return null;
+  const payload = verifyToken(token);
+  if (!payload || typeof payload.studentId !== "string") return null;
+  return payload.studentId;
 }
 
 export async function setAdminSession() {
@@ -70,7 +64,7 @@ export async function setAdminSession() {
 
 export async function setParentSession(studentId: string) {
   const jar = await cookies();
-  jar.set(PARENT_COOKIE, studentId, {
+  jar.set(PARENT_COOKIE, generateToken({ studentId }, 24 * 7), {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.COOKIE_SECURE === "true",
@@ -79,22 +73,10 @@ export async function setParentSession(studentId: string) {
   });
 }
 
-export async function setTeacherSession(teacherId: string) {
-  const jar = await cookies();
-  jar.set(TEACHER_COOKIE, teacherId, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.COOKIE_SECURE === "true",
-    path: "/",
-    maxAge: 60 * 60 * 8,
-  });
-}
-
 export async function clearSessions() {
   const jar = await cookies();
   jar.delete(ADMIN_COOKIE);
   jar.delete(PARENT_COOKIE);
-  jar.delete(TEACHER_COOKIE);
 }
 
 export function verifyAdminPassword(password: string) {

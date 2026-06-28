@@ -5,7 +5,6 @@ export type {
   Program,
   InscriptionRequest,
   Student,
-  Teacher,
   Project,
   Certification,
   GalleryItem,
@@ -15,7 +14,6 @@ export type {
   ProgramLevel,
   RequestStatus,
   ProjectStatus,
-  TeacherStatus,
 } from "@prisma/client";
 
 // Domain-specific types for API responses (includes relations)

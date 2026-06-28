@@ -65,7 +65,7 @@ function Modal({ isOpen, onClose, title, children, footer, size = "md" }: ModalP
       />
       <div
         className={cn(
-          "relative w-full rounded-brand bg-white border-2 border-[#E8EEF6] shadow-lg",
+          "relative w-full rounded-brand bg-white dark:bg-surface border-2 border-[#E8EEF6] dark:border-border shadow-lg",
           "transition-all duration-200",
           visible ? "opacity-100 scale-100" : "opacity-0 scale-95",
           sizeStyles[size]
@@ -85,7 +85,7 @@ function Modal({ isOpen, onClose, title, children, footer, size = "md" }: ModalP
         )}
         <div className="px-6 py-4">{children}</div>
         {footer && (
-          <div className="flex items-center justify-end gap-3 px-6 pt-4 pb-6 border-t-2 border-[#E8EEF6]">
+          <div className="flex items-center justify-end gap-3 px-6 pt-4 pb-6 border-t-2 border-[#E8EEF6] dark:border-border">
             {footer}
           </div>
         )}

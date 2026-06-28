@@ -1,5 +1,5 @@
 import { hashSecret } from "@/lib/auth";
-import type { Certification, GalleryItem, InscriptionRequest, Program, Project, Student, Teacher } from "@/lib/types";
+import type { Certification, GalleryItem, InscriptionRequest, Program, Project, Student } from "@/lib/types";
 
 export const programs: Program[] = [
   {
@@ -121,18 +121,6 @@ export const students: Student[] = [
     parentEmail: "parent.adam@example.com",
     parentSecretHash: hashSecret("ADAM-2026"),
     createdAt: new Date("2023-10-05").toISOString()
-  }
-];
-
-export const teachers: Teacher[] = [
-  {
-    id: "teacher-demo",
-    fullName: "Nadia Coach",
-    email: "nadia@elitecodeschool.ma",
-    specialty: "Robotique & Scratch",
-    secretHash: hashSecret("TEACHER-2026"),
-    status: "active",
-    createdAt: new Date("2024-01-15").toISOString()
   }
 ];
 

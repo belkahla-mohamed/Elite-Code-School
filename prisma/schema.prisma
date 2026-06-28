@@ -31,13 +31,6 @@ enum ProjectStatus {
   @@map("project_status")
 }
 
-enum TeacherStatus {
-  active
-  inactive
-
-  @@map("teacher_status")
-}
-
 model Program {
   id           String   @id
   title        String
@@ -100,20 +93,6 @@ model Student {
   @@index([slug])
   @@index([isPublic])
   @@map("students")
-}
-
-model Teacher {
-  id         String        @id @default(cuid())
-  fullName   String        @map("full_name")
-  email      String        @unique
-  specialty  String?
-  secretHash String        @map("secret_hash")
-  status     TeacherStatus @default(active)
-  createdAt  DateTime      @default(now()) @map("created_at")
-
-  @@index([email])
-  @@index([status])
-  @@map("teachers")
 }
 
 model Project {

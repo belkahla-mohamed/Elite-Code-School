@@ -1,6 +1,7 @@
 "use client";
 
-import { Toaster, toast } from "react-hot-toast";
+import dynamic from "next/dynamic";
+import { toast } from "react-hot-toast";
 import { CheckCircle, XCircle, AlertTriangle, Info, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -25,7 +26,7 @@ function showToast(message: string, variant: ToastVariant = "info") {
     (t) => (
       <div
         className={cn(
-          "flex items-start gap-3 rounded-brand border-2 bg-white px-5 py-4 shadow-lg",
+          "flex items-start gap-3 rounded-brand border-2 bg-white dark:bg-surface px-5 py-4 shadow-lg",
           "max-w-md w-full transition-all duration-300",
           variants[variant],
           t.visible ? "animate-in slide-in-from-top-2" : "animate-out slide-out-to-top-2"
@@ -42,17 +43,26 @@ function showToast(message: string, variant: ToastVariant = "info") {
         </button>
       </div>
     ),
-    { duration: variant === "error" ? 6000 : 4000, position: "top-right" }
+    { duration: variant === "error" ? 6000 : 4000, position: "bottom-right" }
   );
 }
+
+const Toaster = dynamic(
+  () => import("react-hot-toast").then((m) => m.Toaster),
+  { ssr: false }
+);
 
 function ToastProvider() {
   return (
     <Toaster
-      containerClassName="!top-4 !right-4"
-      toastOptions={{ className: "!p-0 !m-0 !bg-transparent !shadow-none" }}
+      position="bottom-right"
+      containerClassName="!bottom-4 !right-4"
+      toastOptions={{
+        className: "!p-0 !m-0 !bg-transparent !shadow-none",
+      }}
     />
   );
 }
 
-export { ToastProvider, showToast, type ToastVariant };
+export { ToastProvider, showToast };
+export type { ToastVariant };

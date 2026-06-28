@@ -3,9 +3,9 @@ import { Mail, Phone, MapPin } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="border-t-2 border-[#E8EEF6] bg-surface">
-      <div className="container-shell py-16">
-        <div className="grid gap-10 md:grid-cols-3">
+    <footer className="border-t-2 border-border bg-surface">
+      <div className="container-shell py-10 sm:py-16">
+        <div className="grid gap-8 sm:gap-10 sm:grid-cols-3">
           <div>
             <div className="flex items-center gap-2.5 mb-4">
               <span className="flex size-9 items-center justify-center rounded-lg bg-sky font-display font-black text-sm text-white">
@@ -46,7 +46,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 pt-6 border-t-2 border-[#E8EEF6] flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="mt-8 sm:mt-12 pt-6 border-t-2 border-border flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-ink-soft">
             &copy; {new Date().getFullYear()} Elite Code School. Tous droits réservés.
           </p>

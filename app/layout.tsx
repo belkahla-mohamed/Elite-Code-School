@@ -1,6 +1,8 @@
-import type { Metadata } from "next";
 import { Providers } from "@/components/providers";
+import { ToastProvider } from "@/components/ui/toast";
 import "./globals.css";
+
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: { template: "%s — Elite Code School", default: "Elite Code School — Robotique, Coding & IA" },
@@ -9,9 +11,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr">
-      <body className="font-body text-ink bg-white antialiased">
-        <Providers>{children}</Providers>
+    <html lang="fr" suppressHydrationWarning>
+      <body className="font-body text-ink bg-background antialiased">
+        <Providers>
+          {children}
+        </Providers>
+        <ToastProvider />
       </body>
     </html>
   );

@@ -25,7 +25,7 @@ function ShareButton({ shareLink, title = "Partager", className }: ShareButtonPr
       onClick={handleShare}
       className={cn(
         "inline-flex items-center gap-2 font-black uppercase tracking-wide text-sm",
-        "rounded-full border-2 border-[#E8EEF6] bg-white px-4 py-2",
+        "rounded-full border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface px-4 py-2",
         "text-ink-soft hover:text-sky hover:border-sky transition duration-200",
         className
       )}

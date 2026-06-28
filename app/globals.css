@@ -4,50 +4,64 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --font-body: "Nunito";
-  --font-display: "Fredoka";
-  --font-mono: "JetBrains Mono";
-  --bg: #ffffff;
-  --bg-surface: #F8FAFC;
-  --text: #171717;
-  --text-soft: #64748B;
-  --border: #E6EEF8;
-}
+@layer base {
+  :root {
+    --font-body: "Nunito";
+    --font-display: "Fredoka";
+    --font-mono: "JetBrains Mono";
+    --background: #ffffff;
+    --surface: #f8fafc;
+    --text: #0f172a;
+    --text-soft: #475569;
+    --border: #e2e8f0;
+    color-scheme: light;
+  }
 
-html[data-dark] {
-  --bg: #0F172A;
-  --bg-surface: #1E293B;
-  --text: #F1F5F9;
-  --text-soft: #94A3B8;
-  --border: #334155;
-}
+  .dark {
+    --background: #090d16;
+    --surface: #131c2e;
+    --text: #f8fafc;
+    --text-soft: #94a3b8;
+    --border: #1e293b;
+    color-scheme: dark;
+  }
 
-* {
-  box-sizing: border-box;
-}
+  * {
+    box-sizing: border-box;
+  }
 
-html {
-  scroll-behavior: smooth;
-}
+  html {
+    scroll-behavior: smooth;
+  }
 
-body {
-  margin: 0;
-  background: #ffffff;
-  color: #171717;
-  font-family: var(--font-body), sans-serif;
-}
+  body {
+    @apply m-0 font-body antialiased;
+    background: var(--background);
+    color: var(--text);
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
+  *,
+  *::before,
+  *::after {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
 
-button,
-input,
-select,
-textarea {
-  font: inherit;
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
 }
 
 @layer components {
@@ -64,7 +78,7 @@ textarea {
   }
 
   .btn-outline {
-    @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-sky bg-white px-8 py-3 text-sm font-black uppercase tracking-wide text-sky transition hover:bg-sky hover:text-white;
+    @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-sky bg-white px-8 py-3 text-sm font-black uppercase tracking-wide text-sky transition hover:bg-sky hover:text-white dark:bg-transparent dark:text-sky dark:hover:bg-sky dark:hover:text-white;
   }
 
   .section-padding {
@@ -72,6 +86,37 @@ textarea {
   }
 
   .card {
-    @apply rounded-brand border-2 border-[#E8EEF6] bg-white;
+    @apply rounded-brand border-2 border-border bg-surface;
+  }
+
+  .dash-card {
+    @apply rounded-brand-sm border-2 border-border bg-surface p-5;
+  }
+
+  .dash-table {
+    @apply w-full text-left text-sm;
+  }
+
+  .dash-table th {
+    @apply px-4 py-3 font-black text-xs uppercase tracking-wider text-ink-soft;
+  }
+
+  .dash-table td {
+    @apply border-t border-border px-4 py-3;
+  }
+
+  .dash-badge {
+    @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-black uppercase tracking-wide;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

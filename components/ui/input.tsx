@@ -23,10 +23,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           id={inputId}
           className={cn(
-            "w-full rounded-brand-sm border-2 bg-white px-4 py-2.5 font-body text-ink",
+            "w-full rounded-brand-sm border-2 bg-white dark:bg-surface px-4 py-2.5 font-body text-ink",
             "placeholder:text-ink-soft/50 transition duration-200",
             "focus:outline-none focus:border-sky",
-            error ? "border-coral" : "border-[#E8EEF6]",
+            error ? "border-coral" : "border-[#E8EEF6] dark:border-border",
             props.disabled && "bg-surface opacity-60 cursor-not-allowed",
             className
           )}
@@ -61,10 +61,10 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           ref={ref}
           id={textareaId}
           className={cn(
-            "w-full rounded-brand-sm border-2 bg-white px-4 py-2.5 font-body text-ink min-h-[100px] resize-y",
+            "w-full rounded-brand-sm border-2 bg-white dark:bg-surface px-4 py-2.5 font-body text-ink min-h-[100px] resize-y",
             "placeholder:text-ink-soft/50 transition duration-200",
             "focus:outline-none focus:border-sky",
-            error ? "border-coral" : "border-[#E8EEF6]",
+            error ? "border-coral" : "border-[#E8EEF6] dark:border-border",
             props.disabled && "bg-surface opacity-60 cursor-not-allowed",
             className
           )}
@@ -100,10 +100,10 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
           ref={ref}
           id={selectId}
           className={cn(
-            "w-full rounded-brand-sm border-2 bg-white px-4 py-2.5 font-body text-ink",
+            "w-full rounded-brand-sm border-2 bg-white dark:bg-surface px-4 py-2.5 font-body text-ink",
             "transition duration-200 appearance-none cursor-pointer",
             "focus:outline-none focus:border-sky",
-            error ? "border-coral" : "border-[#E8EEF6]",
+            error ? "border-coral" : "border-[#E8EEF6] dark:border-border",
             props.disabled && "bg-surface opacity-60 cursor-not-allowed",
             className
           )}

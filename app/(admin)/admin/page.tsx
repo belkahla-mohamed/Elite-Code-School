@@ -1,9 +1,5 @@
-import { AdminDashboard } from "@/components/AdminDashboard";
+import { redirect } from "next/navigation";
 
 export default function AdminPage() {
-  return (
-    <main className="min-h-screen bg-surface py-12">
-      <AdminDashboard />
-    </main>
-  );
+  redirect("/dashboard");
 }

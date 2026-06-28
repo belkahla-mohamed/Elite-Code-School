@@ -32,7 +32,7 @@ const learningSteps = [
   ["Create", "Chaque élève finit par créer, présenter et documenter son projet."]
 ];
 
-const trustBadges = ["No prep required", "Portfolio visible", "Parent privacy", "Teacher guided"];
+const trustBadges = ["No prep required", "Portfolio visible", "Parent privacy", "Progress tracking"];
 
 export default async function HomePage() {
   const [programs, portfolios] = await Promise.all([getPrograms(), getPublicPortfolios()]);
@@ -56,39 +56,44 @@ export default async function HomePage() {
   };
 
   return (
-    <div className="overflow-hidden bg-white">
+    <div className="overflow-hidden bg-white dark:bg-body">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <section className="bg-white pt-28">
-        <div className="container-shell grid items-center gap-10 pb-14 lg:grid-cols-[.95fr_1.05fr]">
+
+      {/* ── Hero ──────────────────────────────────────────────── */}
+      <section className="bg-white pt-20 sm:pt-28 dark:bg-body">
+        <div className="container-shell grid items-center gap-10 pb-10 sm:pb-14 lg:grid-cols-[.95fr_1.05fr]">
           <div>
-            <h1 className="font-display text-[3rem] font-black leading-[.95] tracking-[-0.04em] text-ink sm:text-6xl lg:text-[4.8rem]">
+            <h1 className="font-display text-[2.4rem] font-black leading-[.95] tracking-[-0.04em] text-ink dark:text-ink sm:text-5xl lg:text-[4.8rem]">
               The playful STEM school for future makers.
             </h1>
-            <p className="mt-6 max-w-xl text-lg font-semibold leading-8 text-ink-soft">
+            <p className="mt-5 max-w-xl text-base sm:text-lg font-semibold leading-7 sm:leading-8 text-ink-soft dark:text-ink-soft">
               Coding, robotique et IA pour les 7–17 ans: des missions fun pour enfants, des vrais projets pour ados, et un suivi clair pour parents.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/inscription" className="btn-primary">
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Link href="/inscription" className="btn-primary text-xs sm:text-sm px-6 sm:px-8">
                 Start learning today <ArrowRight data-icon="inline-end" />
               </Link>
-              <Link href="/login" className="btn-outline">
+              <Link href="/login" className="btn-outline text-xs sm:text-sm px-6 sm:px-8">
                 Log in
               </Link>
             </div>
-            <Link href="/inscription" className="mt-5 inline-flex items-center gap-2 font-black text-pink">
+            <Link href="/inscription" className="mt-4 inline-flex items-center gap-2 text-sm font-black text-pink">
               Try a free discovery session <ArrowRight className="size-4" />
             </Link>
           </div>
-          <HeroPlayCard />
+          <div className="hidden lg:block">
+            <HeroPlayCard />
+          </div>
         </div>
       </section>
 
-      <section className="bg-sky py-7 text-white">
+      {/* ── Trust badges ──────────────────────────────────────── */}
+      <section className="bg-sky py-6 text-white">
         <div className="container-shell text-center">
-          <h2 className="font-display text-3xl font-black">Trusted by young creators in Marrakech</h2>
-          <div className="mt-4 flex flex-wrap justify-center gap-3">
+          <h2 className="font-display text-xl sm:text-3xl font-black">Trusted by young creators in Marrakech</h2>
+          <div className="mt-4 flex flex-wrap justify-center gap-2">
             {trustBadges.map((badge) => (
-              <span key={badge} className="rounded-full bg-white px-4 py-2 text-xs font-black uppercase tracking-wide text-sky-dark">
+              <span key={badge} className="rounded-full bg-white px-3 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-black uppercase tracking-wide text-sky-dark">
                 {badge}
               </span>
             ))}
@@ -96,18 +101,19 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section id="formations" className="section-padding bg-white">
+      {/* ── Formations ────────────────────────────────────────── */}
+      <section id="formations" className="py-14 sm:section-padding bg-white dark:bg-body">
         <SectionHeader
           title="Type. Think. Code. Create."
           subtitle="Un parcours pour chaque âge: coding, STEM, robotique, créativité, IA et web."
         />
         <div className="container-shell grid gap-6 lg:grid-cols-[.78fr_1.22fr]">
-          <div className="rounded-brand border-2 border-[#E8EEF6] bg-white p-6">
-            <h3 className="font-display text-2xl font-black text-amber">Elite Code Basics</h3>
-            <p className="mt-3 text-sm font-bold leading-6 text-ink-soft">
+          <div className="rounded-brand border-2 border-[#E8EEF6] bg-white p-5 sm:p-6 dark:border-border dark:bg-surface">
+            <h3 className="font-display text-xl sm:text-2xl font-black text-amber">Elite Code Basics</h3>
+            <p className="mt-3 text-sm font-bold leading-6 text-ink-soft dark:text-ink-soft">
               Les premiers pas: logique, clavier, blocs, robots et petites victoires visibles dès la première séance.
             </p>
-            <ul className="mt-5 grid gap-3 text-sm font-bold text-ink">
+            <ul className="mt-5 grid gap-3 text-sm font-bold text-ink dark:text-ink">
               {["Think logically and sequence steps", "Grow confident with coding tools", "Work independently from the start"].map((item) => (
                 <li key={item} className="flex items-center gap-2">
                   <Star className="size-4 fill-amber text-amber" />
@@ -117,14 +123,14 @@ export default async function HomePage() {
             </ul>
             <div className="mt-6 grid gap-3">
               {programs.slice(0, 4).map((program, index) => (
-                <Link key={program.id} href="/inscription" className="flex items-center justify-between rounded-2xl border-2 border-[#EEF3FA] bg-surface p-4 font-black transition hover:border-sky">
-                  <span>{program.title}</span>
-                  <span className={`rounded-full px-3 py-1 text-xs ${programPill(index)}`}>{program.ageRange}</span>
+                <Link key={program.id} href="/inscription" className="flex items-center justify-between rounded-2xl border-2 border-[#EEF3FA] bg-surface p-3 sm:p-4 font-black transition hover:border-sky dark:border-border dark:bg-surface dark:text-ink">
+                  <span className="text-sm">{program.title}</span>
+                  <span className={`rounded-full px-2 sm:px-3 py-1 text-[10px] sm:text-xs ${programPill(index)}`}>{program.ageRange}</span>
                 </Link>
               ))}
             </div>
           </div>
-          <div className="rounded-brand border-2 border-sky bg-[#BFEFFF] p-5">
+          <div className="hidden lg:block rounded-brand border-2 border-sky bg-[#BFEFFF] p-5">
             <div className="rounded-[22px] border-2 border-white bg-sky p-4">
               <div className="rounded-[18px] bg-[#9BE7FF] p-5">
                 <div className="grid min-h-[360px] place-items-center rounded-[18px] border-2 border-white bg-[#DFFAFF] p-6">
@@ -143,113 +149,118 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section id="how-it-works" className="bg-[#F4F8FC] py-20">
+      {/* ── How it works ──────────────────────────────────────── */}
+      <section id="how-it-works" className="bg-[#F4F8FC] py-14 sm:py-20 dark:bg-body">
         <SectionHeader
           title="How it works in your school"
-          subtitle="Simple pour parents, clair pour teachers, motivant pour élèves."
+          subtitle="Simple pour parents, motivant pour élèves."
         />
-        <div className="container-shell grid gap-5 md:grid-cols-3">
-            {([
-    [School, "Sign up & validate", "Le parent fait une demande; l'admin valide avant de créer l'accès."],
-    [MonitorPlay, "Students play", "L'élève apprend avec missions, robots, projets et badges."],
-    [GraduationCap, "Track progress", "Parent et teacher voient portfolio, certifs et progression."]
-  ] as const).map(([Icon, title, text]) => (
-    <article key={title} className="rounded-brand border-2 border-[#E8EEF6] bg-white p-8 text-center">
-      <Icon className="mx-auto size-12 text-sky" />
-      <h3 className="mt-5 font-display text-2xl font-black">{title}</h3>
-      <p className="mt-3 text-sm font-semibold leading-6 text-ink-soft">{text}</p>
-    </article>
-  ))}
+        <div className="container-shell grid gap-4 sm:grid-cols-3">
+          {([
+            [School, "Sign up & validate", "Le parent fait une demande; l'admin valide avant de créer l'accès."],
+            [MonitorPlay, "Students play", "L'élève apprend avec missions, robots, projets et badges."],
+            [GraduationCap, "Track progress", "Parent voit portfolio, certifs et progression."]
+          ] as const).map(([Icon, title, text]) => (
+            <article key={title} className="rounded-brand border-2 border-[#E8EEF6] bg-white p-6 sm:p-8 text-center dark:border-border dark:bg-surface">
+              <Icon className="mx-auto size-10 sm:size-12 text-sky" />
+              <h3 className="mt-4 sm:mt-5 font-display text-xl sm:text-2xl font-black dark:text-ink">{title}</h3>
+              <p className="mt-3 text-sm font-semibold leading-6 text-ink-soft dark:text-ink-soft">{text}</p>
+            </article>
+          ))}
         </div>
       </section>
 
-      <section className="relative bg-sky py-20 text-center text-white">
+      {/* ── CTA banner ────────────────────────────────────────── */}
+      <section className="relative bg-sky py-14 sm:py-20 text-center text-white">
         <div className="container-shell">
           <span className="tag bg-pink">Ready to get started?</span>
-          <h2 className="mx-auto mt-4 max-w-3xl font-display text-5xl font-black tracking-[-0.04em]">
+          <h2 className="mx-auto mt-4 max-w-3xl font-display text-3xl sm:text-5xl font-black tracking-[-0.04em]">
             Get started with your class today
           </h2>
-          <p className="mx-auto mt-4 max-w-xl font-bold leading-7 text-white/90">
-            Crée une demande en quelques étapes. L'équipe confirme le niveau et le meilleur parcours.
+          <p className="mx-auto mt-4 max-w-xl text-sm sm:text-base font-bold leading-7 text-white/90">
+            Crée une demande en quelques étapes. L&apos;équipe confirme le niveau et le meilleur parcours.
           </p>
-          <Link href="/inscription" className="mt-8 inline-flex rounded-full bg-white px-8 py-3 text-sm font-black uppercase tracking-wide text-sky-dark">
+          <Link href="/inscription" className="mt-7 inline-flex rounded-full bg-white px-6 sm:px-8 py-3 text-xs sm:text-sm font-black uppercase tracking-wide text-sky-dark">
             Create your free account <ArrowRight data-icon="inline-end" />
           </Link>
         </div>
       </section>
 
-      <section id="materiel" className="section-padding bg-white">
+      {/* ── Building skills ───────────────────────────────────── */}
+      <section id="materiel" className="py-14 sm:section-padding bg-white dark:bg-body">
         <SectionHeader
           title="Building skills that last"
           subtitle="Des compétences durables grâce aux jeux, aux robots, aux projets et à la créativité."
         />
-        <div className="container-shell grid gap-8 lg:grid-cols-[.8fr_1.2fr]">
-          <div className="grid gap-4">
+        <div className="container-shell grid gap-6 lg:grid-cols-[.8fr_1.2fr]">
+          <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
             {learningSteps.map(([title, text], index) => (
-              <article key={title} className={`rounded-brand border-2 bg-white p-6 ${["border-amber", "border-sky", "border-pink"][index]}`}>
-                <h3 className={`font-display text-3xl font-black ${["text-amber", "text-sky", "text-pink"][index]}`}>{title}</h3>
-                <p className="mt-2 text-sm font-semibold leading-6 text-ink-soft">{text}</p>
+              <article key={title} className={`rounded-brand border-2 bg-white p-5 sm:p-6 dark:bg-surface ${["border-amber", "border-sky", "border-pink"][index]}`}>
+                <h3 className={`font-display text-2xl sm:text-3xl font-black ${["text-amber", "text-sky", "text-pink"][index]}`}>{title}</h3>
+                <p className="mt-2 text-sm font-semibold leading-6 text-ink-soft dark:text-ink-soft">{text}</p>
               </article>
             ))}
           </div>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 grid-cols-2 sm:grid-cols-2">
             {hardware.map(([Icon, name, description], index) => (
-              <article key={name} className="rounded-[1.4rem] border-2 border-[#E8EEF6] bg-surface p-6 transition hover:border-sky">
-                <div className={`mb-5 flex size-12 items-center justify-center rounded-2xl ${programIconBg(index)}`}>
-                  <Icon className="text-ink" />
+              <article key={name} className="rounded-[1.4rem] border-2 border-[#E8EEF6] bg-surface p-4 sm:p-6 transition hover:border-sky dark:border-border dark:bg-surface">
+                <div className={`mb-4 flex size-10 sm:size-12 items-center justify-center rounded-2xl ${programIconBg(index)}`}>
+                  <Icon className="text-ink dark:text-ink size-5 sm:size-6" />
                 </div>
-                <h3 className="font-display text-lg font-black">{name}</h3>
-                <p className="mt-2 text-sm font-semibold leading-6 text-ink-soft">{description}</p>
+                <h3 className="font-display text-base sm:text-lg font-black dark:text-ink">{name}</h3>
+                <p className="mt-1 text-xs sm:text-sm font-semibold leading-5 sm:leading-6 text-ink-soft dark:text-ink-soft">{description}</p>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="competition" className="bg-[#FFF2D7] py-20">
-        <div className="container-shell grid items-center gap-8 rounded-[34px] border-2 border-[#FFD489] bg-cream p-8 lg:grid-cols-[.85fr_1.15fr]">
+      {/* ── Competition ───────────────────────────────────────── */}
+      <section id="competition" className="bg-[#FFF2D7] py-12 sm:py-20 dark:bg-body">
+        <div className="container-shell grid items-center gap-8 rounded-[24px] sm:rounded-[34px] border-2 border-[#FFD489] bg-cream p-6 sm:p-8 dark:border-border dark:bg-surface lg:grid-cols-[.85fr_1.15fr]">
           <div>
             <span className="tag">Mission annuelle</span>
-            <h2 className="mt-4 font-display text-5xl font-black tracking-[-0.04em] text-ink">Mission Planète Mars</h2>
-            <p className="mt-4 font-semibold leading-8 text-ink-soft">
+            <h2 className="mt-4 font-display text-3xl sm:text-5xl font-black tracking-[-0.04em] text-ink dark:text-ink">Mission Planète Mars</h2>
+            <p className="mt-4 text-sm sm:text-base font-semibold leading-7 sm:leading-8 text-ink-soft dark:text-ink-soft">
               Une compétition façon mission control: stratégie, robotique, présentation et certificat final.
             </p>
-            <Link href="/inscription" className="btn-primary mt-7">Join the mission</Link>
+            <Link href="/inscription" className="btn-primary mt-6 sm:mt-7 text-xs sm:text-sm">Join the mission</Link>
           </div>
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-3">
             {learningSteps.map(([title, text], index) => (
-              <div key={title} className="rounded-3xl border-2 border-white bg-white p-5">
-                <span className="flex size-12 items-center justify-center rounded-full bg-sky font-display text-xl font-black text-white">0{index + 1}</span>
-                <h3 className="mt-4 font-display text-xl font-black">{title}</h3>
-                <p className="mt-2 text-sm font-semibold text-ink-soft">{text}</p>
+              <div key={title} className="rounded-2xl sm:rounded-3xl border-2 border-white bg-white p-4 sm:p-5 dark:border-border dark:bg-surface">
+                <span className="flex size-10 sm:size-12 items-center justify-center rounded-full bg-sky font-display text-lg sm:text-xl font-black text-white">0{index + 1}</span>
+                <h3 className="mt-3 sm:mt-4 font-display text-base sm:text-xl font-black dark:text-ink">{title}</h3>
+                <p className="mt-2 text-xs sm:text-sm font-semibold text-ink-soft dark:text-ink-soft">{text}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="portfolios" className="section-padding bg-[#C9F1FF]">
+      {/* ── Portfolios ────────────────────────────────────────── */}
+      <section id="portfolios" className="py-14 sm:section-padding bg-[#C9F1FF] dark:bg-body">
         <SectionHeader
           title="Loved by kids. Clear for parents."
           subtitle="Chaque élève a un portfolio: projets, certificats, galerie, progression et confidentialité parent."
         />
-        <div className="container-shell grid gap-5 md:grid-cols-3">
+        <div className="container-shell grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {portfolios.map((student, index) => (
             <Link
               key={student.id}
-              href={`/portfolio/${student.slug}`}
-              className="rounded-brand border-2 border-white bg-white p-6 transition hover:border-sky"
+              href={`/portfolios/${student.slug}`}
+              className="rounded-brand border-2 border-white bg-white p-5 sm:p-6 transition hover:border-sky dark:border-border dark:bg-surface"
             >
-              <div className="flex items-center gap-4">
-                <div className={`flex size-16 items-center justify-center rounded-3xl font-display text-2xl font-black text-white ${studentAvatarBg(index)}`}>
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className={`flex size-12 sm:size-16 items-center justify-center rounded-2xl sm:rounded-3xl font-display text-xl sm:text-2xl font-black text-white ${studentAvatarBg(index)}`}>
                   {student.avatar}
                 </div>
                 <div>
-                  <h3 className="font-display text-xl font-black">{student.firstName} {student.lastName}</h3>
-                  <p className="text-sm font-bold text-ink-soft">{student.levelLabel}</p>
+                  <h3 className="font-display text-base sm:text-xl font-black dark:text-ink">{student.firstName} {student.lastName}</h3>
+                  <p className="text-xs sm:text-sm font-bold text-ink-soft dark:text-ink-soft">{student.levelLabel}</p>
                 </div>
               </div>
-              <div className="mt-6 grid grid-cols-3 gap-2 text-center text-sm">
+              <div className="mt-5 grid grid-cols-3 gap-2 text-center text-sm">
                 <MiniStat value={student.projects.length} label="Projets" />
                 <MiniStat value={student.certifications.length} label="Certifs" />
                 <MiniStat value={`${student.hours}h`} label="Code" />
@@ -259,16 +270,17 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section id="contact-support" className="section-padding bg-white">
-        <div className="container-shell grid gap-12 lg:grid-cols-[.85fr_1.15fr]">
+      {/* ── Contact ───────────────────────────────────────────── */}
+      <section id="contact-support" className="py-14 sm:section-padding bg-white dark:bg-body">
+        <div className="container-shell grid gap-10 lg:grid-cols-[.85fr_1.15fr]">
           <div>
             <span className="tag">Support</span>
-            <h2 className="mt-4 font-display text-5xl font-black tracking-[-0.04em]">Bring Elite Code to your child.</h2>
-            <p className="mt-4 font-semibold leading-8 text-ink-soft">
-              Question rapide avant l'inscription? Contactez l'équipe sans remplir la demande complète.
+            <h2 className="mt-4 font-display text-3xl sm:text-5xl font-black tracking-[-0.04em] dark:text-ink">Bring Elite Code to your child.</h2>
+            <p className="mt-4 text-sm sm:text-base font-semibold leading-7 sm:leading-8 text-ink-soft dark:text-ink-soft">
+              Question rapide avant l&apos;inscription? Contactez l&apos;équipe sans remplir la demande complète.
             </p>
-            <Link href="/inscription" className="btn-primary mt-8 inline-flex">
-              Aller à l'inscription <ArrowRight data-icon="inline-end" />
+            <Link href="/inscription" className="btn-primary mt-7 inline-flex text-xs sm:text-sm">
+              Aller à l&apos;inscription <ArrowRight data-icon="inline-end" />
             </Link>
           </div>
           <QuickContactForm />
@@ -330,19 +342,19 @@ function GameBoard() {
 
 function SectionHeader({ title, subtitle }: { title: string; subtitle: string }) {
   return (
-    <div className="container-shell mb-14 text-center">
-      <h2 className="mx-auto max-w-3xl font-display text-4xl font-black tracking-[-0.05em] text-ink md:text-6xl">{title}</h2>
-      <p className="mx-auto mt-4 max-w-2xl text-base font-semibold leading-8 text-ink-soft">{subtitle}</p>
+    <div className="container-shell mb-10 sm:mb-14 text-center">
+      <h2 className="mx-auto max-w-3xl font-display text-2xl sm:text-4xl font-black tracking-[-0.05em] text-ink dark:text-ink md:text-5xl lg:text-6xl">{title}</h2>
+      <p className="mx-auto mt-3 sm:mt-4 max-w-2xl text-sm sm:text-base font-semibold leading-7 sm:leading-8 text-ink-soft dark:text-ink-soft">{subtitle}</p>
     </div>
   );
 }
 
 function MiniStat({ value, label }: { value: string | number; label: string }) {
   return (
-    <span className="rounded-2xl border-2 border-[#E8EEF6] bg-surface p-3">
-      <strong className="font-display text-lg font-black">{value}</strong>
+    <span className="rounded-2xl border-2 border-[#E8EEF6] bg-surface p-3 dark:border-border dark:bg-surface">
+      <strong className="font-display text-lg font-black dark:text-ink">{value}</strong>
       <br />
-      <small className="font-bold text-ink-soft">{label}</small>
+      <small className="font-bold text-ink-soft dark:text-ink-soft">{label}</small>
     </span>
   );
 }
@@ -358,5 +370,3 @@ function programIconBg(index: number) {
 function studentAvatarBg(index: number) {
   return ["bg-sky", "bg-pink", "bg-amber"][index % 3];
 }
-
-

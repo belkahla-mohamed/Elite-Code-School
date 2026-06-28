@@ -23,7 +23,7 @@ export function PortfolioTabs({ student }: { student: StudentPortfolio }) {
           <button
             key={id}
             onClick={() => setTab(id as Tab)}
-            className={`rounded-brand-sm px-4 py-2 text-sm font-semibold transition ${tab === id ? "bg-white text-accent shadow" : "text-ink-soft hover:text-accent"}`}
+            className={`rounded-brand-sm px-4 py-2 text-sm font-semibold transition ${tab === id ? "bg-white dark:bg-surface text-accent shadow" : "text-ink-soft hover:text-accent"}`}
           >
             {label}
           </button>
@@ -35,7 +35,7 @@ export function PortfolioTabs({ student }: { student: StudentPortfolio }) {
       {tab === "certs" && (
         <div className="grid gap-5 md:grid-cols-2">
           {student.certifications.map((certification) => (
-            <article key={certification.id} className="overflow-hidden rounded-brand border border-ink/10 bg-white">
+            <article key={certification.id} className="overflow-hidden rounded-brand border border-ink/10 bg-white dark:bg-surface">
               <div className="p-8 text-white" style={{ background: certification.gradient }}>
                 <div className="mb-5 text-5xl">{certification.emoji}</div>
                 <h3 className="font-display text-2xl font-bold">{certification.title}</h3>
@@ -55,7 +55,7 @@ export function PortfolioTabs({ student }: { student: StudentPortfolio }) {
       {tab === "skills" && (
         <div className="grid gap-5 md:grid-cols-2">
           {["Logique algorithmique", "Créativité", "Robotique", "Collaboration"].map((skill, index) => (
-            <div key={skill} className="rounded-brand border border-ink/10 bg-white p-5">
+            <div key={skill} className="rounded-brand border border-ink/10 bg-white dark:bg-surface p-5">
               <div className="mb-2 flex justify-between text-sm font-semibold">
                 <span>{skill}</span>
                 <span>{[82, 94, 76, 88][index]}%</span>
@@ -87,7 +87,7 @@ function ProjectGrid({ projects, empty }: { projects: StudentPortfolio["projects
   return (
     <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
       {projects.map((project) => (
-        <article key={project.id} className="overflow-hidden rounded-brand border border-ink/10 bg-white shadow-sm">
+        <article key={project.id} className="overflow-hidden rounded-brand border border-ink/10 bg-white dark:bg-surface shadow-sm">
           <div className="relative flex min-h-40 items-center justify-center text-6xl text-white" style={{ background: project.gradient }}>
             {project.emoji}
             <span className="absolute right-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-ink">

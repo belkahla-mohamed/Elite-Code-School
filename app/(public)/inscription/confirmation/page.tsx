@@ -13,14 +13,14 @@ export default function ConfirmationPage() {
           Votre demande d&apos;inscription a bien été reçue. L&apos;équipe Elite Code School vous
           contactera sous <strong>24 heures</strong> pour confirmer le parcours et planifier la séance d&apos;essai.
         </p>
-        <div className="mt-6 rounded-brand border-2 border-[#E8EEF6] bg-surface p-4 text-sm font-semibold text-ink-soft">
+        <div className="mt-6 rounded-brand border-2 border-border bg-surface p-4 text-sm font-semibold text-ink-soft">
           Vous recevrez un email de confirmation à l&apos;adresse fournie.
         </div>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Link href="/" className="inline-flex items-center gap-2 rounded-full bg-sky px-6 py-3 text-sm font-black uppercase tracking-wide text-white hover:bg-sky-dark transition">
             <Home className="size-4" /> Accueil
           </Link>
-          <Link href="/curricula" className="inline-flex items-center gap-2 rounded-full border-2 border-[#E8EEF6] bg-white px-6 py-3 text-sm font-black uppercase tracking-wide text-ink hover:border-sky transition">
+          <Link href="/curricula" className="inline-flex items-center gap-2 rounded-full border-2 border-border bg-white dark:bg-surface px-6 py-3 text-sm font-black uppercase tracking-wide text-ink hover:border-sky transition">
             <BookOpen className="size-4" /> Programmes
           </Link>
         </div>

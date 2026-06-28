@@ -40,7 +40,7 @@ export function ConfirmDialog({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={(e) => { if (e.target === e.currentTarget) handleClose(); }}>
       <div className={cn("fixed inset-0 bg-black/40 transition-opacity duration-200", visible ? "opacity-100" : "opacity-0")} />
       <div className={cn(
-        "relative w-full max-w-sm rounded-brand bg-white border-2 border-[#E8EEF6] shadow-lg p-6",
+        "relative w-full max-w-sm rounded-brand bg-white dark:bg-surface border-2 border-[#E8EEF6] dark:border-border shadow-lg p-6",
         "transition-all duration-200",
         visible ? "opacity-100 scale-100" : "opacity-0 scale-95"
       )}>
@@ -50,7 +50,7 @@ export function ConfirmDialog({
         <h2 className="font-display text-xl font-black text-ink pr-8">{title}</h2>
         <p className="mt-2 text-sm text-ink-soft">{description}</p>
         <div className="mt-6 flex gap-3 justify-end">
-          <button onClick={handleClose} className="rounded-full border-2 border-[#E8EEF6] px-4 py-2 text-sm font-bold text-ink-soft hover:border-sky transition">
+          <button onClick={handleClose} className="rounded-full border-2 border-[#E8EEF6] dark:border-border px-4 py-2 text-sm font-bold text-ink-soft hover:border-sky transition">
             {cancelLabel}
           </button>
           <button

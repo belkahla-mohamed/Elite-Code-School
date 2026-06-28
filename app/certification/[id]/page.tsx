@@ -29,7 +29,7 @@ export default async function CertificationPage({ params }: Props) {
   return (
     <main className="min-h-screen bg-surface py-16">
       <section className="container-shell max-w-lg">
-        <div className="rounded-brand border-2 border-[#E6EEF8] bg-white p-8 text-center shadow-card">
+        <div className="rounded-brand border-2 border-[#E6EEF8] dark:border-border bg-white dark:bg-surface p-8 text-center shadow-card">
           <div className="mx-auto flex size-20 items-center justify-center rounded-2xl text-5xl" style={{ background: certification.gradient }}>
             {certification.emoji}
           </div>

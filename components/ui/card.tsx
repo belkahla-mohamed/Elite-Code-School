@@ -10,9 +10,9 @@ function Card({ variant = "default", className, children, ...props }: CardProps)
   return (
     <div
       className={cn(
-        "rounded-brand border-2 bg-white",
-        variant === "default" && "border-[#E8EEF6]",
-        variant === "interactive" && "border-[#E8EEF6] transition hover:border-sky hover:-translate-y-0.5",
+        "rounded-brand border-2 bg-white dark:bg-surface",
+        variant === "default" && "border-[#E8EEF6] dark:border-border",
+        variant === "interactive" && "border-[#E8EEF6] dark:border-border transition hover:border-sky hover:-translate-y-0.5",
         variant === "bordered" && "border-sky",
         className
       )}
@@ -41,7 +41,7 @@ function CardBody({ className, children, ...props }: React.HTMLAttributes<HTMLDi
 
 function CardFooter({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn("px-6 pt-4 pb-6 border-t-2 border-[#E8EEF6]", className)} {...props}>
+    <div className={cn("px-6 pt-4 pb-6 border-t-2 border-[#E8EEF6] dark:border-border", className)} {...props}>
       {children}
     </div>
   );

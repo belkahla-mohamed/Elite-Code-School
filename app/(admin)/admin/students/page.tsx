@@ -58,7 +58,7 @@ export default function StudentsPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Rechercher un élève..."
-          className="w-full rounded-brand-sm border-2 border-[#E8EEF6] bg-white pl-10 pr-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none"
+          className="w-full rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface pl-10 pr-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none"
         />
       </div>
 
@@ -71,7 +71,7 @@ export default function StudentsPage() {
       ) : (
         <div className="space-y-3">
           {filtered.map((student) => (
-            <div key={student.id} className="flex items-center justify-between rounded-brand border-2 border-[#E8EEF6] bg-white px-6 py-4 transition hover:border-sky">
+            <div key={student.id} className="flex items-center justify-between rounded-brand border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface px-6 py-4 transition hover:border-sky">
               <div className="flex items-center gap-4">
                 <div className="flex size-10 items-center justify-center rounded-full bg-sky font-display font-black text-sm text-white">
                   {student.avatar}
@@ -85,7 +85,7 @@ export default function StudentsPage() {
                 <span className={`rounded-full px-3 py-1 text-xs font-bold ${student.isPublic ? "bg-lime/15 text-lime" : "bg-ink-soft/10 text-ink-soft"}`}>
                   {student.isPublic ? "Public" : "Privé"}
                 </span>
-                <Link href={`/admin/students/${student.id}`} className="flex items-center gap-1 rounded-full border-2 border-[#E8EEF6] px-3 py-1.5 text-xs font-bold text-ink-soft hover:border-sky transition">
+                <Link href={`/admin/students/${student.id}`} className="flex items-center gap-1 rounded-full border-2 border-[#E8EEF6] dark:border-border px-3 py-1.5 text-xs font-bold text-ink-soft hover:border-sky transition">
                   <Eye className="size-3" /> Gérer
                 </Link>
               </div>

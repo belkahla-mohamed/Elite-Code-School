@@ -25,7 +25,7 @@ export default function Error({
         </button>
         <Link
           href="/"
-          className="inline-flex items-center gap-2 rounded-full border-2 border-[#E8EEF6] bg-white px-6 py-3 text-sm font-black uppercase tracking-wide text-ink hover:border-sky transition"
+          className="inline-flex items-center gap-2 rounded-full border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface px-6 py-3 text-sm font-black uppercase tracking-wide text-ink hover:border-sky transition"
         >
           Accueil
         </Link>

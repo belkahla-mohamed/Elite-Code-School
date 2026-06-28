@@ -36,7 +36,7 @@ function ProgressBar({
     <div className={cn("flex items-center gap-3", className)}>
       <div
         className={cn(
-          "flex-1 rounded-full bg-[#E8EEF6] overflow-hidden",
+          "flex-1 rounded-full bg-[#E8EEF6] dark:bg-slate-700 overflow-hidden",
           heightStyles[size]
         )}
       >

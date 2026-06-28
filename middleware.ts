@@ -1,15 +1,40 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-export function middleware(request: NextRequest) {
+async function verifyTokenEdge(token: string): Promise<Record<string, unknown> | null> {
+  try {
+    const parts = token.split(".");
+    if (parts.length !== 3) return null;
+    const [header, body, sig] = parts;
+    const secret = process.env.AUTH_COOKIE_SECRET ?? "elite-code-school-dev-secret";
+    const encoder = new TextEncoder();
+    const data = encoder.encode(`${header}.${body}.${secret}`);
+    const hash = await crypto.subtle.digest("SHA-256", data);
+    const bytes = new Uint8Array(hash);
+    let binary = "";
+    for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+    const expected = btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
+    if (sig !== expected) return null;
+    const payload = JSON.parse(atob(body));
+    if (payload.exp && payload.exp < Math.floor(Date.now() / 1000)) return null;
+    return payload;
+  } catch {
+    return null;
+  }
+}
+
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const adminCookie = request.cookies.get("ecs_admin")?.value;
   const parentCookie = request.cookies.get("ecs_parent_student")?.value;
-  const teacherCookie = request.cookies.get("ecs_teacher")?.value;
 
-  // Protect admin routes (except /admin login page itself)
-  if (pathname.startsWith("/admin") && pathname !== "/admin" && !pathname.startsWith("/api/")) {
+  // Protect admin/dashboard routes – redirect to standalone admin login
+  if (
+    (pathname.startsWith("/admin") || pathname.startsWith("/dashboard")) &&
+    pathname !== "/admin-login" &&
+    !pathname.startsWith("/api/")
+  ) {
     if (!adminCookie) {
-      return NextResponse.redirect(new URL("/admin", request.url));
+      return NextResponse.redirect(new URL("/admin-login", request.url));
     }
   }
 
@@ -18,12 +43,9 @@ export function middleware(request: NextRequest) {
     if (!parentCookie) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
-  }
-
-  // Protect teacher routes
-  if (pathname.startsWith("/teacher") && !pathname.startsWith("/api/")) {
-    if (!teacherCookie) {
-      return NextResponse.redirect(new URL("/teacher", request.url));
+    const payload = await verifyTokenEdge(parentCookie);
+    if (!payload || typeof payload.studentId !== "string") {
+      return NextResponse.redirect(new URL("/login", request.url));
     }
   }
 
@@ -31,5 +53,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/parent/:path*", "/teacher/:path*"],
+  matcher: ["/admin", "/admin/:path*", "/dashboard", "/dashboard/:path*", "/parent/:path*"],
 };

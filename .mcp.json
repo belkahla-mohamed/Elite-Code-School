@@ -1,0 +1,31 @@
+{
+  "mcpServers": {
+    "github": {
+      "description": "GitHub integration — read repos, issues, PRs, review code, compare branches",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      }
+    },
+    "supabase": {
+      "description": "Supabase/PostgreSQL — inspect database, query tables, check schema, optimize SQL",
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-supabase"],
+      "env": {
+        "SUPABASE_URL": "${NEXT_PUBLIC_SUPABASE_URL}",
+        "SUPABASE_SERVICE_ROLE_KEY": "${SUPABASE_SERVICE_ROLE_KEY}"
+      }
+    },
+    "playwright": {
+      "description": "Browser automation — navigate pages, fill forms, test flows, capture screenshots",
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-playwright"]
+    },
+    "postgres": {
+      "description": "PostgreSQL direct — raw SQL queries, EXPLAIN, index analysis",
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-server-postgres", "${DATABASE_URL}"]
+    }
+  }
+}

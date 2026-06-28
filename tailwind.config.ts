@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  darkMode: "class",
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -9,38 +10,37 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: "#171717",
-        "ink-soft": "#5F6572",
-        surface: "#F6FBFF",
-        accent: "#12AEEA",
-        sky: "#12AEEA",
-        "sky-dark": "#0786B8",
-        cyan: "#61D7F7",
-        amber: "#FFB31A",
-        lime: "#75D64B",
-        violet: "#8B5CF6",
-        mint: "#2DD4BF",
-        coral: "#FF6D8E",
-        pink: "#C12A91",
-        cream: "#FFF4DD"
+        body: "var(--background)",
+        surface: "var(--surface)",
+        ink: "var(--text)",
+        "ink-soft": "var(--text-soft)",
+        border: "var(--border)",
+        sky: {
+          DEFAULT: "#0284c7",
+          dark: "#075985",
+          light: "#38bdf8",
+        },
+        accent: "#0284c7",
+        amber: "#f59e0b",
+        lime: "#84cc16",
+        violet: "#8b5cf6",
+        mint: "#14b8a6",
+        coral: "#f43f5e",
+        pink: "#c026d3",
+        cream: "#fef3c7",
       },
       fontFamily: {
         body: ["var(--font-body)", "sans-serif"],
         display: ["var(--font-display)", "sans-serif"],
-        mono: ["var(--font-mono)", "monospace"]
+        mono: ["var(--font-mono)", "monospace"],
       },
       borderRadius: {
         brand: "28px",
-        "brand-sm": "16px"
+        "brand-sm": "16px",
       },
-      boxShadow: {
-        glow: "none",
-        card: "none",
-        soft: "none"
-      }
-    }
+    },
   },
-  plugins: []
+  plugins: [],
 };
 
 export default config;

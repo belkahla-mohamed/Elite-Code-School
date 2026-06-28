@@ -1,5 +1,5 @@
 ﻿import { NextResponse } from "next/server";
-import { isAdminAuthenticated, isTeacherAuthenticated } from "@/lib/auth";
+import { isAdminAuthenticated } from "@/lib/auth";
 import { addProject } from "@/lib/store";
 import { projectSchema } from "@/lib/validation";
 
@@ -9,7 +9,7 @@ type Props = {
 
 export async function POST(request: Request, { params }: Props) {
   try {
-    if (!(await isAdminAuthenticated()) && !(await isTeacherAuthenticated())) {
+    if (!(await isAdminAuthenticated())) {
       return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
     }
 

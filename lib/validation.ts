@@ -30,17 +30,9 @@ export const certificationSchema = z.object({
   emoji: z.string().trim().default("🏅"),
   gradient: z.string().trim().default("linear-gradient(135deg,#f59e0b,#f97316)"),
   imageUrl: z.string().trim().optional(),
-});
-
-export const gallerySchema = z.object({
+});export const gallerySchema = z.object({
   label: z.string().trim().min(2),
   emoji: z.string().trim().default("📸"),
   gradient: z.string().trim().default("linear-gradient(135deg,#06b6d4,#0ea5e9)"),
   imageUrl: z.string().trim().optional(),
-});
-
-export const teacherSchema = z.object({
-  fullName: z.string().trim().min(2, "Nom teacher requis"),
-  email: z.string().trim().email("Email teacher invalide"),
-  specialty: z.string().trim().optional()
-});
+});

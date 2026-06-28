@@ -6,7 +6,7 @@ import { ArrowLeft, Trash2, Plus, Loader2, Camera, X, Pencil } from "lucide-reac
 import { showToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { FileUpload } from "@/components/ui/file-upload";
-import NextImage from "next/image";
+import Image from "next/image";
 
 interface Student {
   id: string;
@@ -139,7 +139,7 @@ export default function StudentDetailPage() {
 
   async function deleteStudent() {
     const res = await fetch(`/api/students/${id}`, { method: "DELETE" });
-    if (res.ok) { showToast("Élève supprimé", "info"); router.push("/admin/students"); }
+    if (res.ok) { showToast("Élève supprimé", "info"); router.push("/dashboard/students"); }
     else { const j = await res.json(); showToast(j.error ?? "Erreur", "error"); }
     setDeleteStudentConfirm(false);
   }
@@ -181,9 +181,9 @@ export default function StudentDetailPage() {
         <h2 className="mb-4 font-display text-xl font-black">Galerie ({student.gallery.length})</h2>
         <div className="mb-4 flex flex-wrap gap-3">
           {student.gallery.map((g: any) => (
-            <div key={g.id} className="group relative h-24 w-24 overflow-hidden rounded-brand-sm border-2 border-[#E8EEF6] bg-surface">
+            <div key={g.id} className="group relative h-24 w-24 overflow-hidden rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-surface">
               {g.imageUrl ? (
-                <NextImage src={g.imageUrl} alt={g.label} fill className="object-cover" />
+                <Image src={g.imageUrl} alt={g.label} fill className="object-cover" />
               ) : (
                 <div className="flex h-full items-center justify-center text-3xl" style={{ background: g.gradient }}>
                   {g.emoji}
@@ -191,7 +191,7 @@ export default function StudentDetailPage() {
               )}
             </div>
           ))}
-          <div className="flex h-24 w-24 items-center justify-center rounded-brand-sm border-2 border-dashed border-[#E8EEF6] bg-white">
+          <div className="flex h-24 w-24 items-center justify-center rounded-brand-sm border-2 border-dashed border-[#E8EEF6] dark:border-border bg-white dark:bg-surface">
             <FileUpload folder={`gallery/${id}`} onUploaded={addGalleryImage}>
               <Plus className="size-6 text-ink-soft" />
             </FileUpload>
@@ -204,7 +204,7 @@ export default function StudentDetailPage() {
         <h2 className="mb-4 font-display text-xl font-black">Projets ({student.projects.length})</h2>
         <div className="mb-4 space-y-2">
           {student.projects.map((p: any) => (
-            <div key={p.id} className="flex items-center justify-between rounded-brand-sm border-2 border-[#E8EEF6] bg-white px-4 py-3">
+            <div key={p.id} className="flex items-center justify-between rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface px-4 py-3">
               <span className="text-sm font-bold">{p.emoji} {p.title}</span>
               <button onClick={() => setConfirmDelete({ type: "project", name: p.title, id: p.id })} className="text-coral hover:text-coral/80">
                 <Trash2 className="size-4" />
@@ -212,20 +212,20 @@ export default function StudentDetailPage() {
             </div>
           ))}
         </div>
-        <form onSubmit={addProject} className="grid gap-3 rounded-brand border-2 border-[#E8EEF6] bg-white p-4 sm:grid-cols-2">
-          <input name="title" required placeholder="Titre du projet" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none" />
-          <input name="description" required placeholder="Description" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none" />
-          <input name="tags" placeholder="Tags (virgule)" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none" />
-          <input name="dateLabel" placeholder="Date affichée" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none" />
-          <select name="status" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none">
+        <form onSubmit={addProject} className="grid gap-3 rounded-brand border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface p-4 sm:grid-cols-2">
+          <input name="title" required placeholder="Titre du projet" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
+          <input name="description" required placeholder="Description" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
+          <input name="tags" placeholder="Tags (virgule)" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
+          <input name="dateLabel" placeholder="Date affichée" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
+          <select name="status" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none">
             <option value="progress">En cours</option>
             <option value="done">Terminé</option>
           </select>
-          <input name="progress" type="number" min="0" max="100" defaultValue="40" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none" />
+          <input name="progress" type="number" min="0" max="100" defaultValue="40" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
           <div className="sm:col-span-2 flex items-center gap-3">
             <FileUpload folder={`projects/${id}`} onUploaded={(url) => { setProjectCover(url); showToast("Cover ajoutée", "success"); }}>
-              <span className="inline-flex items-center gap-1 rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm font-semibold text-ink-soft hover:border-sky transition">
-                {projectCover ? "✅ Cover" : "🖼️ Cover"}
+              <span className="inline-flex items-center gap-1 rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm font-semibold text-ink-soft hover:border-sky transition">
+                 {projectCover ? "✅ Cover" : "🖼️ Cover"}
               </span>
             </FileUpload>
             <button type="submit" className="flex-1 btn-primary py-2"><Plus className="mr-1 inline size-4" /> Ajouter</button>
@@ -238,7 +238,7 @@ export default function StudentDetailPage() {
         <h2 className="mb-4 font-display text-xl font-black">Certifications ({student.certifications.length})</h2>
         <div className="mb-4 space-y-2">
           {student.certifications.map((c: any) => (
-            <div key={c.id} className="flex items-center justify-between rounded-brand-sm border-2 border-[#E8EEF6] bg-white px-4 py-3">
+            <div key={c.id} className="flex items-center justify-between rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface px-4 py-3">
               <span className="text-sm font-bold">{c.emoji} {c.title} — {c.mention}</span>
               <button onClick={() => setConfirmDelete({ type: "certification", name: c.title, id: c.id })} className="text-coral hover:text-coral/80">
                 <Trash2 className="size-4" />
@@ -246,14 +246,14 @@ export default function StudentDetailPage() {
             </div>
           ))}
         </div>
-        <form onSubmit={addCertification} className="grid gap-3 rounded-brand border-2 border-[#E8EEF6] bg-white p-4 sm:grid-cols-2">
-          <input name="title" required placeholder="Titre" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none" />
-          <input name="mention" required placeholder="Mention" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none" />
-          <input name="dateLabel" placeholder="Date" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none" />
+        <form onSubmit={addCertification} className="grid gap-3 rounded-brand border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface p-4 sm:grid-cols-2">
+          <input name="title" required placeholder="Titre" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
+          <input name="mention" required placeholder="Mention" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
+          <input name="dateLabel" placeholder="Date" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
           <div className="flex items-center gap-3">
             <FileUpload folder={`certifications/${id}`} onUploaded={(url) => { setCertifImage(url); showToast("Image ajoutée", "success"); }}>
-              <span className="inline-flex items-center gap-1 rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm font-semibold text-ink-soft hover:border-sky transition">
-                {certifImage ? "✅ Image" : "🖼️ Image"}
+              <span className="inline-flex items-center gap-1 rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm font-semibold text-ink-soft hover:border-sky transition">
+                 {certifImage ? "✅ Image" : "🖼️ Image"}
               </span>
             </FileUpload>
             <button type="submit" className="flex-1 btn-primary py-2"><Plus className="mr-1 inline size-4" /> Ajouter</button>
@@ -283,20 +283,20 @@ export default function StudentDetailPage() {
 
       {editOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4" onClick={() => setEditOpen(false)}>
-          <div className="w-full max-w-md rounded-brand bg-white p-6 shadow-card" onClick={(e) => e.stopPropagation()}>
+          <div className="w-full max-w-md rounded-brand bg-white dark:bg-surface p-6 shadow-card" onClick={(e) => e.stopPropagation()}>
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="font-display text-xl font-bold">Modifier l'élève</h2>
+              <h2 className="font-display text-xl font-bold">Modifier l&apos;élève</h2>
               <button onClick={() => setEditOpen(false)}><X className="size-5 text-ink-soft" /></button>
             </div>
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-3">
-                <input value={editForm.firstName} onChange={(e) => setEditForm({ ...editForm, firstName: e.target.value })} placeholder="Prénom" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none" />
-                <input value={editForm.lastName} onChange={(e) => setEditForm({ ...editForm, lastName: e.target.value })} placeholder="Nom" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none" />
+                <input value={editForm.firstName} onChange={(e) => setEditForm({ ...editForm, firstName: e.target.value })} placeholder="Prénom" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
+                <input value={editForm.lastName} onChange={(e) => setEditForm({ ...editForm, lastName: e.target.value })} placeholder="Nom" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
               </div>
-              <input value={editForm.age} onChange={(e) => setEditForm({ ...editForm, age: Number(e.target.value) })} type="number" placeholder="Âge" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none w-full" />
-              <input value={editForm.levelLabel} onChange={(e) => setEditForm({ ...editForm, levelLabel: e.target.value })} placeholder="Niveau" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none w-full" />
-              <input value={editForm.hours} onChange={(e) => setEditForm({ ...editForm, hours: Number(e.target.value) })} type="number" placeholder="Heures" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none w-full" />
-              <input value={editForm.parentEmail} onChange={(e) => setEditForm({ ...editForm, parentEmail: e.target.value })} type="email" placeholder="Email parent" className="rounded-brand-sm border-2 border-[#E8EEF6] px-3 py-2 text-sm focus:border-sky focus:outline-none w-full" />
+              <input value={editForm.age} onChange={(e) => setEditForm({ ...editForm, age: Number(e.target.value) })} type="number" placeholder="Âge" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none w-full" />
+              <input value={editForm.levelLabel} onChange={(e) => setEditForm({ ...editForm, levelLabel: e.target.value })} placeholder="Niveau" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none w-full" />
+              <input value={editForm.hours} onChange={(e) => setEditForm({ ...editForm, hours: Number(e.target.value) })} type="number" placeholder="Heures" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none w-full" />
+              <input value={editForm.parentEmail} onChange={(e) => setEditForm({ ...editForm, parentEmail: e.target.value })} type="email" placeholder="Email parent" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none w-full" />
             </div>
             <button onClick={saveEdit} disabled={saving} className="btn-primary mt-4 w-full py-2">{saving ? "Enregistrement..." : "Enregistrer"}</button>
           </div>

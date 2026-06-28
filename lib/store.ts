@@ -5,9 +5,8 @@ import {
   programs as seedPrograms,
   projects as seedProjects,
   students as seedStudents,
-  teachers as seedTeachers
 } from "@/data/seed";
-import { hashSecret } from "@/lib/auth";
+import { hashSecret, generateAccessSecret } from "@/lib/auth";
 import { hasSupabaseConfig, getSupabaseAdmin } from "@/lib/supabase";
 import type {
   Certification,
@@ -19,8 +18,7 @@ import type {
   ProgramLevel,
   Project,
   Student,
-  StudentPortfolio,
-  Teacher
+  StudentPortfolio
 } from "@/lib/types";
 import { slugify } from "@/lib/utils";
 import { addActivity } from "@/lib/activity-log";
@@ -31,7 +29,6 @@ type DemoStore = {
   projects: Project[];
   certifications: Certification[];
   gallery: GalleryItem[];
-  teachers: Teacher[];
 };
 
 const globalForStore = globalThis as unknown as { eliteCodeSchoolStore?: DemoStore };
@@ -44,7 +41,6 @@ function demoStore() {
       projects: structuredClone(seedProjects),
       certifications: structuredClone(seedCertifications),
       gallery: structuredClone(seedGalleryItems),
-      teachers: structuredClone(seedTeachers)
     };
   }
 
@@ -117,117 +113,29 @@ export async function getDashboardSnapshot(): Promise<DashboardSnapshot> {
     return {
       requests: store.requests,
       students: store.students.map((student) => withPortfolio(student)),
-      teachers: store.teachers,
       programs: seedPrograms
     };
   }
 
   const supabase = getSupabaseAdmin();
-  const [requestsResult, studentsResult, teachersResult, programs] = await Promise.all([
+  const [requestsResult, studentsResult, programs] = await Promise.all([
     supabase.from("inscription_requests").select("*").order("created_at", { ascending: false }),
     supabase.from("students").select("*, projects(*), certifications(*), gallery_items(*)").order("created_at", { ascending: false }),
-    supabase.from("teachers").select("*").order("created_at", { ascending: false }),
     getPrograms()
   ]);
 
   if (requestsResult.error) throw requestsResult.error;
   if (studentsResult.error) throw studentsResult.error;
-  if (teachersResult.error) throw teachersResult.error;
 
   return {
     requests: requestsResult.data.map(mapRequest),
     students: studentsResult.data.map((row) => mapStudentPortfolio(row, programs)),
-    teachers: teachersResult.data.map(mapTeacher),
     programs
   };
 }
 
-export async function createTeacher(payload: { fullName: string; email: string; specialty?: string }) {
-  const teacherSecret = `TCH-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
-  const teacher: Teacher = {
-    id: `teacher-${Date.now()}`,
-    fullName: payload.fullName,
-    email: payload.email,
-    specialty: payload.specialty,
-    secretHash: hashSecret(teacherSecret),
-    status: "active",
-    createdAt: new Date().toISOString()
-  };
-
-  if (!hasSupabaseConfig()) {
-    demoStore().teachers.unshift(teacher);
-    return { teacher, teacherSecret };
-  }
-
-  const { data, error } = await getSupabaseAdmin()
-    .from("teachers")
-    .insert({
-      full_name: payload.fullName,
-      email: payload.email,
-      specialty: payload.specialty,
-      secret_hash: hashSecret(teacherSecret),
-      status: "active"
-    })
-    .select("*")
-    .single();
-
-  if (error) throw error;
-  return { teacher: mapTeacher(data), teacherSecret };
-}
-
-export async function getTeacherByLogin(email: string, secret: string) {
-  const secretHash = hashSecret(secret);
-
-  if (!hasSupabaseConfig()) {
-    return (
-      demoStore().teachers.find(
-        (teacher) => teacher.email.toLowerCase() === email.toLowerCase() && teacher.secretHash === secretHash && teacher.status === "active"
-      ) ?? null
-    );
-  }
-
-  const { data, error } = await getSupabaseAdmin()
-    .from("teachers")
-    .select("*")
-    .ilike("email", email)
-    .eq("secret_hash", secretHash)
-    .eq("status", "active")
-    .maybeSingle();
-
-  if (error) throw error;
-  return data ? mapTeacher(data) : null;
-}
-
-export async function getTeacherDashboard(teacherId: string) {
-  if (!hasSupabaseConfig()) {
-    const store = demoStore();
-    const teacher = store.teachers.find((item) => item.id === teacherId && item.status === "active");
-    if (!teacher) return null;
-    return {
-      teacher,
-      students: store.students.map((student) => withPortfolio(student))
-    };
-  }
-
-  const supabase = getSupabaseAdmin();
-  const [teacherResult, studentsResult, programs] = await Promise.all([
-    supabase.from("teachers").select("*").eq("id", teacherId).eq("status", "active").maybeSingle(),
-    supabase.from("students").select("*, projects(*), certifications(*), gallery_items(*)").order("created_at", { ascending: false }),
-    getPrograms()
-  ]);
-
-  if (teacherResult.error) throw teacherResult.error;
-  if (studentsResult.error) throw studentsResult.error;
-  if (!teacherResult.data) return null;
-
-  return {
-    teacher: mapTeacher(teacherResult.data),
-    students: studentsResult.data.map((row) => mapStudentPortfolio(row, programs))
-  };
-}
-
 export async function acceptInscriptionRequest(id: string) {
-  const parentSecret = `ECS-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+  const parentSecret = `ECS-${generateAccessSecret()}`;
 
   if (!hasSupabaseConfig()) {
     const store = demoStore();
@@ -619,18 +527,6 @@ function mapGalleryItem(row: any): GalleryItem {
     emoji: row.emoji,
     gradient: row.gradient,
     imageUrl: row.image_url ?? undefined
-  };
-}
-
-function mapTeacher(row: any): Teacher {
-  return {
-    id: row.id,
-    fullName: row.full_name,
-    email: row.email,
-    specialty: row.specialty ?? undefined,
-    secretHash: row.secret_hash,
-    status: row.status,
-    createdAt: row.created_at
   };
 }
 

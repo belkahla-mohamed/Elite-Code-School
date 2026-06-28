@@ -15,7 +15,7 @@ export default async function InscriptionPage() {
         <div className="grid gap-10 lg:grid-cols-[.8fr_1.2fr]">
           <section>
             <span className="tag">Inscription</span>
-            <h1 className="mt-4 font-display text-5xl font-extrabold tracking-[-0.05em] text-ink">
+            <h1 className="mt-4 font-display text-3xl sm:text-5xl font-extrabold tracking-[-0.05em] text-ink">
               Une demande simple, étape par étape.
             </h1>
             <p className="mt-5 leading-8 text-ink-soft">
@@ -27,7 +27,7 @@ export default async function InscriptionPage() {
                 "Aucun élève n'est créé avant validation admin.",
                 "Le secret parent est généré après acceptation.",
               ].map((item) => (
-                <div key={item} className="flex items-center gap-3 rounded-2xl border-2 border-[#E8EEF6] bg-white p-4 text-sm font-semibold text-ink-soft">
+                <div key={item} className="flex items-center gap-3 rounded-2xl border-2 border-border bg-white dark:bg-surface p-4 text-sm font-semibold text-ink-soft">
                   <CheckCircle2 className="size-5 text-sky" />
                   {item}
                 </div>

@@ -69,7 +69,7 @@ export function ParentPortal() {
 
   if (!student) {
     return (
-      <div className="mx-auto max-w-md rounded-brand border border-ink/10 bg-white p-8 shadow-card">
+      <div className="mx-auto max-w-md rounded-brand border border-ink/10 bg-white dark:bg-surface p-8 shadow-card">
         <span className="tag">Parent</span>
         <h1 className="mt-4 font-display text-3xl font-extrabold">Espace parent</h1>
         <p className="mt-2 text-sm text-ink-soft">Demo: <code className="font-mono">parent.youssef@example.com</code> + <code className="font-mono">YOUSEEF-2026</code></p>
@@ -85,7 +85,7 @@ export function ParentPortal() {
 
   return (
     <div className="container-shell">
-      <div className="rounded-brand border border-ink/10 bg-white p-8 shadow-card">
+      <div className="rounded-brand border border-ink/10 bg-white dark:bg-surface p-8 shadow-card">
         <div className="flex flex-wrap items-center justify-between gap-5">
           <div className="flex items-center gap-4">
             <div className="flex size-16 items-center justify-center rounded-2xl font-display text-xl font-bold text-white" style={{ background: student.avatarGradient }}>{student.avatar}</div>
@@ -132,7 +132,7 @@ export function ParentPortal() {
             <h2 className="font-display text-xl font-bold">Certifications</h2>
             <div className="mt-3 space-y-2">
               {student.certifications.map((c: any) => (
-                <div key={c.id} className="flex flex-wrap items-center justify-between gap-2 rounded-brand-sm border-2 border-[#E8EEF6] bg-white px-4 py-3">
+                <div key={c.id} className="flex flex-wrap items-center justify-between gap-2 rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface px-4 py-3">
                   <span className="text-sm font-bold">{c.emoji} {c.title} — {c.mention}</span>
                   <div className="flex gap-2">
                     <button onClick={() => shareCert(c)} className="rounded-full bg-green-100 p-2 text-green-700 hover:bg-green-200 transition" title="Partager WhatsApp">
@@ -160,7 +160,7 @@ export function ParentPortal() {
             </div>
             <button
               onClick={() => { setNotifications(!notifications); showToast(notifications ? "Notifications désactivées" : "Notifications activées", "info"); }}
-              className={`relative inline-flex h-7 w-12 items-center rounded-full transition ${notifications ? "bg-sky" : "bg-gray-300"}`}>
+              className={`relative inline-flex h-7 w-12 items-center rounded-full transition ${notifications ? "bg-sky" : "bg-gray-300 dark:bg-slate-600"}`}>
               <span className={`inline-block h-5 w-5 rounded-full bg-white shadow transition ${notifications ? "translate-x-6" : "translate-x-1"}`} />
             </button>
           </div>
