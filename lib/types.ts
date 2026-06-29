@@ -105,3 +105,12 @@ export type AdminUser = {
   createdAt: string;
   lastLogin?: string;
 };
+
+export type AppNotification = {
+  id: string;
+  type: "student" | "project" | "certification" | "request" | "contact";
+  title: string;
+  description: string;
+  read: boolean;
+  createdAt: string;
+};

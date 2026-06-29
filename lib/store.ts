@@ -11,6 +11,7 @@ import { hasSupabaseConfig, getSupabaseAdmin } from "@/lib/supabase";
 import { sendAdminNotification, sendAcceptanceEmail, sendRejectionEmail } from "@/lib/email";
 import type {
   AdminUser,
+  AppNotification,
   Certification,
   DashboardSnapshot,
   GalleryItem,
@@ -23,7 +24,18 @@ import type {
   StudentPortfolio
 } from "@/lib/types";
 import { slugify } from "@/lib/utils";
-import { addActivity } from "@/lib/activity-log";
+import { addActivity, type ActivityEntry } from "@/lib/activity-log";
+
+const notifTitles: Record<string, Record<string, string>> = {
+  student: { "Élève créé": "Nouvel élève", "Élève supprimé": "Élève supprimé", "Inscription acceptée": "Inscription acceptée" },
+  request: { "Inscription refusée": "Inscription refusée", "Admin créé": "Nouvel administrateur", "Admin modifié": "Admin modifié", "Admin supprimé": "Admin supprimé", "Message contact reçu": "Nouveau message contact" },
+}
+
+function addActivityAndNotify(type: ActivityEntry["type"], action: string, description: string) {
+  addActivity(type, action, description)
+  const title = notifTitles[type]?.[action] ?? action
+  createNotification({ type: type as string, title, description }).catch(() => {})
+}
 
 type DemoStore = {
   requests: InscriptionRequest[];
@@ -194,7 +206,7 @@ export async function acceptInscriptionRequest(id: string, notes?: string) {
       createdAt: new Date().toISOString()
     };
     store.students.unshift(student);
-    addActivity("student", "Inscription acceptée", `${student.firstName} ${student.lastName} a rejoint le programme ${student.programId}`);
+    addActivityAndNotify("student", "Inscription acceptée", `${student.firstName} ${student.lastName} a rejoint le programme ${student.programId}`);
     sendAcceptanceEmail({
       parentName: request.parentEmail.split("@")[0],
       parentEmail: request.parentEmail,
@@ -239,7 +251,7 @@ export async function acceptInscriptionRequest(id: string, notes?: string) {
   const updateData: Record<string, any> = { status: "accepted" };
   if (notes) updateData.admin_notes = notes;
   await supabase.from("inscription_requests").update(updateData).eq("id", id);
-  addActivity("student", "Inscription acceptée", `${request.student_first_name} ${request.student_last_name} a rejoint le programme`);
+  addActivityAndNotify("student", "Inscription acceptée", `${request.student_first_name} ${request.student_last_name} a rejoint le programme`);
   sendAcceptanceEmail({
     parentName: request.parent_email.split("@")[0],
     parentEmail: request.parent_email,
@@ -257,7 +269,7 @@ export async function refuseInscriptionRequest(id: string, notes?: string, rejec
     request.status = "refused";
     if (notes) request.adminNotes = notes;
     if (rejectionMessage) request.rejectionMessage = rejectionMessage;
-    addActivity("request", "Inscription refusée", `${request.studentFirstName} ${request.studentLastName}`);
+    addActivityAndNotify("request", "Inscription refusée", `${request.studentFirstName} ${request.studentLastName}`);
     sendRejectionEmail({
       parentName: request.parentEmail.split("@")[0],
       parentEmail: request.parentEmail,
@@ -279,7 +291,7 @@ export async function refuseInscriptionRequest(id: string, notes?: string, rejec
     .single();
 
   if (error) throw error;
-  addActivity("request", "Inscription refusée", `${data.student_first_name} ${data.student_last_name}`);
+  addActivityAndNotify("request", "Inscription refusée", `${data.student_first_name} ${data.student_last_name}`);
   sendRejectionEmail({
     parentName: data.parent_email.split("@")[0],
     parentEmail: data.parent_email,
@@ -385,7 +397,7 @@ export async function createStudent(data: {
       createdAt: new Date().toISOString()
     };
     demoStore().students.unshift(student);
-    addActivity("student", "Élève créé", `${student.firstName} ${student.lastName}`);
+    addActivityAndNotify("student", "Élève créé", `${student.firstName} ${student.lastName}`);
     return withPortfolio(student);
   }
   const supabase = getSupabaseAdmin();
@@ -410,7 +422,7 @@ export async function createStudent(data: {
     .select("*")
     .single();
   if (error) throw error;
-  addActivity("student", "Élève créé", `${data.firstName} ${data.lastName}`);
+  addActivityAndNotify("student", "Élève créé", `${data.firstName} ${data.lastName}`);
   return mapStudentPortfolio({ ...student, projects: [], certifications: [], gallery_items: [] }, await getPrograms());
 }
 
@@ -452,12 +464,12 @@ export async function deleteStudent(id: string) {
     store.projects = store.projects.filter((p) => p.studentId !== id);
     store.certifications = store.certifications.filter((c) => c.studentId !== id);
     store.gallery = store.gallery.filter((g) => g.studentId !== id);
-    if (student) addActivity("student", "Élève supprimé", `${student.firstName} ${student.lastName}`);
+    if (student) addActivityAndNotify("student", "Élève supprimé", `${student.firstName} ${student.lastName}`);
     return;
   }
   const supabase = getSupabaseAdmin();
   const { data: student } = await supabase.from("students").select("first_name, last_name").eq("id", id).single();
-  if (student) addActivity("student", "Élève supprimé", `${student.first_name} ${student.last_name}`);
+  if (student) addActivityAndNotify("student", "Élève supprimé", `${student.first_name} ${student.last_name}`);
   await Promise.all([
     supabase.from("projects").delete().eq("student_id", id),
     supabase.from("certifications").delete().eq("student_id", id),
@@ -668,7 +680,7 @@ export async function batchDeleteStudents(ids: string[]) {
     const store = demoStore();
     for (const id of ids) {
       const student = store.students.find((s) => s.id === id);
-      if (student) addActivity("student", "Élève supprimé", `${student.firstName} ${student.lastName}`);
+      if (student) addActivityAndNotify("student", "Élève supprimé", `${student.firstName} ${student.lastName}`);
     }
     store.students = store.students.filter((s) => !ids.includes(s.id));
     store.projects = store.projects.filter((p) => !ids.includes(p.studentId));
@@ -679,7 +691,7 @@ export async function batchDeleteStudents(ids: string[]) {
   const supabase = getSupabaseAdmin();
   const { data: students } = await supabase.from("students").select("first_name, last_name").in("id", ids);
   if (students) {
-    for (const s of students) addActivity("student", "Élève supprimé", `${s.first_name} ${s.last_name}`);
+    for (const s of students) addActivityAndNotify("student", "Élève supprimé", `${s.first_name} ${s.last_name}`);
   }
   await Promise.all([
     supabase.from("projects").delete().in("student_id", ids),
@@ -696,7 +708,7 @@ export async function batchAcceptEnrollments(ids: string[]) {
       const req = store.requests.find((r) => r.id === id);
       if (req && req.status === "pending") {
         req.status = "accepted";
-        addActivity("request", "Inscription acceptée", `${req.studentFirstName} ${req.studentLastName}`);
+        addActivityAndNotify("request", "Inscription acceptée", `${req.studentFirstName} ${req.studentLastName}`);
       }
     }
     return;
@@ -712,7 +724,7 @@ export async function batchRejectEnrollments(ids: string[], rejectionMessage?: s
       if (req && req.status === "pending") {
         req.status = "refused";
         if (rejectionMessage) req.rejectionMessage = rejectionMessage;
-        addActivity("request", "Inscription refusée", `${req.studentFirstName} ${req.studentLastName}`);
+        addActivityAndNotify("request", "Inscription refusée", `${req.studentFirstName} ${req.studentLastName}`);
       }
     }
     return;
@@ -773,7 +785,7 @@ export async function createAdminUser(data: { email: string; firstName: string; 
       createdAt: new Date().toISOString(),
     };
     store.adminUsers.push(user);
-    addActivity("request", "Admin créé", `${data.firstName} ${data.lastName} (${data.email})`);
+    addActivityAndNotify("request", "Admin créé", `${data.firstName} ${data.lastName} (${data.email})`);
     return user;
   }
   const { error } = await getSupabaseAdmin().from("admin_users").insert({
@@ -787,7 +799,7 @@ export async function createAdminUser(data: { email: string; firstName: string; 
     if (error.code === "23505") throw new Error("Cet email est déjà utilisé");
     throw error;
   }
-  addActivity("request", "Admin créé", `${data.firstName} ${data.lastName} (${data.email})`);
+  addActivityAndNotify("request", "Admin créé", `${data.firstName} ${data.lastName} (${data.email})`);
   return { id: "", email: data.email, firstName: data.firstName, lastName: data.lastName, role: "admin", createdAt: new Date().toISOString() };
 }
 
@@ -801,7 +813,7 @@ export async function updateAdminUser(id: string, data: { firstName?: string; la
     if (data.lastName !== undefined) user.lastName = data.lastName;
     if (data.email !== undefined) user.email = data.email;
     if (data.role !== undefined) user.role = data.role;
-    addActivity("request", "Admin modifié", `${user.firstName} ${user.lastName} (${user.email})`);
+    addActivityAndNotify("request", "Admin modifié", `${user.firstName} ${user.lastName} (${user.email})`);
     return user;
   }
   const updateData: Record<string, any> = {};
@@ -811,7 +823,7 @@ export async function updateAdminUser(id: string, data: { firstName?: string; la
   if (data.role !== undefined) updateData.role = data.role;
   const { error } = await getSupabaseAdmin().from("admin_users").update(updateData).eq("id", id);
   if (error) throw error;
-  addActivity("request", "Admin modifié", `${data.firstName ?? ""} ${data.lastName ?? ""} (${data.email ?? ""})`);
+  addActivityAndNotify("request", "Admin modifié", `${data.firstName ?? ""} ${data.lastName ?? ""} (${data.email ?? ""})`);
 }
 
 export async function deleteAdminUser(id: string) {
@@ -821,13 +833,127 @@ export async function deleteAdminUser(id: string) {
     const idx = store.adminUsers.findIndex((u: AdminUser) => u.id === id);
     if (idx === -1) throw new Error("Admin introuvable");
     const removed = store.adminUsers.splice(idx, 1)[0];
-    addActivity("request", "Admin supprimé", `${removed.firstName} ${removed.lastName} (${removed.email})`);
+    addActivityAndNotify("request", "Admin supprimé", `${removed.firstName} ${removed.lastName} (${removed.email})`);
     return;
   }
   const { data: user } = await getSupabaseAdmin().from("admin_users").select("first_name, last_name, email").eq("id", id).single();
   const { error } = await getSupabaseAdmin().from("admin_users").delete().eq("id", id);
   if (error) throw error;
-  if (user) addActivity("request", "Admin supprimé", `${user.first_name} ${user.last_name} (${user.email})`);
+  if (user) addActivityAndNotify("request", "Admin supprimé", `${user.first_name} ${user.last_name} (${user.email})`);
+}
+
+// ─── Notifications ─────────────────────────────────────────
+
+const notifSeed: AppNotification[] = [
+  {
+    id: "notif-1",
+    type: "request",
+    title: "Nouvelle inscription",
+    description: "Nouvelle demande d'inscription reçue",
+    read: false,
+    createdAt: new Date().toISOString(),
+  },
+]
+
+export async function getNotifications(): Promise<AppNotification[]> {
+  if (!hasSupabaseConfig()) {
+    const store = demoStore() as any
+    if (!store.notifications) store.notifications = structuredClone(notifSeed)
+    return store.notifications
+  }
+  const { data, error } = await getSupabaseAdmin()
+    .from("notifications")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(50)
+  if (error) throw error
+  return data.map((row: any) => ({
+    id: row.id,
+    type: row.type,
+    title: row.title,
+    description: row.description,
+    read: row.read,
+    createdAt: row.created_at,
+  }))
+}
+
+export async function getUnreadNotificationCount(): Promise<number> {
+  if (!hasSupabaseConfig()) {
+    const store = demoStore() as any
+    if (!store.notifications) store.notifications = structuredClone(notifSeed)
+    return store.notifications.filter((n: AppNotification) => !n.read).length
+  }
+  const { count, error } = await getSupabaseAdmin()
+    .from("notifications")
+    .select("*", { count: "exact", head: true })
+    .eq("read", false)
+  if (error) throw error
+  return count ?? 0
+}
+
+export async function createNotification(data: { type: string; title: string; description: string }) {
+  if (!hasSupabaseConfig()) {
+    const store = demoStore() as any
+    if (!store.notifications) store.notifications = structuredClone(notifSeed)
+    const notif: AppNotification = {
+      id: `notif-${Date.now()}`,
+      type: data.type as AppNotification["type"],
+      title: data.title,
+      description: data.description,
+      read: false,
+      createdAt: new Date().toISOString(),
+    }
+    store.notifications.unshift(notif)
+    return notif
+  }
+  const { data: notif, error } = await getSupabaseAdmin()
+    .from("notifications")
+    .insert({
+      type: data.type,
+      title: data.title,
+      description: data.description,
+      read: false,
+    })
+    .select("*")
+    .single()
+  if (error) throw error
+  return {
+    id: notif.id,
+    type: notif.type,
+    title: notif.title,
+    description: notif.description,
+    read: notif.read,
+    createdAt: notif.created_at,
+  }
+}
+
+export async function markNotificationRead(id: string) {
+  if (!hasSupabaseConfig()) {
+    const store = demoStore() as any
+    if (!store.notifications) store.notifications = structuredClone(notifSeed)
+    const notif = store.notifications.find((n: AppNotification) => n.id === id)
+    if (notif) notif.read = true
+    return
+  }
+  const { error } = await getSupabaseAdmin()
+    .from("notifications")
+    .update({ read: true })
+    .eq("id", id)
+  if (error) throw error
+}
+
+export async function markAllNotificationsRead() {
+  if (!hasSupabaseConfig()) {
+    const store = demoStore() as any
+    if (!store.notifications) store.notifications = structuredClone(notifSeed)
+    for (const n of store.notifications) n.read = true
+    return
+  }
+  const { error } = await getSupabaseAdmin()
+    .from("notifications")
+    .update({ read: true })
+    .eq("read", false)
+  if (error) throw error
 }
 
 function mapRequest(row: any): InscriptionRequest {

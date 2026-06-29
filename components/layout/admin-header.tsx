@@ -1,8 +1,9 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, Search, Bell, User, LogOut, Settings } from "lucide-react";
+import { Menu, Search, User, LogOut, Settings } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { NotificationBell } from "@/components/ui/notification-bell";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -16,6 +17,7 @@ const pageTitles: Record<string, string> = {
   "/dashboard/gallery": "Galerie",
   "/dashboard/settings": "Paramètres",
   "/dashboard/activity": "Activité",
+  "/dashboard/notifications": "Notifications",
   "/dashboard/admin-users": "Admin Users",
   "/admin/enrollments": "Inscriptions",
   "/admin/students": "Élèves",
@@ -74,12 +76,7 @@ export function AdminHeader({ collapsed, onToggleSidebar, onOpenMobile }: AdminH
 
         <ThemeToggle />
 
-        <button className="relative flex size-10 items-center justify-center rounded-full border-2 border-border bg-surface text-ink-soft transition hover:border-sky hover:text-sky">
-          <Bell className="size-4" />
-          <span className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-coral text-[10px] font-black text-white">
-            3
-          </span>
-        </button>
+        <NotificationBell />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

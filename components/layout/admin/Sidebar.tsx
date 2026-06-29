@@ -20,6 +20,7 @@ import {
   Users,
   Library,
   BarChart3,
+  Bell,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
@@ -35,6 +36,7 @@ const sidebarLinks = [
   { type: "separator", label: "Système" },
   { href: "/dashboard/admin-users", label: "Administrateurs", icon: Shield },
   { href: "/dashboard/activity", label: "Activité", icon: Activity },
+  { href: "/dashboard/notifications", label: "Notifications", icon: Bell },
   { href: "/dashboard/analytics", label: "Analytiques", icon: BarChart3 },
   { href: "/dashboard/settings", label: "Paramètres", icon: Settings },
 ];
