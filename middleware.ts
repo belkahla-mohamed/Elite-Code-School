@@ -28,9 +28,7 @@ async function adminTokenEdge(): Promise<string | null> {
     const encoder = new TextEncoder();
     const hash = await crypto.subtle.digest("SHA-256", encoder.encode(`admin:${secret}`));
     const bytes = new Uint8Array(hash);
-    let binary = "";
-    for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-    return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
+    return Array.from(bytes).map((b) => b.toString(16).padStart(2, "0")).join("");
   } catch {
     return null;
   }
