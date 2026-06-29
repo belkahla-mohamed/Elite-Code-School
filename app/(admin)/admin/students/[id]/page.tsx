@@ -226,7 +226,7 @@ export default function StudentDetailPage() {
           <input name="description" required placeholder="Description" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
           <input name="tags" placeholder="Tags (virgule)" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
           <input name="dateLabel" placeholder="Date affichée" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
-          <select name="status" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none">
+          <select name="status" className="rounded-brand-sm border-2 border-border bg-surface px-3 py-2 text-sm text-ink focus:border-sky focus:outline-none">
             <option value="progress">En cours</option>
             <option value="done">Terminé</option>
           </select>
