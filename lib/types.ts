@@ -27,6 +27,8 @@ export type InscriptionRequest = {
   message?: string;
   status: RequestStatus;
   createdAt: string;
+  adminNotes?: string;
+  rejectionMessage?: string;
 };
 
 export type Project = {
@@ -92,4 +94,14 @@ export type DashboardSnapshot = {
   requests: InscriptionRequest[];
   students: StudentPortfolio[];
   programs: Program[];
+};
+
+export type AdminUser = {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: "super_admin" | "admin";
+  createdAt: string;
+  lastLogin?: string;
 };

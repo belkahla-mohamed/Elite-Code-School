@@ -1,5 +1,5 @@
-import { InscriptionsContent } from "@/components/admin/InscriptionsContent";
+import { redirect } from "next/navigation";
 
 export default function InscriptionsPage() {
-  return <InscriptionsContent />;
+  redirect("/admin/enrollments");
 }

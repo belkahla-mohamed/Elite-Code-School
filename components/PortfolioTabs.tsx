@@ -44,7 +44,7 @@ export function PortfolioTabs({ student }: { student: StudentPortfolio }) {
               </div>
               <div className="flex items-center justify-between p-5 text-sm">
                 <span className="text-ink-soft">{certification.dateLabel}</span>
-                <a className="font-semibold text-accent" href={`/portfolio/${student.slug}`}>
+                <a className="font-semibold text-accent" href={`/portfolios/${student.slug}`}>
                   Partager →
                 </a>
               </div>
@@ -53,30 +53,78 @@ export function PortfolioTabs({ student }: { student: StudentPortfolio }) {
         </div>
       )}
       {tab === "skills" && (
-        <div className="grid gap-5 md:grid-cols-2">
-          {["Logique algorithmique", "Créativité", "Robotique", "Collaboration"].map((skill, index) => (
-            <div key={skill} className="rounded-brand border border-ink/10 bg-white dark:bg-surface p-5">
-              <div className="mb-2 flex justify-between text-sm font-semibold">
-                <span>{skill}</span>
-                <span>{[82, 94, 76, 88][index]}%</span>
-              </div>
-              <div className="h-2 rounded-full bg-surface">
-                <div className="h-2 rounded-full bg-gradient-to-r from-accent to-cyan" style={{ width: `${[82, 94, 76, 88][index]}%` }} />
-              </div>
-            </div>
-          ))}
-        </div>
+        <SkillsSection student={student} />
       )}
       {tab === "gallery" && (
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {student.gallery.map((item) => (
-            <div key={item.id} className="flex min-h-44 flex-col items-center justify-center rounded-brand text-center text-white shadow-card" style={{ background: item.gradient }}>
-              <div className="text-6xl">{item.emoji}</div>
-              <div className="mt-4 font-semibold">{item.label}</div>
-            </div>
+            item.imageUrl ? (
+              <div key={item.id} className="group relative overflow-hidden rounded-brand shadow-card" style={{ background: item.gradient }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={item.imageUrl} alt={item.label} className="h-44 w-full object-cover transition group-hover:scale-105" />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
+                  <p className="font-semibold text-white">{item.emoji} {item.label}</p>
+                </div>
+              </div>
+            ) : (
+              <div key={item.id} className="flex min-h-44 flex-col items-center justify-center rounded-brand text-center text-white shadow-card" style={{ background: item.gradient }}>
+                <div className="text-6xl">{item.emoji}</div>
+                <div className="mt-4 font-semibold">{item.label}</div>
+              </div>
+            )
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+function SkillsSection({ student }: { student: StudentPortfolio }) {
+  // Derive dynamic skills from student data
+  const totalProjects = student.projects.length;
+  const completedProjects = student.projects.filter((p) => p.status === "done").length;
+  const inProgress = student.projects.filter((p) => p.status !== "done").length;
+
+  const skills = [
+    {
+      name: "Projets complétés",
+      percent: totalProjects > 0 ? Math.round((completedProjects / totalProjects) * 100) : 0,
+      color: "from-lime to-emerald",
+    },
+    {
+      name: "Projets en cours",
+      percent: totalProjects > 0 ? Math.round((inProgress / totalProjects) * 100) : 0,
+      color: "from-sky to-cyan",
+    },
+    {
+      name: "Heures de code",
+      percent: Math.min(100, Math.round((student.hours / 40) * 100)),
+      display: `${student.hours}h / 40h`,
+      color: "from-amber to-orange",
+    },
+    {
+      name: "Certifications",
+      percent: Math.min(100, student.certifications.length * 25),
+      color: "from-violet to-purple",
+    },
+  ];
+
+  return (
+    <div className="grid gap-5 md:grid-cols-2">
+      {skills.map((skill) => (
+        <div key={skill.name} className="rounded-brand border border-ink/10 bg-white dark:bg-surface p-5">
+          <div className="mb-2 flex justify-between text-sm font-semibold">
+            <span>{skill.name}</span>
+            <span>{skill.display ?? `${skill.percent}%`}</span>
+          </div>
+          <div className="h-2 rounded-full bg-surface">
+            <div
+              className={`h-2 rounded-full bg-gradient-to-r ${skill.color}`}
+              style={{ width: `${skill.percent}%`, transition: "width 0.6s ease-out" }}
+            />
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

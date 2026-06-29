@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Eye, EyeOff, Loader2, Users } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, Loader2 } from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -47,7 +48,13 @@ export default function LoginPage() {
         </Link>
 
         <div className="mb-8 rounded-brand border-2 border-border bg-white dark:bg-surface p-6">
-          <Users className="size-8 text-sky" />
+          <Image
+            src="/logos/logo-icon.png"
+            alt="Elite Code School"
+            width={36}
+            height={36}
+            className="size-9"
+          />
           <h1 className="mt-3 font-display text-3xl font-black text-ink">Connexion Parent</h1>
           <p className="mt-2 text-sm text-ink-soft">
             Entrez l&apos;email et le code d&apos;accès fournis par l&apos;école pour accéder au portfolio de votre enfant.

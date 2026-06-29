@@ -1,16 +1,20 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { acceptInscriptionRequest, refuseInscriptionRequest } from "@/lib/store";
+import { requireCsrf } from "@/lib/csrf";
 
 export async function PATCH(
-  request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const csrfError = requireCsrf(request);
+    if (csrfError) return csrfError;
+
     const { id } = await params;
-    const { action } = await request.json();
+    const { action, notes, rejectionMessage } = await request.json();
 
     if (action === "accept") {
-      const result = await acceptInscriptionRequest(id);
+      const result = await acceptInscriptionRequest(id, notes);
       return NextResponse.json({
         student: result.student,
         parentSecret: result.parentSecret,
@@ -19,7 +23,7 @@ export async function PATCH(
     }
 
     if (action === "reject") {
-      const result = await refuseInscriptionRequest(id);
+      const result = await refuseInscriptionRequest(id, notes, rejectionMessage);
       return NextResponse.json({ request: result, message: "Demande refusée." });
     }
 

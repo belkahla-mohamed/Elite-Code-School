@@ -1,37 +1,43 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Eye, EyeOff, LogIn, Shield } from "lucide-react";
+import Image from "next/image";
+import { Eye, EyeOff, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { showToast } from "@/components/ui/toast";
 
 export function AdminLoginForm() {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
+
+  function togglePassword() {
+    setShowPassword((prev) => !prev);
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!password.trim()) return;
+    if (!email.trim() || !password.trim()) {
+      showToast("Veuillez remplir tous les champs", "error");
+      return;
+    }
     setLoading(true);
 
     try {
       const res = await fetch("/api/auth/admin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ email, password }),
       });
 
       if (!res.ok) {
         const data = await res.json();
-        showToast(data.error ?? "Mot de passe incorrect", "error");
+        showToast(data.error ?? "Identifiants incorrects", "error");
         return;
       }
 
-      showToast("Connexion réussie", "success");
-      router.push("/dashboard");
+      window.location.href = "/dashboard";
     } catch {
       showToast("Erreur de connexion", "error");
     } finally {
@@ -61,8 +67,14 @@ export function AdminLoginForm() {
           </svg>
         </div>
         <div className="relative z-10 max-w-md text-center">
-          <div className="mx-auto mb-8 flex size-16 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm">
-            <Shield className="size-8 text-sky" />
+          <div className="mx-auto mb-8 flex size-20 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm p-4">
+            <Image
+              src="/logos/logo-icon.png"
+              alt="Elite Code School"
+              width={48}
+              height={48}
+              className="size-12"
+            />
           </div>
           <h1 className="font-display text-4xl font-black text-white">Espace Administration</h1>
           <p className="mt-4 text-base text-white/60 leading-relaxed">
@@ -90,8 +102,14 @@ export function AdminLoginForm() {
         <div className="w-full max-w-sm">
           <div className="dash-card p-8">
             <div className="text-center">
-              <div className="mx-auto mb-5 flex size-14 items-center justify-center rounded-brand-sm bg-sky">
-                <span className="font-display text-xl font-black text-white">EC</span>
+              <div className="mx-auto mb-5 flex size-14 items-center justify-center rounded-brand-sm bg-white dark:bg-surface p-2.5">
+                <Image
+                  src="/logos/logo-icon.png"
+                  alt="Elite Code School"
+                  width={36}
+                  height={36}
+                  className="size-9"
+                />
               </div>
               <h1 className="font-display text-2xl font-black text-ink">Bon retour</h1>
               <p className="mt-1 text-sm text-ink-soft">Connectez-vous à l&apos;espace administration</p>
@@ -100,22 +118,36 @@ export function AdminLoginForm() {
             <form onSubmit={handleSubmit} className="mt-8 space-y-5">
               <div>
                 <label className="mb-1.5 block text-xs font-black uppercase tracking-wider text-ink-soft">
-                  Mot de passe administrateur
+                  Email ou nom d&apos;utilisateur
+                </label>
+                <input
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  type="text"
+                  placeholder="admin@elitecodeschool.com"
+                  className="w-full rounded-full border-2 border-border bg-body px-5 py-3 text-sm text-ink outline-none transition focus:border-sky"
+                  autoFocus
+                />
+              </div>
+              <div>
+                <label className="mb-1.5 block text-xs font-black uppercase tracking-wider text-ink-soft">
+                  Mot de passe
                 </label>
                 <div className="relative">
                   <input
+                    key={String(showPassword)}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     type={showPassword ? "text" : "password"}
                     placeholder="Saisissez votre mot de passe"
                     className="w-full rounded-full border-2 border-border bg-body px-5 py-3 pr-12 text-sm text-ink outline-none transition focus:border-sky"
-                    autoFocus
+                    autoComplete="off"
                   />
                   <button
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-ink-soft hover:text-ink transition"
-                    tabIndex={-1}
+                    onClick={togglePassword}
+                    className="absolute right-1 top-0 z-10 flex h-full w-10 items-center justify-center rounded-full text-ink-soft hover:text-ink transition cursor-pointer"
+                    aria-label={showPassword ? "Masquer" : "Afficher"}
                   >
                     {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                   </button>
@@ -134,7 +166,7 @@ export function AdminLoginForm() {
           </div>
 
           <p className="mt-4 text-center text-xs text-ink-soft/60">
-            Mot de passe demo: <code className="rounded bg-body px-2 py-0.5 font-mono text-xs text-sky">admin123</code>
+            Identifiants demo: <code className="rounded bg-body px-2 py-0.5 font-mono text-xs text-sky">admin@elitecodeschool.com</code> / <code className="rounded bg-body px-2 py-0.5 font-mono text-xs text-sky">admin1234</code>
           </p>
         </div>
       </div>

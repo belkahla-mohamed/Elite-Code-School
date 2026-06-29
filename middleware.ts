@@ -24,6 +24,7 @@ async function verifyTokenEdge(token: string): Promise<Record<string, unknown> |
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
   const adminCookie = request.cookies.get("ecs_admin")?.value;
   const parentCookie = request.cookies.get("ecs_parent_student")?.value;
 

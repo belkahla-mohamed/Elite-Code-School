@@ -60,6 +60,8 @@ export async function setAdminSession() {
     path: "/",
     maxAge: 60 * 60 * 8,
   });
+  const { setCsrfCookie } = await import("@/lib/csrf");
+  setCsrfCookie(jar);
 }
 
 export async function setParentSession(studentId: string) {
@@ -71,6 +73,8 @@ export async function setParentSession(studentId: string) {
     path: "/",
     maxAge: 60 * 60 * 24 * 7,
   });
+  const { setCsrfCookie } = await import("@/lib/csrf");
+  setCsrfCookie(jar);
 }
 
 export async function clearSessions() {

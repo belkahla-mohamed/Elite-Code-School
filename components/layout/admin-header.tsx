@@ -1,8 +1,11 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import { Menu, Search, Bell } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { Menu, Search, Bell, User, LogOut, Settings } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const pageTitles: Record<string, string> = {
   "/dashboard": "Dashboard",
@@ -12,6 +15,11 @@ const pageTitles: Record<string, string> = {
   "/dashboard/projects": "Projets & Certifications",
   "/dashboard/gallery": "Galerie",
   "/dashboard/settings": "Paramètres",
+  "/dashboard/activity": "Activité",
+  "/dashboard/admin-users": "Admin Users",
+  "/admin/enrollments": "Inscriptions",
+  "/admin/students": "Élèves",
+  "/admin/curricula": "Programmes",
 };
 
 interface AdminHeaderProps {
@@ -22,9 +30,15 @@ interface AdminHeaderProps {
 
 export function AdminHeader({ collapsed, onToggleSidebar, onOpenMobile }: AdminHeaderProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const title = Object.entries(pageTitles).find(([key]) =>
     pathname === key || pathname.startsWith(key + "/")
   )?.[1] ?? "Dashboard";
+
+  async function handleLogout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    window.location.href = "/admin-login";
+  }
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b-2 border-border bg-surface px-4 md:px-6">
@@ -67,15 +81,31 @@ export function AdminHeader({ collapsed, onToggleSidebar, onOpenMobile }: AdminH
           </span>
         </button>
 
-        <div className="flex items-center gap-3 border-l-2 border-border pl-4">
-          <div className="flex size-10 items-center justify-center rounded-full bg-sky font-display text-sm font-black text-white">
-            A
-          </div>
-          <div className="text-left">
-            <p className="text-sm font-bold text-ink">Admin</p>
-            <p className="text-xs text-ink-soft">Super Admin</p>
-          </div>
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="flex items-center gap-3 border-l-2 border-border pl-4 cursor-pointer">
+              <div className="flex size-10 items-center justify-center rounded-full bg-sky font-display text-sm font-black text-white">
+                A
+              </div>
+              <div className="text-left">
+                <p className="text-sm font-bold text-ink">Admin</p>
+                <p className="text-xs text-ink-soft">Super Admin</p>
+              </div>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuItem onClick={() => router.push("/dashboard/settings")}>
+              <Settings className="mr-2 size-4" /> Paramètres
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => router.push("/dashboard")}>
+              <User className="mr-2 size-4" /> Dashboard
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleLogout} className="text-coral">
+              <LogOut className="mr-2 size-4" /> Déconnexion
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );

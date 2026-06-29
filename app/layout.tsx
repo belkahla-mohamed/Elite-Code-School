@@ -7,6 +7,10 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: { template: "%s — Elite Code School", default: "Elite Code School — Robotique, Coding & IA" },
   description: "École de robotique, programmation et intelligence artificielle pour enfants de 7 à 17 ans à Marrakech.",
+  icons: {
+    icon: "/logos/logo-icon.png",
+    apple: "/logos/logo-icon.png",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

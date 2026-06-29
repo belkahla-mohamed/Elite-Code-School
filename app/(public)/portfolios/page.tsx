@@ -36,7 +36,7 @@ export default async function PortfoliosPage() {
           {portfolios.map((student, i) => (
             <Link
               key={student.id}
-              href={`/portfolio/${student.slug}`}
+              href={`/portfolios/${student.slug}`}
               className="rounded-brand border-2 border-border bg-white dark:bg-surface p-6 transition hover:border-sky hover:-translate-y-0.5"
             >
               <div className="flex items-center gap-4">

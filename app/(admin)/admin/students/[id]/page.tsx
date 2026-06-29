@@ -6,6 +6,7 @@ import { ArrowLeft, Trash2, Plus, Loader2, Camera, X, Pencil } from "lucide-reac
 import { showToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { FileUpload } from "@/components/ui/file-upload";
+import { DetailSkeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
 
 interface Student {
@@ -144,7 +145,7 @@ export default function StudentDetailPage() {
     setDeleteStudentConfirm(false);
   }
 
-  if (loading) return <div className="py-12 text-center text-ink-soft">Chargement...</div>;
+  if (loading) return <div className="px-4"><DetailSkeleton /></div>;
   if (!student) return <div className="py-12 text-center text-ink-soft">Élève introuvable.</div>;
 
   return (
@@ -161,7 +162,15 @@ export default function StudentDetailPage() {
             {student.avatar}
           </div>
           <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/40 opacity-0 transition group-hover:opacity-100">
-            <FileUpload folder={`avatars/${id}`} onUploaded={(url) => showToast("Avatar mis à jour", "success")}>
+            <FileUpload folder={`avatars/${id}`} onUploaded={async (url) => {
+              const res = await fetch(`/api/students/${id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ avatar: url, avatarGradient: "linear-gradient(135deg,#4f46e5,#06b6d4)" }),
+              });
+              if (res.ok) { showToast("Avatar mis à jour", "success"); reload(); }
+              else showToast("Erreur mise à jour avatar", "error");
+            }}>
               <Camera className="size-5 text-white" />
             </FileUpload>
           </div>

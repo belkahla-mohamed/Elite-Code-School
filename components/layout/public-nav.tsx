@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import Image from "next/image";
 
 const links = [
   { href: "/", label: "Accueil" },
@@ -82,9 +83,13 @@ export default function PublicNav() {
             {/* Header */}
             <div className="flex items-center justify-between border-b-2 border-border px-6 py-4">
               <Link href="/" className="flex items-center gap-2.5" onClick={() => setOpen(false)}>
-                <span className="flex size-8 items-center justify-center rounded-lg bg-sky font-display font-black text-xs text-white">
-                  EC
-                </span>
+                <Image
+                  src="/logos/logo-icon.png"
+                  alt="Elite Code School"
+                  width={32}
+                  height={32}
+                  className="size-8"
+                />
                 <span className="font-display font-black text-base text-ink">Elite Code School</span>
               </Link>
               <button

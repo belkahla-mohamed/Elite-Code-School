@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { showToast } from "@/components/ui/toast";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ErrorBoundary } from "@/components/ui/error-boundary";
 
 function StatCardSkeleton() {
   return (
@@ -51,7 +52,7 @@ export function AdminDashboard() {
   const [activities, setActivities] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [confirmAction, setConfirmAction] = useState<{ id: string; action: "accept" | "refuse" } | null>(null);
+  const [confirmAction, setConfirmAction] = useState<{ id: string; action: "accept" | "reject" } | null>(null);
   const [createdSecret, setCreatedSecret] = useState("");
 
   useEffect(() => {
@@ -86,7 +87,7 @@ export function AdminDashboard() {
     }
   }
 
-  async function updateRequest(id: string, action: "accept" | "refuse") {
+  async function updateRequest(id: string, action: "accept" | "reject") {
     setConfirmAction(null);
     const res = await fetch(`/api/inscriptions/${id}`, {
       method: "PATCH",
@@ -128,8 +129,8 @@ export function AdminDashboard() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, i) => <StatCardSkeleton key={i} />)}
+        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, i) => <StatCardSkeleton key={i} />)}
         </div>
         <div className="grid gap-6 xl:grid-cols-3">
           <div className="xl:col-span-2 dash-card">
@@ -158,6 +159,7 @@ export function AdminDashboard() {
   }
 
   return (
+    <ErrorBoundary>
     <div className="space-y-6">
       {createdSecret && (
         <div className="rounded-brand-sm bg-amber/15 p-4 text-sm text-amber">
@@ -255,7 +257,7 @@ export function AdminDashboard() {
                               <CheckCircle className="size-4" />
                             </button>
                             <button
-                              onClick={() => setConfirmAction({ id: request.id, action: "refuse" })}
+                              onClick={() => setConfirmAction({ id: request.id, action: "reject" })}
                               className="flex size-8 items-center justify-center rounded-full bg-coral/10 text-coral transition hover:bg-coral hover:text-white"
                               title="Refuser"
                             >
@@ -326,5 +328,7 @@ export function AdminDashboard() {
         />
       )}
     </div>
+    </ErrorBoundary>
   );
 }
+

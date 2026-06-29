@@ -1,5 +1,5 @@
-import { ProgramsContent } from "@/components/admin/ProgramsContent";
+import { redirect } from "next/navigation";
 
 export default function ProgramsPage() {
-  return <ProgramsContent />;
+  redirect("/admin/curricula");
 }

@@ -1,22 +1,59 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Settings, Key, Shield, Bell, Palette, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { showToast } from "@/components/ui/toast";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+
+function useLocalStorageState(key: string, defaultValue: boolean) {
+  const [value, setValue] = useState(() => {
+    if (typeof window === "undefined") return defaultValue;
+    const stored = localStorage.getItem(key);
+    return stored !== null ? stored === "true" : defaultValue;
+  });
+  useEffect(() => { localStorage.setItem(key, String(value)); }, [key, value]);
+  return [value, setValue] as const;
+}
 
 export function SettingsContent() {
   const [adminPassword, setAdminPassword] = useState("");
   const [changingPassword, setChangingPassword] = useState(false);
 
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [emailValidation, setEmailValidation] = useLocalStorageState("ecs_setting_email_validation", true);
+  const [emailNotifications, setEmailNotifications] = useLocalStorageState("ecs_setting_email_notifications", true);
+  const [publicByDefault, setPublicByDefault] = useLocalStorageState("ecs_setting_public_default", true);
+
   async function handleChangePassword(e: React.FormEvent) {
     e.preventDefault();
-    if (!adminPassword.trim()) return;
+    if (!currentPassword.trim() || !adminPassword.trim()) return;
+    if (adminPassword.length < 6) {
+      showToast("Le mot de passe doit contenir au moins 6 caractères", "error");
+      return;
+    }
     setChangingPassword(true);
-    await new Promise((r) => setTimeout(r, 800));
-    showToast("Mot de passe mis à jour (démo)", "success");
-    setAdminPassword("");
-    setChangingPassword(false);
+
+    try {
+      const res = await fetch("/api/auth/admin/password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ currentPassword: currentPassword, newPassword: adminPassword }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        showToast(data.error ?? "Erreur", "error");
+        return;
+      }
+      showToast("Mot de passe mis à jour", "success");
+      setAdminPassword("");
+      setCurrentPassword("");
+    } catch {
+      showToast("Erreur de connexion", "error");
+    } finally {
+      setChangingPassword(false);
+    }
   }
 
   return (
@@ -36,16 +73,25 @@ export function SettingsContent() {
             <p className="text-xs text-ink-soft">Modifier le mot de passe d&apos;accès au tableau de bord</p>
           </div>
         </div>
-        <form onSubmit={handleChangePassword} className="flex flex-wrap gap-3">
+        <form onSubmit={handleChangePassword} className="flex flex-col gap-3">
+          <input
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+            type="password"
+            placeholder="Mot de passe actuel"
+            className="w-full rounded-full border-2 border-border bg-body px-5 py-2.5 text-sm text-ink outline-none transition focus:border-sky"
+            required
+          />
           <input
             value={adminPassword}
             onChange={(e) => setAdminPassword(e.target.value)}
             type="password"
-            placeholder="Nouveau mot de passe"
-            className="min-w-[200px] flex-1 rounded-full border-2 border-border bg-body px-5 py-2.5 text-sm text-ink outline-none transition focus:border-sky"
+            placeholder="Nouveau mot de passe (min 6 car.)"
+            className="w-full rounded-full border-2 border-border bg-body px-5 py-2.5 text-sm text-ink outline-none transition focus:border-sky"
             minLength={6}
+            required
           />
-          <Button type="submit" isLoading={changingPassword}>
+          <Button type="submit" isLoading={changingPassword} className="self-start">
             <Save className="size-4" />
             {changingPassword ? "Mise à jour..." : "Enregistrer"}
           </Button>
@@ -63,18 +109,18 @@ export function SettingsContent() {
           </div>
         </div>
         <div className="mt-5 space-y-4">
-          <label className="flex items-center gap-3 cursor-pointer">
-            <input type="checkbox" defaultChecked className="size-4 accent-sky" />
-            <span className="text-sm text-ink">Activer la validation des emails</span>
-          </label>
-          <label className="flex items-center gap-3 cursor-pointer">
-            <input type="checkbox" defaultChecked className="size-4 accent-sky" />
-            <span className="text-sm text-ink">Notifications par email</span>
-          </label>
-          <label className="flex items-center gap-3 cursor-pointer">
-            <input type="checkbox" defaultChecked className="size-4 accent-sky" />
-            <span className="text-sm text-ink">Portfolios publics par défaut</span>
-          </label>
+          <div className="flex items-center gap-3">
+            <Switch id="email-validation" checked={emailValidation} onCheckedChange={setEmailValidation} />
+            <Label htmlFor="email-validation" className="text-sm text-ink cursor-pointer">Activer la validation des emails</Label>
+          </div>
+          <div className="flex items-center gap-3">
+            <Switch id="email-notifications" checked={emailNotifications} onCheckedChange={setEmailNotifications} />
+            <Label htmlFor="email-notifications" className="text-sm text-ink cursor-pointer">Notifications par email</Label>
+          </div>
+          <div className="flex items-center gap-3">
+            <Switch id="public-default" checked={publicByDefault} onCheckedChange={setPublicByDefault} />
+            <Label htmlFor="public-default" className="text-sm text-ink cursor-pointer">Portfolios publics par défaut</Label>
+          </div>
         </div>
       </div>
 

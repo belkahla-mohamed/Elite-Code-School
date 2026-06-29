@@ -40,6 +40,12 @@ const config: Config = {
       },
     },
   },
+  safelist: [
+    "from-lime", "to-emerald",
+    "from-sky", "to-cyan",
+    "from-amber", "to-orange",
+    "from-violet", "to-purple",
+  ],
   plugins: [],
 };
 

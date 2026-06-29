@@ -9,3 +9,12 @@ export async function POST() {
     return NextResponse.json({ error: e.message ?? "Erreur serveur" }, { status: 500 });
   }
 }
+
+export async function GET() {
+  try {
+    await clearSessions();
+    return NextResponse.redirect(new URL("/admin-login", process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"));
+  } catch {
+    return NextResponse.redirect(new URL("/admin-login", process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"));
+  }
+}

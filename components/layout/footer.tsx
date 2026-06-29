@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Mail, Phone, MapPin } from "lucide-react";
 
 export function Footer() {
@@ -8,9 +9,13 @@ export function Footer() {
         <div className="grid gap-8 sm:gap-10 sm:grid-cols-3">
           <div>
             <div className="flex items-center gap-2.5 mb-4">
-              <span className="flex size-9 items-center justify-center rounded-lg bg-sky font-display font-black text-sm text-white">
-                EC
-              </span>
+              <Image
+                src="/logos/logo-icon.png"
+                alt="Elite Code School"
+                width={36}
+                height={36}
+                className="size-9"
+              />
               <span className="font-display font-black text-lg text-ink">Elite Code School</span>
             </div>
             <p className="text-sm text-ink-soft leading-relaxed max-w-xs">
