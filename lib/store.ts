@@ -736,6 +736,45 @@ export async function batchRejectEnrollments(ids: string[], rejectionMessage?: s
 
 // ─── Admin Users ─────────────────────────────────────────────
 
+export async function verifyAdminCredentials(email: string, password: string): Promise<AdminUser | null> {
+  if (!hasSupabaseConfig()) {
+    const expectedEmail = process.env.ADMIN_EMAIL ?? "admin@elitecodeschool.com";
+    const expectedPassword = process.env.ADMIN_PASSWORD ?? "admin123";
+    if (email.toLowerCase() !== expectedEmail.toLowerCase() || password !== expectedPassword) return null;
+    return { id: "admin-0", email: expectedEmail, firstName: "Super", lastName: "Admin", role: "super_admin", createdAt: new Date().toISOString() };
+  }
+  const { data, error } = await getSupabaseAdmin()
+    .from("admin_users")
+    .select("id, email, first_name, last_name, role, created_at")
+    .ilike("email", email)
+    .eq("password_hash", password)
+    .maybeSingle()
+  if (error || !data) return null
+  return {
+    id: data.id,
+    email: data.email,
+    firstName: data.first_name,
+    lastName: data.last_name,
+    role: data.role,
+    createdAt: data.created_at,
+  }
+}
+
+export async function updateAdminLastLogin(id: string) {
+  if (!hasSupabaseConfig()) return
+  await getSupabaseAdmin().from("admin_users").update({ last_login: new Date().toISOString() }).eq("id", id)
+}
+
+export async function updateAdminPassword(id: string, newPassword: string) {
+  if (!hasSupabaseConfig()) {
+    const g = globalThis as any
+    g.ecsAdminPassword = newPassword
+    return
+  }
+  const { error } = await getSupabaseAdmin().from("admin_users").update({ password_hash: newPassword }).eq("id", id)
+  if (error) throw error
+}
+
 const adminSeed: AdminUser[] = [
   {
     id: "admin-1",

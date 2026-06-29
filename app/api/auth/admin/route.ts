@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
-import { setAdminSession, verifyAdminPassword } from "@/lib/auth";
+import { setAdminSession } from "@/lib/auth";
+import { verifyAdminCredentials, updateAdminLastLogin } from "@/lib/store";
 import { rateLimit } from "@/lib/rate-limiter";
 import { validateContentType } from "@/lib/xss-utils";
-
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "admin@elitecodeschool.com";
 
 export async function POST(request: Request) {
   try {
@@ -15,15 +14,14 @@ export async function POST(request: Request) {
     if (!allowed) return NextResponse.json({ error: "Trop de tentatives" }, { status: 429, headers: { "Retry-After": String(retryAfter) } });
 
     const { email, password } = await request.json();
-    if (!email?.trim()) {
-      return NextResponse.json({ error: "Email requis" }, { status: 400 });
+    if (!email?.trim() || !password?.trim()) {
+      return NextResponse.json({ error: "Email et mot de passe requis" }, { status: 400 });
     }
-    if (!verifyAdminPassword(password ?? "")) {
+    const user = await verifyAdminCredentials(email.trim(), password);
+    if (!user) {
       return NextResponse.json({ error: "Identifiants incorrects" }, { status: 401 });
     }
-    if (email.trim().toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
-      return NextResponse.json({ error: "Identifiants incorrects" }, { status: 401 });
-    }
+    await updateAdminLastLogin(user.id)
     await setAdminSession();
     return NextResponse.json({ ok: true });
   } catch (e: any) {

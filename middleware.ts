@@ -22,6 +22,20 @@ async function verifyTokenEdge(token: string): Promise<Record<string, unknown> |
   }
 }
 
+async function adminTokenEdge(): Promise<string | null> {
+  try {
+    const secret = process.env.AUTH_COOKIE_SECRET ?? "elite-code-school-dev-secret";
+    const encoder = new TextEncoder();
+    const hash = await crypto.subtle.digest("SHA-256", encoder.encode(`admin:${secret}`));
+    const bytes = new Uint8Array(hash);
+    let binary = "";
+    for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+    return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
+  } catch {
+    return null;
+  }
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -36,6 +50,12 @@ export async function middleware(request: NextRequest) {
   ) {
     if (!adminCookie) {
       return NextResponse.redirect(new URL("/admin-login", request.url));
+    }
+    const expected = await adminTokenEdge();
+    if (adminCookie !== expected) {
+      const res = NextResponse.redirect(new URL("/admin-login", request.url));
+      res.cookies.delete("ecs_admin");
+      return res;
     }
   }
 
