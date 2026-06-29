@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Trash2, Shield, ShieldAlert, X, Mail, CalendarDays } from "lucide-react";
+import { Plus, Trash2, Shield, ShieldAlert, X, Mail, Pencil } from "lucide-react";
 import { showToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -23,6 +23,8 @@ export default function AdminUsersPage() {
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [editUser, setEditUser] = useState<AdminUser | null>(null);
+  const [editForm, setEditForm] = useState({ firstName: "", lastName: "", email: "" });
   const [form, setForm] = useState({ email: "", firstName: "", lastName: "", password: "" });
   const [viewMode, setViewMode] = useViewMode("admin-users-view");
 
@@ -51,6 +53,27 @@ export default function AdminUsersPage() {
     showToast("Administrateur créé avec succès", "success");
     setShowForm(false);
     setForm({ email: "", firstName: "", lastName: "", password: "" });
+    await load();
+    setSaving(false);
+  }
+
+  function openEdit(user: AdminUser) {
+    setEditForm({ firstName: user.firstName, lastName: user.lastName, email: user.email });
+    setEditUser(user);
+  }
+
+  async function saveEdit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!editUser) return;
+    setSaving(true);
+    const res = await fetch(`/api/admin/users/${editUser.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(editForm),
+    });
+    if (!res.ok) { showToast("Erreur lors de la modification", "error"); setSaving(false); return; }
+    showToast("Administrateur modifié", "success");
+    setEditUser(null);
     await load();
     setSaving(false);
   }
@@ -114,6 +137,10 @@ export default function AdminUsersPage() {
                   {user.lastLogin ? new Date(user.lastLogin).toLocaleDateString("fr-FR") : "—"}
                 </td>
                 <td className="px-5 py-4 text-right">
+                  <button onClick={() => openEdit(user)}
+                    className="rounded-full bg-sky/10 p-2 text-sky hover:bg-sky/20 transition mr-1">
+                    <Pencil className="size-4" />
+                  </button>
                   {user.role !== "super_admin" && (
                     <button onClick={() => setDeleteId(user.id)}
                       className="rounded-full bg-coral/10 p-2 text-coral hover:bg-coral/20 transition">
@@ -161,6 +188,11 @@ export default function AdminUsersPage() {
                   </p>
                 </div>
               </div>
+              <button onClick={() => openEdit(user)}
+                className="flex size-9 items-center justify-center rounded-full text-sky/50 hover:bg-sky/10 hover:text-sky transition"
+                title="Modifier">
+                <Pencil className="size-4" />
+              </button>
               {user.role !== "super_admin" && (
                 <button onClick={() => setDeleteId(user.id)}
                   className="flex size-9 items-center justify-center rounded-full text-coral/50 hover:bg-coral/10 hover:text-coral transition"
@@ -232,6 +264,31 @@ export default function AdminUsersPage() {
           <p className="text-sm mt-1">Créez le premier administrateur.</p>
         </div>
       ) : viewMode === "table" ? renderTable() : renderCards()}
+
+      {/* Edit Modal */}
+      {editUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4" onClick={() => setEditUser(null)}>
+          <div className="w-full max-w-md rounded-brand bg-white dark:bg-surface p-6 shadow-card" onClick={(e) => e.stopPropagation()}>
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="font-display text-xl font-bold text-ink">Modifier l&apos;administrateur</h2>
+              <button onClick={() => setEditUser(null)}><X className="size-5 text-ink-soft" /></button>
+            </div>
+            <form onSubmit={saveEdit} className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <input value={editForm.firstName} onChange={(e) => setEditForm({ ...editForm, firstName: e.target.value })}
+                  placeholder="Prénom" required className="rounded-brand-sm border-2 border-border bg-body px-3 py-2 text-sm text-ink focus:border-sky focus:outline-none" />
+                <input value={editForm.lastName} onChange={(e) => setEditForm({ ...editForm, lastName: e.target.value })}
+                  placeholder="Nom" required className="rounded-brand-sm border-2 border-border bg-body px-3 py-2 text-sm text-ink focus:border-sky focus:outline-none" />
+              </div>
+              <input value={editForm.email} onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                type="email" placeholder="Email" required className="rounded-brand-sm border-2 border-border bg-body px-3 py-2 text-sm text-ink focus:border-sky focus:outline-none w-full" />
+              <button type="submit" disabled={saving} className="btn-primary w-full py-2">
+                {saving ? "Enregistrement..." : "Enregistrer"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
 
       {deleteId && (
         <ConfirmDialog title="Supprimer cet administrateur ?"

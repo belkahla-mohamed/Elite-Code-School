@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Search, Eye, Download, Globe, Lock, Trash2, CheckSquare } from "lucide-react";
+import { Search, Eye, Download, Globe, Lock, Trash2, CheckSquare, Plus, X } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { downloadCsv } from "@/lib/csv-export";
 import { ViewToggle, useViewMode } from "@/components/ui/view-toggle";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { showToast } from "@/components/ui/toast";
+import type { Program, ProgramLevel, ProgramColor } from "@/lib/types";
 
 interface Student {
   id: string;
@@ -31,11 +32,18 @@ export default function StudentsPage() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [processing, setProcessing] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [programs, setPrograms] = useState<Program[]>([]);
+  const [addForm, setAddForm] = useState({ firstName: "", lastName: "", age: "", programId: "", parentEmail: "" });
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     fetch("/api/students").then((r) => r.json()).then((data) => {
       setStudents(data.students ?? []);
       setLoading(false);
+    });
+    fetch("/api/programs").then((r) => r.json()).then((data) => {
+      setPrograms(data.programs ?? []);
     });
   }, []);
 
@@ -76,6 +84,28 @@ export default function StudentsPage() {
       showToast("Erreur", "error");
     }
     setProcessing(false);
+  }
+
+  async function createStudent(e: React.FormEvent) {
+    e.preventDefault();
+    if (!addForm.firstName || !addForm.lastName || !addForm.age || !addForm.programId) return;
+    setSaving(true);
+    const res = await fetch("/api/students", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...addForm, age: Number(addForm.age) }),
+    });
+    if (res.ok) {
+      showToast("Élève créé avec succès", "success");
+      setShowAddForm(false);
+      setAddForm({ firstName: "", lastName: "", age: "", programId: "", parentEmail: "" });
+      const data = await fetch("/api/students").then((r) => r.json());
+      setStudents(data.students ?? []);
+    } else {
+      const data = await res.json();
+      showToast(data.error ?? "Erreur", "error");
+    }
+    setSaving(false);
   }
 
   async function batchDelete() {
@@ -198,6 +228,9 @@ export default function StudentsPage() {
           <p className="text-sm text-ink-soft mt-1">Gérez les profils et portfolios des élèves</p>
         </div>
         <div className="flex items-center gap-3">
+          <button onClick={() => setShowAddForm(true)} className="btn-primary py-2">
+            <Plus className="mr-1 inline size-4" /> Ajouter
+          </button>
           <span className="rounded-full bg-surface px-4 py-1.5 text-sm font-bold text-ink-soft">
             {students.length} élèves
           </span>
@@ -254,6 +287,38 @@ export default function StudentsPage() {
           )}
           {viewMode === "table" ? renderTable() : renderCards()}
         </>
+      )}
+
+      {/* Add Student Form Modal */}
+      {showAddForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4" onClick={() => setShowAddForm(false)}>
+          <div className="w-full max-w-md rounded-brand bg-white dark:bg-surface p-6 shadow-card" onClick={(e) => e.stopPropagation()}>
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="font-display text-xl font-bold text-ink">Nouvel élève</h2>
+              <button onClick={() => setShowAddForm(false)}><X className="size-5 text-ink-soft" /></button>
+            </div>
+            <form onSubmit={createStudent} className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <input value={addForm.firstName} onChange={(e) => setAddForm({ ...addForm, firstName: e.target.value })}
+                  placeholder="Prénom" required className="rounded-brand-sm border-2 border-border bg-body px-3 py-2 text-sm text-ink focus:border-sky focus:outline-none" />
+                <input value={addForm.lastName} onChange={(e) => setAddForm({ ...addForm, lastName: e.target.value })}
+                  placeholder="Nom" required className="rounded-brand-sm border-2 border-border bg-body px-3 py-2 text-sm text-ink focus:border-sky focus:outline-none" />
+              </div>
+              <input value={addForm.age} onChange={(e) => setAddForm({ ...addForm, age: e.target.value })}
+                type="number" min="7" max="17" placeholder="Âge" required className="rounded-brand-sm border-2 border-border bg-body px-3 py-2 text-sm text-ink focus:border-sky focus:outline-none w-full" />
+              <select value={addForm.programId} onChange={(e) => setAddForm({ ...addForm, programId: e.target.value })}
+                required className="rounded-brand-sm border-2 border-border bg-body px-3 py-2 text-sm text-ink focus:border-sky focus:outline-none w-full">
+                <option value="">Sélectionner un programme</option>
+                {programs.map((p) => <option key={p.id} value={p.id}>{p.title}</option>)}
+              </select>
+              <input value={addForm.parentEmail} onChange={(e) => setAddForm({ ...addForm, parentEmail: e.target.value })}
+                type="email" placeholder="Email parent (optionnel)" className="rounded-brand-sm border-2 border-border bg-body px-3 py-2 text-sm text-ink focus:border-sky focus:outline-none w-full" />
+              <button type="submit" disabled={saving} className="btn-primary w-full py-2">
+                {saving ? "Création..." : "Créer l'élève"}
+              </button>
+            </form>
+          </div>
+        </div>
       )}
 
       {deleteConfirm && (

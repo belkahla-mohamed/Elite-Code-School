@@ -361,6 +361,59 @@ export async function getStudentById(id: string) {
   return data ? mapStudentPortfolio(data, programs) : null;
 }
 
+export async function createStudent(data: {
+  firstName: string; lastName: string; age: number; programId: string;
+  levelLabel?: string; hours?: number; parentEmail?: string;
+  avatar?: string; avatarGradient?: string;
+}) {
+  if (!hasSupabaseConfig()) {
+    const student: Student = {
+      id: `stu-${Date.now()}`,
+      slug: slugify(`${data.firstName}-${data.lastName}-${Date.now()}`),
+      firstName: data.firstName,
+      lastName: data.lastName,
+      age: data.age,
+      avatar: data.avatar ?? `${data.firstName[0]}${data.lastName[0]}`.toUpperCase(),
+      avatarGradient: data.avatarGradient ?? "linear-gradient(135deg,#4f46e5,#06b6d4)",
+      programId: data.programId,
+      levelLabel: data.levelLabel ?? "Nouveau parcours · Niveau 1",
+      joinDateLabel: "Aujourd'hui",
+      hours: data.hours ?? 0,
+      isPublic: true,
+      parentEmail: data.parentEmail ?? "",
+      parentSecretHash: hashSecret(`ECS-${generateAccessSecret()}`),
+      createdAt: new Date().toISOString()
+    };
+    demoStore().students.unshift(student);
+    addActivity("student", "Élève créé", `${student.firstName} ${student.lastName}`);
+    return withPortfolio(student);
+  }
+  const supabase = getSupabaseAdmin();
+  const slug = slugify(`${data.firstName}-${data.lastName}-${Date.now()}`);
+  const { data: student, error } = await supabase
+    .from("students")
+    .insert({
+      slug,
+      first_name: data.firstName,
+      last_name: data.lastName,
+      age: data.age,
+      avatar: data.avatar ?? `${data.firstName[0]}${data.lastName[0]}`.toUpperCase(),
+      avatar_gradient: data.avatarGradient ?? "linear-gradient(135deg,#4f46e5,#06b6d4)",
+      program_id: data.programId,
+      level_label: data.levelLabel ?? "Nouveau parcours · Niveau 1",
+      join_date_label: "Aujourd'hui",
+      hours: data.hours ?? 0,
+      is_public: true,
+      parent_email: data.parentEmail ?? "",
+      parent_secret_hash: hashSecret(`ECS-${generateAccessSecret()}`),
+    })
+    .select("*")
+    .single();
+  if (error) throw error;
+  addActivity("student", "Élève créé", `${data.firstName} ${data.lastName}`);
+  return mapStudentPortfolio({ ...student, projects: [], certifications: [], gallery_items: [] }, await getPrograms());
+}
+
 export async function updateStudent(id: string, data: { firstName?: string; lastName?: string; age?: number; levelLabel?: string; hours?: number; parentEmail?: string; programId?: string; avatar?: string; avatarGradient?: string }) {
   if (!hasSupabaseConfig()) {
     const student = demoStore().students.find((s) => s.id === id);
@@ -736,6 +789,29 @@ export async function createAdminUser(data: { email: string; firstName: string; 
   }
   addActivity("request", "Admin créé", `${data.firstName} ${data.lastName} (${data.email})`);
   return { id: "", email: data.email, firstName: data.firstName, lastName: data.lastName, role: "admin", createdAt: new Date().toISOString() };
+}
+
+export async function updateAdminUser(id: string, data: { firstName?: string; lastName?: string; email?: string; role?: string }) {
+  if (!hasSupabaseConfig()) {
+    const store = (demoStore() as any);
+    if (!store.adminUsers) store.adminUsers = structuredClone(adminSeed);
+    const user = store.adminUsers.find((u: AdminUser) => u.id === id);
+    if (!user) throw new Error("Admin introuvable");
+    if (data.firstName !== undefined) user.firstName = data.firstName;
+    if (data.lastName !== undefined) user.lastName = data.lastName;
+    if (data.email !== undefined) user.email = data.email;
+    if (data.role !== undefined) user.role = data.role;
+    addActivity("request", "Admin modifié", `${user.firstName} ${user.lastName} (${user.email})`);
+    return user;
+  }
+  const updateData: Record<string, any> = {};
+  if (data.firstName !== undefined) updateData.first_name = data.firstName;
+  if (data.lastName !== undefined) updateData.last_name = data.lastName;
+  if (data.email !== undefined) updateData.email = data.email;
+  if (data.role !== undefined) updateData.role = data.role;
+  const { error } = await getSupabaseAdmin().from("admin_users").update(updateData).eq("id", id);
+  if (error) throw error;
+  addActivity("request", "Admin modifié", `${data.firstName ?? ""} ${data.lastName ?? ""} (${data.email ?? ""})`);
 }
 
 export async function deleteAdminUser(id: string) {
