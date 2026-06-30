@@ -16,10 +16,11 @@ export default function ParentPrivacyPage() {
     return (
       <div>
         <Skeleton className="mb-6 h-4 w-40" />
-        <div className="rounded-brand border-2 border-border bg-white dark:bg-surface p-8">
-          <Skeleton className="mb-6 h-8 w-48" />
-          <Skeleton className="mb-4 h-24 w-full rounded-brand" />
-          <Skeleton className="h-24 w-full rounded-brand" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Skeleton className="h-40 rounded-brand border-2 border-border" />
+          <Skeleton className="h-40 rounded-brand border-2 border-border" />
+          <Skeleton className="h-40 rounded-brand border-2 border-border" />
+          <Skeleton className="h-40 rounded-brand border-2 border-border" />
         </div>
       </div>
     );
@@ -50,11 +51,11 @@ export default function ParentPrivacyPage() {
         { label: "Confidentialité" }
       ]} />
 
-      <div className="space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Page Header */}
         <div className="rounded-brand border-2 border-border bg-white dark:bg-surface p-6 md:p-8">
-          <div className="flex items-center gap-4 mb-2">
-            <div className="flex size-14 items-center justify-center rounded-2xl bg-sky/10 text-sky">
+          <div className="flex items-center gap-4">
+            <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-sky/10 text-sky">
               {student.isPublic ? <Globe className="size-7" /> : <Lock className="size-7" />}
             </div>
             <div>
@@ -72,7 +73,7 @@ export default function ParentPrivacyPage() {
             ? "border-lime/30 bg-gradient-to-br from-lime/5 to-emerald/5"
             : "border-amber/30 bg-gradient-to-br from-amber/5 to-orange/5"
         }`}>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div className="flex items-start justify-between gap-4">
             <div className="flex items-start gap-4">
               <div className={`flex size-12 shrink-0 items-center justify-center rounded-xl ${
                 student.isPublic ? "bg-lime text-white" : "bg-amber text-white"
@@ -83,15 +84,15 @@ export default function ParentPrivacyPage() {
                 <h2 className="font-display text-xl font-bold text-ink">
                   Portfolio {student.isPublic ? "visible" : "privé"}
                 </h2>
-                <p className="mt-1 text-sm text-ink-soft leading-relaxed max-w-lg">
+                <p className="mt-1 text-sm text-ink-soft leading-relaxed max-w-xs">
                   {student.isPublic
-                    ? "Tout le monde peut voir le portfolio de votre enfant. Les projets, certifications et la galerie sont accessibles publiquement."
-                    : "Seuls vous et l'administration pouvez voir les informations de votre enfant. Le portfolio n'apparaît pas dans la liste publique."
+                    ? "Tout le monde peut voir le portfolio de votre enfant."
+                    : "Seuls vous et l'administration y avez accès."
                   }
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-4 shrink-0">
+            <div className="flex items-center gap-3 shrink-0">
               <Switch id="privacy-toggle" checked={student.isPublic} onCheckedChange={togglePrivacy} />
               <Label htmlFor="privacy-toggle" className="text-sm font-bold text-ink cursor-pointer">
                 {student.isPublic ? "Public" : "Privé"}
@@ -101,47 +102,51 @@ export default function ParentPrivacyPage() {
         </div>
 
         {/* Info Cards */}
-        <div className="grid gap-6 md:grid-cols-2">
-          <div className="rounded-brand border-2 border-border bg-white dark:bg-surface p-6">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-sky/10 text-sky mb-4">
-              <Globe className="size-5" />
+        <div className={`rounded-brand border-2 border-border bg-white dark:bg-surface p-6 ${
+          student.isPublic ? "lg:col-span-2" : ""
+        }`}>
+          <div className="grid gap-6 md:grid-cols-2">
+            <div>
+              <div className="flex size-10 items-center justify-center rounded-xl bg-sky/10 text-sky mb-4">
+                <Globe className="size-5" />
+              </div>
+              <h3 className="font-display text-lg font-bold text-ink">Mode public</h3>
+              <ul className="mt-3 space-y-2 text-sm text-ink-soft">
+                <li className="flex items-start gap-2">
+                  <span className="mt-1 size-1.5 shrink-0 rounded-full bg-lime" />
+                  Portfolio visible sur la page des élèves
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-1 size-1.5 shrink-0 rounded-full bg-lime" />
+                  Partage de certifications via lien direct
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-1 size-1.5 shrink-0 rounded-full bg-lime" />
+                  Accès public aux projets et à la galerie
+                </li>
+              </ul>
             </div>
-            <h3 className="font-display text-lg font-bold text-ink">Mode public</h3>
-            <ul className="mt-3 space-y-2 text-sm text-ink-soft">
-              <li className="flex items-start gap-2">
-                <span className="mt-1 size-1.5 shrink-0 rounded-full bg-lime" />
-                Portfolio visible sur la page des élèves
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="mt-1 size-1.5 shrink-0 rounded-full bg-lime" />
-                Partage de certifications via lien direct
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="mt-1 size-1.5 shrink-0 rounded-full bg-lime" />
-                Accès public aux projets et à la galerie
-              </li>
-            </ul>
-          </div>
 
-          <div className="rounded-brand border-2 border-border bg-white dark:bg-surface p-6">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-amber/10 text-amber mb-4">
-              <Lock className="size-5" />
+            <div>
+              <div className="flex size-10 items-center justify-center rounded-xl bg-amber/10 text-amber mb-4">
+                <Lock className="size-5" />
+              </div>
+              <h3 className="font-display text-lg font-bold text-ink">Mode privé</h3>
+              <ul className="mt-3 space-y-2 text-sm text-ink-soft">
+                <li className="flex items-start gap-2">
+                  <span className="mt-1 size-1.5 shrink-0 rounded-full bg-amber" />
+                  Portfolio masqué du grand public
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-1 size-1.5 shrink-0 rounded-full bg-amber" />
+                  Accès réservé aux parents et à l&apos;école
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-1 size-1.5 shrink-0 rounded-full bg-amber" />
+                  Certifications vérifiables via code unique
+                </li>
+              </ul>
             </div>
-            <h3 className="font-display text-lg font-bold text-ink">Mode privé</h3>
-            <ul className="mt-3 space-y-2 text-sm text-ink-soft">
-              <li className="flex items-start gap-2">
-                <span className="mt-1 size-1.5 shrink-0 rounded-full bg-amber" />
-                Portfolio masqué du grand public
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="mt-1 size-1.5 shrink-0 rounded-full bg-amber" />
-                Accès réservé aux parents et à l&apos;école
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="mt-1 size-1.5 shrink-0 rounded-full bg-amber" />
-                Certifications vérifiables via code unique
-              </li>
-            </ul>
           </div>
         </div>
 
@@ -149,9 +154,9 @@ export default function ParentPrivacyPage() {
         {student.isPublic && (
           <div className="rounded-brand border-2 border-border bg-white dark:bg-surface p-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div>
+              <div className="min-w-0">
                 <h3 className="font-display text-base font-bold text-ink">Lien du portfolio</h3>
-                <p className="mt-1 text-sm text-ink-soft break-all font-mono">{portfolioUrl}</p>
+                <p className="mt-1 text-sm text-ink-soft break-all font-mono truncate">{portfolioUrl}</p>
               </div>
               <button
                 onClick={() => {
