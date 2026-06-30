@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { getOptimizedUrl } from "@/lib/upload";
+import { getOptimizedUrl } from "@/lib/image-url";
 
 interface OptimizedImageProps {
   src: string;
