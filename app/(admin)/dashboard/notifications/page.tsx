@@ -9,6 +9,8 @@ import type { AppNotification } from "@/lib/types";
 export default function NotificationsPage() {
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
   const [loading, setLoading] = useState(true);
+  const [readingId, setReadingId] = useState<string | null>(null);
+  const [readingAll, setReadingAll] = useState(false);
 
   useEffect(() => { load(); }, []);
 
@@ -23,14 +25,20 @@ export default function NotificationsPage() {
   }
 
   async function markRead(id: string) {
+    if (readingId) return;
+    setReadingId(id);
     await fetch(`/api/notifications/${id}`, { method: "PATCH" });
     setNotifications((prev) => prev.map((n) => n.id === id ? { ...n, read: true } : n));
+    setReadingId(null);
   }
 
   async function markAllRead() {
+    if (readingAll) return;
+    setReadingAll(true);
     await fetch("/api/notifications", { method: "PATCH" });
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     showToast("Toutes les notifications marquées comme lues", "success");
+    setReadingAll(false);
   }
 
   function timeAgo(dateStr: string) {
@@ -59,8 +67,8 @@ export default function NotificationsPage() {
           <p className="mt-1 text-sm text-ink-soft">Historique des notifications</p>
         </div>
         {unreadCount > 0 && (
-          <button onClick={markAllRead} className="btn-outline py-2">
-            <CheckCheck className="mr-1 inline size-4" /> Tout marquer comme lu ({unreadCount})
+          <button onClick={markAllRead} disabled={readingAll} className="btn-outline py-2 disabled:opacity-50">
+            {readingAll ? <><Clock className="mr-1 inline size-4 animate-spin" /> Lecture...</> : <><CheckCheck className="mr-1 inline size-4" /> Tout marquer comme lu ({unreadCount})</>}
           </button>
         )}
       </div>

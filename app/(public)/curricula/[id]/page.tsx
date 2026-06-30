@@ -30,8 +30,12 @@ export default async function CurriculaDetailPage({ params }: Props) {
           <ArrowLeft className="size-4" /> Tous les programmes
         </Link>
 
-        <div className="aspect-[2.5/1] overflow-hidden rounded-brand mb-8">
-          <img src={program.image} alt={program.title} className="size-full object-cover" />
+        <div className="aspect-[2.5/1] overflow-hidden rounded-brand mb-8 bg-gradient-to-br from-surface to-border flex items-center justify-center">
+          {program.image ? (
+            <img src={program.image} alt={program.title} className="size-full object-cover" />
+          ) : (
+            <span className="text-6xl font-black text-ink-soft/30">{program.title?.charAt(0) || "?"}</span>
+          )}
         </div>
 
         <div className="flex items-center gap-4 mb-6">

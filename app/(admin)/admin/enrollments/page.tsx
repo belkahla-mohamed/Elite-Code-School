@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  CheckCircle, XCircle, Clock, ChevronDown, ChevronUp, Eye,
+  CheckCircle, XCircle, Clock, ChevronDown, ChevronUp, Eye, Loader2,
   Mail, Phone, User, CalendarDays, Download, ArrowUpDown,
   Square, CheckSquare, FileText, LayoutGrid, LayoutList
 } from "lucide-react";
@@ -64,6 +64,7 @@ export default function EnrollmentsPage() {
   const [dialogIds, setDialogIds] = useState<string[]>([]);
   const [notes, setNotes] = useState("");
   const [rejectionMsg, setRejectionMsg] = useState("");
+  const [processingAction, setProcessingAction] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -124,6 +125,7 @@ export default function EnrollmentsPage() {
   async function executeAction() {
     const mode = dialogMode;
     const ids = dialogIds;
+    setProcessingAction(true);
     setDialogOpen(false);
 
     if (ids.length === 1) {
@@ -144,6 +146,7 @@ export default function EnrollmentsPage() {
         showToast(mode === "accept" ? "Demande acceptée" : "Demande refusée", mode === "accept" ? "success" : "info");
       } else showToast("Erreur lors du traitement", "error");
       setProcessingId(null);
+      setProcessingAction(false);
       return;
     }
 
@@ -162,6 +165,7 @@ export default function EnrollmentsPage() {
       setSelectedIds(new Set());
       showToast(`${ids.length} demande(s) ${mode === "accept" ? "acceptée(s)" : "refusée(s)"}`, mode === "accept" ? "success" : "info");
     } else showToast("Erreur lors du traitement", "error");
+    setProcessingAction(false);
   }
 
   const filters = [
@@ -406,10 +410,10 @@ export default function EnrollmentsPage() {
             <DialogClose asChild>
               <button className="rounded-full border-2 border-border px-4 py-2 text-sm font-bold text-ink-soft hover:border-sky transition">Annuler</button>
             </DialogClose>
-            <button onClick={executeAction}
-              className={cn("rounded-full px-4 py-2 text-sm font-black uppercase tracking-wide text-white transition",
+            <button onClick={executeAction} disabled={processingAction}
+              className={cn("rounded-full px-4 py-2 text-sm font-black uppercase tracking-wide text-white transition disabled:opacity-50",
                 dialogMode === "accept" ? "bg-lime hover:bg-lime/90" : "bg-coral hover:bg-coral/90")}>
-              {dialogMode === "accept" ? "Accepter" : "Refuser"}
+              {processingAction ? <><Loader2 className="mr-1 inline size-4 animate-spin" /> Traitement...</> : (dialogMode === "accept" ? "Accepter" : "Refuser")}
             </button>
           </DialogFooter>
         </DialogContent>

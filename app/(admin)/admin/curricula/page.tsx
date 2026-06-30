@@ -29,6 +29,7 @@ export default function CurriculaAdminPage() {
   const [editing, setEditing] = useState<Program | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const [saving, setSaving] = useState(false);
   const [viewMode, setViewMode] = useViewMode("curricula-view");
   const [cardColumns, setCardColumns] = useState<1 | 2>(2);
@@ -101,9 +102,11 @@ export default function CurriculaAdminPage() {
   }
 
   async function del(id: string) {
+    setDeleting(true);
     const res = await fetch(`/api/programs/${id}`, { method: "DELETE" });
     if (res.ok) { showToast("Programme supprimé", "info"); load(); }
     setConfirmDelete(null);
+    setDeleting(false);
   }
 
   const colors = ["accent", "cyan", "amber", "green", "rose", "purple"];
@@ -130,7 +133,7 @@ export default function CurriculaAdminPage() {
                       {p.image ? (
                         <img src={p.image} alt="" className="size-10 shrink-0 rounded-lg object-cover" />
                       ) : (
-                        <span className="flex size-10 items-center justify-center rounded-lg bg-surface text-lg font-bold text-ink-soft">?</span>
+                        <span className="flex size-10 items-center justify-center rounded-lg bg-gradient-to-br from-surface to-border text-lg font-bold text-ink-soft">{p.title?.charAt(0) || "?"}</span>
                       )}
                       <div>
                         <span className="font-bold text-ink">{p.title}</span>
@@ -364,7 +367,7 @@ export default function CurriculaAdminPage() {
       ) : viewMode === "table" ? renderTable() : renderCards()}
 
       {confirmDelete && (
-        <ConfirmDialog title="Supprimer ce programme ?" description="Cette action est irréversible." confirmLabel="Supprimer"
+        <ConfirmDialog title="Supprimer ce programme ?" description="Cette action est irréversible." confirmLabel="Supprimer" loading={deleting}
           onCancel={() => setConfirmDelete(null)} onConfirm={() => del(confirmDelete)} />
       )}
     </div>

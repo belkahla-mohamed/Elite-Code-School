@@ -11,6 +11,8 @@ export function NotificationBell() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [readingId, setReadingId] = useState<string | null>(null);
+  const [readingAll, setReadingAll] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
@@ -37,15 +39,21 @@ export function NotificationBell() {
   }, []);
 
   async function markRead(id: string) {
+    if (readingId) return;
+    setReadingId(id);
     await fetch(`/api/notifications/${id}`, { method: "PATCH" });
     setNotifications((prev) => prev.map((n) => n.id === id ? { ...n, read: true } : n));
     setUnreadCount((prev) => Math.max(0, prev - 1));
+    setReadingId(null);
   }
 
   async function markAllRead() {
+    if (readingAll) return;
+    setReadingAll(true);
     await fetch("/api/notifications", { method: "PATCH" });
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     setUnreadCount(0);
+    setReadingAll(false);
   }
 
   function timeAgo(dateStr: string) {

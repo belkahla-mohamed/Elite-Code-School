@@ -37,7 +37,11 @@ export default function StudentDetailPage() {
   const [editOpen, setEditOpen] = useState(false);
   const [editForm, setEditForm] = useState({ firstName: "", lastName: "", age: 0, levelLabel: "", hours: 0, parentEmail: "" });
   const [saving, setSaving] = useState(false);
+  const [addingProject, setAddingProject] = useState(false);
+  const [addingCert, setAddingCert] = useState(false);
+  const [deletingItem, setDeletingItem] = useState(false);
   const [deleteStudentConfirm, setDeleteStudentConfirm] = useState(false);
+  const [deletingStudent, setDeletingStudent] = useState(false);
 
   useEffect(() => {
     fetch(`/api/students/${id}`).then((r) => r.json()).then((data) => {
@@ -54,6 +58,8 @@ export default function StudentDetailPage() {
 
   async function addProject(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (addingProject) return;
+    setAddingProject(true);
     const form = new FormData(e.currentTarget);
     const res = await fetch(`/api/students/${id}/projects`, {
       method: "POST",
@@ -76,10 +82,13 @@ export default function StudentDetailPage() {
       setProjectCover("");
       reload();
     }
+    setAddingProject(false);
   }
 
   async function addCertification(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (addingCert) return;
+    setAddingCert(true);
     const form = new FormData(e.currentTarget);
     const res = await fetch(`/api/students/${id}/certifications`, {
       method: "POST",
@@ -99,6 +108,7 @@ export default function StudentDetailPage() {
       setCertifImage("");
       reload();
     }
+    setAddingCert(false);
   }
 
   async function addGalleryImage(url: string) {
@@ -114,10 +124,12 @@ export default function StudentDetailPage() {
   }
 
   async function deleteItem(type: string, itemId: string) {
+    setDeletingItem(true);
     const endpoint = type === "project" ? `/api/students/${id}/projects` : `/api/students/${id}/certifications`;
     const res = await fetch(`${endpoint}?id=${itemId}`, { method: "DELETE" });
     if (res.ok) { showToast("Supprimé", "info"); reload(); }
     setConfirmDelete(null);
+    setDeletingItem(false);
   }
 
   function openEdit() {
@@ -139,10 +151,12 @@ export default function StudentDetailPage() {
   }
 
   async function deleteStudent() {
+    setDeletingStudent(true);
     const res = await fetch(`/api/students/${id}`, { method: "DELETE" });
     if (res.ok) { showToast("Élève supprimé", "info"); router.push("/dashboard/students"); }
     else { const j = await res.json(); showToast(j.error ?? "Erreur", "error"); }
     setDeleteStudentConfirm(false);
+    setDeletingStudent(false);
   }
 
   if (loading) return <div className="px-4"><DetailSkeleton /></div>;
@@ -237,7 +251,7 @@ export default function StudentDetailPage() {
                  {projectCover ? "✅ Cover" : "🖼️ Cover"}
               </span>
             </FileUpload>
-            <button type="submit" className="flex-1 btn-primary py-2"><Plus className="mr-1 inline size-4" /> Ajouter</button>
+            <button type="submit" disabled={addingProject} className="flex-1 btn-primary py-2 disabled:opacity-50">{addingProject ? <><Loader2 className="mr-1 inline size-4 animate-spin" /> Ajout...</> : <><Plus className="mr-1 inline size-4" /> Ajouter</>}</button>
           </div>
         </form>
       </section>
@@ -265,7 +279,7 @@ export default function StudentDetailPage() {
                  {certifImage ? "✅ Image" : "🖼️ Image"}
               </span>
             </FileUpload>
-            <button type="submit" className="flex-1 btn-primary py-2"><Plus className="mr-1 inline size-4" /> Ajouter</button>
+            <button type="submit" disabled={addingCert} className="flex-1 btn-primary py-2 disabled:opacity-50">{addingCert ? <><Loader2 className="mr-1 inline size-4 animate-spin" /> Ajout...</> : <><Plus className="mr-1 inline size-4" /> Ajouter</>}</button>
           </div>
         </form>
       </section>
@@ -275,6 +289,7 @@ export default function StudentDetailPage() {
           title={`Supprimer ${confirmDelete.type === "project" ? "le projet" : "le certificat"} ?`}
           description={`"${confirmDelete.name}" sera définitivement supprimé.`}
           confirmLabel="Supprimer"
+          loading={deletingItem}
           onCancel={() => setConfirmDelete(null)}
           onConfirm={() => deleteItem(confirmDelete.type, confirmDelete.id)}
         />
@@ -285,6 +300,7 @@ export default function StudentDetailPage() {
           title="Supprimer cet élève ?"
           description={`${student.firstName} ${student.lastName} et toutes ses données seront supprimés définitivement.`}
           confirmLabel="Supprimer"
+          loading={deletingStudent}
           onCancel={() => setDeleteStudentConfirm(false)}
           onConfirm={deleteStudent}
         />

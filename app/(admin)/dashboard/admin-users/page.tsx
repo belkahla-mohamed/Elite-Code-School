@@ -24,6 +24,7 @@ export default function AdminUsersPage() {
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [deletingAdmin, setDeletingAdmin] = useState(false);
   const [editUser, setEditUser] = useState<AdminUser | null>(null);
   const [editForm, setEditForm] = useState({ firstName: "", lastName: "", email: "" });
   const [form, setForm] = useState({ email: "", firstName: "", lastName: "", password: "" });
@@ -81,11 +82,13 @@ export default function AdminUsersPage() {
   }
 
   async function deleteUser(id: string) {
+    setDeletingAdmin(true);
     setDeleteId(null);
     const res = await fetch(`/api/admin/users/${id}`, { method: "DELETE" });
-    if (!res.ok) { showToast("Erreur lors de la suppression", "error"); return; }
+    if (!res.ok) { showToast("Erreur lors de la suppression", "error"); setDeletingAdmin(false); return; }
     showToast("Administrateur supprimé", "info");
     await load();
+    setDeletingAdmin(false);
   }
 
   function renderTable() {
@@ -319,7 +322,7 @@ export default function AdminUsersPage() {
       {deleteId && (
         <ConfirmDialog title="Supprimer cet administrateur ?"
           description="Cette action est irréversible. L'administrateur perdra tout accès."
-          confirmLabel="Supprimer" variant="danger"
+          confirmLabel="Supprimer" variant="danger" loading={deletingAdmin}
           onConfirm={() => deleteUser(deleteId)} onCancel={() => setDeleteId(null)} />
       )}
     </div>

@@ -53,6 +53,7 @@ export function AdminDashboard() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [confirmAction, setConfirmAction] = useState<{ id: string; action: "accept" | "reject" } | null>(null);
+  const [processingDashboard, setProcessingDashboard] = useState(false);
   const [createdSecret, setCreatedSecret] = useState("");
 
   useEffect(() => {
@@ -88,6 +89,7 @@ export function AdminDashboard() {
   }
 
   async function updateRequest(id: string, action: "accept" | "reject") {
+    setProcessingDashboard(true);
     setConfirmAction(null);
     const res = await fetch(`/api/inscriptions/${id}`, {
       method: "PATCH",
@@ -97,11 +99,13 @@ export function AdminDashboard() {
     const result = await res.json();
     if (!res.ok) {
       showToast(result.error ?? "Action impossible", "error");
+      setProcessingDashboard(false);
       return;
     }
     showToast(action === "accept" ? "Demande acceptée" : "Demande refusée", "success");
     if (result.parentSecret) setCreatedSecret(result.parentSecret);
     await loadData();
+    setProcessingDashboard(false);
   }
 
 
@@ -323,6 +327,7 @@ export function AdminDashboard() {
           }
           confirmLabel={confirmAction.action === "accept" ? "Accepter" : "Refuser"}
           variant={confirmAction.action === "accept" ? "default" : "danger"}
+          loading={processingDashboard}
           onConfirm={() => updateRequest(confirmAction.id, confirmAction.action)}
           onCancel={() => setConfirmAction(null)}
         />

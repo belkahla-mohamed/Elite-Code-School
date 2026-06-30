@@ -53,6 +53,7 @@ export function Sidebar({ collapsed, mobileOpen, onCloseMobile, onToggle }: Side
   const router = useRouter();
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -169,7 +170,10 @@ export function Sidebar({ collapsed, mobileOpen, onCloseMobile, onToggle }: Side
             </div>
           </div>
           <button
+            disabled={loggingOut}
             onClick={async () => {
+              if (loggingOut) return;
+              setLoggingOut(true);
               await fetch("/api/auth/logout", { method: "POST" });
               router.push("/admin-login");
             }}

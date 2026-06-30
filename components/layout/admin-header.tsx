@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Menu, Search, User, LogOut, Settings } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -33,11 +34,14 @@ interface AdminHeaderProps {
 export function AdminHeader({ collapsed, onToggleSidebar, onOpenMobile }: AdminHeaderProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const [loggingOut, setLoggingOut] = useState(false);
   const title = Object.entries(pageTitles).find(([key]) =>
     pathname === key || pathname.startsWith(key + "/")
   )?.[1] ?? "Dashboard";
 
   async function handleLogout() {
+    if (loggingOut) return;
+    setLoggingOut(true);
     await fetch("/api/auth/logout", { method: "POST" });
     window.location.href = "/admin-login";
   }
