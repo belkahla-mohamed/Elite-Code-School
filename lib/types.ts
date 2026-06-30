@@ -29,6 +29,17 @@ export type Program = {
   category?: Category;
 };
 
+export type Parent = {
+  id: string
+  email: string
+  firstName: string
+  lastName: string
+  phone: string
+  secretHash: string
+  studentId: string
+  createdAt: string
+}
+
 export type InscriptionRequest = {
   id: string;
   studentFirstName: string;
@@ -36,6 +47,8 @@ export type InscriptionRequest = {
   age: number;
   schoolLevel?: string;
   programId: string;
+  parentFirstName: string;
+  parentLastName: string;
   parentPhone: string;
   parentEmail: string;
   message?: string;

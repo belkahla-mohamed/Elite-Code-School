@@ -19,6 +19,7 @@ import type {
   DashboardSnapshot,
   GalleryItem,
   InscriptionRequest,
+  Parent,
   Program,
   ProgramColor,
   ProgramLevel,
@@ -127,6 +128,8 @@ export async function createInscriptionRequest(payload: Omit<InscriptionRequest,
   if (!hasSupabaseConfig()) {
     const request: InscriptionRequest = {
       ...payload,
+      parentFirstName: payload.parentFirstName ?? payload.parentEmail.split("@")[0],
+      parentLastName: payload.parentLastName ?? "",
       id: `req-${Date.now()}`,
       status: "pending",
       createdAt: new Date().toISOString()
@@ -140,7 +143,7 @@ export async function createInscriptionRequest(payload: Omit<InscriptionRequest,
       studentLastName: payload.studentLastName,
       age: payload.age,
       programTitle: program?.title ?? payload.programId,
-      parentName: payload.parentEmail.split("@")[0],
+      parentName: `${payload.parentFirstName} ${payload.parentLastName}`.trim() || payload.parentEmail.split("@")[0],
       parentEmail: payload.parentEmail,
       parentPhone: payload.parentPhone,
       message: payload.message,
@@ -157,6 +160,8 @@ export async function createInscriptionRequest(payload: Omit<InscriptionRequest,
       age: payload.age,
       school_level: payload.schoolLevel,
       program_id: payload.programId,
+      parent_first_name: payload.parentFirstName,
+      parent_last_name: payload.parentLastName,
       parent_phone: payload.parentPhone,
       parent_email: payload.parentEmail,
       message: payload.message
@@ -173,7 +178,7 @@ export async function createInscriptionRequest(payload: Omit<InscriptionRequest,
     studentLastName: payload.studentLastName,
     age: payload.age,
     programTitle: program?.title ?? payload.programId,
-    parentName: payload.parentEmail.split("@")[0],
+    parentName: `${payload.parentFirstName} ${payload.parentLastName}`.trim() || payload.parentEmail.split("@")[0],
     parentEmail: payload.parentEmail,
     parentPhone: payload.parentPhone,
     message: payload.message,
@@ -222,8 +227,9 @@ export async function acceptInscriptionRequest(id: string, notes?: string) {
     request.status = "accepted";
     if (notes) request.adminNotes = notes;
 
+    const studentId = `stu-${Date.now()}`;
     const student: Student = {
-      id: `stu-${Date.now()}`,
+      id: studentId,
       slug: slugify(`${request.studentFirstName}-${request.studentLastName}`),
       firstName: request.studentFirstName,
       lastName: request.studentLastName,
@@ -240,9 +246,19 @@ export async function acceptInscriptionRequest(id: string, notes?: string) {
       createdAt: new Date().toISOString()
     };
     store.students.unshift(student);
+
+    await createParent({
+      email: request.parentEmail,
+      firstName: request.parentFirstName || request.parentEmail.split("@")[0],
+      lastName: request.parentLastName || "",
+      phone: request.parentPhone,
+      secret: parentSecret,
+      studentId: studentId,
+    })
+
     addActivityAndNotify("student", "Inscription acceptée", `${student.firstName} ${student.lastName} a rejoint le programme ${student.programId}`);
     sendAcceptanceEmail({
-      parentName: request.parentEmail.split("@")[0],
+      parentName: `${request.parentFirstName} ${request.parentLastName}`.trim() || request.parentEmail.split("@")[0],
       parentEmail: request.parentEmail,
       studentFirstName: request.studentFirstName,
       studentLastName: request.studentLastName,
@@ -260,9 +276,11 @@ export async function acceptInscriptionRequest(id: string, notes?: string) {
 
   if (requestError) throw requestError;
 
+  const studentId = `stu-${Date.now()}`;
   const { data: student, error: studentError } = await supabase
     .from("students")
     .insert({
+      id: studentId,
       slug: slugify(`${request.student_first_name}-${request.student_last_name}`),
       first_name: request.student_first_name,
       last_name: request.student_last_name,
@@ -282,12 +300,21 @@ export async function acceptInscriptionRequest(id: string, notes?: string) {
 
   if (studentError) throw studentError;
 
+  await createParent({
+    email: request.parent_email,
+    firstName: request.parent_first_name || request.parent_email.split("@")[0],
+    lastName: request.parent_last_name || "",
+    phone: request.parent_phone,
+    secret: parentSecret,
+    studentId: studentId,
+  })
+
   const updateData: Record<string, any> = { status: "accepted" };
   if (notes) updateData.admin_notes = notes;
   await supabase.from("inscription_requests").update(updateData).eq("id", id);
   addActivityAndNotify("student", "Inscription acceptée", `${request.student_first_name} ${request.student_last_name} a rejoint le programme`);
   sendAcceptanceEmail({
-    parentName: request.parent_email.split("@")[0],
+    parentName: `${request.parent_first_name} ${request.parent_last_name}`.trim() || request.parent_email.split("@")[0],
     parentEmail: request.parent_email,
     studentFirstName: request.student_first_name,
     studentLastName: request.student_last_name,
@@ -1154,6 +1181,190 @@ export async function updateSettings(data: Partial<AppSettings>) {
   }
 }
 
+// ─── Parents ──────────────────────────────────────────────
+
+const parentSeed: Parent[] = [
+  {
+    id: "parent-1",
+    email: "parent.youssef@example.com",
+    firstName: "Nawal",
+    lastName: "Alaoui",
+    phone: "+212 6XX XXX XXX",
+    secretHash: hashSecret("YOUSEEF-2026"),
+    studentId: "stu-youssef",
+    createdAt: new Date("2025-09-01").toISOString(),
+  },
+  {
+    id: "parent-2",
+    email: "parent.mariam@example.com",
+    firstName: "Hassan",
+    lastName: "El Fassi",
+    phone: "+212 6XX XXX XXX",
+    secretHash: hashSecret("MARIAM-2026"),
+    studentId: "stu-mariam",
+    createdAt: new Date("2025-09-01").toISOString(),
+  },
+  {
+    id: "parent-3",
+    email: "parent.adam@example.com",
+    firstName: "Fatima",
+    lastName: "Berrada",
+    phone: "+212 6XX XXX XXX",
+    secretHash: hashSecret("ADAM-2026"),
+    studentId: "stu-adam",
+    createdAt: new Date("2025-09-01").toISOString(),
+  },
+  {
+    id: "parent-4",
+    email: "parent.sarah@example.com",
+    firstName: "Karim",
+    lastName: "Benali",
+    phone: "+212 6XX XXX XXX",
+    secretHash: hashSecret("SARAH-2026"),
+    studentId: "stu-sarah",
+    createdAt: new Date("2025-09-01").toISOString(),
+  },
+  {
+    id: "parent-5",
+    email: "parent.aymane@example.com",
+    firstName: "Samira",
+    lastName: "Idrissi",
+    phone: "+212 6XX XXX XXX",
+    secretHash: hashSecret("AYMANE-2026"),
+    studentId: "stu-aymane",
+    createdAt: new Date("2025-09-01").toISOString(),
+  },
+  {
+    id: "parent-6",
+    email: "parent.ines@example.com",
+    firstName: "Mohamed",
+    lastName: "El Mouden",
+    phone: "+212 6XX XXX XXX",
+    secretHash: hashSecret("INES-2026"),
+    studentId: "stu-ines",
+    createdAt: new Date("2025-09-01").toISOString(),
+  },
+  {
+    id: "parent-7",
+    email: "parent.oumaima@example.com",
+    firstName: "Nadia",
+    lastName: "Zerhouni",
+    phone: "+212 6XX XXX XXX",
+    secretHash: hashSecret("OUMAIMA-2026"),
+    studentId: "stu-oumaima",
+    createdAt: new Date("2025-09-01").toISOString(),
+  },
+  {
+    id: "parent-8",
+    email: "parent.rayan@example.com",
+    firstName: "Rachid",
+    lastName: "Ouali",
+    phone: "+212 6XX XXX XXX",
+    secretHash: hashSecret("RAYAN-2026"),
+    studentId: "stu-rayan",
+    createdAt: new Date("2025-09-01").toISOString(),
+  },
+]
+
+export async function getParentByLogin(email: string, secret: string): Promise<{ parent: Parent; student: StudentPortfolio } | null> {
+  const secretHash = hashSecret(secret)
+
+  if (!hasSupabaseConfig()) {
+    const store = demoStore() as any
+    if (!store.parents) store.parents = structuredClone(parentSeed)
+    const parent = store.parents.find((p: Parent) => p.email.toLowerCase() === email.toLowerCase() && p.secretHash === secretHash)
+    if (!parent) return null
+    const student = demoStore().students.find((s) => s.id === parent.studentId)
+    if (!student) return null
+    return { parent, student: withPortfolio(student) }
+  }
+
+  const { data: parentData, error: parentError } = await getSupabaseAdmin()
+    .from("parents")
+    .select("*")
+    .ilike("email", email)
+    .eq("secret_hash", secretHash)
+    .maybeSingle()
+
+  if (parentError || !parentData) return null
+
+  const parent: Parent = {
+    id: parentData.id,
+    email: parentData.email,
+    firstName: parentData.first_name,
+    lastName: parentData.last_name,
+    phone: parentData.phone,
+    secretHash: parentData.secret_hash,
+    studentId: parentData.student_id,
+    createdAt: parentData.created_at,
+  }
+
+  const programs = await getPrograms()
+  const { data: studentData, error: studentError } = await getSupabaseAdmin()
+    .from("students")
+    .select("*, projects(*), certifications(*), gallery_items(*)")
+    .eq("id", parent.studentId)
+    .maybeSingle()
+
+  if (studentError || !studentData) return null
+
+  return { parent, student: mapStudentPortfolio(studentData, programs) }
+}
+
+export async function createParent(data: {
+  email: string
+  firstName: string
+  lastName: string
+  phone: string
+  secret: string
+  studentId: string
+}): Promise<Parent> {
+  const secretHash = hashSecret(data.secret)
+
+  if (!hasSupabaseConfig()) {
+    const store = demoStore() as any
+    if (!store.parents) store.parents = structuredClone(parentSeed)
+    const parent: Parent = {
+      id: `parent-${Date.now()}`,
+      email: data.email,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      phone: data.phone,
+      secretHash,
+      studentId: data.studentId,
+      createdAt: new Date().toISOString(),
+    }
+    store.parents.push(parent)
+    return parent
+  }
+
+  const { data: created, error } = await getSupabaseAdmin()
+    .from("parents")
+    .insert({
+      email: data.email,
+      first_name: data.firstName,
+      last_name: data.lastName,
+      phone: data.phone,
+      secret_hash: secretHash,
+      student_id: data.studentId,
+    })
+    .select("*")
+    .single()
+
+  if (error) throw error
+
+  return {
+    id: created.id,
+    email: created.email,
+    firstName: created.first_name,
+    lastName: created.last_name,
+    phone: created.phone,
+    secretHash: created.secret_hash,
+    studentId: created.student_id,
+    createdAt: created.created_at,
+  }
+}
+
 // ─── Admin Profile ─────────────────────────────────────────
 
 export async function getAdminProfile(id: string): Promise<AdminUser | null> {
@@ -1206,6 +1417,8 @@ function mapRequest(row: any): InscriptionRequest {
     age: row.age,
     schoolLevel: row.school_level ?? undefined,
     programId: row.program_id,
+    parentFirstName: row.parent_first_name ?? "",
+    parentLastName: row.parent_last_name ?? "",
     parentPhone: row.parent_phone,
     parentEmail: row.parent_email,
     message: row.message ?? undefined,

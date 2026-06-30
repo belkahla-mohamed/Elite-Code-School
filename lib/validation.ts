@@ -6,6 +6,8 @@ export const inscriptionSchema = z.object({
   age: z.coerce.number().int().min(7, "Âge minimum 7 ans").max(17, "Âge maximum 17 ans"),
   schoolLevel: z.string().trim().optional(),
   programId: z.string().trim().min(1, "Formation requise"),
+  parentFirstName: z.string().trim().min(2, "Prénom du parent requis"),
+  parentLastName: z.string().trim().min(2, "Nom du parent requis"),
   parentPhone: z.string().trim().min(8, "Téléphone requis"),
   parentEmail: z.string().trim().email("Email invalide"),
   message: z.string().trim().optional()

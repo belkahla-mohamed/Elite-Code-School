@@ -21,6 +21,8 @@ interface FormData {
   age: string;
   schoolLevel: string;
   programId: string;
+  parentFirstName: string;
+  parentLastName: string;
   parentPhone: string;
   parentEmail: string;
   message: string;
@@ -32,6 +34,8 @@ const initialForm: FormData = {
   age: "",
   schoolLevel: "",
   programId: "",
+  parentFirstName: "",
+  parentLastName: "",
   parentPhone: "",
   parentEmail: "",
   message: "",
@@ -69,6 +73,8 @@ export function EnrollmentForm({ programs }: Props) {
       schoolLevel: form.schoolLevel,
       programId: form.programId,
       programName: selectedProgram?.title ?? "",
+      parentFirstName: form.parentFirstName,
+      parentLastName: form.parentLastName,
       parentPhone: form.parentPhone,
       parentEmail: form.parentEmail,
       message: form.message,
@@ -210,6 +216,28 @@ export function EnrollmentForm({ programs }: Props) {
         <p className="mt-2 text-sm text-ink-soft">Dernière étape avant le récapitulatif.</p>
         <div className="mt-6 grid gap-4 md:grid-cols-2">
           <label className="flex flex-col gap-2 text-sm font-semibold">
+            Prénom du parent *
+            <input
+              name="parentFirstName"
+              value={form.parentFirstName}
+              onChange={(e) => updateField("parentFirstName", e.target.value)}
+              required
+              placeholder="Karim"
+              className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface px-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none"
+            />
+          </label>
+          <label className="flex flex-col gap-2 text-sm font-semibold">
+            Nom du parent *
+            <input
+              name="parentLastName"
+              value={form.parentLastName}
+              onChange={(e) => updateField("parentLastName", e.target.value)}
+              required
+              placeholder="Benali"
+              className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface px-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none"
+            />
+          </label>
+          <label className="flex flex-col gap-2 text-sm font-semibold">
             Téléphone *
             <input
               name="parentPhone"
@@ -276,6 +304,7 @@ export function EnrollmentForm({ programs }: Props) {
             <div className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-surface p-4">
               <h3 className="text-xs font-black uppercase tracking-wide text-ink-soft mb-3">3. Contact parent</h3>
               <div className="grid gap-2 sm:grid-cols-2 text-sm">
+                <div><span className="font-bold text-ink-soft">Parent:</span> <span className="font-semibold text-ink">{form.parentFirstName || "—"} {form.parentLastName || "—"}</span></div>
                 <div><span className="font-bold text-ink-soft">Téléphone:</span> <span className="font-semibold text-ink">{form.parentPhone || "—"}</span></div>
                 <div><span className="font-bold text-ink-soft">Email:</span> <span className="font-semibold text-ink">{form.parentEmail || "—"}</span></div>
               </div>
