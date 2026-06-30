@@ -40,7 +40,7 @@ export function ConfirmDialog({
         </DialogHeader>
         <DialogFooter>
           <DialogClose asChild>
-            <button className="rounded-full border-2 border-border px-4 py-2 text-sm font-bold text-ink-soft hover:border-sky transition">
+            <button className="rounded-full border-2 border-border bg-white dark:bg-surface px-4 py-2 text-sm font-bold text-ink-soft hover:border-sky transition">
               {cancelLabel}
             </button>
           </DialogClose>

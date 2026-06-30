@@ -15,10 +15,10 @@ const icons: Record<ToastVariant, React.ReactNode> = {
 };
 
 const variants: Record<ToastVariant, string> = {
-  success: "border-lime/20",
-  error: "border-coral/20",
-  warning: "border-amber/20",
-  info: "border-sky/20",
+  success: "border-lime/30 dark:border-lime/50",
+  error: "border-coral/30 dark:border-coral/50",
+  warning: "border-amber/30 dark:border-amber/50",
+  info: "border-sky/30 dark:border-sky/50",
 };
 
 function showToast(message: string, variant: ToastVariant = "info") {
@@ -26,7 +26,7 @@ function showToast(message: string, variant: ToastVariant = "info") {
     (t) => (
       <div
         className={cn(
-          "flex items-start gap-3 rounded-brand border-2 bg-white dark:bg-surface px-5 py-4 shadow-lg",
+          "flex items-start gap-3 rounded-brand border-2 bg-white dark:bg-surface px-5 py-4 shadow-lg dark:shadow-2xl dark:shadow-black/50",
           "max-w-md w-full transition-all duration-300",
           variants[variant],
           t.visible ? "animate-in slide-in-from-top-2" : "animate-out slide-out-to-top-2"
