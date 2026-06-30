@@ -23,6 +23,7 @@ const pageTitles: Record<string, string> = {
   "/admin/enrollments": "Inscriptions",
   "/admin/students": "Élèves",
   "/admin/curricula": "Programmes",
+  "/dashboard/categories": "Catégories",
 };
 
 interface AdminHeaderProps {

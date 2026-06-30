@@ -1,7 +1,16 @@
 export type ProgramLevel = "debutant" | "intermediaire" | "avance";
 export type ProgramColor = "accent" | "cyan" | "amber" | "green" | "rose" | "purple";
 export type RequestStatus = "pending" | "accepted" | "refused";
-export type ProjectStatus = "pending" | "done" | "progress" | "planned";
+export type ProjectStatus = "done" | "progress" | "planned" | "pending";
+
+export type Category = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  color: string;
+  icon: string;
+};
 
 export type Program = {
   id: string;
@@ -17,6 +26,8 @@ export type Program = {
   objectives?: string;
   prerequisites?: string;
   schedule?: string;
+  categoryId?: string;
+  category?: Category;
 };
 
 export type InscriptionRequest = {
@@ -98,6 +109,7 @@ export type DashboardSnapshot = {
   requests: InscriptionRequest[];
   students: StudentPortfolio[];
   programs: Program[];
+  categories: Category[];
 };
 
 export type AdminUser = {

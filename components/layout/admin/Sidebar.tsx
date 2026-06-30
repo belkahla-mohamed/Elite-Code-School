@@ -21,6 +21,7 @@ import {
   Library,
   BarChart3,
   Bell,
+  Filter,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
@@ -31,6 +32,7 @@ const sidebarLinks = [
   { href: "/admin/enrollments", label: "Inscriptions", icon: ClipboardList },
   { href: "/admin/students", label: "Élèves", icon: Users },
   { href: "/admin/curricula", label: "Programmes", icon: Library },
+  { href: "/dashboard/categories", label: "Catégories", icon: Filter },
   { href: "/dashboard/projects", label: "Projets", icon: Award },
   { href: "/dashboard/gallery", label: "Galerie", icon: ImageIcon },
   { type: "separator", label: "Système" },

@@ -31,22 +31,40 @@ enum ProjectStatus {
   @@map("project_status")
 }
 
+model Category {
+  id          String    @id
+  name        String
+  slug        String    @unique
+  description String    @default("")
+  color       String    @default("sky")
+  icon        String    @default("📁")
+  sortOrder   Int       @default(0) @map("sort_order")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  programs    Program[]
+
+  @@map("categories")
+}
+
 model Program {
-  id           String   @id
+  id           String       @id
   title        String
-  ageRange     String   @map("age_range")
+  ageRange     String       @map("age_range")
   level        ProgramLevel
   description  String
   tools        String[]
-  priceMonthly Int?     @map("price_monthly")
-  color        String   @default("accent")
-  image        String   @default("")
-  duration     String   @default("")
-  objectives   String   @default("")
-  prerequisites String  @default("")
-  schedule     String   @default("")
-  sortOrder    Int      @default(0) @map("sort_order")
-  createdAt    DateTime @default(now()) @map("created_at")
+  priceMonthly Int?         @map("price_monthly")
+  color        String       @default("accent")
+  image        String       @default("")
+  duration     String       @default("")
+  objectives   String       @default("")
+  prerequisites String      @default("")
+  schedule     String       @default("")
+  sortOrder    Int          @default(0) @map("sort_order")
+  createdAt    DateTime     @default(now()) @map("created_at")
+
+  categoryId   String?      @map("category_id")
+  category     Category?    @relation(fields: [categoryId], references: [id])
 
   students          Student[]
   inscriptionRequests InscriptionRequest[]

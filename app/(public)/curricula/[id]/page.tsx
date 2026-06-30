@@ -61,6 +61,11 @@ export default async function CurriculaDetailPage({ params }: Props) {
             <span className={`rounded-full px-3 py-1 text-xs font-bold ${levelColor}`}>
               {levelLabel}
             </span>
+            {program.category && (
+              <span className="rounded-full bg-sky/10 px-3 py-1 text-xs font-bold text-sky">
+                {program.category.icon} {program.category.name}
+              </span>
+            )}
           </div>
           <h1 className="font-display text-4xl sm:text-5xl font-black tracking-[-0.03em] text-ink mb-3">
             {program.title}

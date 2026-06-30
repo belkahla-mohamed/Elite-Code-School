@@ -17,15 +17,27 @@ async function main() {
   await prisma.inscriptionRequest.deleteMany();
   await prisma.student.deleteMany();
   await prisma.program.deleteMany();
+  await prisma.category.deleteMany();
+
+  // Categories
+  await prisma.category.createMany({ data: [
+    { id: "cat-creativite", name: "Créativité Numérique", slug: "creativite-numerique", description: "Éveil à la programmation et à la créativité avec des outils visuels et ludiques.", color: "accent", icon: "🎨", sortOrder: 1 },
+    { id: "cat-robotique", name: "Robotique", slug: "robotique", description: "Construction et programmation de robots, capteurs et systèmes embarqués.", color: "cyan", icon: "🤖", sortOrder: 2 },
+    { id: "cat-iot", name: "IoT & Électronique", slug: "iot-electronique", description: "Objets connectés, Arduino, Raspberry Pi et prototypes électroniques.", color: "amber", icon: "💡", sortOrder: 3 },
+    { id: "cat-programmation", name: "Programmation", slug: "programmation", description: "Langages de programmation, algorithmique et développement logiciel.", color: "green", icon: "💻", sortOrder: 4 },
+    { id: "cat-web", name: "Développement Web", slug: "developpement-web", description: "Sites web, applications web et technologies du web moderne.", color: "rose", icon: "🌐", sortOrder: 5 },
+    { id: "cat-ia", name: "Intelligence Artificielle", slug: "intelligence-artificielle", description: "Machine learning, vision par ordinateur et projets IA.", color: "purple", icon: "🧠", sortOrder: 6 },
+  ]});
+  console.log("  ✅ Categories");
 
   // Programs
   await prisma.program.createMany({ data: [
-    { id: "scratch-creativite", title: "Scratch & Créativité", ageRange: "7–10 ans", level: "debutant", description: "Jeux, histoires animées et premières notions d'algorithmique avec Scratch et Micro:bit.", tools: ["Scratch", "Micro:bit"], priceMonthly: 650, image: "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=800&q=80", color: "accent", sortOrder: 1 },
-    { id: "robotique-mbot", title: "Robotique mBot", ageRange: "10–14 ans", level: "intermediaire", description: "Capteurs, moteurs, logique robotique et préparation aux compétitions éducatives.", tools: ["mBot", "Arduino", "Thymio"], priceMonthly: 750, image: "https://images.unsplash.com/photo-1563770660941-10a5a10aacd0?w=800&q=80", color: "cyan", sortOrder: 2 },
-    { id: "arduino-iot", title: "Arduino & IoT", ageRange: "11–15 ans", level: "intermediaire", description: "Électronique, objets connectés, Raspberry Pi et prototypes intelligents.", tools: ["Arduino", "Raspberry Pi", "Dadabit AI"], priceMonthly: 850, image: "https://images.unsplash.com/photo-1553406830-ef2513450d76?w=800&q=80", color: "amber", sortOrder: 3 },
-    { id: "python-data", title: "Python & Data", ageRange: "12–16 ans", level: "avance", description: "Python moderne, données, visualisation et automatisation utile pour les adolescents.", tools: ["Python", "VS Code", "Pandas"], priceMonthly: 850, image: "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=800&q=80", color: "green", sortOrder: 4 },
-    { id: "web-development", title: "Web Development", ageRange: "13–17 ans", level: "avance", description: "Sites web, interfaces responsives, JavaScript et premières applications React.", tools: ["HTML/CSS", "JavaScript", "React"], priceMonthly: 900, image: "https://images.unsplash.com/photo-1547658719-da2b51169166?w=800&q=80", color: "rose", sortOrder: 5 },
-    { id: "intelligence-artificielle", title: "Intelligence Artificielle", ageRange: "14–17 ans", level: "avance", description: "Vision, machine learning, projets IA éducatifs et robotique VinciBot.", tools: ["VinciBot", "Dadabit AI", "Python ML"], priceMonthly: 950, image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80", color: "purple", sortOrder: 6 },
+    { id: "scratch-creativite", title: "Scratch & Créativité", ageRange: "7–10 ans", level: "debutant", description: "Jeux, histoires animées et premières notions d'algorithmique avec Scratch et Micro:bit.", tools: ["Scratch", "Micro:bit"], priceMonthly: 650, image: "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=800&q=80", color: "accent", categoryId: "cat-creativite", sortOrder: 1 },
+    { id: "robotique-mbot", title: "Robotique mBot", ageRange: "10–14 ans", level: "intermediaire", description: "Capteurs, moteurs, logique robotique et préparation aux compétitions éducatives.", tools: ["mBot", "Arduino", "Thymio"], priceMonthly: 750, image: "https://images.unsplash.com/photo-1563770660941-10a5a10aacd0?w=800&q=80", color: "cyan", categoryId: "cat-robotique", sortOrder: 2 },
+    { id: "arduino-iot", title: "Arduino & IoT", ageRange: "11–15 ans", level: "intermediaire", description: "Électronique, objets connectés, Raspberry Pi et prototypes intelligents.", tools: ["Arduino", "Raspberry Pi", "Dadabit AI"], priceMonthly: 850, image: "https://images.unsplash.com/photo-1553406830-ef2513450d76?w=800&q=80", color: "amber", categoryId: "cat-iot", sortOrder: 3 },
+    { id: "python-data", title: "Python & Data", ageRange: "12–16 ans", level: "avance", description: "Python moderne, données, visualisation et automatisation utile pour les adolescents.", tools: ["Python", "VS Code", "Pandas"], priceMonthly: 850, image: "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=800&q=80", color: "green", categoryId: "cat-programmation", sortOrder: 4 },
+    { id: "web-development", title: "Web Development", ageRange: "13–17 ans", level: "avance", description: "Sites web, interfaces responsives, JavaScript et premières applications React.", tools: ["HTML/CSS", "JavaScript", "React"], priceMonthly: 900, image: "https://images.unsplash.com/photo-1547658719-da2b51169166?w=800&q=80", color: "rose", categoryId: "cat-web", sortOrder: 5 },
+    { id: "intelligence-artificielle", title: "Intelligence Artificielle", ageRange: "14–17 ans", level: "avance", description: "Vision, machine learning, projets IA éducatifs et robotique VinciBot.", tools: ["VinciBot", "Dadabit AI", "Python ML"], priceMonthly: 950, image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80", color: "purple", categoryId: "cat-ia", sortOrder: 6 },
   ]});
   console.log("  ✅ Programs");
   // Students

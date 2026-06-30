@@ -1,4 +1,5 @@
 import {
+  categories as seedCategories,
   certifications as seedCertifications,
   galleryItems as seedGalleryItems,
   inscriptionRequests as seedRequests,
@@ -12,6 +13,7 @@ import { sendAdminNotification, sendAcceptanceEmail, sendRejectionEmail } from "
 import type {
   AdminUser,
   AppNotification,
+  Category,
   Certification,
   DashboardSnapshot,
   GalleryItem,
@@ -44,6 +46,7 @@ type DemoStore = {
   projects: Project[];
   certifications: Certification[];
   gallery: GalleryItem[];
+  categories: Category[];
 };
 
 const globalForStore = globalThis as unknown as { eliteCodeSchoolStore?: DemoStore };
@@ -57,13 +60,14 @@ function demoStore() {
       projects: structuredClone(seedProjects),
       certifications: structuredClone(seedCertifications),
       gallery: structuredClone(seedGalleryItems),
+      categories: structuredClone(seedCategories),
     };
   }
 
   return globalForStore.eliteCodeSchoolStore;
 }
 
-function withPortfolio(student: Student, programs: Program[] = seedPrograms): StudentPortfolio {
+function withPortfolio(student: Student, programs: Program[] = demoStore().programs): StudentPortfolio {
   const store = demoStore();
   return {
     ...student,
@@ -77,10 +81,11 @@ function withPortfolio(student: Student, programs: Program[] = seedPrograms): St
 const FALLBACK_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 400'%3E%3Crect width='800' height='400' fill='%23e5e7eb'/%3E%3Ctext x='400' y='210' text-anchor='middle' fill='%239ca3af' font-size='40' font-weight='bold' font-family='sans-serif'%3EImage%3C/text%3E%3C/svg%3E";
 
 export async function getPrograms(): Promise<Program[]> {
-  if (!hasSupabaseConfig()) return demoStore().programs.map(fillImage);
+  if (!hasSupabaseConfig()) return demoStore().programs.map(fillImage).map(p => ({ ...p, category: demoStore().categories.find(c => c.id === p.categoryId) }));
 
   const { data, error } = await getSupabaseAdmin().from("programs").select("*").order("sort_order");
   if (error) throw error;
+  const categories = await getCategories().catch(() => [] as Category[])
   return data.map((row) => ({
     id: row.id,
     title: row.title,
@@ -95,6 +100,8 @@ export async function getPrograms(): Promise<Program[]> {
     objectives: row.objectives ?? "",
     prerequisites: row.prerequisites ?? "",
     schedule: row.schedule ?? "",
+    categoryId: row.category_id ?? undefined,
+    category: categories.find(c => c.id === row.category_id),
   }));
 }
 
@@ -167,15 +174,17 @@ export async function getDashboardSnapshot(): Promise<DashboardSnapshot> {
     return {
       requests: store.requests,
       students: store.students.map((student) => withPortfolio(student)),
-      programs: seedPrograms
+      programs: store.programs,
+      categories: store.categories
     };
   }
 
   const supabase = getSupabaseAdmin();
-  const [requestsResult, studentsResult, programs] = await Promise.all([
+  const [requestsResult, studentsResult, programs, categoriesResult] = await Promise.all([
     supabase.from("inscription_requests").select("*").order("created_at", { ascending: false }),
     supabase.from("students").select("*, projects(*), certifications(*), gallery_items(*)").order("created_at", { ascending: false }),
-    getPrograms()
+    getPrograms(),
+    getCategories()
   ]);
 
   if (requestsResult.error) throw requestsResult.error;
@@ -184,7 +193,8 @@ export async function getDashboardSnapshot(): Promise<DashboardSnapshot> {
   return {
     requests: requestsResult.data.map(mapRequest),
     students: studentsResult.data.map((row) => mapStudentPortfolio(row, programs)),
-    programs
+    programs,
+    categories: categoriesResult
   };
 }
 
@@ -488,21 +498,21 @@ export async function deleteStudent(id: string) {
   ]);
 }
 
-export async function createProgram(data: { title: string; ageRange: string; level: ProgramLevel; description: string; priceMonthly: number; color: ProgramColor; tools?: string[]; image: string; duration?: string; objectives?: string; prerequisites?: string; schedule?: string }) {
+export async function createProgram(data: { title: string; ageRange: string; level: ProgramLevel; description: string; priceMonthly: number; color: ProgramColor; tools?: string[]; image: string; duration?: string; objectives?: string; prerequisites?: string; schedule?: string; categoryId?: string }) {
   const safeImage = data.image || FALLBACK_IMAGE
   if (!hasSupabaseConfig()) {
-    const program: Program = { id: `prog-${Date.now()}`, ...data, image: safeImage, tools: data.tools ?? [], duration: data.duration ?? "", objectives: data.objectives ?? "", prerequisites: data.prerequisites ?? "", schedule: data.schedule ?? "" };
+    const program: Program = { id: `prog-${Date.now()}`, ...data, image: safeImage, tools: data.tools ?? [], duration: data.duration ?? "", objectives: data.objectives ?? "", prerequisites: data.prerequisites ?? "", schedule: data.schedule ?? "", category: undefined };
     demoStore().programs.push(program);
     return program;
   }
   const id = data.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") + "-" + Date.now()
-  const extended = { id, title: data.title, age_range: data.ageRange, level: data.level, description: data.description, price_monthly: data.priceMonthly, color: data.color, tools: data.tools ?? [], sort_order: 99, image: safeImage, duration: data.duration ?? "", objectives: data.objectives ?? "", prerequisites: data.prerequisites ?? "", schedule: data.schedule ?? "" }
+  const extended = { id, title: data.title, age_range: data.ageRange, level: data.level, description: data.description, price_monthly: data.priceMonthly, color: data.color, tools: data.tools ?? [], sort_order: 99, image: safeImage, duration: data.duration ?? "", objectives: data.objectives ?? "", prerequisites: data.prerequisites ?? "", schedule: data.schedule ?? "", category_id: data.categoryId || null }
   const { error } = await getSupabaseAdmin().from("programs").insert(extended)
   if (error) throw error
   return data;
 }
 
-export async function updateProgram(id: string, data: { title?: string; ageRange?: string; level?: ProgramLevel; description?: string; priceMonthly?: number; color?: ProgramColor; tools?: string[]; image?: string; duration?: string; objectives?: string; prerequisites?: string; schedule?: string }) {
+export async function updateProgram(id: string, data: { title?: string; ageRange?: string; level?: ProgramLevel; description?: string; priceMonthly?: number; color?: ProgramColor; tools?: string[]; image?: string; duration?: string; objectives?: string; prerequisites?: string; schedule?: string; categoryId?: string }) {
   if (!hasSupabaseConfig()) {
     const store = demoStore()
     const idx = store.programs.findIndex((p) => p.id === id)
@@ -520,6 +530,7 @@ export async function updateProgram(id: string, data: { title?: string; ageRange
     if (data.objectives !== undefined) program.objectives = data.objectives
     if (data.prerequisites !== undefined) program.prerequisites = data.prerequisites
     if (data.schedule !== undefined) program.schedule = data.schedule
+    if (data.categoryId !== undefined) program.categoryId = data.categoryId
     return
   }
   const payload: Record<string, any> = {
@@ -535,6 +546,7 @@ export async function updateProgram(id: string, data: { title?: string; ageRange
     ...(data.objectives !== undefined && { objectives: data.objectives }),
     ...(data.prerequisites !== undefined && { prerequisites: data.prerequisites }),
     ...(data.schedule !== undefined && { schedule: data.schedule }),
+    ...(data.categoryId !== undefined && { category_id: data.categoryId || null }),
   }
   const { error } = await getSupabaseAdmin().from("programs").update(payload).eq("id", id)
   if (error) throw error
@@ -546,6 +558,68 @@ export async function deleteProgram(id: string) {
     return
   }
   const { error } = await getSupabaseAdmin().from("programs").delete().eq("id", id);
+  if (error) throw error;
+}
+
+export async function getCategories(): Promise<Category[]> {
+  if (!hasSupabaseConfig()) return demoStore().categories;
+  const { data, error } = await getSupabaseAdmin().from("categories").select("*").order("sort_order");
+  if (error) {
+    if (error.code === "PGRST200") return []
+    throw error
+  }
+  return data.map((row) => ({
+    id: row.id,
+    name: row.name,
+    slug: row.slug,
+    description: row.description ?? "",
+    color: row.color ?? "sky",
+    icon: row.icon ?? "📁",
+  }));
+}
+
+export async function createCategory(data: { name: string; slug: string; description?: string; color?: string; icon?: string }) {
+  if (!hasSupabaseConfig()) {
+    const category: Category = { id: `cat-${Date.now()}`, ...data, description: data.description ?? "", color: data.color ?? "sky", icon: data.icon ?? "📁" };
+    demoStore().categories.push(category);
+    return category;
+  }
+  const id = data.slug
+  const { error } = await getSupabaseAdmin().from("categories").insert({ id, ...data, sort_order: 99 })
+  if (error) throw error
+  return { id, ...data } as Category;
+}
+
+export async function updateCategory(id: string, data: { name?: string; slug?: string; description?: string; color?: string; icon?: string }) {
+  if (!hasSupabaseConfig()) {
+    const store = demoStore()
+    const idx = store.categories.findIndex((c) => c.id === id)
+    if (idx === -1) throw new Error("Catégorie introuvable")
+    const cat = store.categories[idx]
+    if (data.name !== undefined) cat.name = data.name
+    if (data.slug !== undefined) cat.slug = data.slug
+    if (data.description !== undefined) cat.description = data.description
+    if (data.color !== undefined) cat.color = data.color
+    if (data.icon !== undefined) cat.icon = data.icon
+    return
+  }
+  const payload: Record<string, any> = {}
+  if (data.name !== undefined) payload.name = data.name
+  if (data.slug !== undefined) payload.slug = data.slug
+  if (data.description !== undefined) payload.description = data.description
+  if (data.color !== undefined) payload.color = data.color
+  if (data.icon !== undefined) payload.icon = data.icon
+  const { error } = await getSupabaseAdmin().from("categories").update(payload).eq("id", id)
+  if (error) throw error
+}
+
+export async function deleteCategory(id: string) {
+  if (!hasSupabaseConfig()) {
+    demoStore().categories = demoStore().categories.filter((c) => c.id !== id)
+    demoStore().programs.forEach((p) => { if (p.categoryId === id) delete p.categoryId })
+    return
+  }
+  const { error } = await getSupabaseAdmin().from("categories").delete().eq("id", id);
   if (error) throw error;
 }
 

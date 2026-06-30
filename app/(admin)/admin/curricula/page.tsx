@@ -16,6 +16,11 @@ interface Program {
   id: string; title: string; ageRange: string; level: string; priceMonthly: number;
   description: string; tools: string[]; color: string;
   image: string; duration?: string; objectives?: string; prerequisites?: string; schedule?: string;
+  categoryId?: string; category?: { id: string; name: string; slug: string; description: string; color: string; icon: string };
+}
+
+interface Category {
+  id: string; name: string; slug: string; description: string; color: string; icon: string;
 }
 
 const levelLabels: Record<string, string> = {
@@ -26,6 +31,7 @@ const levelLabels: Record<string, string> = {
 
 export default function CurriculaAdminPage() {
   const [programs, setPrograms] = useState<Program[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Program | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -35,15 +41,19 @@ export default function CurriculaAdminPage() {
   const [viewMode, setViewMode] = useViewMode("curricula-view");
   const [cardColumns, setCardColumns] = useState<1 | 2>(2);
 
-  const [form, setForm] = useState({ title: "", ageRange: "", level: "debutant", priceMonthly: 0, description: "", color: "accent", image: "", duration: "", objectives: "", prerequisites: "", schedule: "" });
+  const [form, setForm] = useState({ title: "", ageRange: "", level: "debutant", priceMonthly: 0, description: "", color: "accent", image: "", duration: "", objectives: "", prerequisites: "", schedule: "", categoryId: "" });
   const [durationMonths, setDurationMonths] = useState("");
   const [durationSessions, setDurationSessions] = useState("");
   const [durationCustom, setDurationCustom] = useState("");
 
 
   function load() {
-    fetch("/api/programs").then((r) => r.json()).then((data) => {
-      setPrograms(Array.isArray(data) ? data : []);
+    Promise.all([
+      fetch("/api/programs").then((r) => r.json()),
+      fetch("/api/categories").then((r) => r.json()),
+    ]).then(([programsData, categoriesData]) => {
+      setPrograms(Array.isArray(programsData) ? programsData : []);
+      setCategories(Array.isArray(categoriesData) ? categoriesData : []);
       setLoading(false);
     });
   }
@@ -79,14 +89,14 @@ export default function CurriculaAdminPage() {
 
   function openEdit(p: Program) {
     setEditing(p);
-    setForm({ title: p.title, ageRange: p.ageRange, level: p.level, priceMonthly: p.priceMonthly, description: p.description, color: p.color, image: p.image ?? "", duration: p.duration ?? "", objectives: p.objectives ?? "", prerequisites: p.prerequisites ?? "", schedule: p.schedule ?? "" });
+    setForm({ title: p.title, ageRange: p.ageRange, level: p.level, priceMonthly: p.priceMonthly, description: p.description, color: p.color, image: p.image ?? "", duration: p.duration ?? "", objectives: p.objectives ?? "", prerequisites: p.prerequisites ?? "", schedule: p.schedule ?? "", categoryId: p.categoryId ?? "" });
     parseDuration(p.duration ?? "")
     setShowForm(true);
   }
 
   function openNew() {
     setEditing(null);
-    setForm({ title: "", ageRange: "", level: "debutant", priceMonthly: 0, description: "", color: "accent", image: "", duration: "", objectives: "", prerequisites: "", schedule: "" });
+    setForm({ title: "", ageRange: "", level: "debutant", priceMonthly: 0, description: "", color: "accent", image: "", duration: "", objectives: "", prerequisites: "", schedule: "", categoryId: "" });
     setDurationMonths(""); setDurationSessions(""); setDurationCustom("")
     setShowForm(true);
   }
@@ -121,6 +131,7 @@ export default function CurriculaAdminPage() {
                 <th className="px-5 py-3.5 font-black text-xs uppercase tracking-wider text-ink-soft">Programme</th>
                 <th className="px-5 py-3.5 font-black text-xs uppercase tracking-wider text-ink-soft hidden md:table-cell">Âge</th>
                 <th className="px-5 py-3.5 font-black text-xs uppercase tracking-wider text-ink-soft hidden md:table-cell">Niveau</th>
+                <th className="px-5 py-3.5 font-black text-xs uppercase tracking-wider text-ink-soft hidden lg:table-cell">Catégorie</th>
                 <th className="px-5 py-3.5 font-black text-xs uppercase tracking-wider text-ink-soft hidden lg:table-cell">Durée</th>
                 <th className="px-5 py-3.5 font-black text-xs uppercase tracking-wider text-ink-soft hidden xl:table-cell">Prix</th>
                 <th className="px-5 py-3.5 font-black text-xs uppercase tracking-wider text-ink-soft text-right">Actions</th>
@@ -148,6 +159,7 @@ export default function CurriculaAdminPage() {
                       {levelLabels[p.level] || p.level}
                     </span>
                   </td>
+                  <td className="px-5 py-4 text-ink-soft hidden lg:table-cell">{p.category ? `${p.category.icon} ${p.category.name}` : "—"}</td>
                   <td className="px-5 py-4 text-ink-soft hidden lg:table-cell">{p.duration || "—"}</td>
                   <td className="px-5 py-4 text-ink-soft hidden xl:table-cell">{p.priceMonthly} DH/mois</td>
                     <td className="px-5 py-4 text-right">
@@ -178,7 +190,7 @@ export default function CurriculaAdminPage() {
               )}
               <div>
                 <h3 className="font-bold text-ink">{p.title}</h3>
-                <p className="text-sm text-ink-soft">{p.ageRange} · {levelLabels[p.level] || p.level} · {p.priceMonthly} DH/mois</p>
+                <p className="text-sm text-ink-soft">{p.ageRange} · {levelLabels[p.level] || p.level} · {p.priceMonthly} DH/mois{p.category ? ` · ${p.category.icon} ${p.category.name}` : ""}</p>
                 {p.description && <p className="text-xs text-ink-soft/60 mt-0.5 line-clamp-1">{p.description}</p>}
                 {p.duration && <p className="text-xs text-ink-soft/60 mt-0.5">{p.duration}{p.schedule ? ` · ${p.schedule}` : ""}</p>}
               </div>
@@ -288,6 +300,16 @@ export default function CurriculaAdminPage() {
                 <div>
                   <label className="mb-1.5 block text-xs font-bold text-ink-soft">Prix (DH/mois)</label>
                   <input value={form.priceMonthly} onChange={(e) => setForm({ ...form, priceMonthly: Number(e.target.value) })} type="number" placeholder="Ex: 650" className="w-full rounded-brand-sm border-2 border-border px-3 py-2.5 text-sm text-ink focus:border-sky focus:outline-none bg-body" />
+                </div>
+                <div>
+                  <label className="mb-1.5 block text-xs font-bold text-ink-soft">Catégorie</label>
+                  <select value={form.categoryId} onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
+                    className="w-full rounded-brand-sm border-2 border-border bg-body px-3 py-2.5 text-sm text-ink focus:border-sky focus:outline-none appearance-none">
+                    <option value="">— Sans catégorie —</option>
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.id}>{c.icon} {c.name}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
 

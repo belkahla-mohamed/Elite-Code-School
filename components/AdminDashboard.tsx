@@ -77,6 +77,7 @@ export function AdminDashboard() {
         requests: requestsData.requests ?? [],
         students: studentsData.students ?? [],
         programs: [],
+        categories: [],
       });
       fetch("/api/activity-log").then((r) => r.json()).then((data) => {
         if (data.activities) setActivities(data.activities);

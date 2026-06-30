@@ -1,9 +1,19 @@
 import { hashSecret } from "@/lib/auth";
-import type { Certification, GalleryItem, InscriptionRequest, Program, Project, Student } from "@/lib/types";
+import type { Category, Certification, GalleryItem, InscriptionRequest, Program, Project, Student } from "@/lib/types";
+
+export const categories: Category[] = [
+  { id: "cat-creativite", name: "Créativité Numérique", slug: "creativite-numerique", description: "Éveil à la programmation et à la créativité avec des outils visuels et ludiques.", color: "accent", icon: "🎨" },
+  { id: "cat-robotique", name: "Robotique", slug: "robotique", description: "Construction et programmation de robots, capteurs et systèmes embarqués.", color: "cyan", icon: "🤖" },
+  { id: "cat-iot", name: "IoT & Électronique", slug: "iot-electronique", description: "Objets connectés, Arduino, Raspberry Pi et prototypes électroniques.", color: "amber", icon: "💡" },
+  { id: "cat-programmation", name: "Programmation", slug: "programmation", description: "Langages de programmation, algorithmique et développement logiciel.", color: "green", icon: "💻" },
+  { id: "cat-web", name: "Développement Web", slug: "developpement-web", description: "Sites web, applications web et technologies du web moderne.", color: "rose", icon: "🌐" },
+  { id: "cat-ia", name: "Intelligence Artificielle", slug: "intelligence-artificielle", description: "Machine learning, vision par ordinateur et projets IA.", color: "purple", icon: "🧠" },
+];
 
 export const programs: Program[] = [
   {
     id: "scratch-creativite",
+    categoryId: "cat-creativite",
     title: "Scratch & Créativité",
     ageRange: "7–10 ans",
     level: "debutant",
@@ -19,6 +29,7 @@ export const programs: Program[] = [
   },
   {
     id: "robotique-mbot",
+    categoryId: "cat-robotique",
     title: "Robotique mBot",
     ageRange: "10–14 ans",
     level: "intermediaire",
@@ -34,6 +45,7 @@ export const programs: Program[] = [
   },
   {
     id: "arduino-iot",
+    categoryId: "cat-iot",
     title: "Arduino & IoT",
     ageRange: "11–15 ans",
     level: "intermediaire",
@@ -49,6 +61,7 @@ export const programs: Program[] = [
   },
   {
     id: "python-data",
+    categoryId: "cat-programmation",
     title: "Python & Data",
     ageRange: "12–16 ans",
     level: "avance",
@@ -64,6 +77,7 @@ export const programs: Program[] = [
   },
   {
     id: "web-development",
+    categoryId: "cat-web",
     title: "Web Development",
     ageRange: "13–17 ans",
     level: "avance",
@@ -79,6 +93,7 @@ export const programs: Program[] = [
   },
   {
     id: "intelligence-artificielle",
+    categoryId: "cat-ia",
     title: "Intelligence Artificielle",
     ageRange: "14–17 ans",
     level: "avance",
