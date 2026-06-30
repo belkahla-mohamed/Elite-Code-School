@@ -188,18 +188,20 @@ export default function AdminUsersPage() {
                   </p>
                 </div>
               </div>
-              <button onClick={() => openEdit(user)}
-                className="flex size-9 items-center justify-center rounded-full text-sky/50 hover:bg-sky/10 hover:text-sky transition"
-                title="Modifier">
-                <Pencil className="size-4" />
-              </button>
-              {user.role !== "super_admin" && (
-                <button onClick={() => setDeleteId(user.id)}
-                  className="flex size-9 items-center justify-center rounded-full text-coral/50 hover:bg-coral/10 hover:text-coral transition"
-                  title="Supprimer">
-                  <Trash2 className="size-4" />
+              <div className="flex items-center gap-1">
+                <button onClick={() => openEdit(user)}
+                  className="rounded-full bg-sky/10 p-2 text-sky hover:bg-sky/20 transition"
+                  title="Modifier">
+                  <Pencil className="size-4" />
                 </button>
-              )}
+                {user.role !== "super_admin" && (
+                  <button onClick={() => setDeleteId(user.id)}
+                    className="rounded-full bg-coral/10 p-2 text-coral hover:bg-coral/20 transition"
+                    title="Supprimer">
+                    <Trash2 className="size-4" />
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         ))}
