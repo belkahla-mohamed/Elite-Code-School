@@ -80,6 +80,20 @@ function withPortfolio(student: Student, programs: Program[] = demoStore().progr
 
 const FALLBACK_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 400'%3E%3Crect width='800' height='400' fill='%23e5e7eb'/%3E%3Ctext x='400' y='210' text-anchor='middle' fill='%239ca3af' font-size='40' font-weight='bold' font-family='sans-serif'%3EImage%3C/text%3E%3C/svg%3E";
 
+export async function getCategories(): Promise<Category[]> {
+  if (!hasSupabaseConfig()) return demoStore().categories;
+  const { data, error } = await getSupabaseAdmin().from("categories").select("*").order("sort_order");
+  if (error) return []
+  return data.map((row) => ({
+    id: row.id,
+    name: row.name,
+    slug: row.slug,
+    description: row.description ?? "",
+    color: row.color ?? "sky",
+    icon: row.icon ?? "📁",
+  }));
+}
+
 export async function getPrograms(): Promise<Program[]> {
   if (!hasSupabaseConfig()) return demoStore().programs.map(fillImage).map(p => ({ ...p, category: demoStore().categories.find(c => c.id === p.categoryId) }));
 
@@ -559,23 +573,6 @@ export async function deleteProgram(id: string) {
   }
   const { error } = await getSupabaseAdmin().from("programs").delete().eq("id", id);
   if (error) throw error;
-}
-
-export async function getCategories(): Promise<Category[]> {
-  if (!hasSupabaseConfig()) return demoStore().categories;
-  const { data, error } = await getSupabaseAdmin().from("categories").select("*").order("sort_order");
-  if (error) {
-    if (error.code === "PGRST200") return []
-    throw error
-  }
-  return data.map((row) => ({
-    id: row.id,
-    name: row.name,
-    slug: row.slug,
-    description: row.description ?? "",
-    color: row.color ?? "sky",
-    icon: row.icon ?? "📁",
-  }));
 }
 
 export async function createCategory(data: { name: string; slug: string; description?: string; color?: string; icon?: string }) {
