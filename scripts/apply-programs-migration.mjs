@@ -13,7 +13,8 @@ async function main() {
     console.log("Connected")
 
     await client.query(`
-      alter table public.programs add column if not exists image text;
+      alter table public.programs drop column if exists icon;
+      alter table public.programs add column if not exists image text not null default '';
       alter table public.programs add column if not exists duration text not null default '';
       alter table public.programs add column if not exists objectives text not null default '';
       alter table public.programs add column if not exists prerequisites text not null default '';
