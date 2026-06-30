@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  CheckCircle, XCircle, Clock, ChevronDown, ChevronUp,
+  CheckCircle, XCircle, Clock, ChevronDown, ChevronUp, Eye,
   Mail, Phone, User, CalendarDays, Download, ArrowUpDown,
   Square, CheckSquare, FileText, LayoutGrid, LayoutList
 } from "lucide-react";
@@ -244,10 +244,16 @@ export default function EnrollmentsPage() {
                         </button>
                       </div>
                     ) : (
-                      <button onClick={() => setExpanded(expanded === req.id ? null : req.id)}
-                        className="text-ink-soft hover:text-ink transition">
-                        {expanded === req.id ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />}
-                      </button>
+                      <div className="flex justify-end gap-2">
+                        <button onClick={() => setExpanded(expanded === req.id ? null : req.id)}
+                          className="rounded-full bg-ink-soft/10 p-2 text-ink-soft hover:bg-ink-soft/20 transition">
+                          <Eye className="size-4" />
+                        </button>
+                        <button onClick={() => setExpanded(expanded === req.id ? null : req.id)}
+                          className="text-ink-soft hover:text-ink transition">
+                          {expanded === req.id ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />}
+                        </button>
+                      </div>
                     )}
                   </td>
                 </tr>
@@ -273,6 +279,11 @@ export default function EnrollmentsPage() {
               <div className="flex items-start gap-3 px-5 pt-4">
                 <button onClick={() => toggleSelect(req.id)} className="mt-1 text-ink-soft hover:text-ink transition shrink-0">
                   {isSelected ? <CheckSquare className="size-4 text-sky" /> : <Square className="size-4" />}
+                </button>
+                <button onClick={() => setExpanded(isOpen ? null : req.id)}
+                  className="rounded-full bg-ink-soft/10 p-1.5 text-ink-soft hover:bg-ink-soft/20 transition shrink-0 mt-0.5"
+                  title="Voir les détails">
+                  <Eye className="size-4" />
                 </button>
                 <button onClick={() => setExpanded(isOpen ? null : req.id)}
                   className="flex-1 flex items-center justify-between text-left hover:bg-surface/50 transition">

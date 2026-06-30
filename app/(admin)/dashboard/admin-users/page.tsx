@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Trash2, Shield, ShieldAlert, X, Mail, Pencil } from "lucide-react";
+import { Plus, Trash2, Shield, ShieldAlert, X, Mail, Pencil, Eye } from "lucide-react";
 import { showToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -140,6 +140,11 @@ export default function AdminUsersPage() {
                 </td>
                 <td className="px-5 py-4 text-right">
                   <button onClick={() => openEdit(user)}
+                    className="rounded-full bg-ink-soft/10 p-2 text-ink-soft hover:bg-ink-soft/20 transition mr-1"
+                    title="Voir">
+                    <Eye className="size-4" />
+                  </button>
+                  <button onClick={() => openEdit(user)}
                     className="rounded-full bg-sky/10 p-2 text-sky hover:bg-sky/20 transition mr-1">
                     <Pencil className="size-4" />
                   </button>
@@ -191,6 +196,11 @@ export default function AdminUsersPage() {
                 </div>
               </div>
               <div className="flex items-center gap-1">
+                <button onClick={() => openEdit(user)}
+                  className="rounded-full bg-ink-soft/10 p-2 text-ink-soft hover:bg-ink-soft/20 transition"
+                  title="Voir">
+                  <Eye className="size-4" />
+                </button>
                 <button onClick={() => openEdit(user)}
                   className="rounded-full bg-sky/10 p-2 text-sky hover:bg-sky/20 transition"
                   title="Modifier">

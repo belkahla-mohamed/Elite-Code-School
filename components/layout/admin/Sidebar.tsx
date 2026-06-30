@@ -82,17 +82,14 @@ export function Sidebar({ collapsed, mobileOpen, onCloseMobile, onToggle }: Side
         )}>
           <div className={cn(
             "relative flex items-center shrink-0",
-            collapsed ? "size-9" : "h-9 w-auto"
+            collapsed ? "size-9" : "h-9"
           )}>
             <Image
               src={collapsed ? collapsedLogoSrc : logoSrc}
               alt="Elite Code School"
               width={collapsed ? 36 : 140}
               height={36}
-              className={cn(
-                "object-contain",
-                collapsed ? "size-9" : "h-9 w-auto"
-              )}
+              className="object-contain"
               priority
             />
           </div>

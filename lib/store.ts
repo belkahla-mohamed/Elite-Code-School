@@ -87,8 +87,12 @@ export async function getPrograms(): Promise<Program[]> {
     description: row.description,
     tools: row.tools ?? [],
     priceMonthly: row.price_monthly,
-    icon: row.icon,
-    color: row.color
+    color: row.color,
+    image: row.image ?? "",
+    duration: row.duration ?? "",
+    objectives: row.objectives ?? "",
+    prerequisites: row.prerequisites ?? "",
+    schedule: row.schedule ?? "",
   }));
 }
 
@@ -478,22 +482,26 @@ export async function deleteStudent(id: string) {
   ]);
 }
 
-export async function createProgram(data: { title: string; ageRange: string; level: ProgramLevel; description: string; priceMonthly: number; icon: string; color: ProgramColor; tools?: string[] }) {
+export async function createProgram(data: { title: string; ageRange: string; level: ProgramLevel; description: string; priceMonthly: number; color: ProgramColor; tools?: string[]; image: string; duration?: string; objectives?: string; prerequisites?: string; schedule?: string }) {
   if (!hasSupabaseConfig()) {
-    const program: Program = { id: `prog-${Date.now()}`, ...data, tools: data.tools ?? [] };
+    const program: Program = { id: `prog-${Date.now()}`, ...data, tools: data.tools ?? [], duration: data.duration ?? "", objectives: data.objectives ?? "", prerequisites: data.prerequisites ?? "", schedule: data.schedule ?? "" };
     demoStore().programs.push(program);
     return program;
   }
-  const { error } = await getSupabaseAdmin().from("programs").insert({
-    title: data.title, age_range: data.ageRange, level: data.level,
-    description: data.description, price_monthly: data.priceMonthly,
-    icon: data.icon, color: data.color, tools: data.tools ?? [], sort_order: 99,
-  });
-  if (error) throw error;
+  const id = data.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") + "-" + Date.now()
+  const base = { id, title: data.title, age_range: data.ageRange, level: data.level, description: data.description, price_monthly: data.priceMonthly, color: data.color, tools: data.tools ?? [], sort_order: 99 }
+  const extended = { ...base, image: data.image ?? null, duration: data.duration ?? "", objectives: data.objectives ?? "", prerequisites: data.prerequisites ?? "", schedule: data.schedule ?? "" }
+  const { error } = await getSupabaseAdmin().from("programs").insert(extended)
+  if (error && error.message?.includes("column")) {
+    const { error: e2 } = await getSupabaseAdmin().from("programs").insert(base)
+    if (e2) throw e2
+  } else if (error) {
+    throw error
+  }
   return data;
 }
 
-export async function updateProgram(id: string, data: { title?: string; ageRange?: string; level?: ProgramLevel; description?: string; priceMonthly?: number; icon?: string; color?: ProgramColor; tools?: string[] }) {
+export async function updateProgram(id: string, data: { title?: string; ageRange?: string; level?: ProgramLevel; description?: string; priceMonthly?: number; color?: ProgramColor; tools?: string[]; image?: string; duration?: string; objectives?: string; prerequisites?: string; schedule?: string }) {
   if (!hasSupabaseConfig()) {
     const store = demoStore()
     const idx = store.programs.findIndex((p) => p.id === id)
@@ -504,22 +512,39 @@ export async function updateProgram(id: string, data: { title?: string; ageRange
     if (data.level !== undefined) program.level = data.level
     if (data.description !== undefined) program.description = data.description
     if (data.priceMonthly !== undefined) program.priceMonthly = data.priceMonthly
-    if (data.icon !== undefined) program.icon = data.icon
     if (data.color !== undefined) program.color = data.color
     if (data.tools !== undefined) program.tools = data.tools
+    if (data.image !== undefined) program.image = data.image
+    if (data.duration !== undefined) program.duration = data.duration
+    if (data.objectives !== undefined) program.objectives = data.objectives
+    if (data.prerequisites !== undefined) program.prerequisites = data.prerequisites
+    if (data.schedule !== undefined) program.schedule = data.schedule
     return
   }
-  const { error } = await getSupabaseAdmin().from("programs").update({
+  const base: Record<string, any> = {
     ...(data.title !== undefined && { title: data.title }),
     ...(data.ageRange !== undefined && { age_range: data.ageRange }),
     ...(data.level !== undefined && { level: data.level }),
     ...(data.description !== undefined && { description: data.description }),
     ...(data.priceMonthly !== undefined && { price_monthly: data.priceMonthly }),
-    ...(data.icon !== undefined && { icon: data.icon }),
     ...(data.color !== undefined && { color: data.color }),
     ...(data.tools !== undefined && { tools: data.tools }),
-  }).eq("id", id);
-  if (error) throw error;
+  }
+  const extended = {
+    ...base,
+    ...(data.image !== undefined && { image: data.image || null }),
+    ...(data.duration !== undefined && { duration: data.duration }),
+    ...(data.objectives !== undefined && { objectives: data.objectives }),
+    ...(data.prerequisites !== undefined && { prerequisites: data.prerequisites }),
+    ...(data.schedule !== undefined && { schedule: data.schedule }),
+  }
+  const { error } = await getSupabaseAdmin().from("programs").update(extended).eq("id", id)
+  if (error && error.message?.includes("column")) {
+    const { error: e2 } = await getSupabaseAdmin().from("programs").update(base).eq("id", id)
+    if (e2) throw e2
+  } else if (error) {
+    throw error
+  }
 }
 
 export async function deleteProgram(id: string) {

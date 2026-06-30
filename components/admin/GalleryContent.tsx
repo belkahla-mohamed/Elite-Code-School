@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Image as ImageIcon, User, ChevronLeft, ChevronRight, CalendarDays, LayoutGrid, LayoutList } from "lucide-react";
+import { Image as ImageIcon, User, ChevronLeft, ChevronRight, CalendarDays, Eye, LayoutGrid, LayoutList } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { showToast } from "@/components/ui/toast";
@@ -46,6 +47,7 @@ export function GalleryContent() {
               <th className="px-5 py-3.5 font-black text-xs uppercase tracking-wider text-ink-soft">Titre</th>
               <th className="px-5 py-3.5 font-black text-xs uppercase tracking-wider text-ink-soft hidden md:table-cell">Élève</th>
               <th className="px-5 py-3.5 font-black text-xs uppercase tracking-wider text-ink-soft hidden lg:table-cell">Gradient</th>
+              <th className="px-5 py-3.5 font-black text-xs uppercase tracking-wider text-ink-soft text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y-2 divide-border">
@@ -70,12 +72,15 @@ export function GalleryContent() {
                   <div className="flex items-center gap-2">
                     <span className="inline-block size-4 rounded-full border-2 border-border"
                       style={{ background: item.gradient || "linear-gradient(135deg, #12AEEA, #06B6D4)" }} />
-                    <span className="font-mono text-[10px] text-ink-soft truncate max-w-[120px]">
-                      {item.gradient ? item.gradient.slice(0, 30) + "..." : "—"}
-                    </span>
-                  </div>
-                </td>
-              </tr>
+                      <span className="font-mono text-[10px] text-ink-soft truncate max-w-[120px]">
+                        {item.gradient ? item.gradient.slice(0, 30) + "..." : "—"}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="px-5 py-4 text-right">
+                    <Link href={`/portfolios/${item.slug}`} className="rounded-full bg-ink-soft/10 p-2 text-ink-soft hover:bg-ink-soft/20 transition"><Eye className="size-4" /></Link>
+                  </td>
+                </tr>
             ))}
           </tbody>
         </table>
@@ -98,6 +103,9 @@ export function GalleryContent() {
                 <User className="size-3" />
                 {item.studentName}
               </p>
+              <Link href={`/portfolios/${item.slug}`} className="mt-3 inline-flex items-center gap-1 rounded-full bg-ink-soft/10 px-3 py-1.5 text-xs font-bold text-ink-soft hover:bg-ink-soft/20 transition">
+                <Eye className="size-3" /> Voir
+              </Link>
             </div>
           </div>
         ))}

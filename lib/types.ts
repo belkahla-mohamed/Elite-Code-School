@@ -11,8 +11,12 @@ export type Program = {
   description: string;
   tools: string[];
   priceMonthly?: number;
-  icon: string;
   color: ProgramColor;
+  image: string;
+  duration?: string;
+  objectives?: string;
+  prerequisites?: string;
+  schedule?: string;
 };
 
 export type InscriptionRequest = {

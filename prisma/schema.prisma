@@ -39,8 +39,12 @@ model Program {
   description  String
   tools        String[]
   priceMonthly Int?     @map("price_monthly")
-  icon         String   @default("🧩")
   color        String   @default("accent")
+  image        String   @default("")
+  duration     String   @default("")
+  objectives   String   @default("")
+  prerequisites String  @default("")
+  schedule     String   @default("")
   sortOrder    Int      @default(0) @map("sort_order")
   createdAt    DateTime @default(now()) @map("created_at")
 
