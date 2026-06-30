@@ -18,3 +18,8 @@ export async function GET() {
     return NextResponse.redirect(new URL("/admin-login", process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"));
   }
 }
+
+// Handle CORS preflight
+export async function OPTIONS() {
+  return NextResponse.json({}, { status: 204, headers: { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "GET, POST, OPTIONS" } });
+}

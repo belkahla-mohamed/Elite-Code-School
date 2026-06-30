@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
@@ -50,6 +50,7 @@ interface SidebarProps {
 
 export function Sidebar({ collapsed, mobileOpen, onCloseMobile, onToggle }: SidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -170,17 +171,20 @@ export function Sidebar({ collapsed, mobileOpen, onCloseMobile, onToggle }: Side
               <p className="truncate text-xs text-ink-soft">admin@elitecode.ma</p>
             </div>
           </div>
-          <Link
-            href="/api/auth/logout"
+          <button
+            onClick={async () => {
+              await fetch("/api/auth/logout", { method: "POST" });
+              router.push("/admin-login");
+            }}
             className={cn(
-              "flex items-center gap-2 rounded-brand-sm px-3 py-2 text-sm font-bold text-ink-soft transition hover:bg-coral/5 hover:text-coral",
+              "flex w-full items-center gap-2 rounded-brand-sm px-3 py-2 text-sm font-bold text-ink-soft transition hover:bg-coral/5 hover:text-coral cursor-pointer",
               collapsed && "justify-center px-3"
             )}
             title={collapsed ? "Déconnexion" : undefined}
           >
             <LogOut className="size-4 shrink-0" />
             <span className={cn(collapsed && "hidden")}>Déconnexion</span>
-          </Link>
+          </button>
         </div>
       </aside>
     </>
