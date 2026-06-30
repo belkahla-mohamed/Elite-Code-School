@@ -7,13 +7,14 @@ import { ViewToggle, useViewMode } from "@/components/ui/view-toggle";
 import { Skeleton } from "@/components/ui/skeleton";
 import { downloadCsv } from "@/lib/csv-export";
 import { apiFetch } from "@/lib/api-fetch";
+import { EnrollmentDetailModal } from "@/components/admin/EnrollmentDetailModal";
 import { cn } from "@/lib/utils";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  CheckCircle, XCircle, Clock, ChevronDown, ChevronUp, Eye, Loader2,
+  CheckCircle, XCircle, Clock, ChevronDown, ChevronUp, Loader2,
   Mail, Phone, User, CalendarDays, Download, ArrowUpDown,
   Square, CheckSquare, FileText, LayoutGrid, LayoutList
 } from "lucide-react";
@@ -25,6 +26,8 @@ interface InscriptionRequest {
   age: number;
   schoolLevel?: string;
   programId: string;
+  parentFirstName: string;
+  parentLastName: string;
   parentPhone: string;
   parentEmail: string;
   message?: string;
@@ -65,6 +68,8 @@ export default function EnrollmentsPage() {
   const [notes, setNotes] = useState("");
   const [rejectionMsg, setRejectionMsg] = useState("");
   const [processingAction, setProcessingAction] = useState(false);
+  const [viewingRequest, setViewingRequest] = useState<InscriptionRequest | null>(null);
+  const [detailOpen, setDetailOpen] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -236,29 +241,29 @@ export default function EnrollmentsPage() {
                     {new Date(req.createdAt).toLocaleDateString("fr-FR")}
                   </td>
                   <td className="px-3 py-4 text-right">
-                    {req.status === "pending" ? (
-                      <div className="flex justify-end gap-2">
-                        <button onClick={() => openActionModal("accept", [req.id])} disabled={isProcessing}
-                          className="rounded-full bg-lime px-4 py-1.5 text-xs font-black uppercase tracking-wide text-white hover:bg-lime/90 transition disabled:opacity-50">
-                          Accepter
-                        </button>
-                        <button onClick={() => openActionModal("reject", [req.id])} disabled={isProcessing}
-                          className="rounded-full bg-coral/10 px-4 py-1.5 text-xs font-black uppercase tracking-wide text-coral hover:bg-coral/20 transition disabled:opacity-50">
-                          Refuser
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="flex justify-end gap-2">
+                    <div className="flex justify-end gap-2">
+                      <button onClick={() => { setViewingRequest(req); setDetailOpen(true); }}
+                        className="rounded-full bg-sky/10 px-3 py-1.5 text-xs font-bold text-sky hover:bg-sky/20 transition">
+                        Voir
+                      </button>
+                      {req.status === "pending" ? (
+                        <>
+                          <button onClick={() => openActionModal("accept", [req.id])} disabled={isProcessing}
+                            className="rounded-full bg-lime px-4 py-1.5 text-xs font-black uppercase tracking-wide text-white hover:bg-lime/90 transition disabled:opacity-50">
+                            Accepter
+                          </button>
+                          <button onClick={() => openActionModal("reject", [req.id])} disabled={isProcessing}
+                            className="rounded-full bg-coral/10 px-4 py-1.5 text-xs font-black uppercase tracking-wide text-coral hover:bg-coral/20 transition disabled:opacity-50">
+                            Refuser
+                          </button>
+                        </>
+                      ) : (
                         <button onClick={() => setExpanded(expanded === req.id ? null : req.id)}
                           className="rounded-full bg-ink-soft/10 p-2 text-ink-soft hover:bg-ink-soft/20 transition">
-                          <Eye className="size-4" />
-                        </button>
-                        <button onClick={() => setExpanded(expanded === req.id ? null : req.id)}
-                          className="text-ink-soft hover:text-ink transition">
                           {expanded === req.id ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />}
                         </button>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </td>
                 </tr>
               );
@@ -284,10 +289,10 @@ export default function EnrollmentsPage() {
                 <button onClick={() => toggleSelect(req.id)} className="mt-1 text-ink-soft hover:text-ink transition shrink-0">
                   {isSelected ? <CheckSquare className="size-4 text-sky" /> : <Square className="size-4" />}
                 </button>
-                <button onClick={() => setExpanded(isOpen ? null : req.id)}
-                  className="rounded-full bg-ink-soft/10 p-1.5 text-ink-soft hover:bg-ink-soft/20 transition shrink-0 mt-0.5"
+                <button onClick={() => { setViewingRequest(req); setDetailOpen(true); }}
+                  className="rounded-full bg-sky/10 px-2.5 py-1.5 text-xs font-bold text-sky hover:bg-sky/20 transition shrink-0 mt-0.5"
                   title="Voir les détails">
-                  <Eye className="size-4" />
+                  Voir
                 </button>
                 <button onClick={() => setExpanded(isOpen ? null : req.id)}
                   className="flex-1 flex items-center justify-between text-left hover:bg-surface/50 transition">
@@ -379,6 +384,14 @@ export default function EnrollmentsPage() {
 
   return (
     <div>
+      {/* Detail Modal */}
+      <EnrollmentDetailModal
+        request={viewingRequest}
+        programName={viewingRequest ? programMap[viewingRequest.programId] : undefined}
+        open={detailOpen}
+        onOpenChange={setDetailOpen}
+      />
+
       {/* Action Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent>
