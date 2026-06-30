@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, CheckCircle, Clock, CalendarDays, GraduationCap, BookOpen } from "lucide-react";
 import { getPrograms } from "@/lib/store";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 
 interface Props { params: Promise<{ id: string }> }
 
@@ -30,12 +31,16 @@ export default async function CurriculaDetailPage({ params }: Props) {
           <ArrowLeft className="size-4" /> Tous les programmes
         </Link>
 
-        <div className="aspect-[2.5/1] overflow-hidden rounded-brand mb-8 bg-gradient-to-br from-surface to-border flex items-center justify-center">
-          {program.image ? (
-            <img src={program.image} alt={program.title} className="size-full object-cover" />
-          ) : (
-            <span className="text-6xl font-black text-ink-soft/30">{program.title?.charAt(0) || "?"}</span>
-          )}
+        <div className="aspect-[2.5/1] overflow-hidden rounded-brand mb-8">
+          <OptimizedImage
+            src={program.image}
+            alt={program.title}
+            width={1000}
+            height={400}
+            className="size-full object-cover"
+            fallbackInitial={program.title?.charAt(0) || "?"}
+            priority
+          />
         </div>
 
         <div className="flex items-center gap-4 mb-6">

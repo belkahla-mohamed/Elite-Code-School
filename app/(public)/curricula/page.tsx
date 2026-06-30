@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { getPrograms } from "@/lib/store";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -32,12 +33,15 @@ export default async function CurriculaPage() {
               href={`/curricula/${program.id}`}
               className={`rounded-brand border-2 bg-white dark:bg-surface overflow-hidden transition hover:-translate-y-0.5 ${colors[i % colors.length]}`}
             >
-              <div className="aspect-[2/1] overflow-hidden bg-gradient-to-br from-surface to-border flex items-center justify-center">
-                {program.image ? (
-                  <img src={program.image} alt="" className="size-full object-cover" />
-                ) : (
-                  <span className="text-4xl font-black text-ink-soft/30">{program.title?.charAt(0) || "?"}</span>
-                )}
+              <div className="aspect-[2/1] overflow-hidden">
+                <OptimizedImage
+                  src={program.image}
+                  alt={program.title}
+                  width={600}
+                  height={300}
+                  className="size-full object-cover"
+                  fallbackInitial={program.title?.charAt(0) || "?"}
+                />
               </div>
               <div className="p-6">
                 <h3 className="font-display text-2xl font-black text-ink">{program.title}</h3>

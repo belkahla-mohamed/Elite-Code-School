@@ -1,34 +1,31 @@
-import { getSupabaseAdmin, hasSupabaseConfig } from "@/lib/supabase";
+import ImageKit from "@imagekit/nodejs";
+import { getImageKit, hasImageKitConfig } from "@/lib/imagekit";
 
-const BUCKET = "ecs-uploads";
+const ROOT_FOLDER = "elite-code-school";
 
 type UploadResult = { url: string; error?: undefined } | { error: string; url?: undefined };
 
-export async function ensureBucket() {
-  if (!hasSupabaseConfig()) return;
-  const supabase = getSupabaseAdmin();
-  const { data: buckets } = await supabase.storage.listBuckets();
-  if (!buckets?.some((b) => b.name === BUCKET)) {
-    await supabase.storage.createBucket(BUCKET, { public: true, fileSizeLimit: 5 * 1024 * 1024 });
-  }
-}
-
 export async function uploadFile(file: File, folder: string): Promise<UploadResult> {
-  if (!hasSupabaseConfig()) {
+  if (!hasImageKitConfig()) {
     return uploadBase64(file);
   }
-  const supabase = getSupabaseAdmin();
-  await ensureBucket();
-  const ext = file.name.split(".").pop() || "png";
-  const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const { error } = await supabase.storage.from(BUCKET).upload(path, buffer, {
-    contentType: file.type,
-    upsert: false,
-  });
-  if (error) return { error: error.message };
-  const { data: pub } = supabase.storage.from(BUCKET).getPublicUrl(path);
-  return { url: pub.publicUrl };
+  try {
+    const ik = getImageKit();
+    const ext = file.name.split(".").pop() || "png";
+    const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const ikFolder = `${ROOT_FOLDER}/${folder}`;
+
+    const result = await ik.files.upload({
+      file: file,
+      fileName,
+      folder: ikFolder,
+    });
+
+    if (!result.url) return { error: "Upload failed: no URL returned" };
+    return { url: result.url };
+  } catch (e: any) {
+    return { error: e.message ?? "Upload failed" };
+  }
 }
 
 async function uploadBase64(file: File): Promise<UploadResult> {
@@ -38,9 +35,29 @@ async function uploadBase64(file: File): Promise<UploadResult> {
 }
 
 export async function deleteFile(url: string) {
-  if (!hasSupabaseConfig() || !url.startsWith(process.env.NEXT_PUBLIC_SUPABASE_URL + "/")) return;
-  const supabase = getSupabaseAdmin();
-  const parts = url.split("/");
-  const path = parts.slice(parts.indexOf(BUCKET) + 1).join("/");
-  await supabase.storage.from(BUCKET).remove([path]);
+  if (!hasImageKitConfig()) return;
+  try {
+    const ik = getImageKit();
+    const urlObj = new URL(url);
+    const filePath = decodeURIComponent(urlObj.pathname);
+    await ik.files.delete(filePath);
+  } catch {}
+}
+
+export function getOptimizedUrl(src: string, opts?: { width?: number; height?: number; quality?: number }): string {
+  if (!src || src.startsWith("data:")) return src;
+  if (!hasImageKitConfig()) return src;
+  const endpoint = process.env.IMAGEKIT_URL_ENDPOINT!;
+  try {
+    const url = new URL(src);
+    if (!url.hostname.includes("imagekit.io")) return src;
+    const w = opts?.width ?? 800;
+    const q = opts?.quality ?? 80;
+    const h = opts?.height;
+    const tr = h ? `w-${w},h-${h},c-maintain_ratio,q-${q},f-auto` : `w-${w},q-${q},f-auto`;
+    url.searchParams.set("tr", tr);
+    return url.toString();
+  } catch {
+    return src;
+  }
 }

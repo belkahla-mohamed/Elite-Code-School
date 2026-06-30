@@ -10,6 +10,7 @@ import { downloadCsv } from "@/lib/csv-export";
 import Link from "next/link";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FileUpload } from "@/components/ui/file-upload";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 
 interface Program {
   id: string; title: string; ageRange: string; level: string; priceMonthly: number;
@@ -131,7 +132,7 @@ export default function CurriculaAdminPage() {
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-3">
                       {p.image ? (
-                        <img src={p.image} alt="" className="size-10 shrink-0 rounded-lg object-cover" />
+                        <OptimizedImage src={p.image} alt="" width={40} height={40} className="size-10 shrink-0 rounded-lg object-cover" />
                       ) : (
                         <span className="flex size-10 items-center justify-center rounded-lg bg-gradient-to-br from-surface to-border text-lg font-bold text-ink-soft">{p.title?.charAt(0) || "?"}</span>
                       )}
@@ -171,9 +172,9 @@ export default function CurriculaAdminPage() {
           <div key={p.id} className="flex items-center justify-between rounded-brand border-2 border-border bg-white dark:bg-surface px-5 py-4 transition hover:border-sky hover:shadow-sm">
             <div className="flex items-center gap-4">
               {p.image ? (
-                <img src={p.image} alt="" className="size-14 shrink-0 rounded-lg object-cover" />
+                <OptimizedImage src={p.image} alt="" width={56} height={56} className="size-14 shrink-0 rounded-lg object-cover" />
               ) : (
-                <span className="flex size-14 shrink-0 items-center justify-center rounded-lg bg-surface text-2xl font-bold text-ink-soft">?</span>
+                <span className="flex size-14 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-surface to-border text-2xl font-bold text-ink-soft">{p.title?.charAt(0) || "?"}</span>
               )}
               <div>
                 <h3 className="font-bold text-ink">{p.title}</h3>
@@ -249,7 +250,7 @@ export default function CurriculaAdminPage() {
                 <div className="flex items-start gap-4">
                   {form.image ? (
                     <div className="relative size-20 shrink-0 overflow-hidden rounded-brand-sm border-2 border-border">
-                      <img src={form.image} alt="" className="size-full object-cover" />
+                      <OptimizedImage src={form.image} alt="" width={80} height={80} className="size-full object-cover" />
                       <button onClick={() => setForm({ ...form, image: "" })} className="absolute top-0.5 right-0.5 rounded-full bg-black/50 p-0.5 text-white"><X className="size-3" /></button>
                     </div>
                   ) : (
