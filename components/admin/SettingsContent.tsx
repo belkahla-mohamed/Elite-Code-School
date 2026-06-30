@@ -1,106 +1,178 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Settings, Key, Shield, Bell, Palette, Save } from "lucide-react";
+import { Settings, Shield, Bell, Eye, FileText, Save, Mail, Clock, Key, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { showToast } from "@/components/ui/toast";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 
-function useLocalStorageState(key: string, defaultValue: boolean) {
-  const [value, setValue] = useState(() => {
-    if (typeof window === "undefined") return defaultValue;
-    const stored = localStorage.getItem(key);
-    return stored !== null ? stored === "true" : defaultValue;
-  });
-  useEffect(() => { localStorage.setItem(key, String(value)); }, [key, value]);
-  return [value, setValue] as const;
+type AppSettings = {
+  autoAcceptInscriptions: boolean
+  emailValidation: boolean
+  publicPortfoliosDefault: boolean
+  maintenanceMode: boolean
+  emailNotifications: boolean
+  sessionDurationHours: number
+  minPasswordLength: number
+  contactEmail: string
+}
+
+const defaultSettings: AppSettings = {
+  autoAcceptInscriptions: false,
+  emailValidation: true,
+  publicPortfoliosDefault: true,
+  maintenanceMode: false,
+  emailNotifications: true,
+  sessionDurationHours: 8,
+  minPasswordLength: 6,
+  contactEmail: "contact@elitecode.ma",
 }
 
 export function SettingsContent() {
-  const [adminPassword, setAdminPassword] = useState("");
-  const [changingPassword, setChangingPassword] = useState(false);
+  const [settings, setSettings] = useState<AppSettings>(defaultSettings)
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
 
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [emailValidation, setEmailValidation] = useLocalStorageState("ecs_setting_email_validation", true);
-  const [emailNotifications, setEmailNotifications] = useLocalStorageState("ecs_setting_email_notifications", true);
-  const [publicByDefault, setPublicByDefault] = useLocalStorageState("ecs_setting_public_default", true);
+  useEffect(() => {
+    fetch("/api/admin/settings")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.settings) setSettings(data.settings)
+      })
+      .catch(() => showToast("Erreur de chargement", "error"))
+      .finally(() => setLoading(false))
+  }, [])
 
-  async function handleChangePassword(e: React.FormEvent) {
-    e.preventDefault();
-    if (!currentPassword.trim() || !adminPassword.trim()) return;
-    if (adminPassword.length < 6) {
-      showToast("Le mot de passe doit contenir au moins 6 caractères", "error");
-      return;
-    }
-    setChangingPassword(true);
-
+  async function handleSave() {
+    setSaving(true)
     try {
-      const res = await fetch("/api/auth/admin/password", {
-        method: "POST",
+      const res = await fetch("/api/admin/settings", {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ currentPassword: currentPassword, newPassword: adminPassword }),
-      });
-      const data = await res.json();
+        body: JSON.stringify(settings),
+      })
+      const data = await res.json()
       if (!res.ok) {
-        showToast(data.error ?? "Erreur", "error");
-        return;
+        showToast(data.error ?? "Erreur", "error")
+        return
       }
-      showToast("Mot de passe mis à jour", "success");
-      setAdminPassword("");
-      setCurrentPassword("");
+      showToast("Paramètres enregistrés", "success")
     } catch {
-      showToast("Erreur de connexion", "error");
+      showToast("Erreur de connexion", "error")
     } finally {
-      setChangingPassword(false);
+      setSaving(false)
     }
+  }
+
+  function update<K extends keyof AppSettings>(key: K, value: AppSettings[K]) {
+    setSettings((prev) => ({ ...prev, [key]: value }))
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="size-8 animate-spin rounded-full border-4 border-sky border-t-transparent" />
+      </div>
+    )
   }
 
   return (
     <div className="space-y-6 max-w-2xl">
-      <div>
-        <h2 className="font-display text-2xl font-black text-ink">Paramètres</h2>
-        <p className="text-sm text-ink-soft">Configuration de l&apos;application</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="font-display text-2xl font-black text-ink">Paramètres</h2>
+          <p className="text-sm text-ink-soft">Configuration générale de l&apos;application</p>
+        </div>
+        <Button onClick={handleSave} isLoading={saving}>
+          <Save className="size-4" />
+          {saving ? "Enregistrement..." : "Enregistrer"}
+        </Button>
       </div>
 
       <div className="dash-card">
-        <div className="flex items-center gap-3 mb-5">
+        <div className="flex items-center gap-3 mb-2">
           <span className="flex size-10 items-center justify-center rounded-brand-sm bg-sky/10 text-sky">
-            <Key className="size-5" />
+            <FileText className="size-5" />
           </span>
           <div>
-            <h3 className="font-bold text-ink">Mot de passe Admin</h3>
-            <p className="text-xs text-ink-soft">Modifier le mot de passe d&apos;accès au tableau de bord</p>
+            <h3 className="font-bold text-ink">Inscriptions</h3>
+            <p className="text-xs text-ink-soft">Gestion des demandes d&apos;inscription</p>
           </div>
         </div>
-        <form onSubmit={handleChangePassword} className="flex flex-col gap-3">
-          <input
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-            type="password"
-            placeholder="Mot de passe actuel"
-            className="w-full rounded-full border-2 border-border bg-body px-5 py-2.5 text-sm text-ink outline-none transition focus:border-sky"
-            required
-          />
-          <input
-            value={adminPassword}
-            onChange={(e) => setAdminPassword(e.target.value)}
-            type="password"
-            placeholder="Nouveau mot de passe (min 6 car.)"
-            className="w-full rounded-full border-2 border-border bg-body px-5 py-2.5 text-sm text-ink outline-none transition focus:border-sky"
-            minLength={6}
-            required
-          />
-          <Button type="submit" isLoading={changingPassword} className="self-start">
-            <Save className="size-4" />
-            {changingPassword ? "Mise à jour..." : "Enregistrer"}
-          </Button>
-        </form>
+        <div className="mt-5 space-y-4">
+          <div className="flex items-center gap-3">
+            <Switch id="auto-accept" checked={settings.autoAcceptInscriptions} onCheckedChange={(v) => update("autoAcceptInscriptions", v)} />
+            <Label htmlFor="auto-accept" className="text-sm text-ink cursor-pointer">Accepter automatiquement les inscriptions</Label>
+          </div>
+          <div className="flex items-center gap-3">
+            <Switch id="email-validation" checked={settings.emailValidation} onCheckedChange={(v) => update("emailValidation", v)} />
+            <Label htmlFor="email-validation" className="text-sm text-ink cursor-pointer">Validation des emails requise</Label>
+          </div>
+        </div>
       </div>
 
       <div className="dash-card">
         <div className="flex items-center gap-3 mb-2">
           <span className="flex size-10 items-center justify-center rounded-brand-sm bg-amber/10 text-amber">
+            <Eye className="size-5" />
+          </span>
+          <div>
+            <h3 className="font-bold text-ink">Visibilité</h3>
+            <p className="text-xs text-ink-soft">Contrôle de l&apos;affichage public</p>
+          </div>
+        </div>
+        <div className="mt-5 space-y-4">
+          <div className="flex items-center gap-3">
+            <Switch id="public-default" checked={settings.publicPortfoliosDefault} onCheckedChange={(v) => update("publicPortfoliosDefault", v)} />
+            <Label htmlFor="public-default" className="text-sm text-ink cursor-pointer">Portfolios publics par défaut</Label>
+          </div>
+          <div className="flex items-center gap-3">
+            <Switch
+              id="maintenance"
+              checked={settings.maintenanceMode}
+              onCheckedChange={(v) => update("maintenanceMode", v)}
+            />
+            <Label htmlFor="maintenance" className="flex items-center gap-2 text-sm text-ink cursor-pointer">
+              {settings.maintenanceMode && <AlertTriangle className="size-4 text-coral" />}
+              Mode maintenance
+            </Label>
+          </div>
+        </div>
+      </div>
+
+      <div className="dash-card">
+        <div className="flex items-center gap-3 mb-2">
+          <span className="flex size-10 items-center justify-center rounded-brand-sm bg-mint/10 text-mint">
+            <Bell className="size-5" />
+          </span>
+          <div>
+            <h3 className="font-bold text-ink">Notifications</h3>
+            <p className="text-xs text-ink-soft">Configuration des notifications</p>
+          </div>
+        </div>
+        <div className="mt-5 space-y-4">
+          <div className="flex items-center gap-3">
+            <Switch id="email-notifs" checked={settings.emailNotifications} onCheckedChange={(v) => update("emailNotifications", v)} />
+            <Label htmlFor="email-notifs" className="text-sm text-ink cursor-pointer">Notifications par email</Label>
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-bold text-ink-soft uppercase tracking-wider">
+              <Mail className="mr-1 inline size-3" /> Email de contact
+            </label>
+            <input
+              value={settings.contactEmail}
+              onChange={(e) => update("contactEmail", e.target.value)}
+              type="email"
+              className="w-full rounded-full border-2 border-border bg-body px-5 py-2.5 text-sm text-ink outline-none transition focus:border-sky"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="dash-card">
+        <div className="flex items-center gap-3 mb-2">
+          <span className="flex size-10 items-center justify-center rounded-brand-sm bg-purple/10 text-purple">
             <Shield className="size-5" />
           </span>
           <div>
@@ -109,35 +181,34 @@ export function SettingsContent() {
           </div>
         </div>
         <div className="mt-5 space-y-4">
-          <div className="flex items-center gap-3">
-            <Switch id="email-validation" checked={emailValidation} onCheckedChange={setEmailValidation} />
-            <Label htmlFor="email-validation" className="text-sm text-ink cursor-pointer">Activer la validation des emails</Label>
-          </div>
-          <div className="flex items-center gap-3">
-            <Switch id="email-notifications" checked={emailNotifications} onCheckedChange={setEmailNotifications} />
-            <Label htmlFor="email-notifications" className="text-sm text-ink cursor-pointer">Notifications par email</Label>
-          </div>
-          <div className="flex items-center gap-3">
-            <Switch id="public-default" checked={publicByDefault} onCheckedChange={setPublicByDefault} />
-            <Label htmlFor="public-default" className="text-sm text-ink cursor-pointer">Portfolios publics par défaut</Label>
-          </div>
-        </div>
-      </div>
-
-      <div className="dash-card">
-        <div className="flex items-center gap-3 mb-2">
-          <span className="flex size-10 items-center justify-center rounded-brand-sm bg-mint/10 text-mint">
-            <Palette className="size-5" />
-          </span>
           <div>
-            <h3 className="font-bold text-ink">Apparence</h3>
-            <p className="text-xs text-ink-soft">Personnalisation de l&apos;interface</p>
+            <label className="mb-1 block text-xs font-bold text-ink-soft uppercase tracking-wider">
+              <Clock className="mr-1 inline size-3" /> Durée de session (heures)
+            </label>
+            <input
+              value={settings.sessionDurationHours}
+              onChange={(e) => update("sessionDurationHours", Math.max(1, parseInt(e.target.value) || 1))}
+              type="number"
+              min={1}
+              max={168}
+              className="w-32 rounded-full border-2 border-border bg-body px-5 py-2.5 text-sm text-ink outline-none transition focus:border-sky"
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-bold text-ink-soft uppercase tracking-wider">
+              <Key className="mr-1 inline size-3" /> Longueur minimale du mot de passe
+            </label>
+            <input
+              value={settings.minPasswordLength}
+              onChange={(e) => update("minPasswordLength", Math.max(4, parseInt(e.target.value) || 4))}
+              type="number"
+              min={4}
+              max={128}
+              className="w-32 rounded-full border-2 border-border bg-body px-5 py-2.5 text-sm text-ink outline-none transition focus:border-sky"
+            />
           </div>
         </div>
-        <p className="mt-5 text-sm text-ink-soft">
-          Utilisez le bouton de thème (lune/soleil) dans l&apos;en-tête pour basculer entre le mode clair et sombre.
-        </p>
       </div>
     </div>
-  );
+  )
 }

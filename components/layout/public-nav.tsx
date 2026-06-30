@@ -37,7 +37,7 @@ export default function PublicNav() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  // Lock body scroll when menu open
+  // Prevent body scroll when menu open
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
@@ -67,48 +67,75 @@ export default function PublicNav() {
           <div className="relative ml-2" ref={profileRef}>
             <button
               onClick={() => setProfileOpen((v) => !v)}
-              className="flex items-center gap-2 rounded-full border-2 border-border bg-surface px-3 py-1.5 text-sm font-bold text-ink transition hover:bg-body"
+              className="flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 text-sm font-bold text-ink shadow-sm transition-all hover:border-ink-soft/30 hover:shadow-md active:scale-[0.97]"
             >
-              <span className="flex size-7 items-center justify-center rounded-full bg-sky text-xs font-black text-white">
+              <span className="flex size-7 items-center justify-center rounded-full bg-gradient-to-br from-sky to-cyan text-[11px] font-black text-white shadow-sm">
                 {initials}
               </span>
               <span className="max-w-28 truncate">{user?.name}</span>
-              <ChevronDown className={`size-3.5 text-ink-soft transition ${profileOpen ? "rotate-180" : ""}`} />
+              <ChevronDown className={`size-3.5 text-ink-soft/60 transition duration-200 ${profileOpen ? "rotate-180" : ""}`} />
             </button>
             {profileOpen && (
-              <div className="absolute right-0 top-full mt-2 w-52 rounded-brand border-2 border-border bg-surface py-2 shadow-lg">
-                <div className="border-b-2 border-border px-4 pb-2 mb-1">
-                  <p className="text-xs font-black uppercase tracking-wider text-ink-soft">
-                    {isAdmin ? "Administrateur" : "Parent"}
-                  </p>
+              <>
+                {/* Desktop dropdown */}
+                <div className="absolute right-0 top-full mt-2 hidden w-56 md:block">
+                  <div className="overflow-hidden rounded-xl border border-border bg-surface shadow-xl shadow-black/5 ring-1 ring-black/5 dark:ring-white/10">
+                    {/* Header section */}
+                    <div className="bg-gradient-to-br from-sky/5 to-cyan/5 px-4 py-4">
+                      <div className="flex items-center gap-3">
+                        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-sky to-cyan text-sm font-black text-white shadow-md">
+                          {initials}
+                        </span>
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-bold text-ink">{user?.name}</p>
+                          <p className="text-xs font-medium text-ink-soft">
+                            {isAdmin ? "Administrateur" : "Parent"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-1.5">
+                      {isAdmin ? (
+                        <Link
+                          href="/dashboard"
+                          onClick={() => setProfileOpen(false)}
+                          className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-bold text-ink transition hover:bg-sky/5 hover:text-sky"
+                        >
+                          <span className="flex size-7 items-center justify-center rounded-lg bg-sky/10 text-sky">
+                            <LayoutDashboard className="size-3.5" />
+                          </span>
+                          Tableau de bord
+                        </Link>
+                      ) : (
+                        <Link
+                          href="/parent"
+                          onClick={() => setProfileOpen(false)}
+                          className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-bold text-ink transition hover:bg-sky/5 hover:text-sky"
+                        >
+                          <span className="flex size-7 items-center justify-center rounded-lg bg-sky/10 text-sky">
+                            <GraduationCap className="size-3.5" />
+                          </span>
+                          Portfolio
+                        </Link>
+                      )}
+                    </div>
+
+                    <div className="border-t border-border/50" />
+                    <div className="p-1.5">
+                      <button
+                        onClick={() => { setProfileOpen(false); logout(); }}
+                        className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-bold text-coral transition hover:bg-coral/5"
+                      >
+                        <span className="flex size-7 items-center justify-center rounded-lg bg-coral/10 text-coral">
+                          <LogOut className="size-3.5" />
+                        </span>
+                        Déconnexion
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                {isAdmin ? (
-                  <Link
-                    href="/dashboard"
-                    onClick={() => setProfileOpen(false)}
-                    className="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-ink transition hover:bg-body"
-                  >
-                    <LayoutDashboard className="size-4 text-ink-soft" />
-                    Tableau de bord
-                  </Link>
-                ) : (
-                  <Link
-                    href="/parent"
-                    onClick={() => setProfileOpen(false)}
-                    className="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-ink transition hover:bg-body"
-                  >
-                    <GraduationCap className="size-4 text-ink-soft" />
-                    Portfolio
-                  </Link>
-                )}
-                <button
-                  onClick={() => { setProfileOpen(false); logout(); }}
-                  className="flex w-full items-center gap-3 px-4 py-2.5 text-sm font-bold text-coral transition hover:bg-body"
-                >
-                  <LogOut className="size-4" />
-                  Déconnexion
-                </button>
-              </div>
+              </>
             )}
           </div>
         ) : (
@@ -173,15 +200,17 @@ export default function PublicNav() {
             {/* Links */}
             <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-4 py-6">
               {isAuthenticated && (
-                <div className="mb-4 flex items-center gap-3 rounded-2xl bg-body px-4 py-3">
-                  <span className="flex size-10 items-center justify-center rounded-full bg-sky text-sm font-black text-white">
-                    {initials}
-                  </span>
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-bold text-ink">{user?.name}</p>
-                    <p className="text-xs text-ink-soft">
-                      {isAdmin ? "Administrateur" : "Parent"}
-                    </p>
+                <div className="mb-4 overflow-hidden rounded-2xl bg-gradient-to-br from-sky/5 to-cyan/5 border border-border/50 px-4 py-3.5">
+                  <div className="flex items-center gap-3">
+                    <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-sky to-cyan text-sm font-black text-white shadow-md">
+                      {initials}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-bold text-ink">{user?.name}</p>
+                      <p className="text-xs font-medium text-ink-soft">
+                        {isAdmin ? "Administrateur" : "Parent"}
+                      </p>
+                    </div>
                   </div>
                 </div>
               )}

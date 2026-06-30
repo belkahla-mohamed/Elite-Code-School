@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, Search, User, LogOut, Settings } from "lucide-react";
+import { Menu, Search, User, LogOut, Settings, IdCard } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { NotificationBell } from "@/components/ui/notification-bell";
+import { useAuth } from "@/lib/auth-context";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -16,6 +17,7 @@ const pageTitles: Record<string, string> = {
   "/dashboard/programs": "Programmes",
   "/dashboard/projects": "Projets & Certifications",
   "/dashboard/gallery": "Galerie",
+  "/dashboard/profile": "Mon Profil",
   "/dashboard/settings": "Paramètres",
   "/dashboard/activity": "Activité",
   "/dashboard/notifications": "Notifications",
@@ -35,10 +37,20 @@ interface AdminHeaderProps {
 export function AdminHeader({ collapsed, onToggleSidebar, onOpenMobile }: AdminHeaderProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const { user } = useAuth();
   const [loggingOut, setLoggingOut] = useState(false);
   const title = Object.entries(pageTitles).find(([key]) =>
     pathname === key || pathname.startsWith(key + "/")
   )?.[1] ?? "Dashboard";
+
+  const adminName = user?.name ?? "Admin"
+  const adminRole = user?.role === "admin" ? "Admin" : "Super Admin"
+  const initials = adminName
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2)
 
   async function handleLogout() {
     if (loggingOut) return;
@@ -86,16 +98,19 @@ export function AdminHeader({ collapsed, onToggleSidebar, onOpenMobile }: AdminH
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="flex items-center gap-3 border-l-2 border-border pl-4 cursor-pointer">
-              <div className="flex size-10 items-center justify-center rounded-full bg-sky font-display text-sm font-black text-white">
-                A
+              <div className="flex size-10 items-center justify-center rounded-full bg-gradient-to-br from-sky to-cyan font-display text-sm font-black text-white">
+                {initials || "A"}
               </div>
               <div className="text-left">
-                <p className="text-sm font-bold text-ink">Admin</p>
-                <p className="text-xs text-ink-soft">Super Admin</p>
+                <p className="text-sm font-bold text-ink">{adminName}</p>
+                <p className="text-xs text-ink-soft">{adminRole}</p>
               </div>
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuItem onClick={() => router.push("/dashboard/profile")}>
+              <IdCard className="mr-2 size-4" /> Mon Profil
+            </DropdownMenuItem>
             <DropdownMenuItem onClick={() => router.push("/dashboard/settings")}>
               <Settings className="mr-2 size-4" /> Paramètres
             </DropdownMenuItem>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
+import { useAuth } from "@/lib/auth-context";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import {
@@ -22,6 +23,7 @@ import {
   BarChart3,
   Bell,
   Filter,
+  User,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
@@ -40,6 +42,7 @@ const sidebarLinks = [
   { href: "/dashboard/activity", label: "Activité", icon: Activity },
   { href: "/dashboard/notifications", label: "Notifications", icon: Bell },
   { href: "/dashboard/analytics", label: "Analytiques", icon: BarChart3 },
+  { href: "/dashboard/profile", label: "Mon Profil", icon: User },
   { href: "/dashboard/settings", label: "Paramètres", icon: Settings },
 ];
 
@@ -54,8 +57,17 @@ export function Sidebar({ collapsed, mobileOpen, onCloseMobile, onToggle }: Side
   const pathname = usePathname();
   const router = useRouter();
   const { resolvedTheme } = useTheme();
+  const { user } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
+
+  const adminName = user?.name ?? "Administrateur"
+  const initials = adminName
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2)
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -164,11 +176,10 @@ export function Sidebar({ collapsed, mobileOpen, onCloseMobile, onToggle }: Side
         <div className={cn("shrink-0", collapsed ? "px-3 py-4" : "px-5 py-4")}>
           <div className={cn("mb-2 flex items-center gap-3", collapsed && "justify-center")}>
             <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-sky to-cyan font-display text-xs font-black text-white">
-              A
+              {initials || "A"}
             </div>
             <div className={cn("min-w-0 flex-1", collapsed && "hidden")}>
-              <p className="truncate text-sm font-bold text-ink">Administrateur</p>
-              <p className="truncate text-xs text-ink-soft">admin@elitecode.ma</p>
+              <p className="truncate text-sm font-bold text-ink">{adminName}</p>
             </div>
           </div>
           <button

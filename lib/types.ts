@@ -121,6 +121,17 @@ export type AdminUser = {
   lastLogin?: string;
 };
 
+export type AppSettings = {
+  autoAcceptInscriptions: boolean
+  emailValidation: boolean
+  publicPortfoliosDefault: boolean
+  maintenanceMode: boolean
+  emailNotifications: boolean
+  sessionDurationHours: number
+  minPasswordLength: number
+  contactEmail: string
+}
+
 export type AppNotification = {
   id: string;
   type: "student" | "project" | "certification" | "request" | "contact";

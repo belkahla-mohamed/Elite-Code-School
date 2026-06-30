@@ -13,6 +13,7 @@ import { sendAdminNotification, sendAcceptanceEmail, sendRejectionEmail } from "
 import type {
   AdminUser,
   AppNotification,
+  AppSettings,
   Category,
   Certification,
   DashboardSnapshot,
@@ -1078,6 +1079,122 @@ export async function markAllNotificationsRead() {
     .from("notifications")
     .update({ read: true })
     .eq("read", false)
+  if (error) throw error
+}
+
+// ─── Settings ─────────────────────────────────────────────
+
+const defaultSettings: AppSettings = {
+  autoAcceptInscriptions: false,
+  emailValidation: true,
+  publicPortfoliosDefault: true,
+  maintenanceMode: false,
+  emailNotifications: true,
+  sessionDurationHours: 8,
+  minPasswordLength: 6,
+  contactEmail: "contact@elitecode.ma",
+}
+
+export async function getSettings(): Promise<AppSettings> {
+  if (!hasSupabaseConfig()) {
+    const g = globalThis as any
+    if (!g.ecsSettings) g.ecsSettings = structuredClone(defaultSettings)
+    return g.ecsSettings
+  }
+  const { data, error } = await getSupabaseAdmin()
+    .from("app_settings")
+    .select("*")
+    .maybeSingle()
+  if (error || !data) return defaultSettings
+  return {
+    autoAcceptInscriptions: data.auto_accept_inscriptions ?? false,
+    emailValidation: data.email_validation ?? true,
+    publicPortfoliosDefault: data.public_portfolios_default ?? true,
+    maintenanceMode: data.maintenance_mode ?? false,
+    emailNotifications: data.email_notifications ?? true,
+    sessionDurationHours: data.session_duration_hours ?? 8,
+    minPasswordLength: data.min_password_length ?? 6,
+    contactEmail: data.contact_email ?? "contact@elitecode.ma",
+  }
+}
+
+export async function updateSettings(data: Partial<AppSettings>) {
+  if (!hasSupabaseConfig()) {
+    const g = globalThis as any
+    if (!g.ecsSettings) g.ecsSettings = structuredClone(defaultSettings)
+    Object.assign(g.ecsSettings, data)
+    return
+  }
+  const payload: Record<string, any> = {}
+  if (data.autoAcceptInscriptions !== undefined) payload.auto_accept_inscriptions = data.autoAcceptInscriptions
+  if (data.emailValidation !== undefined) payload.email_validation = data.emailValidation
+  if (data.publicPortfoliosDefault !== undefined) payload.public_portfolios_default = data.publicPortfoliosDefault
+  if (data.maintenanceMode !== undefined) payload.maintenance_mode = data.maintenanceMode
+  if (data.emailNotifications !== undefined) payload.email_notifications = data.emailNotifications
+  if (data.sessionDurationHours !== undefined) payload.session_duration_hours = data.sessionDurationHours
+  if (data.minPasswordLength !== undefined) payload.min_password_length = data.minPasswordLength
+  if (data.contactEmail !== undefined) payload.contact_email = data.contactEmail
+
+  const { data: existing } = await getSupabaseAdmin()
+    .from("app_settings")
+    .select("id")
+    .maybeSingle()
+
+  if (existing) {
+    const { error } = await getSupabaseAdmin()
+      .from("app_settings")
+      .update(payload)
+      .eq("id", existing.id)
+    if (error) throw error
+  } else {
+    const { error } = await getSupabaseAdmin()
+      .from("app_settings")
+      .insert(payload)
+    if (error) throw error
+  }
+}
+
+// ─── Admin Profile ─────────────────────────────────────────
+
+export async function getAdminProfile(id: string): Promise<AdminUser | null> {
+  if (!hasSupabaseConfig()) {
+    const store = demoStore() as any
+    if (!store.adminUsers) store.adminUsers = structuredClone(adminSeed)
+    return store.adminUsers.find((u: AdminUser) => u.id === id) ?? null
+  }
+  const { data, error } = await getSupabaseAdmin()
+    .from("admin_users")
+    .select("id, email, first_name, last_name, role, created_at, last_login")
+    .eq("id", id)
+    .maybeSingle()
+  if (error || !data) return null
+  return {
+    id: data.id,
+    email: data.email,
+    firstName: data.first_name,
+    lastName: data.last_name,
+    role: data.role,
+    createdAt: data.created_at,
+    lastLogin: data.last_login ?? undefined,
+  }
+}
+
+export async function updateAdminProfile(id: string, data: { firstName?: string; lastName?: string; email?: string }) {
+  if (!hasSupabaseConfig()) {
+    const store = demoStore() as any
+    if (!store.adminUsers) store.adminUsers = structuredClone(adminSeed)
+    const user = store.adminUsers.find((u: AdminUser) => u.id === id)
+    if (!user) throw new Error("Admin introuvable")
+    if (data.firstName !== undefined) user.firstName = data.firstName
+    if (data.lastName !== undefined) user.lastName = data.lastName
+    if (data.email !== undefined) user.email = data.email
+    return user
+  }
+  const payload: Record<string, any> = {}
+  if (data.firstName !== undefined) payload.first_name = data.firstName
+  if (data.lastName !== undefined) payload.last_name = data.lastName
+  if (data.email !== undefined) payload.email = data.email
+  const { error } = await getSupabaseAdmin().from("admin_users").update(payload).eq("id", id)
   if (error) throw error
 }
 
