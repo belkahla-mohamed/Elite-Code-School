@@ -18,7 +18,7 @@ create table if not exists public.parents (
   last_name text not null,
   phone text not null default '',
   secret_hash text not null,
-  student_id uuid not null references public.students(id) on delete cascade,
+  student_id text not null references public.students(id) on delete cascade,
   created_at timestamptz not null default now()
 );
 
