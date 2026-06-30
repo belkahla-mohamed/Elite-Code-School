@@ -21,7 +21,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
           <PublicNav />
         </div>
       </header>
-      <main>{children}</main>
+      <main className="animate-page-in">{children}</main>
       <Footer />
     </>
   );
