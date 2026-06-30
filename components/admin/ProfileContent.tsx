@@ -123,119 +123,121 @@ export function ProfileContent() {
     : "—"
 
   return (
-    <div className="space-y-6 max-w-2xl">
+    <div className="space-y-6">
       <div>
         <h2 className="font-display text-2xl font-black text-ink">Mon Profil</h2>
         <p className="text-sm text-ink-soft">Informations personnelles et sécurité du compte</p>
       </div>
 
-      <div className="dash-card">
-        <div className="flex items-center gap-5 mb-6">
-          <div className="relative">
-            <div className="flex size-20 items-center justify-center rounded-full bg-gradient-to-br from-sky to-cyan font-display text-2xl font-black text-white">
-              {initials}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="dash-card">
+          <div className="flex items-center gap-5 mb-6">
+            <div className="relative">
+              <div className="flex size-20 items-center justify-center rounded-full bg-gradient-to-br from-sky to-cyan font-display text-2xl font-black text-white">
+                {initials}
+              </div>
+              <button className="absolute -bottom-1 -right-1 flex size-7 items-center justify-center rounded-full bg-sky text-white shadow-lg hover:bg-sky/90 transition cursor-pointer">
+                <Camera className="size-3.5" />
+              </button>
             </div>
-            <button className="absolute -bottom-1 -right-1 flex size-7 items-center justify-center rounded-full bg-sky text-white shadow-lg hover:bg-sky/90 transition cursor-pointer">
-              <Camera className="size-3.5" />
-            </button>
-          </div>
-          <div>
-            <h3 className="font-display text-xl font-black text-ink">{profile?.firstName} {profile?.lastName}</h3>
-            <div className="flex items-center gap-2 mt-1">
-              <span className="rounded-full bg-sky/10 px-3 py-0.5 text-xs font-bold text-sky">{roleLabel}</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="flex items-center gap-2 text-sm text-ink-soft">
-            <Mail className="size-4 shrink-0" />
-            <span className="truncate">{profile?.email}</span>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-ink-soft">
-            <Calendar className="size-4 shrink-0" />
-            <span>Membre depuis {createdDate}</span>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-ink-soft col-span-2">
-            <Shield className="size-4 shrink-0" />
-            <span>Dernière connexion : {lastLoginDate}</span>
-          </div>
-        </div>
-
-        <form onSubmit={handleSaveProfile} className="space-y-4">
-          <h4 className="font-bold text-ink flex items-center gap-2">
-            <User className="size-4" /> Modifier les informations
-          </h4>
-          <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="mb-1 block text-xs font-bold text-ink-soft uppercase tracking-wider">Prénom</label>
+              <h3 className="font-display text-xl font-black text-ink">{profile?.firstName} {profile?.lastName}</h3>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="rounded-full bg-sky/10 px-3 py-0.5 text-xs font-bold text-sky">{roleLabel}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-3 mb-6">
+            <div className="flex items-center gap-2 text-sm text-ink-soft">
+              <Mail className="size-4 shrink-0" />
+              <span className="truncate">{profile?.email}</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-ink-soft">
+              <Calendar className="size-4 shrink-0" />
+              <span>Membre depuis {createdDate}</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-ink-soft">
+              <Shield className="size-4 shrink-0" />
+              <span>Dernière connexion : {lastLoginDate}</span>
+            </div>
+          </div>
+
+          <form onSubmit={handleSaveProfile} className="space-y-4">
+            <h4 className="font-bold text-ink flex items-center gap-2">
+              <User className="size-4" /> Modifier les informations
+            </h4>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="mb-1 block text-xs font-bold text-ink-soft uppercase tracking-wider">Prénom</label>
+                <input
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  className="w-full rounded-full border-2 border-border bg-body px-5 py-2.5 text-sm text-ink outline-none transition focus:border-sky"
+                  required
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-bold text-ink-soft uppercase tracking-wider">Nom</label>
+                <input
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  className="w-full rounded-full border-2 border-border bg-body px-5 py-2.5 text-sm text-ink outline-none transition focus:border-sky"
+                  required
+                />
+              </div>
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-bold text-ink-soft uppercase tracking-wider">Email</label>
               <input
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                type="email"
                 className="w-full rounded-full border-2 border-border bg-body px-5 py-2.5 text-sm text-ink outline-none transition focus:border-sky"
                 required
               />
             </div>
+            <Button type="submit" isLoading={saving}>
+              <Save className="size-4" />
+              {saving ? "Enregistrement..." : "Enregistrer"}
+            </Button>
+          </form>
+        </div>
+
+        <div className="dash-card">
+          <div className="flex items-center gap-3 mb-5">
+            <span className="flex size-10 items-center justify-center rounded-brand-sm bg-amber/10 text-amber">
+              <Key className="size-5" />
+            </span>
             <div>
-              <label className="mb-1 block text-xs font-bold text-ink-soft uppercase tracking-wider">Nom</label>
-              <input
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                className="w-full rounded-full border-2 border-border bg-body px-5 py-2.5 text-sm text-ink outline-none transition focus:border-sky"
-                required
-              />
+              <h3 className="font-bold text-ink">Mot de passe</h3>
+              <p className="text-xs text-ink-soft">Modifier votre mot de passe de connexion</p>
             </div>
           </div>
-          <div>
-            <label className="mb-1 block text-xs font-bold text-ink-soft uppercase tracking-wider">Email</label>
+          <form onSubmit={handleChangePassword} className="flex flex-col gap-3">
             <input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              type="email"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              type="password"
+              placeholder="Mot de passe actuel"
               className="w-full rounded-full border-2 border-border bg-body px-5 py-2.5 text-sm text-ink outline-none transition focus:border-sky"
               required
             />
-          </div>
-          <Button type="submit" isLoading={saving}>
-            <Save className="size-4" />
-            {saving ? "Enregistrement..." : "Enregistrer"}
-          </Button>
-        </form>
-      </div>
-
-      <div className="dash-card">
-        <div className="flex items-center gap-3 mb-5">
-          <span className="flex size-10 items-center justify-center rounded-brand-sm bg-amber/10 text-amber">
-            <Key className="size-5" />
-          </span>
-          <div>
-            <h3 className="font-bold text-ink">Mot de passe</h3>
-            <p className="text-xs text-ink-soft">Modifier votre mot de passe de connexion</p>
-          </div>
+            <input
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              type="password"
+              placeholder="Nouveau mot de passe (min 6 car.)"
+              className="w-full rounded-full border-2 border-border bg-body px-5 py-2.5 text-sm text-ink outline-none transition focus:border-sky"
+              minLength={6}
+              required
+            />
+            <Button type="submit" isLoading={changingPassword} className="self-start">
+              <Save className="size-4" />
+              {changingPassword ? "Mise à jour..." : "Enregistrer"}
+            </Button>
+          </form>
         </div>
-        <form onSubmit={handleChangePassword} className="flex flex-col gap-3">
-          <input
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-            type="password"
-            placeholder="Mot de passe actuel"
-            className="w-full rounded-full border-2 border-border bg-body px-5 py-2.5 text-sm text-ink outline-none transition focus:border-sky"
-            required
-          />
-          <input
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            type="password"
-            placeholder="Nouveau mot de passe (min 6 car.)"
-            className="w-full rounded-full border-2 border-border bg-body px-5 py-2.5 text-sm text-ink outline-none transition focus:border-sky"
-            minLength={6}
-            required
-          />
-          <Button type="submit" isLoading={changingPassword} className="self-start">
-            <Save className="size-4" />
-            {changingPassword ? "Mise à jour..." : "Enregistrer"}
-          </Button>
-        </form>
       </div>
     </div>
   )
