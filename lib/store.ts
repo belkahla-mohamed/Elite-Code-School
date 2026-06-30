@@ -155,6 +155,7 @@ export async function createInscriptionRequest(payload: Omit<InscriptionRequest,
   const { data, error } = await getSupabaseAdmin()
     .from("inscription_requests")
     .insert({
+      id: crypto.randomUUID(),
       student_first_name: payload.studentFirstName,
       student_last_name: payload.studentLastName,
       age: payload.age,
@@ -276,7 +277,7 @@ export async function acceptInscriptionRequest(id: string, notes?: string) {
 
   if (requestError) throw requestError;
 
-  const studentId = `stu-${Date.now()}`;
+  const studentId = crypto.randomUUID();
   const { data: student, error: studentError } = await supabase
     .from("students")
     .insert({
@@ -466,6 +467,7 @@ export async function createStudent(data: {
   const { data: student, error } = await supabase
     .from("students")
     .insert({
+      id: crypto.randomUUID(),
       slug,
       first_name: data.firstName,
       last_name: data.lastName,
@@ -698,6 +700,7 @@ export async function addProject(studentId: string, payload: Omit<Project, "id" 
   const { data, error } = await getSupabaseAdmin()
     .from("projects")
     .insert({
+      id: crypto.randomUUID(),
       student_id: studentId,
       title: payload.title,
       description: payload.description,
@@ -726,6 +729,7 @@ export async function addCertification(studentId: string, payload: Omit<Certific
   const { data, error } = await getSupabaseAdmin()
     .from("certifications")
     .insert({
+      id: crypto.randomUUID(),
       student_id: studentId,
       title: payload.title,
       mention: payload.mention,
@@ -751,6 +755,7 @@ export async function addGalleryItem(studentId: string, payload: Omit<GalleryIte
   const { data, error } = await getSupabaseAdmin()
     .from("gallery_items")
     .insert({
+      id: crypto.randomUUID(),
       student_id: studentId,
       label: payload.label,
       emoji: payload.emoji,
@@ -942,6 +947,7 @@ export async function createAdminUser(data: { email: string; firstName: string; 
     return user;
   }
   const { error } = await getSupabaseAdmin().from("admin_users").insert({
+    id: crypto.randomUUID(),
     email: data.email,
     first_name: data.firstName,
     last_name: data.lastName,
@@ -1062,6 +1068,7 @@ export async function createNotification(data: { type: string; title: string; de
   const { data: notif, error } = await getSupabaseAdmin()
     .from("notifications")
     .insert({
+      id: crypto.randomUUID(),
       type: data.type,
       title: data.title,
       description: data.description,
@@ -1341,6 +1348,7 @@ export async function createParent(data: {
   const { data: created, error } = await getSupabaseAdmin()
     .from("parents")
     .insert({
+      id: crypto.randomUUID(),
       email: data.email,
       first_name: data.firstName,
       last_name: data.lastName,
