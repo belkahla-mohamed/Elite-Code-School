@@ -15,7 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   CheckCircle, XCircle, Clock, ChevronDown, ChevronUp,
   Mail, Phone, User, CalendarDays, Download, ArrowUpDown,
-  Square, CheckSquare, FileText
+  Square, CheckSquare, FileText, LayoutGrid, LayoutList
 } from "lucide-react";
 
 interface InscriptionRequest {
@@ -54,6 +54,7 @@ export default function EnrollmentsPage() {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [processingId, setProcessingId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useViewMode("enrollments-view");
+  const [cardColumns, setCardColumns] = useState<1 | 2>(2);
   const [sortBy, setSortBy] = useState<"date" | "name" | "status">("date");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
   const [programMap, setProgramMap] = useState<Record<string, string>>({});
@@ -260,7 +261,7 @@ export default function EnrollmentsPage() {
 
   function renderCards() {
     return (
-      <div className="space-y-3">
+      <div className={cardColumns === 2 ? "grid grid-cols-1 md:grid-cols-2 gap-3" : "space-y-3"}>
         {filtered.map((req) => {
           const isOpen = expanded === req.id;
           const st = statusConfig[req.status];
@@ -440,6 +441,18 @@ export default function EnrollmentsPage() {
               Statut {sortBy === "status" ? (sortDir === "desc" ? "↓" : "↑") : ""}
             </button>
           </div>
+          {viewMode === "cards" && (
+            <div className="flex items-center rounded-full border-2 border-border bg-white dark:bg-surface p-0.5">
+              <button onClick={() => setCardColumns(1)}
+                className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold transition ${cardColumns === 1 ? "bg-sky text-white shadow-sm" : "text-ink-soft hover:text-ink"}`}>
+                <LayoutList className="size-3.5" /> 1
+              </button>
+              <button onClick={() => setCardColumns(2)}
+                className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold transition ${cardColumns === 2 ? "bg-sky text-white shadow-sm" : "text-ink-soft hover:text-ink"}`}>
+                <LayoutGrid className="size-3.5" /> 2
+              </button>
+            </div>
+          )}
           <ViewToggle mode={viewMode} onChange={setViewMode} />
         </div>
       </div>

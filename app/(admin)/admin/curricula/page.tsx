@@ -5,7 +5,7 @@ import { showToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { ViewToggle, useViewMode } from "@/components/ui/view-toggle";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Plus, Trash2, Pencil, X, BookOpen, Download } from "lucide-react";
+import { Plus, Trash2, Pencil, X, BookOpen, Download, LayoutGrid, LayoutList } from "lucide-react";
 import { downloadCsv } from "@/lib/csv-export";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -28,6 +28,7 @@ export default function CurriculaAdminPage() {
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [viewMode, setViewMode] = useViewMode("curricula-view");
+  const [cardColumns, setCardColumns] = useState<1 | 2>(2);
 
   const [form, setForm] = useState({ title: "", ageRange: "", level: "debutant", priceMonthly: 0, description: "", icon: "💻", color: "accent" });
 
@@ -118,7 +119,7 @@ export default function CurriculaAdminPage() {
 
   function renderCards() {
     return (
-      <div className="space-y-3">
+      <div className={cardColumns === 2 ? "grid grid-cols-1 md:grid-cols-2 gap-3" : "space-y-3"}>
         {programs.map((p) => (
           <div key={p.id} className="flex items-center justify-between rounded-brand border-2 border-border bg-white dark:bg-surface px-5 py-4 transition hover:border-sky hover:shadow-sm">
             <div className="flex items-center gap-4">
@@ -160,6 +161,18 @@ export default function CurriculaAdminPage() {
           <button onClick={openNew} className="btn-primary py-2">
             <Plus className="mr-1.5 inline size-4" /> Ajouter
           </button>
+          {viewMode === "cards" && (
+            <div className="flex items-center rounded-full border-2 border-border bg-white dark:bg-surface p-0.5">
+              <button onClick={() => setCardColumns(1)}
+                className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold transition ${cardColumns === 1 ? "bg-sky text-white shadow-sm" : "text-ink-soft hover:text-ink"}`}>
+                <LayoutList className="size-3.5" /> 1
+              </button>
+              <button onClick={() => setCardColumns(2)}
+                className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold transition ${cardColumns === 2 ? "bg-sky text-white shadow-sm" : "text-ink-soft hover:text-ink"}`}>
+                <LayoutGrid className="size-3.5" /> 2
+              </button>
+            </div>
+          )}
           <ViewToggle mode={viewMode} onChange={setViewMode} />
         </div>
       </div>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Search, Eye, Download, Globe, Lock, Trash2, CheckSquare, Plus, X } from "lucide-react";
+import { Search, Eye, Download, Globe, Lock, Trash2, CheckSquare, Plus, X, LayoutGrid, LayoutList } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { downloadCsv } from "@/lib/csv-export";
 import { ViewToggle, useViewMode } from "@/components/ui/view-toggle";
@@ -29,6 +29,7 @@ export default function StudentsPage() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useViewMode("students-view");
+  const [cardColumns, setCardColumns] = useState<1 | 2>(2);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [processing, setProcessing] = useState(false);
@@ -189,7 +190,7 @@ export default function StudentsPage() {
 
   function renderCards() {
     return (
-      <div className="space-y-3">
+      <div className={cardColumns === 2 ? "grid grid-cols-1 md:grid-cols-2 gap-3" : "space-y-3"}>
         {filtered.map((student) => (
           <div key={student.id} className={`flex items-center justify-between rounded-brand border-2 bg-white dark:bg-surface px-5 py-4 transition hover:shadow-sm ${
             selectedIds.has(student.id) ? "border-sky bg-sky/5" : "border-border hover:border-sky"
@@ -239,6 +240,18 @@ export default function StudentsPage() {
               className="btn-outline py-1.5 text-xs">
               <Download className="mr-1 inline size-3" /> CSV
             </button>
+          )}
+          {viewMode === "cards" && (
+            <div className="flex items-center rounded-full border-2 border-border bg-white dark:bg-surface p-0.5">
+              <button onClick={() => setCardColumns(1)}
+                className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold transition ${cardColumns === 1 ? "bg-sky text-white shadow-sm" : "text-ink-soft hover:text-ink"}`}>
+                <LayoutList className="size-3.5" /> 1
+              </button>
+              <button onClick={() => setCardColumns(2)}
+                className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold transition ${cardColumns === 2 ? "bg-sky text-white shadow-sm" : "text-ink-soft hover:text-ink"}`}>
+                <LayoutGrid className="size-3.5" /> 2
+              </button>
+            </div>
           )}
           <ViewToggle mode={viewMode} onChange={setViewMode} />
         </div>

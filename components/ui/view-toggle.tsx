@@ -7,13 +7,14 @@ import { cn } from "@/lib/utils";
 export type ViewMode = "cards" | "table";
 
 export function useViewMode(storageKey = "admin-view-mode"): [ViewMode, (mode: ViewMode) => void] {
-  const [mode, setMode] = useState<ViewMode>(() => {
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem(storageKey);
-      if (stored === "cards" || stored === "table") return stored;
+  const [mode, setMode] = useState<ViewMode>("table");
+
+  useEffect(() => {
+    const stored = localStorage.getItem(storageKey);
+    if (stored === "cards" || stored === "table") {
+      setMode(stored);
     }
-    return "cards";
-  });
+  }, [storageKey]);
 
   const updateMode = useCallback(
     (newMode: ViewMode) => {

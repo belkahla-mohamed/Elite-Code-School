@@ -6,6 +6,7 @@ import { showToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ViewToggle, useViewMode } from "@/components/ui/view-toggle";
+import { LayoutGrid, LayoutList } from "lucide-react";
 
 interface AdminUser {
   id: string;
@@ -27,6 +28,7 @@ export default function AdminUsersPage() {
   const [editForm, setEditForm] = useState({ firstName: "", lastName: "", email: "" });
   const [form, setForm] = useState({ email: "", firstName: "", lastName: "", password: "" });
   const [viewMode, setViewMode] = useViewMode("admin-users-view");
+  const [cardColumns, setCardColumns] = useState<1 | 2>(2);
 
   useEffect(() => { load(); }, []);
 
@@ -158,7 +160,7 @@ export default function AdminUsersPage() {
 
   function renderCards() {
     return (
-      <div className="space-y-3">
+      <div className={cardColumns === 2 ? "grid grid-cols-1 md:grid-cols-2 gap-3" : "space-y-3"}>
         {users.map((user) => (
           <div key={user.id} className="rounded-brand border-2 border-border bg-white dark:bg-surface px-5 py-4 transition hover:shadow-sm">
             <div className="flex items-center justify-between">
@@ -220,6 +222,18 @@ export default function AdminUsersPage() {
           <button onClick={() => setShowForm(true)} className="btn-primary py-2">
             <Plus className="mr-1 inline size-4" /> Ajouter
           </button>
+          {viewMode === "cards" && (
+            <div className="flex items-center rounded-full border-2 border-border bg-white dark:bg-surface p-0.5">
+              <button onClick={() => setCardColumns(1)}
+                className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold transition ${cardColumns === 1 ? "bg-sky text-white shadow-sm" : "text-ink-soft hover:text-ink"}`}>
+                <LayoutList className="size-3.5" /> 1
+              </button>
+              <button onClick={() => setCardColumns(2)}
+                className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold transition ${cardColumns === 2 ? "bg-sky text-white shadow-sm" : "text-ink-soft hover:text-ink"}`}>
+                <LayoutGrid className="size-3.5" /> 2
+              </button>
+            </div>
+          )}
           <ViewToggle mode={viewMode} onChange={setViewMode} />
         </div>
       </div>

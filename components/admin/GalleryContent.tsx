@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Image as ImageIcon, User, ChevronLeft, ChevronRight, CalendarDays } from "lucide-react";
+import { Image as ImageIcon, User, ChevronLeft, ChevronRight, CalendarDays, LayoutGrid, LayoutList } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { showToast } from "@/components/ui/toast";
@@ -14,6 +14,7 @@ export function GalleryContent() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [viewMode, setViewMode] = useViewMode("gallery-view");
+  const [cardColumns, setCardColumns] = useState<1 | 2>(2);
 
   useEffect(() => { load(); }, []);
 
@@ -84,7 +85,7 @@ export function GalleryContent() {
 
   function renderCards() {
     return (
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className={cardColumns === 2 ? "grid grid-cols-1 md:grid-cols-2 gap-4" : "space-y-4"}>
         {paged.map((item, i) => (
           <div key={i} className="rounded-brand border-2 border-border bg-white dark:bg-surface overflow-hidden transition hover:shadow-sm hover:-translate-y-0.5">
             <div className="flex aspect-square items-center justify-center text-5xl"
@@ -111,6 +112,18 @@ export function GalleryContent() {
           <h2 className="font-display text-2xl font-black text-ink">Galerie</h2>
           <p className="text-sm text-ink-soft">Médias des portfolios des élèves</p>
         </div>
+        {viewMode === "cards" && (
+          <div className="flex items-center rounded-full border-2 border-border bg-white dark:bg-surface p-0.5">
+            <button onClick={() => setCardColumns(1)}
+              className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold transition ${cardColumns === 1 ? "bg-sky text-white shadow-sm" : "text-ink-soft hover:text-ink"}`}>
+              <LayoutList className="size-3.5" /> 1
+            </button>
+            <button onClick={() => setCardColumns(2)}
+              className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold transition ${cardColumns === 2 ? "bg-sky text-white shadow-sm" : "text-ink-soft hover:text-ink"}`}>
+              <LayoutGrid className="size-3.5" /> 2
+            </button>
+          </div>
+        )}
         <ViewToggle mode={viewMode} onChange={setViewMode} />
       </div>
 
