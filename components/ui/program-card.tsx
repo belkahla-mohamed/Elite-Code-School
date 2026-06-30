@@ -1,6 +1,5 @@
 import Link from "next/link"
-import { ArrowRight, ArrowUpRight, Bot, BrainCircuit, Cpu, Globe, Sparkles, Terminal } from "lucide-react"
-import type { LucideIcon } from "lucide-react"
+import { ArrowRight, ArrowUpRight } from "lucide-react"
 
 interface Category {
   id: string
@@ -31,8 +30,6 @@ interface Program {
 type Theme = {
   headerBg: string
   darkHeaderBg: string
-  icon: LucideIcon
-  iconColor: string
   accent: string
   buttonBg: string
   darkButtonBg: string
@@ -56,12 +53,12 @@ function hexToRgb(hex: string) {
     : { r: 99, g: 102, b: 241 }
 }
 
+const FALLBACK_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 400'%3E%3Crect width='800' height='400' fill='%23e5e7eb'/%3E%3Ctext x='400' y='210' text-anchor='middle' fill='%239ca3af' font-size='40' font-weight='bold' font-family='sans-serif'%3EImage%3C/text%3E%3C/svg%3E"
+
 const categoryThemes: Record<string, Theme> = {
   "cat-creativite": {
     headerBg: "#FDF2F8",
     darkHeaderBg: "rgba(236,72,153,0.12)",
-    icon: Sparkles,
-    iconColor: "#DB2777",
     accent: "#DB2777",
     buttonBg: "#FDF2F8",
     darkButtonBg: "rgba(236,72,153,0.12)",
@@ -71,8 +68,6 @@ const categoryThemes: Record<string, Theme> = {
   "cat-robotique": {
     headerBg: "#ECFDF5",
     darkHeaderBg: "rgba(16,185,129,0.12)",
-    icon: Bot,
-    iconColor: "#059669",
     accent: "#059669",
     buttonBg: "#ECFDF5",
     darkButtonBg: "rgba(16,185,129,0.12)",
@@ -82,8 +77,6 @@ const categoryThemes: Record<string, Theme> = {
   "cat-iot": {
     headerBg: "#FEF3C7",
     darkHeaderBg: "rgba(245,158,11,0.12)",
-    icon: Cpu,
-    iconColor: "#D97706",
     accent: "#D97706",
     buttonBg: "#FEF3C7",
     darkButtonBg: "rgba(245,158,11,0.12)",
@@ -93,8 +86,6 @@ const categoryThemes: Record<string, Theme> = {
   "cat-programmation": {
     headerBg: "#EEF2FF",
     darkHeaderBg: "rgba(99,102,241,0.12)",
-    icon: Terminal,
-    iconColor: "#4F46E5",
     accent: "#4F46E5",
     buttonBg: "#EEF2FF",
     darkButtonBg: "rgba(99,102,241,0.12)",
@@ -104,8 +95,6 @@ const categoryThemes: Record<string, Theme> = {
   "cat-web": {
     headerBg: "#F0F9FF",
     darkHeaderBg: "rgba(14,165,233,0.12)",
-    icon: Globe,
-    iconColor: "#0284C7",
     accent: "#0284C7",
     buttonBg: "#F0F9FF",
     darkButtonBg: "rgba(14,165,233,0.12)",
@@ -115,8 +104,6 @@ const categoryThemes: Record<string, Theme> = {
   "cat-ia": {
     headerBg: "#F3E8FF",
     darkHeaderBg: "rgba(168,85,247,0.12)",
-    icon: BrainCircuit,
-    iconColor: "#9333EA",
     accent: "#9333EA",
     buttonBg: "#F3E8FF",
     darkButtonBg: "rgba(168,85,247,0.12)",
@@ -132,23 +119,19 @@ function getTheme(program: Program): Theme {
 
   const hex = getColorHex(program.color)
   const { r, g, b } = hexToRgb(hex)
-  const defaultTheme: Theme = {
+  return {
     headerBg: `rgb(${r},${g},${b},0.08)`,
     darkHeaderBg: `rgba(${r},${g},${b},0.12)`,
-    icon: Sparkles,
-    iconColor: hex,
     accent: hex,
     buttonBg: `rgb(${r},${g},${b},0.08)`,
     darkButtonBg: `rgba(${r},${g},${b},0.12)`,
     buttonText: hex,
     darkButtonText: hex,
   }
-  return defaultTheme
 }
 
 export function ProgramCard({ program }: { program: Program }) {
   const theme = getTheme(program)
-  const Icon = theme.icon
 
   const levelLabel = program.level === "debutant" ? "Débutant"
     : program.level === "intermediaire" ? "Intermédiaire"
@@ -159,20 +142,17 @@ export function ProgramCard({ program }: { program: Program }) {
       href={`/curricula/${program.id}`}
       className="group rounded-brand border border-border overflow-hidden bg-white dark:bg-slate-950 block"
     >
-      {/* Top: Visual Header */}
+      {/* Top: Image Header */}
       <div
-        className="relative flex h-40 items-center justify-center transition-colors"
+        className="relative h-40 overflow-hidden"
         style={{ backgroundColor: theme.headerBg }}
       >
-        <div
-          className="flex size-20 items-center justify-center rounded-full transition-transform duration-300 group-hover:scale-110"
-          style={{ backgroundColor: `rgba(255,255,255,0.6)` }}
-        >
-          <Icon
-            className="size-10"
-            style={{ color: theme.iconColor, strokeWidth: 2.5 }}
-          />
-        </div>
+        <img
+          src={program.image || FALLBACK_IMAGE}
+          alt={program.title}
+          loading="lazy"
+          className="size-full object-cover transition duration-500 group-hover:scale-105"
+        />
       </div>
 
       {/* Bottom: Content */}
