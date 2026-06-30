@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { setAdminSession } from "@/lib/auth";
+import { setAdminSession, generateToken } from "@/lib/auth";
 import { verifyAdminCredentials, updateAdminLastLogin } from "@/lib/store";
 import { rateLimit } from "@/lib/rate-limiter";
 import { validateContentType } from "@/lib/xss-utils";
@@ -23,7 +23,8 @@ export async function POST(request: Request) {
     }
     await updateAdminLastLogin(user.id)
     await setAdminSession();
-    return NextResponse.json({ ok: true });
+    const token = generateToken({ id: user.id, name: `${user.firstName} ${user.lastName}`, role: "admin" });
+    return NextResponse.json({ ok: true, token, user: { id: user.id, name: `${user.firstName} ${user.lastName}`, role: "admin" } });
   } catch (e: any) {
     return NextResponse.json({ error: e.message ?? "Erreur serveur" }, { status: 500 });
   }

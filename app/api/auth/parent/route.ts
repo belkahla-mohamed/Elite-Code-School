@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { setParentSession } from "@/lib/auth";
+import { setParentSession, generateToken } from "@/lib/auth";
 import { getStudentByParentLogin } from "@/lib/store";
 import { rateLimit } from "@/lib/rate-limiter";
 import { validateContentType } from "@/lib/xss-utils";
@@ -18,7 +18,9 @@ export async function POST(request: Request) {
     if (!student) return NextResponse.json({ error: "Accès parent invalide" }, { status: 401 });
 
     await setParentSession(student.id);
-    return NextResponse.json({ student });
+    const parentName = `Parent de ${student.firstName}`;
+    const token = generateToken({ id: student.id, name: parentName, role: "parent" });
+    return NextResponse.json({ student, token, user: { id: student.id, name: parentName, role: "parent" } });
   } catch (e: any) {
     return NextResponse.json({ error: e.message ?? "Erreur serveur" }, { status: 500 });
   }

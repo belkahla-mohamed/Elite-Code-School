@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Menu, X, ChevronDown, LayoutDashboard, LogOut, GraduationCap } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { useAuth } from "@/lib/auth-context";
 import Image from "next/image";
 
 const links = [
@@ -17,16 +18,34 @@ const links = [
 
 export default function PublicNav() {
   const [open, setOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const pathname = usePathname();
+  const profileRef = useRef<HTMLDivElement>(null);
+  const { user, isAuthenticated, isAdmin, logout } = useAuth();
 
   // Close menu on route change
   useEffect(() => { setOpen(false); }, [pathname]);
+
+  // Close profile dropdown on click outside
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setProfileOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
 
   // Lock body scroll when menu open
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [open]);
+
+  const initials = user?.name
+    ? user.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)
+    : "??";
 
   return (
     <>
@@ -44,12 +63,62 @@ export default function PublicNav() {
           </Link>
         ))}
         <ThemeToggle />
-        <Link
-          href="/login"
-          className="ml-2 rounded-full bg-sky px-5 py-2 text-sm font-black uppercase tracking-wide text-white hover:bg-sky-dark transition"
-        >
-          Connexion
-        </Link>
+        {isAuthenticated ? (
+          <div className="relative ml-2" ref={profileRef}>
+            <button
+              onClick={() => setProfileOpen((v) => !v)}
+              className="flex items-center gap-2 rounded-full border-2 border-border bg-surface px-3 py-1.5 text-sm font-bold text-ink transition hover:bg-body"
+            >
+              <span className="flex size-7 items-center justify-center rounded-full bg-sky text-xs font-black text-white">
+                {initials}
+              </span>
+              <span className="max-w-28 truncate">{user?.name}</span>
+              <ChevronDown className={`size-3.5 text-ink-soft transition ${profileOpen ? "rotate-180" : ""}`} />
+            </button>
+            {profileOpen && (
+              <div className="absolute right-0 top-full mt-2 w-52 rounded-brand border-2 border-border bg-surface py-2 shadow-lg">
+                <div className="border-b-2 border-border px-4 pb-2 mb-1">
+                  <p className="text-xs font-black uppercase tracking-wider text-ink-soft">
+                    {isAdmin ? "Administrateur" : "Parent"}
+                  </p>
+                </div>
+                {isAdmin ? (
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setProfileOpen(false)}
+                    className="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-ink transition hover:bg-body"
+                  >
+                    <LayoutDashboard className="size-4 text-ink-soft" />
+                    Tableau de bord
+                  </Link>
+                ) : (
+                  <Link
+                    href="/parent"
+                    onClick={() => setProfileOpen(false)}
+                    className="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-ink transition hover:bg-body"
+                  >
+                    <GraduationCap className="size-4 text-ink-soft" />
+                    Portfolio
+                  </Link>
+                )}
+                <button
+                  onClick={() => { setProfileOpen(false); logout(); }}
+                  className="flex w-full items-center gap-3 px-4 py-2.5 text-sm font-bold text-coral transition hover:bg-body"
+                >
+                  <LogOut className="size-4" />
+                  Déconnexion
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <Link
+            href="/login"
+            className="ml-2 rounded-full bg-sky px-5 py-2 text-sm font-black uppercase tracking-wide text-white hover:bg-sky-dark transition"
+          >
+            Connexion
+          </Link>
+        )}
       </nav>
 
       {/* ── Mobile: ThemeToggle + Burger ────────────── */}
@@ -103,6 +172,19 @@ export default function PublicNav() {
 
             {/* Links */}
             <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-4 py-6">
+              {isAuthenticated && (
+                <div className="mb-4 flex items-center gap-3 rounded-2xl bg-body px-4 py-3">
+                  <span className="flex size-10 items-center justify-center rounded-full bg-sky text-sm font-black text-white">
+                    {initials}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-bold text-ink">{user?.name}</p>
+                    <p className="text-xs text-ink-soft">
+                      {isAdmin ? "Administrateur" : "Parent"}
+                    </p>
+                  </div>
+                </div>
+              )}
               {links.map(({ href, label }) => (
                 <Link
                   key={href}
@@ -119,15 +201,46 @@ export default function PublicNav() {
               ))}
             </nav>
 
-            {/* CTA */}
+            {/* CTA / Profile actions */}
             <div className="border-t-2 border-border px-4 py-6">
-              <Link
-                href="/login"
-                onClick={() => setOpen(false)}
-                className="btn-primary w-full justify-center"
-              >
-                Connexion
-              </Link>
+              {isAuthenticated ? (
+                <div className="space-y-2">
+                  {isAdmin ? (
+                    <Link
+                      href="/dashboard"
+                      onClick={() => setOpen(false)}
+                      className="flex items-center justify-center gap-2 rounded-full border-2 border-border bg-surface px-5 py-3 text-sm font-bold text-ink transition hover:bg-body w-full"
+                    >
+                      <LayoutDashboard className="size-4" />
+                      Tableau de bord
+                    </Link>
+                  ) : (
+                    <Link
+                      href="/parent"
+                      onClick={() => setOpen(false)}
+                      className="flex items-center justify-center gap-2 rounded-full border-2 border-border bg-surface px-5 py-3 text-sm font-bold text-ink transition hover:bg-body w-full"
+                    >
+                      <GraduationCap className="size-4" />
+                      Portfolio
+                    </Link>
+                  )}
+                  <button
+                    onClick={() => { setOpen(false); logout(); }}
+                    className="flex w-full items-center justify-center gap-2 rounded-full border-2 border-coral/30 bg-coral/10 px-5 py-3 text-sm font-bold text-coral transition hover:bg-coral/20"
+                  >
+                    <LogOut className="size-4" />
+                    Déconnexion
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  href="/login"
+                  onClick={() => setOpen(false)}
+                  className="btn-primary w-full justify-center"
+                >
+                  Connexion
+                </Link>
+              )}
             </div>
           </div>
         </div>

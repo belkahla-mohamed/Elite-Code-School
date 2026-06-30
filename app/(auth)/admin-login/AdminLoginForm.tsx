@@ -5,12 +5,16 @@ import Image from "next/image";
 import { Eye, EyeOff, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { showToast } from "@/components/ui/toast";
+import { useAuth } from "@/lib/auth-context";
+import { useRouter } from "next/navigation";
 
 export function AdminLoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
+  const router = useRouter();
 
   function togglePassword() {
     setShowPassword((prev) => !prev);
@@ -31,13 +35,14 @@ export function AdminLoginForm() {
         body: JSON.stringify({ email, password }),
       });
 
+      const data = await res.json();
       if (!res.ok) {
-        const data = await res.json();
         showToast(data.error ?? "Identifiants incorrects", "error");
         return;
       }
 
-      window.location.href = "/dashboard";
+      login(data.user, data.token);
+      router.replace("/dashboard");
     } catch {
       showToast("Erreur de connexion", "error");
     } finally {

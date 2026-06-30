@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Eye, EyeOff, Loader2 } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -13,6 +14,13 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { isAuthenticated, isAdmin, isParent, login } = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.replace(isAdmin ? "/dashboard" : "/parent");
+    }
+  }, [isAuthenticated, isAdmin, router]);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -33,7 +41,8 @@ export default function LoginPage() {
         return;
       }
 
-      router.push("/parent");
+      login(data.user, data.token);
+      router.replace("/parent");
     } catch {
       setError("Erreur de connexion");
       setLoading(false);
