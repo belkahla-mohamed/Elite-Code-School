@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, CheckCircle, Clock, CalendarDays, GraduationCap, BookOpen, Sparkles, Target } from "lucide-react";
 import { getPrograms } from "@/lib/store";
-import { OptimizedImage } from "@/components/ui/optimized-image";
+import { imgSrc } from "@/lib/image-url-server";
 
 interface Props { params: Promise<{ id: string }> }
 
@@ -48,15 +48,7 @@ export default async function CurriculaDetailPage({ params }: Props) {
 
         {/* Hero Image */}
         <div className="relative aspect-[21/9] overflow-hidden rounded-brand mb-10">
-          <OptimizedImage
-            src={program.image}
-            alt={program.title}
-            width={1200}
-            height={514}
-            className="size-full object-cover"
-            fallbackInitial={program.title?.charAt(0) || "?"}
-            priority
-          />
+          <img src={imgSrc(program.image, 1200)} alt={program.title} className="size-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         </div>
 
@@ -188,14 +180,7 @@ export default async function CurriculaDetailPage({ params }: Props) {
                 className="group rounded-brand border-2 border-border bg-white dark:bg-surface overflow-hidden transition-all duration-300 hover:border-sky hover:shadow-lg hover:-translate-y-1"
               >
                 <div className="aspect-[16/9] overflow-hidden">
-                  <OptimizedImage
-                    src={p.image}
-                    alt={p.title}
-                    width={400}
-                    height={225}
-                    className="size-full object-cover transition duration-500 group-hover:scale-105"
-                    fallbackInitial={p.title?.charAt(0) || "?"}
-                  />
+                  <img src={imgSrc(p.image, 400)} alt={p.title} loading="lazy" className="size-full object-cover transition duration-500 group-hover:scale-105" />
                 </div>
                 <div className="p-4">
                   <div className="flex items-center gap-2 mb-2">

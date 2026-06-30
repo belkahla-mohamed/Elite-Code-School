@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Clock, GraduationCap } from "lucide-react";
 import { getPrograms } from "@/lib/store";
-import { OptimizedImage } from "@/components/ui/optimized-image";
+import { imgSrc } from "@/lib/image-url-server";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -47,14 +47,7 @@ export default async function CurriculaPage() {
               className="group rounded-brand border-2 border-border bg-white dark:bg-surface overflow-hidden transition-all duration-300 hover:border-sky hover:shadow-lg hover:-translate-y-1"
             >
               <div className="aspect-[16/9] overflow-hidden">
-                <OptimizedImage
-                  src={program.image}
-                  alt={program.title}
-                  width={600}
-                  height={338}
-                  className="size-full object-cover transition duration-500 group-hover:scale-105"
-                  fallbackInitial={program.title?.charAt(0) || "?"}
-                />
+                <img src={imgSrc(program.image, 600)} alt={program.title} loading="lazy" className="size-full object-cover transition duration-500 group-hover:scale-105" />
               </div>
               <div className="p-6">
                 <div className="flex flex-wrap items-center gap-2 mb-3">
