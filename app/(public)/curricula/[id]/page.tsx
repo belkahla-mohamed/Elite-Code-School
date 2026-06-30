@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, CheckCircle, Clock, CalendarDays, GraduationCap, BookOpen, Sparkles, Target } from "lucide-react";
 import { getPrograms } from "@/lib/store";
 import { imgSrc } from "@/lib/image-url-server";
+import { ProgramCard } from "@/components/ui/program-card";
 
 interface Props { params: Promise<{ id: string }> }
 
@@ -179,31 +180,7 @@ export default async function CurriculaDetailPage({ params }: Props) {
           </div>
           <div className="grid gap-6 md:grid-cols-3">
             {related.map((p) => (
-              <Link
-                key={p.id}
-                href={`/curricula/${p.id}`}
-                className="group rounded-brand border-2 border-border bg-white dark:bg-surface overflow-hidden transition-all duration-300 hover:border-sky hover:shadow-lg hover:-translate-y-1"
-              >
-                <div className="aspect-[16/9] overflow-hidden">
-                  <img src={imgSrc(p.image, 400)} alt={p.title} loading="lazy" className="size-full object-cover transition duration-500 group-hover:scale-105" />
-                </div>
-                <div className="p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="rounded-full bg-body px-2.5 py-0.5 text-[10px] font-bold text-ink-soft">
-                      {p.ageRange}
-                    </span>
-                    <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${levelColors[p.level] || "bg-surface text-ink-soft"}`}>
-                      {levelLabels[p.level] || p.level}
-                    </span>
-                  </div>
-                  <h3 className="font-display text-lg font-black text-ink group-hover:text-sky transition-colors">
-                    {p.title}
-                  </h3>
-                  <p className="mt-1 text-xs leading-5 text-ink-soft line-clamp-2">
-                    {p.description}
-                  </p>
-                </div>
-              </Link>
+              <ProgramCard key={p.id} program={p} />
             ))}
           </div>
         </section>
