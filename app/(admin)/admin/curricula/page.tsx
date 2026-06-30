@@ -16,11 +16,11 @@ interface Program {
   id: string; title: string; ageRange: string; level: string; priceMonthly: number;
   description: string; tools: string[]; color: string;
   image: string; duration?: string; objectives?: string; prerequisites?: string; schedule?: string;
-  categoryId?: string; category?: { id: string; name: string; slug: string; description: string; color: string; icon: string };
+  categoryId?: string; category?: { id: string; name: string; slug: string; description: string; color: string };
 }
 
 interface Category {
-  id: string; name: string; slug: string; description: string; color: string; icon: string;
+  id: string; name: string; slug: string; description: string; color: string;
 }
 
 const levelLabels: Record<string, string> = {
@@ -159,7 +159,7 @@ export default function CurriculaAdminPage() {
                       {levelLabels[p.level] || p.level}
                     </span>
                   </td>
-                  <td className="px-5 py-4 text-ink-soft hidden lg:table-cell">{p.category ? `${p.category.icon} ${p.category.name}` : "—"}</td>
+                  <td className="px-5 py-4 text-ink-soft hidden lg:table-cell">{p.category ? p.category.name : "—"}</td>
                   <td className="px-5 py-4 text-ink-soft hidden lg:table-cell">{p.duration || "—"}</td>
                   <td className="px-5 py-4 text-ink-soft hidden xl:table-cell">{p.priceMonthly} DH/mois</td>
                     <td className="px-5 py-4 text-right">
@@ -190,7 +190,7 @@ export default function CurriculaAdminPage() {
               )}
               <div>
                 <h3 className="font-bold text-ink">{p.title}</h3>
-                <p className="text-sm text-ink-soft">{p.ageRange} · {levelLabels[p.level] || p.level} · {p.priceMonthly} DH/mois{p.category ? ` · ${p.category.icon} ${p.category.name}` : ""}</p>
+                <p className="text-sm text-ink-soft">{p.ageRange} · {levelLabels[p.level] || p.level} · {p.priceMonthly} DH/mois{p.category ? ` · ${p.category.name}` : ""}</p>
                 {p.description && <p className="text-xs text-ink-soft/60 mt-0.5 line-clamp-1">{p.description}</p>}
                 {p.duration && <p className="text-xs text-ink-soft/60 mt-0.5">{p.duration}{p.schedule ? ` · ${p.schedule}` : ""}</p>}
               </div>
@@ -307,7 +307,7 @@ export default function CurriculaAdminPage() {
                     className="w-full rounded-brand-sm border-2 border-border bg-body px-3 py-2.5 text-sm text-ink focus:border-sky focus:outline-none appearance-none">
                     <option value="">— Sans catégorie —</option>
                     {categories.map((c) => (
-                      <option key={c.id} value={c.id}>{c.icon} {c.name}</option>
+                      <option key={c.id} value={c.id}>{c.name}</option>
                     ))}
                   </select>
                 </div>

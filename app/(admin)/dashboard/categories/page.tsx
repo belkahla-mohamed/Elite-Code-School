@@ -23,7 +23,7 @@ export default function CategoriesPage() {
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState({ name: "", slug: "", description: "", color: "sky", icon: "📁" });
+  const [form, setForm] = useState({ name: "", slug: "", description: "", color: "sky" });
 
   function load() {
     fetch("/api/categories").then((r) => r.json()).then((data) => {
@@ -36,13 +36,13 @@ export default function CategoriesPage() {
 
   function openEdit(c: Category) {
     setEditing(c);
-    setForm({ name: c.name, slug: c.slug, description: c.description, color: c.color, icon: c.icon });
+    setForm({ name: c.name, slug: c.slug, description: c.description, color: c.color });
     setShowForm(true);
   }
 
   function openNew() {
     setEditing(null);
-    setForm({ name: "", slug: "", description: "", color: "sky", icon: "📁" });
+    setForm({ name: "", slug: "", description: "", color: "sky" });
     setShowForm(true);
   }
 
@@ -90,10 +90,7 @@ export default function CategoriesPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4" onClick={() => setShowForm(false)}>
           <div className="w-full max-w-lg rounded-brand bg-white dark:bg-surface shadow-card" onClick={(e) => e.stopPropagation()}>
             <div className="sticky top-0 z-10 flex items-center justify-between border-b-2 border-border bg-white dark:bg-surface px-6 py-4">
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">{form.icon}</span>
-                <h2 className="font-display text-lg font-black text-ink">{editing ? "Modifier" : "Nouvelle"} catégorie</h2>
-              </div>
+              <h2 className="font-display text-lg font-black text-ink">{editing ? "Modifier" : "Nouvelle"} catégorie</h2>
               <button onClick={() => setShowForm(false)} className="flex size-8 items-center justify-center rounded-full text-ink-soft hover:bg-surface hover:text-ink transition"><X className="size-4" /></button>
             </div>
 
@@ -120,10 +117,6 @@ export default function CategoriesPage() {
                         style={{ backgroundColor: c === "sky" ? "#0EA5E9" : c === "accent" ? "#6366F1" : c === "cyan" ? "#06B6D4" : c === "amber" ? "#F59E0B" : c === "green" ? "#22C55E" : c === "rose" ? "#F43F5E" : c === "purple" ? "#A855F7" : c === "coral" ? "#FB7185" : c === "emerald" ? "#10B981" : c === "violet" ? "#8B5CF6" : "#6B7280" }} />
                     ))}
                   </div>
-                </div>
-                <div>
-                  <label className="mb-1.5 block text-xs font-bold text-ink-soft">Icône</label>
-                  <input value={form.icon} onChange={(e) => setForm({ ...form, icon: e.target.value })} placeholder="📁" className="w-full rounded-brand-sm border-2 border-border px-3 py-2.5 text-sm text-ink focus:border-sky focus:outline-none bg-body" />
                 </div>
               </div>
             </div>
@@ -152,16 +145,15 @@ export default function CategoriesPage() {
         <div className="space-y-2">
           {categories.map((c) => (
             <div key={c.id} className="flex items-center justify-between rounded-brand border-2 border-border bg-white dark:bg-surface px-5 py-3.5 transition hover:border-sky">
-              <div className="flex items-center gap-4">
-                <span className="text-3xl">{c.icon}</span>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-bold text-ink">{c.name}</h3>
-                    <span className="rounded-full px-2.5 py-0.5 text-xs font-bold text-white" style={{ backgroundColor: c.color === "sky" ? "#0EA5E9" : c.color === "accent" ? "#6366F1" : c.color === "cyan" ? "#06B6D4" : c.color === "amber" ? "#F59E0B" : c.color === "green" ? "#22C55E" : c.color === "rose" ? "#F43F5E" : c.color === "purple" ? "#A855F7" : "#6B7280" }}>{c.slug}</span>
+                <div className="flex items-center gap-4">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-bold text-ink">{c.name}</h3>
+                      <span className="rounded-full px-2.5 py-0.5 text-xs font-bold text-white" style={{ backgroundColor: c.color === "sky" ? "#0EA5E9" : c.color === "accent" ? "#6366F1" : c.color === "cyan" ? "#06B6D4" : c.color === "amber" ? "#F59E0B" : c.color === "green" ? "#22C55E" : c.color === "rose" ? "#F43F5E" : c.color === "purple" ? "#A855F7" : "#6B7280" }}>{c.slug}</span>
+                    </div>
+                    {c.description && <p className="text-xs text-ink-soft mt-0.5">{c.description}</p>}
                   </div>
-                  {c.description && <p className="text-xs text-ink-soft mt-0.5">{c.description}</p>}
                 </div>
-              </div>
               <div className="flex gap-2">
                 <button onClick={() => openEdit(c)} className="rounded-full bg-sky/10 p-2.5 text-sky hover:bg-sky/20 transition"><Pencil className="size-4" /></button>
                 <button onClick={() => setConfirmDelete(c.id)} className="rounded-full bg-coral/10 p-2.5 text-coral hover:bg-coral/20 transition"><Trash2 className="size-4" /></button>

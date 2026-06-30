@@ -37,7 +37,6 @@ model Category {
   slug        String    @unique
   description String    @default("")
   color       String    @default("sky")
-  icon        String    @default("📁")
   sortOrder   Int       @default(0) @map("sort_order")
   createdAt   DateTime  @default(now()) @map("created_at")
 

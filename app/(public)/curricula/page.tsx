@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowRight, Clock, GraduationCap } from "lucide-react";
 
 interface Category {
-  id: string; name: string; slug: string; description: string; color: string; icon: string;
+  id: string; name: string; slug: string; description: string; color: string;
 }
 
 interface Program {
@@ -101,7 +101,7 @@ export default function CurriculaPage() {
                     : "bg-surface text-ink-soft hover:bg-border"
                 }`}
               >
-                {c.icon} {c.name}
+                {c.name}
               </button>
             ))}
           </div>
@@ -146,9 +146,9 @@ export default function CurriculaPage() {
                         {levelLabel}
                       </span>
                       {program.category && (
-                        <span className="rounded-full bg-sky/10 px-3 py-1 text-xs font-bold text-sky">
-                          {program.category.icon} {program.category.name}
-                        </span>
+                          <span className="rounded-full bg-sky/10 px-3 py-1 text-xs font-bold text-sky">
+                            {program.category.name}
+                          </span>
                       )}
                     </div>
 

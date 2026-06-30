@@ -21,12 +21,12 @@ async function main() {
 
   // Categories
   await prisma.category.createMany({ data: [
-    { id: "cat-creativite", name: "Créativité Numérique", slug: "creativite-numerique", description: "Éveil à la programmation et à la créativité avec des outils visuels et ludiques.", color: "accent", icon: "🎨", sortOrder: 1 },
-    { id: "cat-robotique", name: "Robotique", slug: "robotique", description: "Construction et programmation de robots, capteurs et systèmes embarqués.", color: "cyan", icon: "🤖", sortOrder: 2 },
-    { id: "cat-iot", name: "IoT & Électronique", slug: "iot-electronique", description: "Objets connectés, Arduino, Raspberry Pi et prototypes électroniques.", color: "amber", icon: "💡", sortOrder: 3 },
-    { id: "cat-programmation", name: "Programmation", slug: "programmation", description: "Langages de programmation, algorithmique et développement logiciel.", color: "green", icon: "💻", sortOrder: 4 },
-    { id: "cat-web", name: "Développement Web", slug: "developpement-web", description: "Sites web, applications web et technologies du web moderne.", color: "rose", icon: "🌐", sortOrder: 5 },
-    { id: "cat-ia", name: "Intelligence Artificielle", slug: "intelligence-artificielle", description: "Machine learning, vision par ordinateur et projets IA.", color: "purple", icon: "🧠", sortOrder: 6 },
+    { id: "cat-creativite", name: "Créativité Numérique", slug: "creativite-numerique", description: "Éveil à la programmation et à la créativité avec des outils visuels et ludiques.", color: "accent", sortOrder: 1 },
+    { id: "cat-robotique", name: "Robotique", slug: "robotique", description: "Construction et programmation de robots, capteurs et systèmes embarqués.", color: "cyan", sortOrder: 2 },
+    { id: "cat-iot", name: "IoT & Électronique", slug: "iot-electronique", description: "Objets connectés, Arduino, Raspberry Pi et prototypes électroniques.", color: "amber", sortOrder: 3 },
+    { id: "cat-programmation", name: "Programmation", slug: "programmation", description: "Langages de programmation, algorithmique et développement logiciel.", color: "green", sortOrder: 4 },
+    { id: "cat-web", name: "Développement Web", slug: "developpement-web", description: "Sites web, applications web et technologies du web moderne.", color: "rose", sortOrder: 5 },
+    { id: "cat-ia", name: "Intelligence Artificielle", slug: "intelligence-artificielle", description: "Machine learning, vision par ordinateur et projets IA.", color: "purple", sortOrder: 6 },
   ]});
   console.log("  ✅ Categories");
 

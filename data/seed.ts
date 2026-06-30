@@ -2,12 +2,12 @@ import { hashSecret } from "@/lib/auth";
 import type { Category, Certification, GalleryItem, InscriptionRequest, Program, Project, Student } from "@/lib/types";
 
 export const categories: Category[] = [
-  { id: "cat-creativite", name: "Créativité Numérique", slug: "creativite-numerique", description: "Éveil à la programmation et à la créativité avec des outils visuels et ludiques.", color: "accent", icon: "🎨" },
-  { id: "cat-robotique", name: "Robotique", slug: "robotique", description: "Construction et programmation de robots, capteurs et systèmes embarqués.", color: "cyan", icon: "🤖" },
-  { id: "cat-iot", name: "IoT & Électronique", slug: "iot-electronique", description: "Objets connectés, Arduino, Raspberry Pi et prototypes électroniques.", color: "amber", icon: "💡" },
-  { id: "cat-programmation", name: "Programmation", slug: "programmation", description: "Langages de programmation, algorithmique et développement logiciel.", color: "green", icon: "💻" },
-  { id: "cat-web", name: "Développement Web", slug: "developpement-web", description: "Sites web, applications web et technologies du web moderne.", color: "rose", icon: "🌐" },
-  { id: "cat-ia", name: "Intelligence Artificielle", slug: "intelligence-artificielle", description: "Machine learning, vision par ordinateur et projets IA.", color: "purple", icon: "🧠" },
+  { id: "cat-creativite", name: "Créativité Numérique", slug: "creativite-numerique", description: "Éveil à la programmation et à la créativité avec des outils visuels et ludiques.", color: "accent" },
+  { id: "cat-robotique", name: "Robotique", slug: "robotique", description: "Construction et programmation de robots, capteurs et systèmes embarqués.", color: "cyan" },
+  { id: "cat-iot", name: "IoT & Électronique", slug: "iot-electronique", description: "Objets connectés, Arduino, Raspberry Pi et prototypes électroniques.", color: "amber" },
+  { id: "cat-programmation", name: "Programmation", slug: "programmation", description: "Langages de programmation, algorithmique et développement logiciel.", color: "green" },
+  { id: "cat-web", name: "Développement Web", slug: "developpement-web", description: "Sites web, applications web et technologies du web moderne.", color: "rose" },
+  { id: "cat-ia", name: "Intelligence Artificielle", slug: "intelligence-artificielle", description: "Machine learning, vision par ordinateur et projets IA.", color: "purple" },
 ];
 
 export const programs: Program[] = [

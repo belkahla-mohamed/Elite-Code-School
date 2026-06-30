@@ -9,7 +9,6 @@ export type Category = {
   slug: string;
   description: string;
   color: string;
-  icon: string;
 };
 
 export type Program = {

@@ -90,7 +90,6 @@ export async function getCategories(): Promise<Category[]> {
     slug: row.slug,
     description: row.description ?? "",
     color: row.color ?? "sky",
-    icon: row.icon ?? "📁",
   }));
 }
 
@@ -575,9 +574,9 @@ export async function deleteProgram(id: string) {
   if (error) throw error;
 }
 
-export async function createCategory(data: { name: string; slug: string; description?: string; color?: string; icon?: string }) {
+export async function createCategory(data: { name: string; slug: string; description?: string; color?: string }) {
   if (!hasSupabaseConfig()) {
-    const category: Category = { id: `cat-${Date.now()}`, ...data, description: data.description ?? "", color: data.color ?? "sky", icon: data.icon ?? "📁" };
+    const category: Category = { id: `cat-${Date.now()}`, ...data, description: data.description ?? "", color: data.color ?? "sky" };
     demoStore().categories.push(category);
     return category;
   }
@@ -587,7 +586,7 @@ export async function createCategory(data: { name: string; slug: string; descrip
   return { id, ...data } as Category;
 }
 
-export async function updateCategory(id: string, data: { name?: string; slug?: string; description?: string; color?: string; icon?: string }) {
+export async function updateCategory(id: string, data: { name?: string; slug?: string; description?: string; color?: string }) {
   if (!hasSupabaseConfig()) {
     const store = demoStore()
     const idx = store.categories.findIndex((c) => c.id === id)
@@ -597,7 +596,6 @@ export async function updateCategory(id: string, data: { name?: string; slug?: s
     if (data.slug !== undefined) cat.slug = data.slug
     if (data.description !== undefined) cat.description = data.description
     if (data.color !== undefined) cat.color = data.color
-    if (data.icon !== undefined) cat.icon = data.icon
     return
   }
   const payload: Record<string, any> = {}
@@ -605,7 +603,6 @@ export async function updateCategory(id: string, data: { name?: string; slug?: s
   if (data.slug !== undefined) payload.slug = data.slug
   if (data.description !== undefined) payload.description = data.description
   if (data.color !== undefined) payload.color = data.color
-  if (data.icon !== undefined) payload.icon = data.icon
   const { error } = await getSupabaseAdmin().from("categories").update(payload).eq("id", id)
   if (error) throw error
 }

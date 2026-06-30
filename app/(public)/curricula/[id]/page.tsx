@@ -63,7 +63,7 @@ export default async function CurriculaDetailPage({ params }: Props) {
             </span>
             {program.category && (
               <span className="rounded-full bg-sky/10 px-3 py-1 text-xs font-bold text-sky">
-                {program.category.icon} {program.category.name}
+                {program.category.name}
               </span>
             )}
           </div>
