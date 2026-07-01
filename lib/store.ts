@@ -21,6 +21,7 @@ import type {
   GalleryItem,
   InscriptionRequest,
   Parent,
+  ParentWithStudent,
   Program,
   ProgramColor,
   ProgramLevel,
@@ -1476,6 +1477,53 @@ export async function createParent(data: {
     studentId: created.student_id,
     createdAt: created.created_at,
   }
+}
+
+export async function getParents(): Promise<ParentWithStudent[]> {
+  if (!hasSupabaseConfig()) {
+    const store = demoStore() as any
+    if (!store.parents) store.parents = structuredClone(parentSeed)
+    return store.parents.map((p: Parent) => {
+      const student = store.students.find((s: Student) => s.id === p.studentId)
+      return {
+        ...p,
+        studentName: student ? `${student.firstName} ${student.lastName}` : "Élève introuvable",
+        studentSlug: student?.slug ?? "",
+      }
+    })
+  }
+
+  const supabase = getSupabaseAdmin()
+  const { data, error } = await supabase
+    .from("parents")
+    .select("*, students(first_name, last_name, slug)")
+    .order("created_at", { ascending: false })
+
+  if (error) throw error
+
+  return (data ?? []).map((row: any) => ({
+    id: row.id,
+    email: row.email,
+    firstName: row.first_name,
+    lastName: row.last_name,
+    phone: row.phone,
+    secretHash: row.secret_hash,
+    studentId: row.student_id,
+    createdAt: row.created_at,
+    studentName: row.students ? `${row.students.first_name} ${row.students.last_name}` : "Élève introuvable",
+    studentSlug: row.students?.slug ?? "",
+  }))
+}
+
+export async function deleteParent(id: string) {
+  if (!hasSupabaseConfig()) {
+    const store = demoStore() as any
+    if (!store.parents) store.parents = structuredClone(parentSeed)
+    store.parents = store.parents.filter((p: Parent) => p.id !== id)
+    return
+  }
+  const { error } = await getSupabaseAdmin().from("parents").delete().eq("id", id)
+  if (error) throw error
 }
 
 // ─── Admin Profile ─────────────────────────────────────────

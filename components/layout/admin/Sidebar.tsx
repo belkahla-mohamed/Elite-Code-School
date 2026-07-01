@@ -38,6 +38,7 @@ const sidebarLinks = [
   { href: "/dashboard/projects", label: "Projets", icon: Award },
   { href: "/dashboard/gallery", label: "Galerie", icon: ImageIcon },
   { type: "separator", label: "Système" },
+  { href: "/dashboard/parents", label: "Parents", icon: Users },
   { href: "/dashboard/admin-users", label: "Administrateurs", icon: Shield },
   { href: "/dashboard/activity", label: "Activité", icon: Activity },
   { href: "/dashboard/notifications", label: "Notifications", icon: Bell },

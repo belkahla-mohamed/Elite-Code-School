@@ -40,6 +40,11 @@ export type Parent = {
   createdAt: string
 }
 
+export type ParentWithStudent = Parent & {
+  studentName: string
+  studentSlug: string
+}
+
 export type InscriptionRequest = {
   id: string;
   studentFirstName: string;
