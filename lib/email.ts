@@ -1,11 +1,15 @@
 import { addActivity } from "@/lib/activity-log"
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY
-const EMAIL_FROM = process.env.EMAIL_FROM ?? "Elite Code School <noreply@elitecodeschool.ma>"
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "admin@elitecode.ma"
+const EMAIL_FROM = process.env.EMAIL_FROM ?? "Elite Code School <onboarding@resend.dev>"
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? ""
 
 export function hasEmailConfig(): boolean {
   return !!RESEND_API_KEY
+}
+
+function logResend403(method: string) {
+  addActivity("request", "Erreur email", `Resend 403: vérifie que le domaine "${EMAIL_FROM.match(/<([^>]+)>/)?.[1] ?? EMAIL_FROM}" est approuvé dans le dashboard Resend, ou définis ADMIN_EMAIL dans .env`)
 }
 
 function buildAdminNotificationHtml(payload: {
@@ -129,18 +133,21 @@ export async function sendAdminNotification(payload: {
     addActivity("request", "Notification admin", `[EMAIL SIMULÉ] Nouvelle inscription: ${payload.studentFirstName} ${payload.studentLastName} (${payload.parentEmail})`);
     return
   }
+  const to = ADMIN_EMAIL || payload.parentEmail
   try {
     const { Resend } = await import("resend")
     const resend = new Resend(RESEND_API_KEY!)
     await resend.emails.send({
       from: EMAIL_FROM,
-      to: ADMIN_EMAIL,
+      to,
       subject: `Nouvelle demande d'inscription — ${payload.studentFirstName} ${payload.studentLastName}`,
       html: buildAdminNotificationHtml(payload),
     })
-    addActivity("request", "Notification admin", `Email envoyé à l'admin pour ${payload.studentFirstName} ${payload.studentLastName}`);
-  } catch (e) {
-    addActivity("request", "Erreur email", `Échec envoi notification admin: ${e instanceof Error ? e.message : e}`);
+    addActivity("request", "Notification admin", `Email envoyé à ${to} pour ${payload.studentFirstName} ${payload.studentLastName}`);
+  } catch (e: any) {
+    const msg = e?.statusCode === 403 ? `Resend 403 — domaine non vérifié` : e?.message ?? String(e)
+    addActivity("request", "Erreur email", `Échec envoi notification admin: ${msg}`)
+    if (e?.statusCode === 403) logResend403("sendAdminNotification")
     console.warn("Email send failed (admin notification):", e)
   }
 }
@@ -166,8 +173,10 @@ export async function sendAcceptanceEmail(payload: {
       html: buildAcceptanceHtml(payload),
     })
     addActivity("student", "Email acceptation", `Email d'acceptation envoyé à ${payload.parentEmail}`);
-  } catch (e) {
-    addActivity("student", "Erreur email", `Échec envoi acceptation à ${payload.parentEmail}: ${e instanceof Error ? e.message : e}`);
+  } catch (e: any) {
+    const msg = e?.statusCode === 403 ? `Resend 403 — domaine non vérifié` : e?.message ?? String(e)
+    addActivity("student", "Erreur email", `Échec envoi acceptation à ${payload.parentEmail}: ${msg}`)
+    if (e?.statusCode === 403) logResend403("sendAcceptanceEmail")
     console.warn("Email send failed (acceptance):", e)
   }
 }
@@ -193,8 +202,10 @@ export async function sendRejectionEmail(payload: {
       html: buildRejectionHtml(payload),
     })
     addActivity("request", "Email refus", `Email de refus envoyé à ${payload.parentEmail}`);
-  } catch (e) {
-    addActivity("request", "Erreur email", `Échec envoi refus à ${payload.parentEmail}: ${e instanceof Error ? e.message : e}`);
+  } catch (e: any) {
+    const msg = e?.statusCode === 403 ? `Resend 403 — domaine non vérifié` : e?.message ?? String(e)
+    addActivity("request", "Erreur email", `Échec envoi refus à ${payload.parentEmail}: ${msg}`)
+    if (e?.statusCode === 403) logResend403("sendRejectionEmail")
     console.warn("Email send failed (rejection):", e)
   }
 }
