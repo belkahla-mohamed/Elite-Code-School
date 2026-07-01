@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { isAdminAuthenticated } from "@/lib/auth";
 import { acceptInscriptionRequest, refuseInscriptionRequest } from "@/lib/store";
 import { requireCsrf } from "@/lib/csrf";
 
@@ -7,6 +8,10 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    if (!(await isAdminAuthenticated())) {
+      return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+    }
+
     const csrfError = requireCsrf(request);
     if (csrfError) return csrfError;
 

@@ -1,3 +1,5 @@
+import { randomBytes } from "crypto";
+
 const globalLog = globalThis as unknown as { ecsActivityLog?: ActivityEntry[] };
 
 export type ActivityEntry = {
@@ -11,7 +13,7 @@ export type ActivityEntry = {
 export function addActivity(type: ActivityEntry["type"], action: string, description: string) {
   if (!globalLog.ecsActivityLog) globalLog.ecsActivityLog = [];
   globalLog.ecsActivityLog.unshift({
-    id: `act-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    id: `act-${Date.now()}-${randomBytes(4).toString("hex")}`,
     type,
     action,
     description,

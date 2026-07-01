@@ -66,10 +66,10 @@ async function main() {
 
   // Projects
   await prisma.project.createMany({ data: [
-    { id: "proj-y-1", studentId: "stu-youssef", title: "Robot suiveur de ligne", description: "Robot mBot autonome capable de suivre un circuit, détecter les virages et ajuster sa vitesse.", tags: ["mBot", "Capteurs", "Compétition"], status: "done", progress: 100, dateLabel: "Mars 2024", emoji: "🤖", gradient: "linear-gradient(135deg,#2563EB,#06B6D4)" },
-    { id: "proj-y-2", studentId: "stu-youssef", title: "Alarme intelligente Arduino", description: "Prototype avec capteur de mouvement, LED, buzzer et logique de notification.", tags: ["Arduino", "IoT", "Sécurité"], status: "progress", progress: 65, dateLabel: "En cours", emoji: "⚡", gradient: "linear-gradient(135deg,#F59E0B,#84CC16)" },
-    { id: "proj-m-1", studentId: "stu-mariam", title: "Classificateur d'images IA", description: "Modèle éducatif capable de reconnaître des objets simples depuis une caméra.", tags: ["Python", "Vision", "IA"], status: "done", progress: 100, dateLabel: "Avril 2024", emoji: "🧠", gradient: "linear-gradient(135deg,#06B6D4,#8B5CF6)" },
-    { id: "proj-a-1", studentId: "stu-adam", title: "Jeu de plateforme Scratch", description: "Jeu complet avec personnage animé, ennemis, score et trois niveaux progressifs.", tags: ["Scratch", "Game", "Animation"], status: "done", progress: 100, dateLabel: "Jan. 2024", emoji: "🎮", gradient: "linear-gradient(135deg,#F59E0B,#FB7185)" },
+    { id: "proj-y-1", studentId: "stu-youssef", title: "Robot suiveur de ligne", description: "Robot mBot autonome capable de suivre un circuit, détecter les virages et ajuster sa vitesse.", tags: ["mBot", "Capteurs", "Compétition"], status: "completed", progress: 100, dateLabel: "Mars 2024", emoji: "🤖", gradient: "linear-gradient(135deg,#2563EB,#06B6D4)" },
+    { id: "proj-y-2", studentId: "stu-youssef", title: "Alarme intelligente Arduino", description: "Prototype avec capteur de mouvement, LED, buzzer et logique de notification.", tags: ["Arduino", "IoT", "Sécurité"], status: "in_progress", progress: 65, dateLabel: "En cours", emoji: "⚡", gradient: "linear-gradient(135deg,#F59E0B,#84CC16)" },
+    { id: "proj-m-1", studentId: "stu-mariam", title: "Classificateur d'images IA", description: "Modèle éducatif capable de reconnaître des objets simples depuis une caméra.", tags: ["Python", "Vision", "IA"], status: "completed", progress: 100, dateLabel: "Avril 2024", emoji: "🧠", gradient: "linear-gradient(135deg,#06B6D4,#8B5CF6)" },
+    { id: "proj-a-1", studentId: "stu-adam", title: "Jeu de plateforme Scratch", description: "Jeu complet avec personnage animé, ennemis, score et trois niveaux progressifs.", tags: ["Scratch", "Game", "Animation"], status: "completed", progress: 100, dateLabel: "Jan. 2024", emoji: "🎮", gradient: "linear-gradient(135deg,#F59E0B,#FB7185)" },
   ]});
   console.log("  ✅ Projects");
 
@@ -92,7 +92,9 @@ async function main() {
   // Inscription request
   await prisma.inscriptionRequest.create({ data: {
     id: "req-demo-1", studentFirstName: "Karim", studentLastName: "Benali", age: 12,
-    schoolLevel: "6ème primaire", programId: "arduino-iot", parentPhone: "+212 600 000 000",
+    schoolLevel: "6ème primaire", programId: "arduino-iot",
+    parentFirstName: "Karim", parentLastName: "Benali",
+    parentPhone: "+212 600 000 000",
     parentEmail: "parent.karim@example.com", message: "Intéressé par une séance d'essai.",
     status: "pending", createdAt: new Date(),
   }});

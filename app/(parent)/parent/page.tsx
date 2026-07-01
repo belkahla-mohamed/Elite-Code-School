@@ -85,7 +85,7 @@ export default function ParentDashboardPage() {
   if (!student) return null;
 
   const totalProjects = student.projects.length;
-  const completedProjects = student.projects.filter((p) => p.status === "done").length;
+  const completedProjects = student.projects.filter((p) => p.status === "completed").length;
 
   const quickLinks = [
     {

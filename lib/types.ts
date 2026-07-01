@@ -1,7 +1,7 @@
 export type ProgramLevel = "debutant" | "intermediaire" | "avance";
 export type ProgramColor = "accent" | "cyan" | "amber" | "green" | "rose" | "purple";
 export type RequestStatus = "pending" | "accepted" | "refused";
-export type ProjectStatus = "done" | "progress" | "planned" | "pending";
+export type ProjectStatus = "completed" | "in_progress";
 
 export type Category = {
   id: string;
@@ -82,6 +82,44 @@ export type Certification = {
   gradient: string;
   imageUrl?: string;
 };
+
+export type SeanceStatus = "completed" | "absent" | "scheduled" | "cancelled"
+
+export type Seance = {
+  id: string
+  studentId: string
+  programId: string
+  title: string
+  date: string
+  startTime: string
+  endTime: string
+  status: SeanceStatus
+  topic: string
+  notes?: string
+}
+
+export type WeeklySlot = {
+  day: string
+  startTime: string
+  endTime: string
+  label: string
+}
+
+export type StudentPlanning = {
+  studentId: string
+  programId: string
+  programName: string
+  totalSeances: number
+  completedSeances: number
+  absentSeances: number
+  scheduledSeances: number
+  cancelledSeances: number
+  hoursCompleted: number
+  hoursTotal: number
+  progression: number
+  sessions: Seance[]
+  weeklySchedule: WeeklySlot[]
+}
 
 export type GalleryItem = {
   id: string;

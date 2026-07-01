@@ -67,8 +67,8 @@ export default function ParentReportPage() {
   if (!student) return null;
 
   const totalProjects = student.projects.length;
-  const completedProjects = student.projects.filter((p) => p.status === "done").length;
-  const inProgressProjects = student.projects.filter((p) => p.status !== "done").length;
+  const completedProjects = student.projects.filter((p) => p.status === "completed").length;
+  const inProgressProjects = student.projects.filter((p) => p.status !== "completed").length;
 
   return (
     <div>

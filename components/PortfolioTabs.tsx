@@ -7,8 +7,8 @@ type Tab = "projects" | "progress" | "certs" | "skills" | "gallery";
 
 export function PortfolioTabs({ student }: { student: StudentPortfolio }) {
   const [tab, setTab] = useState<Tab>("projects");
-  const done = student.projects.filter((project) => project.status === "done");
-  const progress = student.projects.filter((project) => project.status !== "done");
+  const done = student.projects.filter((project) => project.status === "completed");
+  const progress = student.projects.filter((project) => project.status !== "completed");
 
   return (
     <div>
@@ -82,8 +82,8 @@ export function PortfolioTabs({ student }: { student: StudentPortfolio }) {
 function SkillsSection({ student }: { student: StudentPortfolio }) {
   // Derive dynamic skills from student data
   const totalProjects = student.projects.length;
-  const completedProjects = student.projects.filter((p) => p.status === "done").length;
-  const inProgress = student.projects.filter((p) => p.status !== "done").length;
+  const completedProjects = student.projects.filter((p) => p.status === "completed").length;
+  const inProgress = student.projects.filter((p) => p.status !== "completed").length;
 
   const skills = [
     {
@@ -139,13 +139,13 @@ function ProjectGrid({ projects, empty }: { projects: StudentPortfolio["projects
           <div className="relative flex min-h-40 items-center justify-center text-6xl text-white" style={{ background: project.gradient }}>
             {project.emoji}
             <span className="absolute right-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-ink">
-              {project.status === "done" ? "Terminé" : "En cours"}
+              {project.status === "completed" ? "Terminé" : "En cours"}
             </span>
           </div>
           <div className="p-5">
             <h3 className="font-display text-xl font-bold">{project.title}</h3>
             <p className="mt-2 text-sm leading-6 text-ink-soft">{project.description}</p>
-            {project.status !== "done" && (
+            {project.status !== "completed" && (
               <div className="mt-4">
                 <div className="mb-1 flex justify-between text-xs text-ink-soft">
                   <span>Avancement</span>

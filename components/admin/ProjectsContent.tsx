@@ -125,7 +125,7 @@ export function ProjectsContent() {
                     <span key={i} className="inline-flex items-center gap-1 rounded-full bg-sky/10 px-3 py-1 text-xs font-bold text-sky">
                       {p.emoji && <span>{p.emoji}</span>}
                       {p.title}
-                      {p.status === "done" && <CheckCircle className="size-3 text-lime ml-0.5" />}
+                      {p.status === "completed" && <CheckCircle className="size-3 text-lime ml-0.5" />}
                     </span>
                   ))}
                 </div>

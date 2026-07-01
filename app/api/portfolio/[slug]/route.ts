@@ -28,7 +28,9 @@ export async function GET(_request: Request, { params }: Props) {
     }
 
     const student = await getPortfolioBySlug(slug, false);
-    if (!student) return NextResponse.json({ error: "Portfolio introuvable ou privé" }, { status: 404 });
+    if (!student) {
+      return NextResponse.json({ error: "Portfolio privé ou introuvable" }, { status: 403 });
+    }
 
     return NextResponse.json({ student });
   } catch (e: any) {

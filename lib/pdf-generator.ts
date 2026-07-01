@@ -76,7 +76,7 @@ export async function generateStudentReport(student: StudentPortfolio): Promise<
     y = line("Aucun projet", y, { color: gray });
   } else {
     for (const p of student.projects) {
-      y = line(`${p.emoji} ${p.title} — ${p.status === "done" ? "Terminé" : p.status === "progress" ? "En cours" : "Planifié"} (${p.progress}%)`, y, { size: 9 });
+      y = line(`${p.emoji} ${p.title} — ${p.status === "completed" ? "Terminé" : "En cours"} (${p.progress}%)`, y, { size: 9 });
     }
   }
   y += 3;

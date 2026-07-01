@@ -48,15 +48,9 @@ create table if not exists public.students (
   created_at timestamptz not null default now()
 );
 
-create table if not exists public.teachers (
-  id uuid primary key default gen_random_uuid(),
-  full_name text not null,
-  email text not null,
-  specialty text,
-  secret_hash text not null,
-  status text not null default 'active' check (status in ('active', 'inactive')),
-  created_at timestamptz not null default now()
-);
+-- DEPRECATED: teachers table removed per RG — only 3 actors: Visiteur, Administrateur, Parent
+-- The following table is intentionally omitted:
+--   create table if not exists public.teachers ( ... );
 
 create table if not exists public.projects (
   id uuid primary key default gen_random_uuid(),
@@ -64,7 +58,7 @@ create table if not exists public.projects (
   title text not null,
   description text not null,
   tags text[] not null default '{}',
-  status text not null default 'progress' check (status in ('done', 'progress', 'planned')),
+  status text not null default 'in_progress' check (status in ('completed', 'in_progress')),
   progress integer not null default 0 check (progress between 0 and 100),
   date_label text not null,
   emoji text not null default '💼',
@@ -97,8 +91,6 @@ create index if not exists inscription_requests_created_at_idx on public.inscrip
 create index if not exists students_slug_idx on public.students(slug);
 create index if not exists students_program_id_idx on public.students(program_id);
 create index if not exists students_public_idx on public.students(is_public) where is_public = true;
-create unique index if not exists teachers_email_lower_key on public.teachers(lower(email));
-create index if not exists teachers_status_idx on public.teachers(status);
 create index if not exists projects_student_id_idx on public.projects(student_id);
 create index if not exists certifications_student_id_idx on public.certifications(student_id);
 create index if not exists gallery_items_student_id_idx on public.gallery_items(student_id);
@@ -106,7 +98,7 @@ create index if not exists gallery_items_student_id_idx on public.gallery_items(
 alter table public.programs enable row level security;
 alter table public.inscription_requests enable row level security;
 alter table public.students enable row level security;
-alter table public.teachers enable row level security;
+alter table public.gallery_items enable row level security;
 alter table public.projects enable row level security;
 alter table public.certifications enable row level security;
 alter table public.gallery_items enable row level security;
@@ -118,7 +110,6 @@ grant select on public.students to anon, authenticated;
 grant select on public.projects to anon, authenticated;
 grant select on public.certifications to anon, authenticated;
 grant select on public.gallery_items to anon, authenticated;
-revoke all on public.teachers from anon, authenticated;
 
 drop policy if exists "Public can read programs" on public.programs;
 create policy "Public can read programs"
@@ -180,7 +171,6 @@ using (
 comment on table public.programs is 'Public course catalog for Elite Code School.';
 comment on table public.inscription_requests is 'Public enrollment requests. Accepting a request is handled server-side by admin.';
 comment on table public.students is 'Student records and parent access secret hash.';
-comment on table public.teachers is 'Teacher accounts created only by admin. Not readable by public clients.';
 comment on table public.projects is 'Portfolio projects attached to students.';
 comment on table public.certifications is 'Student certificates attached to portfolios.';
 comment on table public.gallery_items is 'Student portfolio gallery items.';

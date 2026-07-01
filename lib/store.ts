@@ -5,6 +5,7 @@ import {
   inscriptionRequests as seedRequests,
   programs as seedPrograms,
   projects as seedProjects,
+  seances as seedSeances,
   students as seedStudents,
 } from "@/data/seed";
 import { hashSecret, generateAccessSecret } from "@/lib/auth";
@@ -24,8 +25,11 @@ import type {
   ProgramColor,
   ProgramLevel,
   Project,
+  Seance,
   Student,
-  StudentPortfolio
+  StudentPlanning,
+  StudentPortfolio,
+  WeeklySlot
 } from "@/lib/types";
 import { slugify } from "@/lib/utils";
 import { addActivity, type ActivityEntry } from "@/lib/activity-log";
@@ -49,6 +53,7 @@ type DemoStore = {
   certifications: Certification[];
   gallery: GalleryItem[];
   categories: Category[];
+  seances: Seance[];
 };
 
 const globalForStore = globalThis as unknown as { eliteCodeSchoolStore?: DemoStore };
@@ -63,6 +68,7 @@ function demoStore() {
       certifications: structuredClone(seedCertifications),
       gallery: structuredClone(seedGalleryItems),
       categories: structuredClone(seedCategories),
+      seances: structuredClone(seedSeances),
     };
   }
 
@@ -220,13 +226,16 @@ export async function getDashboardSnapshot(): Promise<DashboardSnapshot> {
 
 export async function acceptInscriptionRequest(id: string, notes?: string) {
   const parentSecret = `ECS-${generateAccessSecret()}`;
+  const programs = await getPrograms();
 
   if (!hasSupabaseConfig()) {
     const store = demoStore();
     const request = store.requests.find((item) => item.id === id);
     if (!request) throw new Error("Demande introuvable");
-    request.status = "accepted";
-    if (notes) request.adminNotes = notes;
+    if (request.status !== "pending") throw new Error("Cette demande a déjà été traitée");
+
+    const program = programs.find((p) => p.id === request.programId);
+    const levelLabel = `Nouveau parcours · ${program?.title ?? "Niveau 1"}`;
 
     const studentId = `stu-${Date.now()}`;
     const student: Student = {
@@ -238,7 +247,7 @@ export async function acceptInscriptionRequest(id: string, notes?: string) {
       avatar: `${request.studentFirstName[0]}${request.studentLastName[0]}`.toUpperCase(),
       avatarGradient: "linear-gradient(135deg,#4f46e5,#06b6d4)",
       programId: request.programId,
-      levelLabel: "Nouveau parcours · Niveau 1",
+      levelLabel,
       joinDateLabel: "Aujourd'hui",
       hours: 0,
       isPublic: true,
@@ -246,6 +255,9 @@ export async function acceptInscriptionRequest(id: string, notes?: string) {
       parentSecretHash: hashSecret(parentSecret),
       createdAt: new Date().toISOString()
     };
+
+    request.status = "accepted";
+    if (notes) request.adminNotes = notes;
     store.students.unshift(student);
 
     await createParent({
@@ -257,7 +269,7 @@ export async function acceptInscriptionRequest(id: string, notes?: string) {
       studentId: studentId,
     })
 
-    addActivityAndNotify("student", "Inscription acceptée", `${student.firstName} ${student.lastName} a rejoint le programme ${student.programId}`);
+    addActivityAndNotify("student", "Inscription acceptée", `${student.firstName} ${student.lastName} a rejoint le programme ${program?.title ?? student.programId}`);
     sendAcceptanceEmail({
       parentName: `${request.parentFirstName} ${request.parentLastName}`.trim() || request.parentEmail.split("@")[0],
       parentEmail: request.parentEmail,
@@ -276,8 +288,13 @@ export async function acceptInscriptionRequest(id: string, notes?: string) {
     .single();
 
   if (requestError) throw requestError;
+  if (request.status !== "pending") throw new Error("Cette demande a déjà été traitée");
+
+  const program = programs.find((p) => p.id === request.program_id);
+  const levelLabel = `Nouveau parcours · ${program?.title ?? "Niveau 1"}`;
 
   const studentId = crypto.randomUUID();
+
   const { data: student, error: studentError } = await supabase
     .from("students")
     .insert({
@@ -289,7 +306,7 @@ export async function acceptInscriptionRequest(id: string, notes?: string) {
       avatar: `${request.student_first_name[0]}${request.student_last_name[0]}`.toUpperCase(),
       avatar_gradient: "linear-gradient(135deg,#4f46e5,#06b6d4)",
       program_id: request.program_id,
-      level_label: "Nouveau parcours · Niveau 1",
+      level_label: levelLabel,
       join_date_label: "Aujourd'hui",
       hours: 0,
       is_public: true,
@@ -299,21 +316,36 @@ export async function acceptInscriptionRequest(id: string, notes?: string) {
     .select("*")
     .single();
 
-  if (studentError) throw studentError;
+  if (studentError) {
+    throw new Error(`Erreur lors de la création de l'élève: ${studentError.message}`);
+  }
 
-  await createParent({
+  const { error: parentError } = await supabase.from("parents").insert({
+    id: crypto.randomUUID(),
     email: request.parent_email,
-    firstName: request.parent_first_name || request.parent_email.split("@")[0],
-    lastName: request.parent_last_name || "",
+    first_name: request.parent_first_name || request.parent_email.split("@")[0],
+    last_name: request.parent_last_name || "",
     phone: request.parent_phone,
-    secret: parentSecret,
-    studentId: studentId,
+    secret_hash: hashSecret(parentSecret),
+    student_id: studentId,
   })
+
+  if (parentError) {
+    await supabase.from("students").delete().eq("id", studentId);
+    throw new Error(`Erreur lors de la création du parent: ${parentError.message}`);
+  }
 
   const updateData: Record<string, any> = { status: "accepted" };
   if (notes) updateData.admin_notes = notes;
-  await supabase.from("inscription_requests").update(updateData).eq("id", id);
-  addActivityAndNotify("student", "Inscription acceptée", `${request.student_first_name} ${request.student_last_name} a rejoint le programme`);
+  const { error: updateError } = await supabase.from("inscription_requests").update(updateData).eq("id", id);
+
+  if (updateError) {
+    await supabase.from("students").delete().eq("id", studentId);
+    await supabase.from("parents").delete().eq("student_id", studentId);
+    throw new Error(`Erreur lors de la mise à jour de la demande: ${updateError.message}`);
+  }
+
+  addActivityAndNotify("student", "Inscription acceptée", `${request.student_first_name} ${request.student_last_name} a rejoint ${program?.title ?? "le programme"}`);
   sendAcceptanceEmail({
     parentName: `${request.parent_first_name} ${request.parent_last_name}`.trim() || request.parent_email.split("@")[0],
     parentEmail: request.parent_email,
@@ -321,7 +353,7 @@ export async function acceptInscriptionRequest(id: string, notes?: string) {
     studentLastName: request.student_last_name,
     parentSecret,
   })
-  return { student: mapStudentPortfolio({ ...student, projects: [], certifications: [], gallery_items: [] }, await getPrograms()), parentSecret };
+  return { student: mapStudentPortfolio({ ...student, projects: [], certifications: [], gallery_items: [] }, programs), parentSecret };
 }
 
 export async function refuseInscriptionRequest(id: string, notes?: string, rejectionMessage?: string) {
@@ -433,6 +465,79 @@ export async function getStudentById(id: string) {
 
   if (error) throw error;
   return data ? mapStudentPortfolio(data, programs) : null;
+}
+
+export async function getStudentPlanning(studentId: string): Promise<StudentPlanning | null> {
+  const student = await getStudentById(studentId)
+  if (!student || !student.program) return null
+
+  const program = student.program
+  const totalMatch = program.duration?.match(/(\d+)\s*séances?/)
+  const totalSeances = totalMatch ? parseInt(totalMatch[1]) : 12
+
+  let sessions: Seance[]
+  if (!hasSupabaseConfig()) {
+    sessions = demoStore().seances.filter((s) => s.studentId === studentId)
+  } else {
+    const { data, error } = await getSupabaseAdmin()
+      .from("seances")
+      .select("*")
+      .eq("student_id", studentId)
+      .order("date", { ascending: true })
+    if (error) sessions = []
+    else sessions = (data ?? []).map((row: any) => ({
+      id: row.id,
+      studentId: row.student_id,
+      programId: row.program_id,
+      title: row.title,
+      date: row.date,
+      startTime: row.start_time,
+      endTime: row.end_time,
+      status: row.status,
+      topic: row.topic,
+      notes: row.notes ?? undefined,
+    }))
+  }
+
+  const completedSeances = sessions.filter((s) => s.status === "completed").length
+  const absentSeances = sessions.filter((s) => s.status === "absent").length
+  const scheduledSeances = sessions.filter((s) => s.status === "scheduled").length
+  const cancelledSeances = sessions.filter((s) => s.status === "cancelled").length
+  const hoursCompleted = completedSeances * 2
+  const hoursTotal = totalSeances * 2
+  const progression = totalSeances > 0 ? Math.round((completedSeances / totalSeances) * 100) : 0
+
+  const scheduleStr = program.schedule ?? ""
+  const parts = scheduleStr.split("&").map((s) => s.trim())
+  const weeklySchedule: WeeklySlot[] = []
+  for (const part of parts) {
+    const dayMatch = part.match(/(Lundi|Mardi|Mercredi|Jeudi|Vendredi|Samedi|Dimanche)/)
+    const timeMatch = part.match(/(\d{1,2})h[–-](\d{1,2})h/)
+    if (dayMatch && timeMatch) {
+      weeklySchedule.push({
+        day: dayMatch[1],
+        startTime: `${timeMatch[1].padStart(2, "0")}:00`,
+        endTime: `${timeMatch[2].padStart(2, "0")}:00`,
+        label: `${dayMatch[1]} ${timeMatch[1]}h–${timeMatch[2]}h`,
+      })
+    }
+  }
+
+  return {
+    studentId,
+    programId: program.id,
+    programName: program.title,
+    totalSeances,
+    completedSeances,
+    absentSeances,
+    scheduledSeances,
+    cancelledSeances,
+    hoursCompleted,
+    hoursTotal,
+    progression,
+    sessions,
+    weeklySchedule,
+  }
 }
 
 export async function createStudent(data: {

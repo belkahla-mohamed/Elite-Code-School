@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, FolderOpen, Shield, Award, FileText } from "lucide-react";
+import { LayoutDashboard, FolderOpen, Shield, Award, FileText, Calendar } from "lucide-react";
 
 const parentLinks = [
   { href: "/parent", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/parent/planning", label: "Planning", icon: Calendar },
   { href: "/parent/portfolio", label: "Portfolio", icon: FolderOpen },
-  { href: "/parent/privacy", label: "Confidentialité", icon: Shield },
   { href: "/parent/certifications", label: "Certificats", icon: Award },
+  { href: "/parent/privacy", label: "Confidentialité", icon: Shield },
   { href: "/parent/report", label: "Rapport", icon: FileText },
 ];
 

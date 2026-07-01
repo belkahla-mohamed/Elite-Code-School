@@ -1,5 +1,5 @@
 import { hashSecret } from "@/lib/auth";
-import type { Category, Certification, GalleryItem, InscriptionRequest, Program, Project, Student } from "@/lib/types";
+import type { Category, Certification, GalleryItem, InscriptionRequest, Program, Project, Seance, Student } from "@/lib/types";
 
 export const categories: Category[] = [
   { id: "cat-creativite", name: "Créativité Numérique", slug: "creativite-numerique", description: "Éveil à la programmation et à la créativité avec des outils visuels et ludiques.", color: "accent" },
@@ -321,7 +321,7 @@ export const projects: Project[] = [
     title: "Robot suiveur de ligne",
     description: "Robot mBot autonome capable de suivre un circuit, détecter les virages et ajuster sa vitesse en temps réel.",
     tags: ["mBot", "Capteurs", "Compétition"],
-    status: "done",
+    status: "completed",
     progress: 100,
     dateLabel: "Mars 2024",
     emoji: "🤖",
@@ -334,7 +334,7 @@ export const projects: Project[] = [
     title: "Alarme intelligente Arduino",
     description: "Prototype avec capteur de mouvement, LED, buzzer et logique de notification en temps réel.",
     tags: ["Arduino", "IoT", "Sécurité"],
-    status: "progress",
+    status: "in_progress",
     progress: 65,
     dateLabel: "En cours",
     emoji: "⚡",
@@ -347,7 +347,7 @@ export const projects: Project[] = [
     title: "Classificateur d'images IA",
     description: "Modèle éducatif capable de reconnaître des objets simples depuis une caméra en temps réel.",
     tags: ["Python", "Vision", "IA"],
-    status: "done",
+    status: "completed",
     progress: 100,
     dateLabel: "Avril 2024",
     emoji: "🧠",
@@ -360,7 +360,7 @@ export const projects: Project[] = [
     title: "Chatbot NLP pour questions scolaires",
     description: "Assistant virtuel basé sur NLP qui répond aux questions sur les cours de sciences.",
     tags: ["NLP", "Python", "Chatbot"],
-    status: "planned",
+    status: "in_progress",
     progress: 20,
     dateLabel: "Planifié",
     emoji: "💬",
@@ -372,7 +372,7 @@ export const projects: Project[] = [
     title: "Jeu de plateforme Scratch",
     description: "Jeu complet avec personnage animé, ennemis, score et trois niveaux progressifs.",
     tags: ["Scratch", "Game", "Animation"],
-    status: "done",
+    status: "completed",
     progress: 100,
     dateLabel: "Jan. 2024",
     emoji: "🎮",
@@ -385,7 +385,7 @@ export const projects: Project[] = [
     title: "Portfolio personnel interactif",
     description: "Site web portfolio avec animations CSS, design responsive et formulaire de contact.",
     tags: ["HTML/CSS", "JavaScript", "React"],
-    status: "done",
+    status: "completed",
     progress: 100,
     dateLabel: "Mai 2024",
     emoji: "🌐",
@@ -398,7 +398,7 @@ export const projects: Project[] = [
     title: "Application météo React",
     description: "Dashboard météo avec API OpenWeather, graphiques dynamiques et fonds adaptatifs.",
     tags: ["React", "API", "Dashboard"],
-    status: "progress",
+    status: "in_progress",
     progress: 50,
     dateLabel: "En cours",
     emoji: "☀️",
@@ -410,7 +410,7 @@ export const projects: Project[] = [
     title: "Analyse des ventes avec Pandas",
     description: "Script Python d'analyse de données commerciales avec visualisations et rapports automatisés.",
     tags: ["Python", "Pandas", "Data Viz"],
-    status: "done",
+    status: "completed",
     progress: 100,
     dateLabel: "Juin 2024",
     emoji: "📊",
@@ -423,7 +423,7 @@ export const projects: Project[] = [
     title: "Serre connectée Arduino",
     description: "Système IoT qui mesure humidité, température et arrose automatiquement les plantes.",
     tags: ["Arduino", "IoT", "Capteurs"],
-    status: "progress",
+    status: "in_progress",
     progress: 70,
     dateLabel: "En cours",
     emoji: "🌱",
@@ -436,7 +436,7 @@ export const projects: Project[] = [
     title: "Reconnaissance faciale éthique",
     description: "Projet IA de détection faciale avec débat sur l'éthique et les biais algorithmiques.",
     tags: ["Python ML", "Vision", "Éthique"],
-    status: "done",
+    status: "completed",
     progress: 100,
     dateLabel: "Mai 2024",
     emoji: "🔬",
@@ -449,7 +449,7 @@ export const projects: Project[] = [
     title: "Robot VinciBot autonome",
     description: "Programmation avancée d'un robot VinciBot avec navigation autonome et évitement d'obstacles.",
     tags: ["VinciBot", "Robotique", "IA"],
-    status: "progress",
+    status: "in_progress",
     progress: 40,
     dateLabel: "En cours",
     emoji: "🦾",
@@ -461,7 +461,7 @@ export const projects: Project[] = [
     title: "Histoire animée : Le voyage spatial",
     description: "Animation Scratch interactive avec personnages, dialogues et une fusée qui décolle.",
     tags: ["Scratch", "Animation", "Histoire"],
-    status: "progress",
+    status: "in_progress",
     progress: 30,
     dateLabel: "En cours",
     emoji: "🚀",
@@ -651,3 +651,140 @@ export const galleryItems: GalleryItem[] = [
     gradient: "linear-gradient(135deg,#22D3EE,#F472B6)"
   }
 ];
+
+const sessionTopics: Record<string, string[]> = {
+  "scratch-creativite": [
+    "Découverte de Scratch & interface", "Création de personnages et décors",
+    "Animations et mouvements", "Boucles et répétitions",
+    "Conditions et événements", "Variables et scores",
+    "Jeu de pong interactif", "Histoire animée",
+    "Introduction à Micro:bit", "Micro:bit — LED et boutons",
+    "Micro:bit — capteurs", "Projet final : Jeu ou histoire"
+  ],
+  "robotique-mbot": [
+    "Introduction à la robotique", "Assemblage du robot mBot",
+    "Programmation des moteurs", "Capteurs à ultrasons",
+    "Capteur de suivi de ligne", "Logique conditionnelle en robotique",
+    "Défis de parcours", "Télécommande IR",
+    "Communication Bluetooth", "Robot autonome",
+    "Compétition interne", "Projet : Robot suiveur de ligne",
+    "Projet : Alarme intelligente", "Défis avancés",
+    "Préparation compétition", "Compétition finale"
+  ],
+  "arduino-iot": [
+    "Bases de l'électronique", "LED, résistances et breadboard",
+    "Programmation Arduino", "Capteurs de température",
+    "Capteurs de lumière", "Actionneurs et moteurs",
+    "Communication série", "Écran LCD",
+    "Objets connectés WiFi", "MQTT et protocoles IoT",
+    "Création d'une serre connectée", "API et données",
+    "Projet : Station météo", "Projet : Alarme connectée",
+    "Prototypage avancé", "Présentation des projets"
+  ],
+  "python-data": [
+    "Introduction à Python", "Variables et types de données",
+    "Conditions et boucles", "Fonctions et modules",
+    "Listes et dictionnaires", "Manipulation de fichiers",
+    "Introduction à Pandas", "Nettoyage de données",
+    "Visualisation avec Matplotlib", "Analyse exploratoire",
+    "Projet : Analyse de ventes", "Automatisation de tâches",
+    "Création de dashboard", "Bonnes pratiques Python",
+    "Projet final", "Présentation et débrief"
+  ],
+  "web-development": [
+    "HTML5 : structure sémantique", "CSS3 : sélecteurs et couleurs",
+    "Flexbox et Grid", "Design responsive",
+    "Introduction à JavaScript", "DOM et événements",
+    "API Fetch et données", "Projets JavaScript",
+    "Introduction à React", "Composants et props",
+    "State et hooks", "React Router",
+    "Projet : Portfolio interactif", "Déploiement et hébergement",
+    "Projet : App météo", "Tests et debug",
+    "Optimisation et accessibilité", "Projet final",
+    "Présentation des projets", "Clôture et perspectives"
+  ],
+  "intelligence-artificielle": [
+    "Introduction à l'IA", "Machine Learning fondamentaux",
+    "Régression et classification", "Réseaux de neurones",
+    "Vision par ordinateur", "Traitement du langage naturel",
+    "Entraînement de modèles", "Éthique et biais algorithmiques",
+    "Introduction à VinciBot", "Programmation VinciBot avancée",
+    "Navigation autonome", "Évitement d'obstacles",
+    "Projet : Reconnaissance faciale", "Projet : Chatbot NLP",
+    "Optimisation des modèles", "Déploiement de modèles",
+    "Hackathon IA", "Projet final",
+    "Présentation et démo", "Certification et clôture"
+  ]
+};
+
+const dayMap: Record<string, number> = {
+  Lundi: 1, Mardi: 2, Mercredi: 3, Jeudi: 4, Vendredi: 5, Samedi: 6, Dimanche: 0
+};
+
+function generateSeancesForStudent(student: Student): Seance[] {
+  const program = programs.find((p) => p.id === student.programId)
+  if (!program) return []
+
+  const totalMatch = program.duration?.match(/(\d+)\s*séances?/)
+  const totalSeances = totalMatch ? parseInt(totalMatch[1]) : 12
+
+  const scheduleStr = program.schedule ?? ""
+  const slots: { day: string; start: string; end: string }[] = []
+
+  const parts = scheduleStr.split("&").map((s) => s.trim())
+  for (const part of parts) {
+    const dayMatch = part.match(/(Lundi|Mardi|Mercredi|Jeudi|Vendredi|Samedi|Dimanche)/)
+    const timeMatch = part.match(/(\d{1,2})h[–-](\d{1,2})h/)
+    if (dayMatch && timeMatch) {
+      slots.push({
+        day: dayMatch[1],
+        start: `${timeMatch[1].padStart(2, "0")}:00`,
+        end: `${timeMatch[2].padStart(2, "0")}:00`,
+      })
+    }
+  }
+
+  if (slots.length === 0) {
+    slots.push({ day: "Samedi", start: "10:00", end: "12:00" })
+  }
+
+  const topics = sessionTopics[student.programId] ?? Array.from({ length: totalSeances }, (_, i) => `Séance ${i + 1}`)
+
+  const joinDate = new Date(student.createdAt)
+  const hoursPerSession = student.hours > 0 ? Math.round((student.hours / Math.max(1, Math.round(totalSeances * 0.75))) * 10) / 10 : 2
+  const completedCount = Math.min(totalSeances, Math.max(1, Math.round(student.hours / hoursPerSession)))
+  const absentCount = Math.max(0, Math.min(2, Math.round(completedCount * 0.1)))
+
+  const seances: Seance[] = []
+
+  for (let i = 0; i < totalSeances; i++) {
+    const slot = slots[i % slots.length]
+    const dayNum = dayMap[slot.day] ?? 6
+    const weeksOffset = Math.floor(i / slots.length)
+    const seanceDate = new Date(joinDate)
+    seanceDate.setDate(seanceDate.getDate() + ((7 - seanceDate.getDay() + dayNum) % 7) + weeksOffset * 7)
+
+    let status: Seance["status"]
+    if (i < completedCount - absentCount) status = "completed"
+    else if (i < completedCount) status = "absent"
+    else if (i < completedCount + 3) status = "scheduled"
+    else status = "scheduled"
+
+    const dateStr = seanceDate.toISOString().split("T")[0]
+    seances.push({
+      id: `sea-${student.id}-${i + 1}`,
+      studentId: student.id,
+      programId: student.programId,
+      title: `Séance ${i + 1} : ${topics[i % topics.length]}`,
+      date: dateStr,
+      startTime: slot.start,
+      endTime: slot.end,
+      status,
+      topic: topics[i % topics.length],
+    })
+  }
+
+  return seances
+}
+
+export const seances: Seance[] = students.flatMap(generateSeancesForStudent)

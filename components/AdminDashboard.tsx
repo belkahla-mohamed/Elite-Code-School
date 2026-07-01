@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+import dynamic from "next/dynamic";
 import type { DashboardSnapshot } from "@/lib/types";
 import {
   Users, GraduationCap, BookOpen, CheckCircle, XCircle,
-  Activity, ChevronRight, PanelTop, Search,
+  Activity, ChevronRight, PanelTop, Search, TrendingUp,
+  DollarSign, FolderOpen, Lightbulb,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +14,16 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { showToast } from "@/components/ui/toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
+
+const BarChart = dynamic(() => import("recharts").then((m) => m.BarChart), { ssr: false })
+const Bar = dynamic(() => import("recharts").then((m) => m.Bar), { ssr: false })
+const XAxis = dynamic(() => import("recharts").then((m) => m.XAxis), { ssr: false })
+const YAxis = dynamic(() => import("recharts").then((m) => m.YAxis), { ssr: false })
+const Tooltip = dynamic(() => import("recharts").then((m) => m.Tooltip), { ssr: false })
+const ResponsiveContainer = dynamic(() => import("recharts").then((m) => m.ResponsiveContainer), { ssr: false })
+const LineChart = dynamic(() => import("recharts").then((m) => m.LineChart), { ssr: false })
+const Line = dynamic(() => import("recharts").then((m) => m.Line), { ssr: false })
+const CartesianGrid = dynamic(() => import("recharts").then((m) => m.CartesianGrid), { ssr: false })
 
 function StatCardSkeleton() {
   return (
@@ -41,13 +53,16 @@ function TableSkeleton({ rows = 5 }: { rows?: number }) {
 }
 
 const statCards = [
-  { label: "Total Élèves", key: "students" as const, icon: GraduationCap, color: "border-l-sky" },
-  { label: "En Attente", key: "pending" as const, icon: Users, color: "border-l-amber" },
-  { label: "Demandes", key: "total" as const, icon: BookOpen, color: "border-l-lime" },
+  { label: "Total Élèves", key: "totalStudents" as const, icon: Users, color: "from-sky to-cyan", bg: "bg-sky/10 text-sky" },
+  { label: "Revenu Mensuel", key: "revenue" as const, icon: DollarSign, color: "from-lime to-emerald", bg: "bg-lime/10 text-lime" },
+  { label: "En Attente", key: "pendingRequests" as const, icon: BookOpen, color: "from-amber to-orange", bg: "bg-amber/10 text-amber" },
+  { label: "Taux Complétion", key: "completionRate" as const, icon: CheckCircle, color: "from-violet to-purple", bg: "bg-violet/10 text-violet" },
+  { label: "Programmes", key: "totalPrograms" as const, icon: Lightbulb, color: "from-pink to-rose", bg: "bg-pink/10 text-pink" },
+  { label: "Acceptées", key: "acceptedRequests" as const, icon: GraduationCap, color: "from-teal to-cyan", bg: "bg-teal/10 text-teal" },
 ];
 
 export function AdminDashboard() {
-  const [snapshot, setSnapshot] = useState<DashboardSnapshot | null>(null);
+  const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [activities, setActivities] = useState<any[]>([]);
   const [search, setSearch] = useState("");
@@ -56,32 +71,25 @@ export function AdminDashboard() {
   const [processingDashboard, setProcessingDashboard] = useState(false);
   const [createdSecret, setCreatedSecret] = useState("");
 
-  useEffect(() => {
-    loadData();
-  }, []);
+  useEffect(() => { loadData(); }, []);
 
   async function loadData() {
     setLoading(true);
     try {
-      const [requestsRes, studentsRes] = await Promise.all([
-        fetch("/api/inscriptions"),
-        fetch("/api/students"),
+      const [dashRes, actRes] = await Promise.all([
+        fetch("/api/dashboard"),
+        fetch("/api/activity-log"),
       ]);
-      if (!requestsRes.ok || !studentsRes.ok) {
+      if (dashRes.ok) {
+        const d = await dashRes.json();
+        setData(d);
+      } else {
         showToast("Erreur chargement données", "error");
-        return;
       }
-      const requestsData = await requestsRes.json();
-      const studentsData = await studentsRes.json();
-      setSnapshot({
-        requests: requestsData.requests ?? [],
-        students: studentsData.students ?? [],
-        programs: [],
-        categories: [],
-      });
-      fetch("/api/activity-log").then((r) => r.json()).then((data) => {
-        if (data.activities) setActivities(data.activities);
-      }).catch(() => {});
+      if (actRes.ok) {
+        const a = await actRes.json();
+        setActivities(a.activities ?? []);
+      }
     } catch {
       showToast("Erreur chargement données", "error");
     } finally {
@@ -109,33 +117,47 @@ export function AdminDashboard() {
     setProcessingDashboard(false);
   }
 
-
-  const pending = useMemo(
-    () => (snapshot?.requests ?? []).filter((r) => r.status === "pending"),
-    [snapshot]
-  );
+  const pendingList = useMemo(() => (data?.recentRequests ?? []).filter((r: any) => r.status === "pending"), [data]);
 
   const filteredRequests = useMemo(() => {
-    if (!snapshot) return [];
-    let items = snapshot.requests;
-    if (statusFilter !== "all") items = items.filter((r) => r.status === statusFilter);
+    if (!data?.recentRequests) return [];
+    let items = data.recentRequests;
+    if (statusFilter !== "all") items = items.filter((r: any) => r.status === statusFilter);
     if (search.trim()) {
       const q = search.toLowerCase();
       items = items.filter(
-        (r) =>
+        (r: any) =>
           r.studentFirstName.toLowerCase().includes(q) ||
           r.studentLastName.toLowerCase().includes(q) ||
           r.parentEmail.toLowerCase().includes(q)
       );
     }
     return items;
-  }, [snapshot, search, statusFilter]);
+  }, [data, search, statusFilter]);
+
+  function renderStatValue(key: string) {
+    if (!data) return "—";
+    const s = data.stats;
+    switch (key) {
+      case "totalStudents": return String(s.totalStudents);
+      case "revenue": return `${s.monthlyRevenue.toLocaleString()} DH`;
+      case "pendingRequests": return String(s.pendingRequests);
+      case "completionRate": return `${s.completionRate}%`;
+      case "totalPrograms": return String(s.totalPrograms);
+      case "acceptedRequests": return String(s.acceptedRequests);
+      default: return "—";
+    }
+  }
 
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-          {Array.from({ length: 3 }).map((_, i) => <StatCardSkeleton key={i} />)}
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
+          {Array.from({ length: 6 }).map((_, i) => <StatCardSkeleton key={i} />)}
+        </div>
+        <div className="grid gap-6 xl:grid-cols-2">
+          <Skeleton className="h-64 rounded-2xl" />
+          <Skeleton className="h-64 rounded-2xl" />
         </div>
         <div className="grid gap-6 xl:grid-cols-3">
           <div className="xl:col-span-2 dash-card">
@@ -151,7 +173,7 @@ export function AdminDashboard() {
     );
   }
 
-  if (!snapshot) {
+  if (!data) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-ink-soft">
         <PanelTop className="mb-4 size-12" />
@@ -163,6 +185,9 @@ export function AdminDashboard() {
     );
   }
 
+  const hasChartData = data.studentsByProgram?.length > 0;
+  const hasGrowthData = data.growthData?.some((d: any) => d.count > 0);
+
   return (
     <ErrorBoundary>
     <div className="space-y-6">
@@ -172,26 +197,77 @@ export function AdminDashboard() {
         </div>
       )}
 
-      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+      {/* 6 stat cards */}
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
         {statCards.map((card) => (
-          <div key={card.key} className={`dash-card border-l-4 ${card.color}`}>
-            <div className="mb-3 flex items-center justify-between">
-              <span className={`flex size-10 items-center justify-center rounded-brand-sm bg-${card.key === "students" ? "sky" : card.key === "pending" ? "amber" : "lime"}/10 text-${card.key === "students" ? "sky" : card.key === "pending" ? "amber" : "lime"}`}>
+          <div key={card.key} className="dash-card relative overflow-hidden">
+            <div className={`absolute right-0 top-0 size-24 -translate-y-1/3 translate-x-1/3 rounded-full opacity-5 bg-gradient-to-br ${card.color}`} />
+            <div className="relative z-10">
+              <span className={`mb-3 flex size-10 items-center justify-center rounded-brand-sm ${card.bg}`}>
                 <card.icon className="size-5" />
               </span>
+              <p className="font-display text-2xl font-black text-ink">
+                {renderStatValue(card.key)}
+              </p>
+              <p className="mt-1 text-sm font-bold text-ink-soft">{card.label}</p>
             </div>
-            <p className="font-display text-3xl font-black text-ink">
-              {card.key === "students" ? snapshot.students.length : card.key === "pending" ? pending.length : snapshot.requests.length}
-            </p>
-            <p className="mt-1 text-sm font-bold text-ink-soft">{card.label}</p>
           </div>
         ))}
       </div>
 
+      {/* Charts row */}
+      <div className="grid gap-6 xl:grid-cols-2">
+        {/* Growth chart */}
+        <div className="dash-card">
+          <div className="mb-4 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="size-4 text-sky" />
+              <h3 className="font-display font-black text-ink">Croissance (6 mois)</h3>
+            </div>
+          </div>
+          {hasGrowthData ? (
+            <ResponsiveContainer width="100%" height={220}>
+              <LineChart data={data.growthData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#6b7280" }} />
+                <Tooltip />
+                <Line type="monotone" dataKey="count" stroke="#4f46e5" strokeWidth={2.5} dot={{ r: 3, fill: "#4f46e5" }} name="Élèves" />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="flex items-center justify-center py-12 text-ink-soft/50"><TrendingUp className="size-8" /></div>
+          )}
+        </div>
+
+        {/* Program distribution */}
+        <div className="dash-card">
+          <div className="mb-4 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <FolderOpen className="size-4 text-violet" />
+              <h3 className="font-display font-black text-ink">Élèves par programme</h3>
+            </div>
+          </div>
+          {hasChartData ? (
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={data.studentsByProgram} layout="vertical" margin={{ left: 0, right: 20 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                <XAxis type="number" allowDecimals={false} tick={{ fontSize: 11, fill: "#6b7280" }} />
+                <YAxis type="category" dataKey="name" width={100} tick={{ fontSize: 11, fill: "#6b7280" }} />
+                <Tooltip />
+                <Bar dataKey="count" fill="#4f46e5" radius={[0, 6, 6, 0]} name="Élèves" />
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className="flex items-center justify-center py-12 text-ink-soft/50"><FolderOpen className="size-8" /></div>
+          )}
+        </div>
+      </div>
+
+      {/* Bottom section: requests + activity */}
       <div className="grid gap-6 xl:grid-cols-3">
         <div className="xl:col-span-2 dash-card">
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-            <h2 className="font-display text-lg font-black text-ink">Demandes d&apos;inscription</h2>
+            <h2 className="font-display text-lg font-black text-ink">Demandes récentes</h2>
             <div className="flex items-center gap-3">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-soft" />
@@ -199,7 +275,7 @@ export function AdminDashboard() {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Rechercher..."
-                  className="w-44 rounded-full border-2 border-border bg-body py-1.5 pl-9 pr-3 text-sm text-ink outline-none transition focus:border-sky"
+                  className="w-36 rounded-full border-2 border-border bg-body py-1.5 pl-9 pr-3 text-sm text-ink outline-none transition focus:border-sky"
                 />
               </div>
               <select
@@ -234,7 +310,7 @@ export function AdminDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredRequests.slice(0, 8).map((request) => (
+                  {filteredRequests.slice(0, 8).map((request: any) => (
                     <tr key={request.id}>
                       <td>
                         <div className="flex items-center gap-3">
@@ -293,7 +369,7 @@ export function AdminDashboard() {
           </div>
           {activities.length > 0 ? (
             <div className="space-y-3">
-              {activities.slice(0, 7).map((a) => (
+              {activities.slice(0, 7).map((a: any) => (
                 <div key={a.id} className="flex items-start gap-3 rounded-brand-sm bg-body p-3 transition hover:bg-sky/5">
                   <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-surface text-sm">
                     {a.type === "student" ? "👤" : a.type === "request" ? "📋" : "📦"}
@@ -323,7 +399,7 @@ export function AdminDashboard() {
           title={confirmAction.action === "accept" ? "Accepter l'inscription" : "Refuser l'inscription"}
           description={
             confirmAction.action === "accept"
-              ? "L&apos;élève sera inscrit et un accès parent sera généré."
+              ? "L'élève sera inscrit et un accès parent sera généré."
               : "L'inscription sera définitivement refusée."
           }
           confirmLabel={confirmAction.action === "accept" ? "Accepter" : "Refuser"}
@@ -337,4 +413,3 @@ export function AdminDashboard() {
     </ErrorBoundary>
   );
 }
-

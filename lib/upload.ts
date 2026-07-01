@@ -1,3 +1,4 @@
+import { randomBytes } from "crypto";
 import ImageKit from "@imagekit/nodejs";
 import { getImageKit, hasImageKitConfig } from "@/lib/imagekit";
 
@@ -12,7 +13,7 @@ export async function uploadFile(file: File, folder: string): Promise<UploadResu
   try {
     const ik = getImageKit();
     const ext = file.name.split(".").pop() || "png";
-    const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const fileName = `${Date.now()}-${randomBytes(6).toString("hex")}.${ext}`;
     const ikFolder = `${ROOT_FOLDER}/${folder}`;
 
     const result = await ik.files.upload({
