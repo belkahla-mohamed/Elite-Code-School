@@ -1233,6 +1233,8 @@ const defaultSettings: AppSettings = {
   sessionDurationHours: 8,
   minPasswordLength: 6,
   contactEmail: "contact@elitecode.ma",
+  emailFrom: "Elite Code School <onboarding@resend.dev>",
+  adminEmail: "",
 }
 
 export async function getSettings(): Promise<AppSettings> {
@@ -1255,6 +1257,8 @@ export async function getSettings(): Promise<AppSettings> {
     sessionDurationHours: data.session_duration_hours ?? 8,
     minPasswordLength: data.min_password_length ?? 6,
     contactEmail: data.contact_email ?? "contact@elitecode.ma",
+    emailFrom: data.email_from ?? "Elite Code School <onboarding@resend.dev>",
+    adminEmail: data.admin_email ?? "",
   }
 }
 
@@ -1274,6 +1278,8 @@ export async function updateSettings(data: Partial<AppSettings>) {
   if (data.sessionDurationHours !== undefined) payload.session_duration_hours = data.sessionDurationHours
   if (data.minPasswordLength !== undefined) payload.min_password_length = data.minPasswordLength
   if (data.contactEmail !== undefined) payload.contact_email = data.contactEmail
+  if (data.emailFrom !== undefined) payload.email_from = data.emailFrom
+  if (data.adminEmail !== undefined) payload.admin_email = data.adminEmail
 
   const { data: existing } = await getSupabaseAdmin()
     .from("app_settings")

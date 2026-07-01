@@ -186,6 +186,8 @@ export type AppSettings = {
   sessionDurationHours: number
   minPasswordLength: number
   contactEmail: string
+  emailFrom: string
+  adminEmail: string
 }
 
 export type AppNotification = {

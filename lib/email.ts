@@ -1,15 +1,32 @@
 import { addActivity } from "@/lib/activity-log"
+import { getSettings } from "@/lib/store"
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY
-const EMAIL_FROM = process.env.EMAIL_FROM ?? "Elite Code School <onboarding@resend.dev>"
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? ""
 
 export function hasEmailConfig(): boolean {
   return !!RESEND_API_KEY
 }
 
+async function getEmailFrom(): Promise<string> {
+  try {
+    const settings = await getSettings()
+    return settings.emailFrom
+  } catch {
+    return "Elite Code School <onboarding@resend.dev>"
+  }
+}
+
+async function getAdminEmail(): Promise<string> {
+  try {
+    const settings = await getSettings()
+    return settings.adminEmail
+  } catch {
+    return ""
+  }
+}
+
 function logResend403(method: string) {
-  addActivity("request", "Erreur email", `Resend 403: vérifie que le domaine "${EMAIL_FROM.match(/<([^>]+)>/)?.[1] ?? EMAIL_FROM}" est approuvé dans le dashboard Resend, ou définis ADMIN_EMAIL dans .env`)
+  addActivity("request", "Erreur email", `Resend 403: vérifie que le domaine est approuvé dans le dashboard Resend, ou utilise onboarding@resend.dev`)
 }
 
 function buildAdminNotificationHtml(payload: {
@@ -130,20 +147,22 @@ export async function sendAdminNotification(payload: {
   message?: string
 }) {
   if (!hasEmailConfig()) {
-    addActivity("request", "Notification admin", `[EMAIL SIMULÉ] Nouvelle inscription: ${payload.studentFirstName} ${payload.studentLastName} (${payload.parentEmail})`);
+    addActivity("request", "Notification admin", `[EMAIL SIMULÉ] Nouvelle inscription: ${payload.studentFirstName} ${payload.studentLastName} (${payload.parentEmail})`)
     return
   }
-  const to = ADMIN_EMAIL || payload.parentEmail
+  const emailFrom = await getEmailFrom()
+  let to = await getAdminEmail()
+  if (!to) to = payload.parentEmail
   try {
     const { Resend } = await import("resend")
     const resend = new Resend(RESEND_API_KEY!)
     await resend.emails.send({
-      from: EMAIL_FROM,
+      from: emailFrom,
       to,
       subject: `Nouvelle demande d'inscription — ${payload.studentFirstName} ${payload.studentLastName}`,
       html: buildAdminNotificationHtml(payload),
     })
-    addActivity("request", "Notification admin", `Email envoyé à ${to} pour ${payload.studentFirstName} ${payload.studentLastName}`);
+    addActivity("request", "Notification admin", `Email envoyé à ${to}`)
   } catch (e: any) {
     const msg = e?.statusCode === 403 ? `Resend 403 — domaine non vérifié` : e?.message ?? String(e)
     addActivity("request", "Erreur email", `Échec envoi notification admin: ${msg}`)
@@ -160,19 +179,20 @@ export async function sendAcceptanceEmail(payload: {
   parentSecret: string
 }) {
   if (!hasEmailConfig()) {
-    addActivity("student", "Email acceptation", `[EMAIL SIMULÉ] Acceptation envoyée à ${payload.parentEmail} — Code: ${payload.parentSecret}`);
+    addActivity("student", "Email acceptation", `[EMAIL SIMULÉ] Acceptation envoyée à ${payload.parentEmail} — Code: ${payload.parentSecret}`)
     return
   }
+  const emailFrom = await getEmailFrom()
   try {
     const { Resend } = await import("resend")
     const resend = new Resend(RESEND_API_KEY!)
     await resend.emails.send({
-      from: EMAIL_FROM,
+      from: emailFrom,
       to: payload.parentEmail,
       subject: `Inscription acceptée — Elite Code School`,
       html: buildAcceptanceHtml(payload),
     })
-    addActivity("student", "Email acceptation", `Email d'acceptation envoyé à ${payload.parentEmail}`);
+    addActivity("student", "Email acceptation", `Email d'acceptation envoyé à ${payload.parentEmail}`)
   } catch (e: any) {
     const msg = e?.statusCode === 403 ? `Resend 403 — domaine non vérifié` : e?.message ?? String(e)
     addActivity("student", "Erreur email", `Échec envoi acceptation à ${payload.parentEmail}: ${msg}`)
@@ -189,19 +209,20 @@ export async function sendRejectionEmail(payload: {
   reason?: string
 }) {
   if (!hasEmailConfig()) {
-    addActivity("request", "Email refus", `[EMAIL SIMULÉ] Refus envoyé à ${payload.parentEmail} pour ${payload.studentFirstName} ${payload.studentLastName}`);
+    addActivity("request", "Email refus", `[EMAIL SIMULÉ] Refus envoyé à ${payload.parentEmail} pour ${payload.studentFirstName} ${payload.studentLastName}`)
     return
   }
+  const emailFrom = await getEmailFrom()
   try {
     const { Resend } = await import("resend")
     const resend = new Resend(RESEND_API_KEY!)
     await resend.emails.send({
-      from: EMAIL_FROM,
+      from: emailFrom,
       to: payload.parentEmail,
       subject: `Suivi de votre demande d'inscription — Elite Code School`,
       html: buildRejectionHtml(payload),
     })
-    addActivity("request", "Email refus", `Email de refus envoyé à ${payload.parentEmail}`);
+    addActivity("request", "Email refus", `Email de refus envoyé à ${payload.parentEmail}`)
   } catch (e: any) {
     const msg = e?.statusCode === 403 ? `Resend 403 — domaine non vérifié` : e?.message ?? String(e)
     addActivity("request", "Erreur email", `Échec envoi refus à ${payload.parentEmail}: ${msg}`)

@@ -16,6 +16,8 @@ type AppSettings = {
   sessionDurationHours: number
   minPasswordLength: number
   contactEmail: string
+  emailFrom: string
+  adminEmail: string
 }
 
 const defaultSettings: AppSettings = {
@@ -27,6 +29,8 @@ const defaultSettings: AppSettings = {
   sessionDurationHours: 8,
   minPasswordLength: 6,
   contactEmail: "contact@elitecode.ma",
+  emailFrom: "Elite Code School <onboarding@resend.dev>",
+  adminEmail: "",
 }
 
 export function SettingsContent() {
@@ -207,6 +211,51 @@ export function SettingsContent() {
                 max={128}
                 className="w-32 rounded-full border-2 border-border bg-body px-5 py-2.5 text-sm text-ink outline-none transition focus:border-sky"
               />
+            </div>
+          </div>
+        </div>
+
+        <div className="dash-card lg:col-span-2">
+          <div className="flex items-center gap-3 mb-2">
+            <span className="flex size-10 items-center justify-center rounded-brand-sm bg-sky/10 text-sky">
+              <Mail className="size-5" />
+            </span>
+            <div>
+              <h3 className="font-bold text-ink">Email</h3>
+              <p className="text-xs text-ink-soft">Configuration de l&apos;envoi d&apos;emails (Resend)</p>
+            </div>
+          </div>
+          <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="mb-1 block text-xs font-bold text-ink-soft uppercase tracking-wider">
+                Adresse expéditeur
+              </label>
+              <input
+                value={settings.emailFrom}
+                onChange={(e) => update("emailFrom", e.target.value)}
+                type="text"
+                className="w-full rounded-full border-2 border-border bg-body px-5 py-2.5 text-sm text-ink outline-none transition focus:border-sky"
+              />
+              <p className="mt-1.5 text-xs text-ink-soft">
+                Format: <code className="rounded bg-surface px-1 py-0.5 text-xs">Nom &lt;email@domaine.com&gt;</code>.
+                Par défaut <code className="rounded bg-surface px-1 py-0.5 text-xs">onboarding@resend.dev</code> (test, admin seulement).
+                Pour envoyer aux parents, vérifie un domaine sur <a href="https://resend.com" target="_blank" rel="noopener noreferrer" className="text-sky underline">resend.com</a>.
+              </p>
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-bold text-ink-soft uppercase tracking-wider">
+                Email admin (notifications)
+              </label>
+              <input
+                value={settings.adminEmail}
+                onChange={(e) => update("adminEmail", e.target.value)}
+                type="email"
+                placeholder="admin@elitecodeschool.ma"
+                className="w-full rounded-full border-2 border-border bg-body px-5 py-2.5 text-sm text-ink outline-none transition focus:border-sky"
+              />
+              <p className="mt-1.5 text-xs text-ink-soft">
+                Où sont envoyées les notifications de nouvelle inscription. Si vide, le parent sera mis en copie à la place.
+              </p>
             </div>
           </div>
         </div>
