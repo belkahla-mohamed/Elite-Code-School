@@ -12,13 +12,13 @@ test.describe("Admin flow", () => {
   test("dashboard loads with stats and activity", async ({ page }) => {
     await expect(page.locator("text=Total Élèves")).toBeVisible()
     await expect(page.locator("text=En Attente")).toBeVisible()
-    await expect(page.locator("text=Demandes")).toBeVisible()
+    await expect(page.locator("text=Acceptées")).toBeVisible()
     await expect(page.locator("text=Activité récente")).toBeVisible()
   })
 
   test("students page loads with list and search", async ({ page }) => {
-    await page.click('a[href="/admin/students"]')
-    await page.waitForSelector("text=élèves", { timeout: 5000 })
+    await page.goto("/admin/students")
+    await page.waitForSelector("h1", { timeout: 5000 })
     await expect(page.locator("h1")).toContainText("Élèves")
     await page.fill('input[placeholder*="Rechercher"]', "Youssef")
     await expect(page.locator("text=Youssef")).toBeVisible()
@@ -36,7 +36,7 @@ test.describe("Admin flow", () => {
   })
 
   test("enrollments page loads with filters and sorting", async ({ page }) => {
-    await page.click('a[href="/admin/enrollments"]')
+    await page.goto("/admin/enrollments")
     await page.waitForSelector("h1", { timeout: 5000 })
     await expect(page.locator("h1")).toContainText("Inscriptions")
     await expect(page.locator("text=En attente")).toBeVisible()
@@ -47,14 +47,14 @@ test.describe("Admin flow", () => {
   })
 
   test("admin users page loads with create form", async ({ page }) => {
-    await page.click('a[href="/dashboard/admin-users"]')
+    await page.goto("/dashboard/admin-users")
     await expect(page.locator("h1")).toContainText("Administrateurs")
     await page.click("text=Ajouter")
     await expect(page.locator("text=Nouvel administrateur")).toBeVisible()
   })
 
   test("settings page loads with security checkboxes", async ({ page }) => {
-    await page.click('a[href="/dashboard/settings"]')
+    await page.goto("/dashboard/settings")
     await expect(page.locator("h2")).toContainText("Paramètres")
     await expect(page.locator("text=Activer la validation des emails")).toBeVisible()
     await expect(page.locator("text=Notifications par email")).toBeVisible()
@@ -62,12 +62,12 @@ test.describe("Admin flow", () => {
   })
 
   test("activity log page loads with filters", async ({ page }) => {
-    await page.click('a[href="/dashboard/activity"]')
+    await page.goto("/dashboard/activity")
     await expect(page.locator("h1")).toContainText("Activité")
   })
 
   test("curricula page loads with programs list", async ({ page }) => {
-    await page.click('a[href="/admin/curricula"]')
+    await page.goto("/admin/curricula")
     await expect(page.locator("h1")).toContainText("Programmes")
   })
 })

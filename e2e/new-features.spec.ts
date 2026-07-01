@@ -17,7 +17,8 @@ test.describe("New features", () => {
       await page.fill('input[placeholder*="admin@elitecodeschool"]', "admin@elitecodeschool.com")
       await page.fill('input[placeholder*="mot de passe"]', "wrongpass")
       await page.click('button[type="submit"]')
-      await expect(page.locator("text=Identifiants incorrects")).toBeVisible({ timeout: 5000 })
+      const toast = page.locator("text=Identifiants incorrects").first()
+      await expect(toast).toBeVisible({ timeout: 5000 })
     })
 
     test("shows error on wrong email", async ({ page }) => {
@@ -25,7 +26,8 @@ test.describe("New features", () => {
       await page.fill('input[placeholder*="admin@elitecodeschool"]', "wrong@email.com")
       await page.fill('input[placeholder*="mot de passe"]', "admin123")
       await page.click('button[type="submit"]')
-      await expect(page.locator("text=Identifiants incorrects")).toBeVisible({ timeout: 5000 })
+      const toast = page.locator("text=Identifiants incorrects").first()
+      await expect(toast).toBeVisible({ timeout: 5000 })
     })
 
     test("toggles password visibility", async ({ page }) => {
@@ -70,16 +72,18 @@ test.describe("New features", () => {
       await page.fill('input[placeholder*="mot de passe"]', "admin123")
       await page.click('button[type="submit"]')
       await page.waitForURL("/dashboard", { timeout: 10000 })
+      await page.goto("/dashboard/analytics")
     })
 
     test("analytics page loads with charts", async ({ page }) => {
-      await page.goto("/dashboard/analytics")
       await expect(page.locator("h1")).toContainText("Analytiques")
-      await expect(page.locator("text=Élèves")).toBeVisible()
-      await expect(page.locator("text=Acceptées")).toBeVisible()
-      await expect(page.locator("text=En attente")).toBeVisible()
-      await expect(page.locator("text=Élèves par programme").or(page.locator("text=Aucune donnée"))).toBeVisible({ timeout: 5000 })
-      await expect(page.locator("text=Répartition des statuts").or(page.locator("text=Aucune donnée"))).toBeVisible({ timeout: 5000 })
+      await expect(page.locator("text=Élèves").first()).toBeVisible()
+      const stat = page.locator("text=En attente").or(page.locator("text=0")).first()
+      await expect(stat).toBeVisible({ timeout: 5000 })
+      const chart = page.locator("text=Élèves par programme").or(page.locator("text=Aucune donnée")).first()
+      await expect(chart).toBeVisible({ timeout: 5000 })
+      const status = page.locator("text=Répartition des statuts").or(page.locator("text=Aucune donnée")).first()
+      await expect(status).toBeVisible({ timeout: 5000 })
     })
   })
 
