@@ -37,7 +37,7 @@ interface AdminHeaderProps {
 export function AdminHeader({ collapsed, onToggleSidebar, onOpenMobile }: AdminHeaderProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [loggingOut, setLoggingOut] = useState(false);
   const title = Object.entries(pageTitles).find(([key]) =>
     pathname === key || pathname.startsWith(key + "/")
@@ -56,7 +56,7 @@ export function AdminHeader({ collapsed, onToggleSidebar, onOpenMobile }: AdminH
     if (loggingOut) return;
     setLoggingOut(true);
     await fetch("/api/auth/logout", { method: "POST" });
-    window.location.href = "/admin-login";
+    logout();
   }
 
   return (

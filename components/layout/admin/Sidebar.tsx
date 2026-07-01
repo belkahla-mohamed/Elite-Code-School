@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
 import { useAuth } from "@/lib/auth-context";
@@ -55,9 +55,8 @@ interface SidebarProps {
 
 export function Sidebar({ collapsed, mobileOpen, onCloseMobile, onToggle }: SidebarProps) {
   const pathname = usePathname();
-  const router = useRouter();
   const { resolvedTheme } = useTheme();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
 
@@ -188,7 +187,7 @@ export function Sidebar({ collapsed, mobileOpen, onCloseMobile, onToggle }: Side
               if (loggingOut) return;
               setLoggingOut(true);
               await fetch("/api/auth/logout", { method: "POST" });
-              router.push("/admin-login");
+              logout()
             }}
             className={cn(
               "flex w-full items-center gap-2 rounded-brand-sm px-3 py-2 text-sm font-bold text-ink-soft transition hover:bg-coral/5 hover:text-coral cursor-pointer",
