@@ -1,3 +1,5 @@
+import { addActivity } from "@/lib/activity-log"
+
 const RESEND_API_KEY = process.env.RESEND_API_KEY
 const EMAIL_FROM = process.env.EMAIL_FROM ?? "Elite Code School <noreply@elitecodeschool.ma>"
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "admin@elitecode.ma"
@@ -123,7 +125,10 @@ export async function sendAdminNotification(payload: {
   parentPhone: string
   message?: string
 }) {
-  if (!hasEmailConfig()) return
+  if (!hasEmailConfig()) {
+    addActivity("request", "Notification admin", `[EMAIL SIMULÉ] Nouvelle inscription: ${payload.studentFirstName} ${payload.studentLastName} (${payload.parentEmail})`);
+    return
+  }
   try {
     const { Resend } = await import("resend")
     const resend = new Resend(RESEND_API_KEY!)
@@ -133,7 +138,9 @@ export async function sendAdminNotification(payload: {
       subject: `Nouvelle demande d'inscription — ${payload.studentFirstName} ${payload.studentLastName}`,
       html: buildAdminNotificationHtml(payload),
     })
+    addActivity("request", "Notification admin", `Email envoyé à l'admin pour ${payload.studentFirstName} ${payload.studentLastName}`);
   } catch (e) {
+    addActivity("request", "Erreur email", `Échec envoi notification admin: ${e instanceof Error ? e.message : e}`);
     console.warn("Email send failed (admin notification):", e)
   }
 }
@@ -145,7 +152,10 @@ export async function sendAcceptanceEmail(payload: {
   studentLastName: string
   parentSecret: string
 }) {
-  if (!hasEmailConfig()) return
+  if (!hasEmailConfig()) {
+    addActivity("student", "Email acceptation", `[EMAIL SIMULÉ] Acceptation envoyée à ${payload.parentEmail} — Code: ${payload.parentSecret}`);
+    return
+  }
   try {
     const { Resend } = await import("resend")
     const resend = new Resend(RESEND_API_KEY!)
@@ -155,7 +165,9 @@ export async function sendAcceptanceEmail(payload: {
       subject: `Inscription acceptée — Elite Code School`,
       html: buildAcceptanceHtml(payload),
     })
+    addActivity("student", "Email acceptation", `Email d'acceptation envoyé à ${payload.parentEmail}`);
   } catch (e) {
+    addActivity("student", "Erreur email", `Échec envoi acceptation à ${payload.parentEmail}: ${e instanceof Error ? e.message : e}`);
     console.warn("Email send failed (acceptance):", e)
   }
 }
@@ -167,7 +179,10 @@ export async function sendRejectionEmail(payload: {
   studentLastName: string
   reason?: string
 }) {
-  if (!hasEmailConfig()) return
+  if (!hasEmailConfig()) {
+    addActivity("request", "Email refus", `[EMAIL SIMULÉ] Refus envoyé à ${payload.parentEmail} pour ${payload.studentFirstName} ${payload.studentLastName}`);
+    return
+  }
   try {
     const { Resend } = await import("resend")
     const resend = new Resend(RESEND_API_KEY!)
@@ -177,7 +192,9 @@ export async function sendRejectionEmail(payload: {
       subject: `Suivi de votre demande d'inscription — Elite Code School`,
       html: buildRejectionHtml(payload),
     })
+    addActivity("request", "Email refus", `Email de refus envoyé à ${payload.parentEmail}`);
   } catch (e) {
+    addActivity("request", "Erreur email", `Échec envoi refus à ${payload.parentEmail}: ${e instanceof Error ? e.message : e}`);
     console.warn("Email send failed (rejection):", e)
   }
 }
