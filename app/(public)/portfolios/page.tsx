@@ -17,7 +17,7 @@ export default async function PortfoliosPage() {
     <div className="py-20">
       <section className="container-shell text-center mb-16">
         <span className="tag">Portfolios</span>
-        <h1 className="font-display text-5xl font-black tracking-[-0.04em] text-ink mt-4">
+        <h1 className="font-display text-3xl sm:text-5xl font-black tracking-[-0.04em] text-ink mt-4">
           Nos élèves
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg font-semibold leading-8 text-ink-soft">
@@ -37,10 +37,10 @@ export default async function PortfoliosPage() {
             <Link
               key={student.id}
               href={`/portfolios/${student.slug}`}
-              className="rounded-brand border-2 border-border bg-white dark:bg-surface p-6 transition hover:border-sky hover:-translate-y-0.5"
+              className="rounded-brand border-2 border-border bg-white p-6 transition hover:border-sky dark:bg-surface"
             >
               <div className="flex items-center gap-4">
-                <div className={`flex size-14 items-center justify-center rounded-2xl font-display text-xl font-black text-white ${avatars[i % avatars.length]}`}>
+                <div className={`flex size-14 items-center justify-center rounded-brand-sm font-display text-xl font-black text-white ${avatars[i % avatars.length]}`}>
                   {student.avatar}
                 </div>
                 <div>

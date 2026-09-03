@@ -201,6 +201,59 @@ export async function sendAcceptanceEmail(payload: {
   }
 }
 
+export async function sendPasswordResetEmail(payload: {
+  parentEmail: string
+  parentName: string
+  resetToken: string
+}) {
+  const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/login?reset=${payload.resetToken}`
+
+  if (!hasEmailConfig()) {
+    addActivity("request", "Email reset password", `[EMAIL SIMULÉ] Lien de réinitialisation pour ${payload.parentEmail}: ${resetUrl}`)
+    return
+  }
+
+  const emailFrom = await getEmailFrom()
+  try {
+    const { Resend } = await import("resend")
+    const resend = new Resend(RESEND_API_KEY!)
+    await resend.emails.send({
+      from: emailFrom,
+      to: payload.parentEmail,
+      subject: `Réinitialisation de votre mot de passe — Elite Code School`,
+      html: buildPasswordResetHtml({ parentName: payload.parentName, resetUrl }),
+    })
+    addActivity("request", "Email reset password", `Email de réinitialisation envoyé à ${payload.parentEmail}`)
+  } catch (e: any) {
+    const msg = e?.statusCode === 403 ? `Resend 403 — domaine non vérifié` : e?.message ?? String(e)
+    addActivity("request", "Erreur email", `Échec envoi reset à ${payload.parentEmail}: ${msg}`)
+    if (e?.statusCode === 403) logResend403("sendPasswordResetEmail")
+    console.warn("Email send failed (password reset):", e)
+  }
+}
+
+function buildPasswordResetHtml(payload: { parentName: string; resetUrl: string }): string {
+  return `
+    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="background: linear-gradient(135deg,#4f46e5,#06b6d4); padding: 24px; text-align: center;">
+        <h1 style="color: #fff; margin: 0; font-size: 24px;">Nouveau mot de passe</h1>
+      </div>
+      <div style="padding: 24px; background: #f9fafb;">
+        <p style="color: #374151; font-size: 16px;">Bonjour ${payload.parentName},</p>
+        <p style="color: #374151; font-size: 16px;">
+          Vous avez demandé la réinitialisation de votre mot de passe. Cliquez sur le bouton ci-dessous pour en choisir un nouveau.
+        </p>
+        <p style="color: #374151; font-size: 14px;">Ce lien est valable 1 heure et ne peut être utilisé qu'une seule fois.</p>
+        <p style="color: #374151; font-size: 14px;">Si vous n'êtes pas à l'origine de cette demande, ignorez simplement cet email.</p>
+        <a href="${payload.resetUrl}"
+           style="display: inline-block; background: #4f46e5; color: #fff; text-decoration: none; padding: 12px 24px; border-radius: 999px; font-weight: bold;">
+          Choisir un nouveau mot de passe
+        </a>
+      </div>
+    </div>
+  `
+}
+
 export async function sendRejectionEmail(payload: {
   parentName: string
   parentEmail: string

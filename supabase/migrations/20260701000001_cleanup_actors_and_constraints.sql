@@ -18,6 +18,12 @@ drop type if exists public.teacher_status;
 -- Create new enum with only the two valid states
 create type public.project_status_new as enum ('completed', 'in_progress');
 
+-- The inline text check constraint on status blocks the column type change
+-- (Postgres would try to re-evaluate it against the new enum type).
+-- Drop it, migrate the column, then re-add a matching check on the enum.
+alter table public.projects
+  drop constraint if exists projects_status_check;
+
 -- Migrate existing values:
 --   'done'     → 'completed'
 --   'progress' → 'in_progress'
@@ -40,6 +46,10 @@ alter table public.projects
 alter table public.projects
   alter column status set default 'in_progress'::public.project_status_new;
 
+alter table public.projects
+  add constraint projects_status_check
+  check (status in ('completed', 'in_progress'));
+
 -- Drop old enum
 drop type if exists public.project_status;
 
@@ -51,9 +61,13 @@ alter type public.project_status_new rename to project_status;
 -- ══════════════════════════════════════════════════════════════
 
 alter table public.students
+  drop constraint if exists students_age_check;
+alter table public.students
   add constraint students_age_check
   check (age >= 7 and age <= 17);
 
+alter table public.inscription_requests
+  drop constraint if exists inscription_requests_age_check;
 alter table public.inscription_requests
   add constraint inscription_requests_age_check
   check (age >= 7 and age <= 17);

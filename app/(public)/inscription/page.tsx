@@ -15,10 +15,10 @@ export default async function InscriptionPage() {
         <div className="grid gap-10 lg:grid-cols-[.8fr_1.2fr]">
           <section>
             <span className="tag">Inscription</span>
-            <h1 className="mt-4 font-display text-3xl sm:text-5xl font-extrabold tracking-[-0.05em] text-ink">
+            <h1 className="mt-4 font-display text-3xl sm:text-5xl font-black tracking-[-0.05em] text-ink">
               Une demande simple, étape par étape.
             </h1>
-            <p className="mt-5 leading-8 text-ink-soft">
+            <p className="mt-5 font-semibold leading-8 text-ink-soft">
               Un formulaire court en 4 étapes: élève, parcours, contact parent, puis récapitulatif.
             </p>
             <div className="mt-8 grid gap-3">

@@ -28,7 +28,7 @@ export default function ContactPage() {
             { icon: MapPin, label: "Adresse", value: "Marrakech, Maroc", href: null },
           ].map(({ icon: Icon, label, value, href }) => (
             <div key={label} className="flex items-center gap-4">
-              <div className="flex size-12 items-center justify-center rounded-2xl bg-sky/10 text-sky">
+              <div className="flex size-12 items-center justify-center rounded-brand-sm bg-sky/10 text-sky">
                 <Icon className="size-6" />
               </div>
               <div>
@@ -43,8 +43,7 @@ export default function ContactPage() {
           ))}
         </div>
 
-        <div className="rounded-brand border-2 border-border bg-white dark:bg-surface p-8">
-          <h3 className="font-display text-xl font-black mb-6 text-ink">Envoyer un message</h3>
+        <div>
           <QuickContactForm />
         </div>
       </section>

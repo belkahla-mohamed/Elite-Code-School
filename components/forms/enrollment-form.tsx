@@ -109,10 +109,10 @@ export function EnrollmentForm({ programs }: Props) {
             key={label}
             type="button"
             onClick={() => setStep(index)}
-            className={`rounded-brand-sm border px-4 py-3 text-left text-sm font-extrabold ${
+            className={`rounded-brand-sm border-2 px-4 py-3 text-left text-sm font-black ${
               step === index
                 ? "border-sky bg-sky/10 text-sky"
-                : "border-[#E6EEF8] dark:border-border bg-white dark:bg-surface text-ink-soft"
+                : "border-border dark:border-border bg-white dark:bg-surface text-ink-soft"
             }`}
           >
             <span className="block font-mono text-xs">0{index + 1}</span>
@@ -134,7 +134,7 @@ export function EnrollmentForm({ programs }: Props) {
               onChange={(e) => updateField("studentFirstName", e.target.value)}
               required
               placeholder="Karim"
-              className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface px-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none"
+              className="rounded-brand-sm border-2 border-border bg-white px-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none dark:bg-surface"
             />
           </label>
           <label className="flex flex-col gap-2 text-sm font-semibold">
@@ -145,7 +145,7 @@ export function EnrollmentForm({ programs }: Props) {
               onChange={(e) => updateField("studentLastName", e.target.value)}
               required
               placeholder="Benali"
-              className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface px-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none"
+              className="rounded-brand-sm border-2 border-border bg-white px-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none dark:bg-surface"
             />
           </label>
           <label className="flex flex-col gap-2 text-sm font-semibold">
@@ -180,7 +180,7 @@ export function EnrollmentForm({ programs }: Props) {
               value={form.schoolLevel}
               onChange={(e) => updateField("schoolLevel", e.target.value)}
               placeholder="6ème primaire"
-              className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface px-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none"
+              className="rounded-brand-sm border-2 border-border bg-white px-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none dark:bg-surface"
             />
           </label>
         </div>
@@ -205,7 +205,7 @@ export function EnrollmentForm({ programs }: Props) {
             </SelectContent>
           </Select>
         </label>
-        <div className="mt-5 rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-surface p-4 text-sm text-ink-soft">
+        <div className="mt-5 rounded-brand-sm border-2 border-border bg-surface p-4 dark:bg-surface text-sm text-ink-soft">
           Si tu hésites, choisis le parcours qui plaît le plus à l&apos;enfant. On confirmera par téléphone.
         </div>
       </div>
@@ -223,7 +223,7 @@ export function EnrollmentForm({ programs }: Props) {
               onChange={(e) => updateField("parentFirstName", e.target.value)}
               required
               placeholder="Karim"
-              className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface px-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none"
+              className="rounded-brand-sm border-2 border-border bg-white px-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none dark:bg-surface"
             />
           </label>
           <label className="flex flex-col gap-2 text-sm font-semibold">
@@ -234,7 +234,7 @@ export function EnrollmentForm({ programs }: Props) {
               onChange={(e) => updateField("parentLastName", e.target.value)}
               required
               placeholder="Benali"
-              className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface px-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none"
+              className="rounded-brand-sm border-2 border-border bg-white px-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none dark:bg-surface"
             />
           </label>
           <label className="flex flex-col gap-2 text-sm font-semibold">
@@ -246,7 +246,7 @@ export function EnrollmentForm({ programs }: Props) {
               type="tel"
               required
               placeholder="+212 6XX XXX XXX"
-              className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface px-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none"
+              className="rounded-brand-sm border-2 border-border bg-white px-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none dark:bg-surface"
             />
           </label>
           <label className="flex flex-col gap-2 text-sm font-semibold">
@@ -258,7 +258,7 @@ export function EnrollmentForm({ programs }: Props) {
               type="email"
               required
               placeholder="parent@email.com"
-              className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface px-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none"
+              className="rounded-brand-sm border-2 border-border bg-white px-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none dark:bg-surface"
             />
           </label>
         </div>
@@ -280,7 +280,7 @@ export function EnrollmentForm({ programs }: Props) {
           <h2 className="font-display text-2xl font-extrabold">Récapitulatif</h2>
           <p className="mt-2 text-sm text-ink-soft">Vérifie les informations avant d&apos;envoyer.</p>
           <div className="mt-6 space-y-3">
-            <div className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-surface p-4">
+            <div className="rounded-brand-sm border-2 border-border bg-surface p-4 dark:bg-surface">
               <h3 className="text-xs font-black uppercase tracking-wide text-ink-soft mb-3">1. Informations de l&apos;élève</h3>
               <div className="grid gap-2 sm:grid-cols-2 text-sm">
                 <div><span className="font-bold text-ink-soft">Prénom:</span> <span className="font-semibold text-ink">{form.studentFirstName || "—"}</span></div>
@@ -290,7 +290,7 @@ export function EnrollmentForm({ programs }: Props) {
               </div>
             </div>
 
-            <div className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-surface p-4">
+            <div className="rounded-brand-sm border-2 border-border bg-surface p-4 dark:bg-surface">
               <h3 className="text-xs font-black uppercase tracking-wide text-ink-soft mb-3">2. Parcours choisi</h3>
               <div className="text-sm">
                 <span className="font-bold text-ink-soft">Formation:</span>{" "}
@@ -301,7 +301,7 @@ export function EnrollmentForm({ programs }: Props) {
               </div>
             </div>
 
-            <div className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-surface p-4">
+            <div className="rounded-brand-sm border-2 border-border bg-surface p-4 dark:bg-surface">
               <h3 className="text-xs font-black uppercase tracking-wide text-ink-soft mb-3">3. Contact parent</h3>
               <div className="grid gap-2 sm:grid-cols-2 text-sm">
                 <div><span className="font-bold text-ink-soft">Parent:</span> <span className="font-semibold text-ink">{form.parentFirstName || "—"} {form.parentLastName || "—"}</span></div>
@@ -337,7 +337,7 @@ export function EnrollmentForm({ programs }: Props) {
       {message && (
         <p
           className={`mt-4 rounded-brand-sm px-4 py-3 text-center text-sm ${
-            status === "error" ? "bg-red-50 text-red-700" : "bg-emerald-50 text-emerald-700"
+            status === "error" ? "bg-coral/10 text-coral" : "bg-lime/10 text-lime"
           }`}
         >
           {message}

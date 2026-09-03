@@ -36,6 +36,7 @@ export type Parent = {
   lastName: string
   phone: string
   secretHash: string
+  passwordHash?: string | null
   studentId: string
   createdAt: string
 }
@@ -197,4 +198,55 @@ export type AppNotification = {
   description: string;
   read: boolean;
   createdAt: string;
+};
+
+export type Follow = {
+  id: string;
+  studentId: string;
+  targetId: string;
+  createdAt: string;
+};
+
+export type StudentRequestType = "certificate" | "hours";
+
+export type StudentRequest = {
+  id: string;
+  studentId: string;
+  type: StudentRequestType;
+  status: RequestStatus;
+  title: string;
+  description: string;
+  hours?: number;
+  certificateTitle?: string;
+  certificateMention?: string;
+  certificateDateLabel?: string;
+  certificateEmoji?: string;
+  certificateGradient?: string;
+  adminNotes?: string;
+  createdAt: string;
+  processedAt?: string;
+};
+
+export type StudentMessage = {
+  id: string;
+  studentId: string;
+  message: string;
+  reply?: string;
+  repliedAt?: string;
+  createdAt: string;
+};
+
+export type StudentAlert = {
+  id: string;
+  studentId: string;
+  title: string;
+  description: string;
+  emoji: string;
+  read: boolean;
+  createdAt: string;
+};
+
+export type CommunityFeedItem = {
+  student: StudentPortfolio;
+  projects: Project[];
 };

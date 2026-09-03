@@ -140,13 +140,14 @@ export function ProgramCard({ program }: { program: Program }) {
   return (
     <Link
       href={`/curricula/${program.id}`}
-      className="group rounded-brand border border-border overflow-hidden bg-white dark:bg-slate-950 block"
+      className="group block overflow-hidden rounded-brand border-2 border-border bg-white transition hover:border-sky dark:bg-surface"
     >
       {/* Top: Image Header */}
       <div
         className="relative h-40 overflow-hidden"
         style={{ backgroundColor: theme.headerBg }}
       >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={program.image || FALLBACK_IMAGE}
           alt={program.title}
@@ -156,30 +157,30 @@ export function ProgramCard({ program }: { program: Program }) {
       </div>
 
       {/* Bottom: Content */}
-      <div className="relative bg-white dark:bg-slate-950 p-6 pt-5">
-        <ArrowUpRight className="absolute right-4 top-4 size-5 text-slate-300 dark:text-slate-600 transition-colors group-hover:text-slate-400" style={{ strokeWidth: 2.5 }} />
+      <div className="relative bg-white p-6 pt-5 dark:bg-surface">
+        <ArrowUpRight className="absolute right-4 top-4 size-5 text-ink-soft/40 transition-colors group-hover:text-sky" style={{ strokeWidth: 2.5 }} />
 
-        <h3 className="font-display text-xl font-bold text-slate-900 dark:text-slate-50 pr-8 leading-tight">
+        <h3 className="pr-8 font-display text-xl font-black leading-tight text-ink dark:text-body">
           {program.title}
         </h3>
 
-        <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400 line-clamp-2 font-body">
+        <p className="mt-2 font-body text-sm leading-6 text-ink-soft line-clamp-2">
           {program.description}
         </p>
 
         {/* Metadata */}
-        <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-400 dark:text-slate-500 font-body">
+        <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 font-body text-xs text-ink-soft/70">
           <span>{program.ageRange}</span>
-          {program.duration && <><span className="text-slate-300 dark:text-slate-600">·</span><span>{program.duration}</span></>}
-          {program.priceMonthly && <><span className="text-slate-300 dark:text-slate-600">·</span><span>{program.priceMonthly} DH/mois</span></>}
+          {program.duration && <><span className="text-ink-soft/40">·</span><span>{program.duration}</span></>}
+          {program.priceMonthly && <><span className="text-ink-soft/40">·</span><span>{program.priceMonthly} DH/mois</span></>}
         </div>
 
         {/* Level badge + Découvrir */}
         <div className="mt-5 flex items-center justify-between">
-          <span className={`rounded-full px-3 py-1 text-[11px] font-bold ${
-            program.level === "debutant" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" :
-            program.level === "intermediaire" ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" :
-            "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400"
+          <span className={`rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wide ${
+            program.level === "debutant" ? "bg-lime/15 text-lime-700 dark:bg-lime/20 dark:text-lime" :
+            program.level === "intermediaire" ? "bg-amber/15 text-amber-700 dark:bg-amber/20 dark:text-amber" :
+            "bg-violet/15 text-violet-700 dark:bg-violet/20 dark:text-violet"
           }`}>
             {levelLabel}
           </span>

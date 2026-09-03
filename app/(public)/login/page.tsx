@@ -4,23 +4,38 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Eye, EyeOff, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 
+type Mode = "login" | "forgot" | "reset";
+
 export default function LoginPage() {
+  const [mode, setMode] = useState<Mode>("login");
   const [email, setEmail] = useState("");
-  const [secret, setSecret] = useState("");
-  const [showSecret, setShowSecret] = useState(false);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [resetToken, setResetToken] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [info, setInfo] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { isAuthenticated, isAdmin, isParent, login } = useAuth();
 
   useEffect(() => {
-    if (isAuthenticated) {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("reset");
+    if (token) {
+      setResetToken(token);
+      setMode("reset");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (mode === "login" && isAuthenticated) {
       router.replace(isAdmin ? "/dashboard" : "/parent");
     }
-  }, [isAuthenticated, isAdmin, router]);
+  }, [isAuthenticated, isAdmin, mode, router]);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -31,7 +46,7 @@ export default function LoginPage() {
       const res = await fetch("/api/auth/parent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, secret }),
+        body: JSON.stringify({ email, password, secret: password }),
       });
 
       const data = await res.json();
@@ -49,6 +64,73 @@ export default function LoginPage() {
     }
   }
 
+  async function handleForgot(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setInfo("");
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/auth/parent/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "Erreur lors de l'envoi");
+        setLoading(false);
+        return;
+      }
+
+      setInfo(data.message ?? "Si un compte existe pour cet email, un lien de réinitialisation vient d'être envoyé.");
+      setLoading(false);
+    } catch {
+      setError("Erreur de connexion");
+      setLoading(false);
+    }
+  }
+
+  async function handleReset(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setInfo("");
+
+    if (password !== confirmPassword) {
+      setError("Les mots de passe ne correspondent pas");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/auth/parent/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: resetToken, password }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "Erreur lors de la réinitialisation");
+        setLoading(false);
+        return;
+      }
+
+      setInfo(data.message ?? "Mot de passe mis à jour. Vous pouvez vous connecter.");
+      setMode("login");
+      setPassword("");
+      setConfirmPassword("");
+      setLoading(false);
+    } catch {
+      setError("Erreur de connexion");
+      setLoading(false);
+    }
+  }
+
+  const inputClass = "rounded-brand-sm border-2 border-border bg-white dark:bg-surface px-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none placeholder:text-ink-soft/50";
+
   return (
     <div className="py-20">
       <div className="container-shell max-w-md">
@@ -64,12 +146,17 @@ export default function LoginPage() {
             height={36}
             className="size-9"
           />
-          <h1 className="mt-3 font-display text-3xl font-black text-ink">Connexion Parent</h1>
+          <h1 className="mt-3 font-display text-3xl font-black text-ink">
+            {mode === "forgot" ? "Mot de passe oublié" : "Connexion Parent"}
+          </h1>
           <p className="mt-2 text-sm text-ink-soft">
-            Entrez l&apos;email et le code d&apos;accès fournis par l&apos;école pour accéder au portfolio de votre enfant.
+            {mode === "forgot"
+              ? "Entrez votre email pour recevoir un lien de réinitialisation."
+              : "Entrez votre email et votre mot de passe (ou le code d'accès fourni par l'école) pour accéder au portfolio de votre enfant."}
           </p>
         </div>
 
+        {mode === "login" && (
         <form onSubmit={handleLogin} className="space-y-4">
           <label className="flex flex-col gap-2 text-sm font-semibold text-ink">
             Email
@@ -78,23 +165,25 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              autoComplete="email"
               placeholder="parent@email.com"
-              className="rounded-brand-sm border-2 border-border bg-white dark:bg-surface px-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none placeholder:text-ink-soft/50"
+              className={inputClass}
             />
           </label>
           <label className="flex flex-col gap-2 text-sm font-semibold text-ink">
-            Code d&apos;accès
+            Mot de passe ou code d&apos;accès
             <div className="relative">
               <input
-                type={showSecret ? "text" : "password"}
-                value={secret}
-                onChange={(e) => setSecret(e.target.value)}
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
+                autoComplete="current-password"
                 placeholder="••••••••"
-                className="w-full rounded-brand-sm border-2 border-border bg-white dark:bg-surface px-4 py-2.5 pr-10 font-body text-ink transition focus:border-sky focus:outline-none placeholder:text-ink-soft/50"
+                className={`w-full pr-10 ${inputClass}`}
               />
-              <button type="button" onClick={() => setShowSecret(!showSecret)} className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-soft">
-                {showSecret ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+              <button type="button" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"} className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-soft">
+                {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
               </button>
             </div>
           </label>
@@ -104,15 +193,102 @@ export default function LoginPage() {
           <button type="submit" disabled={loading} className="w-full btn-primary disabled:opacity-50">
             {loading ? <Loader2 className="size-4 animate-spin" /> : "Se connecter"}
           </button>
-        </form>
 
-        <p className="mt-6 text-center text-sm text-ink-soft">
-          Pas de code d&apos;accès? Contactez l&apos;école.
-        </p>
+          <button
+            type="button"
+            onClick={() => { setMode("forgot"); setError(""); setInfo(""); }}
+            className="w-full text-center text-sm font-semibold text-sky hover:underline"
+          >
+            Mot de passe oublié ?
+          </button>
+        </form>
+        )}
+
+        {mode === "forgot" && (
+        <form onSubmit={handleForgot} className="space-y-4">
+          <label className="flex flex-col gap-2 text-sm font-semibold text-ink">
+            Email
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              autoComplete="email"
+              placeholder="parent@email.com"
+              className={inputClass}
+            />
+          </label>
+
+          {error && <p className="text-sm text-coral bg-coral/10 rounded-brand-sm px-4 py-3">{error}</p>}
+          {info && <p className="text-sm text-green-600 bg-green-600/10 rounded-brand-sm px-4 py-3">{info}</p>}
+
+          <button type="submit" disabled={loading} className="w-full btn-primary disabled:opacity-50">
+            {loading ? <Loader2 className="size-4 animate-spin" /> : "Envoyer le lien"}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => { setMode("login"); setError(""); setInfo(""); }}
+            className="w-full text-center text-sm font-semibold text-ink-soft hover:underline"
+          >
+            Retour à la connexion
+          </button>
+        </form>
+        )}
+
+        {mode === "reset" && (
+        <form onSubmit={handleReset} className="space-y-4">
+          <label className="flex flex-col gap-2 text-sm font-semibold text-ink">
+            Nouveau mot de passe
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              autoComplete="new-password"
+              placeholder="••••••••"
+              className={inputClass}
+            />
+          </label>
+          <label className="flex flex-col gap-2 text-sm font-semibold text-ink">
+            Confirmer le nouveau mot de passe
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              autoComplete="new-password"
+              placeholder="••••••••"
+              className={inputClass}
+            />
+          </label>
+
+          {error && <p className="text-sm text-coral bg-coral/10 rounded-brand-sm px-4 py-3">{error}</p>}
+          {info && <p className="text-sm text-green-600 bg-green-600/10 rounded-brand-sm px-4 py-3">{info}</p>}
+
+          <button type="submit" disabled={loading} className="w-full btn-primary disabled:opacity-50">
+            {loading ? <Loader2 className="size-4 animate-spin" /> : "Définir le mot de passe"}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => { setMode("login"); setError(""); setInfo(""); }}
+            className="w-full text-center text-sm font-semibold text-ink-soft hover:underline"
+          >
+            Retour à la connexion
+          </button>
+        </form>
+        )}
+
+        {mode === "login" && (
+          <p className="mt-6 text-center text-sm text-ink-soft">
+            Pas de code d&apos;accès? Contactez l&apos;école.
+          </p>
+        )}
 
         <div className="mt-6 text-center">
-          <Link href="/admin-login" className="text-sm font-bold text-ink-soft hover:text-sky transition">
-            Espace administration →
+          <Link href="/admin-login" className="inline-flex items-center gap-1 text-sm font-bold text-ink-soft transition hover:text-sky">
+            Espace administration <ArrowRight className="size-4" />
           </Link>
         </div>
       </div>

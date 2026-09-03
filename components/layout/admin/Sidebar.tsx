@@ -24,6 +24,9 @@ import {
   Bell,
   Filter,
   User,
+  ClipboardCheck,
+  MessageSquare,
+  Megaphone,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
@@ -37,6 +40,9 @@ const sidebarLinks = [
   { href: "/dashboard/categories", label: "Catégories", icon: Filter },
   { href: "/dashboard/projects", label: "Projets", icon: Award },
   { href: "/dashboard/gallery", label: "Galerie", icon: ImageIcon },
+  { href: "/dashboard/requests", label: "Demandes élèves", icon: ClipboardCheck },
+  { href: "/dashboard/messages", label: "Messages familles", icon: MessageSquare },
+  { href: "/dashboard/announcements", label: "Annonces", icon: Megaphone },
   { type: "separator", label: "Système" },
   { href: "/dashboard/parents", label: "Parents", icon: Users },
   { href: "/dashboard/admin-users", label: "Administrateurs", icon: Shield },

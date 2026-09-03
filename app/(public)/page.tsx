@@ -63,7 +63,7 @@ export default async function HomePage() {
       <section className="bg-white pt-20 sm:pt-28 dark:bg-body">
         <div className="container-shell grid items-center gap-10 pb-10 sm:pb-14 lg:grid-cols-[.95fr_1.05fr]">
           <div>
-            <h1 className="font-display text-[2.4rem] font-black leading-[.95] tracking-[-0.04em] text-ink dark:text-ink sm:text-5xl lg:text-[4.8rem]">
+            <h1 className="font-display text-[3rem] font-black leading-[.95] tracking-[-0.04em] text-ink dark:text-ink sm:text-6xl lg:text-[4.8rem]">
               The playful STEM school for future makers.
             </h1>
             <p className="mt-5 max-w-xl text-base sm:text-lg font-semibold leading-7 sm:leading-8 text-ink-soft dark:text-ink-soft">
@@ -102,13 +102,13 @@ export default async function HomePage() {
       </section>
 
       {/* ── Formations ────────────────────────────────────────── */}
-      <section id="formations" className="py-14 sm:section-padding bg-white dark:bg-body">
+      <section id="formations" className="py-14 sm:py-24 bg-white dark:bg-body">
         <SectionHeader
           title="Type. Think. Code. Create."
           subtitle="Un parcours pour chaque âge: coding, STEM, robotique, créativité, IA et web."
         />
         <div className="container-shell grid gap-6 lg:grid-cols-[.78fr_1.22fr]">
-          <div className="rounded-brand border-2 border-[#E8EEF6] bg-white p-5 sm:p-6 dark:border-border dark:bg-surface">
+          <div className="rounded-brand border-2 border-border bg-white p-5 sm:p-6 dark:border-border dark:bg-surface">
             <h3 className="font-display text-xl sm:text-2xl font-black text-amber">Elite Code Basics</h3>
             <p className="mt-3 text-sm font-bold leading-6 text-ink-soft dark:text-ink-soft">
               Les premiers pas: logique, clavier, blocs, robots et petites victoires visibles dès la première séance.
@@ -123,7 +123,7 @@ export default async function HomePage() {
             </ul>
             <div className="mt-6 grid gap-3">
               {programs.slice(0, 4).map((program, index) => (
-                <Link key={program.id} href="/inscription" className="flex items-center justify-between rounded-2xl border-2 border-[#EEF3FA] bg-surface p-3 sm:p-4 font-black transition hover:border-sky dark:border-border dark:bg-surface dark:text-ink">
+                <Link key={program.id} href="/inscription" className="flex items-center justify-between rounded-2xl border-2 border-border bg-surface p-3 sm:p-4 font-black transition hover:border-sky dark:border-border dark:bg-surface dark:text-ink">
                   <span className="text-sm">{program.title}</span>
                   <span className={`rounded-full px-2 sm:px-3 py-1 text-[10px] sm:text-xs ${programPill(index)}`}>{program.ageRange}</span>
                 </Link>
@@ -161,7 +161,7 @@ export default async function HomePage() {
             [MonitorPlay, "Students play", "L'élève apprend avec missions, robots, projets et badges."],
             [GraduationCap, "Track progress", "Parent voit portfolio, certifs et progression."]
           ] as const).map(([Icon, title, text]) => (
-            <article key={title} className="rounded-brand border-2 border-[#E8EEF6] bg-white p-6 sm:p-8 text-center dark:border-border dark:bg-surface">
+            <article key={title} className="rounded-brand border-2 border-border bg-white p-6 sm:p-8 text-center dark:border-border dark:bg-surface">
               <Icon className="mx-auto size-10 sm:size-12 text-sky" />
               <h3 className="mt-4 sm:mt-5 font-display text-xl sm:text-2xl font-black dark:text-ink">{title}</h3>
               <p className="mt-3 text-sm font-semibold leading-6 text-ink-soft dark:text-ink-soft">{text}</p>
@@ -187,7 +187,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── Building skills ───────────────────────────────────── */}
-      <section id="materiel" className="py-14 sm:section-padding bg-white dark:bg-body">
+      <section id="materiel" className="py-14 sm:py-24 bg-white dark:bg-body">
         <SectionHeader
           title="Building skills that last"
           subtitle="Des compétences durables grâce aux jeux, aux robots, aux projets et à la créativité."
@@ -203,7 +203,7 @@ export default async function HomePage() {
           </div>
           <div className="grid gap-4 grid-cols-2 sm:grid-cols-2">
             {hardware.map(([Icon, name, description], index) => (
-              <article key={name} className="rounded-[1.4rem] border-2 border-[#E8EEF6] bg-surface p-4 sm:p-6 transition hover:border-sky dark:border-border dark:bg-surface">
+              <article key={name} className="rounded-[1.4rem] border-2 border-border bg-surface p-4 sm:p-6 transition hover:border-sky dark:border-border dark:bg-surface">
                 <div className={`mb-4 flex size-10 sm:size-12 items-center justify-center rounded-2xl ${programIconBg(index)}`}>
                   <Icon className="text-ink dark:text-ink size-5 sm:size-6" />
                 </div>
@@ -239,7 +239,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── Portfolios ────────────────────────────────────────── */}
-      <section id="portfolios" className="py-14 sm:section-padding bg-[#C9F1FF] dark:bg-body">
+      <section id="portfolios" className="py-14 sm:py-24 bg-[#C9F1FF] dark:bg-body">
         <SectionHeader
           title="Loved by kids. Clear for parents."
           subtitle="Chaque élève a un portfolio: projets, certificats, galerie, progression et confidentialité parent."
@@ -271,7 +271,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── Contact ───────────────────────────────────────────── */}
-      <section id="contact-support" className="py-14 sm:section-padding bg-white dark:bg-body">
+      <section id="contact-support" className="py-14 sm:py-24 bg-white dark:bg-body">
         <div className="container-shell grid gap-10 lg:grid-cols-[.85fr_1.15fr]">
           <div>
             <span className="tag">Support</span>
@@ -343,7 +343,7 @@ function GameBoard() {
 function SectionHeader({ title, subtitle }: { title: string; subtitle: string }) {
   return (
     <div className="container-shell mb-10 sm:mb-14 text-center">
-      <h2 className="mx-auto max-w-3xl font-display text-2xl sm:text-4xl font-black tracking-[-0.05em] text-ink dark:text-ink md:text-5xl lg:text-6xl">{title}</h2>
+      <h2 className="mx-auto max-w-3xl font-display text-4xl font-black tracking-[-0.05em] text-ink dark:text-ink md:text-6xl">{title}</h2>
       <p className="mx-auto mt-3 sm:mt-4 max-w-2xl text-sm sm:text-base font-semibold leading-7 sm:leading-8 text-ink-soft dark:text-ink-soft">{subtitle}</p>
     </div>
   );
@@ -351,7 +351,7 @@ function SectionHeader({ title, subtitle }: { title: string; subtitle: string })
 
 function MiniStat({ value, label }: { value: string | number; label: string }) {
   return (
-    <span className="rounded-2xl border-2 border-[#E8EEF6] bg-surface p-3 dark:border-border dark:bg-surface">
+    <span className="rounded-2xl border-2 border-border bg-surface p-3 dark:border-border dark:bg-surface">
       <strong className="font-display text-lg font-black dark:text-ink">{value}</strong>
       <br />
       <small className="font-bold text-ink-soft dark:text-ink-soft">{label}</small>

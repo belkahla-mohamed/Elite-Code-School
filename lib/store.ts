@@ -9,6 +9,7 @@ import {
   students as seedStudents,
 } from "@/data/seed";
 import { hashSecret, generateAccessSecret } from "@/lib/auth";
+import { verifyPassword } from "@/lib/passwords";
 import { hasSupabaseConfig, getSupabaseAdmin } from "@/lib/supabase";
 import { sendAdminNotification, sendAcceptanceEmail, sendRejectionEmail } from "@/lib/email";
 import type {
@@ -17,7 +18,9 @@ import type {
   AppSettings,
   Category,
   Certification,
+  CommunityFeedItem,
   DashboardSnapshot,
+  Follow,
   GalleryItem,
   InscriptionRequest,
   Parent,
@@ -28,8 +31,11 @@ import type {
   Project,
   Seance,
   Student,
+  StudentAlert,
+  StudentMessage,
   StudentPlanning,
   StudentPortfolio,
+  StudentRequest,
   WeeklySlot
 } from "@/lib/types";
 import { slugify } from "@/lib/utils";
@@ -55,6 +61,10 @@ type DemoStore = {
   gallery: GalleryItem[];
   categories: Category[];
   seances: Seance[];
+  follows: Follow[];
+  studentRequests: StudentRequest[];
+  studentMessages: StudentMessage[];
+  studentAlerts: StudentAlert[];
 };
 
 const globalForStore = globalThis as unknown as { eliteCodeSchoolStore?: DemoStore };
@@ -70,10 +80,54 @@ function demoStore() {
       gallery: structuredClone(seedGalleryItems),
       categories: structuredClone(seedCategories),
       seances: structuredClone(seedSeances),
+      follows: followsSeed(),
+      studentRequests: [],
+      studentMessages: [],
+      studentAlerts: alertsSeed(),
     };
   }
 
   return globalForStore.eliteCodeSchoolStore;
+}
+
+function followsSeed(): Follow[] {
+  const now = Date.now()
+  const make = (studentId: string, targetId: string, hoursAgo: number): Follow => ({
+    id: `fol-${targetId}`,
+    studentId,
+    targetId,
+    createdAt: new Date(now - hoursAgo * 3_600_000).toISOString(),
+  })
+  return [
+    make("stu-youssef", "stu-mariam", 24),
+    make("stu-youssef", "stu-adam", 48),
+    make("stu-mariam", "stu-youssef", 72),
+    make("stu-sarah", "stu-youssef", 96),
+  ]
+}
+
+function alertsSeed(): StudentAlert[] {
+  const now = Date.now()
+  return [
+    {
+      id: "alert-mars-1",
+      studentId: "all",
+      title: "Mission Planète Mars",
+      description: "Les inscriptions au grand concours annuel sont ouvertes ! Prépare ton robot et ton portfolio pour la mission.",
+      emoji: "🚀",
+      read: false,
+      createdAt: new Date(now - 3 * 3_600_000).toISOString(),
+    },
+    {
+      id: "alert-cours-1",
+      studentId: "all",
+      title: "Reprise des cours",
+      description: "Les cours reprennent cette semaine. Vérifie ton planning dans l'onglet Planning.",
+      emoji: "📅",
+      read: false,
+      createdAt: new Date(now - 24 * 3_600_000).toISOString(),
+    },
+  ]
 }
 
 function withPortfolio(student: Student, programs: Program[] = demoStore().programs): StudentPortfolio {
@@ -797,32 +851,78 @@ export async function deleteGalleryItem(itemId: string) {
 }
 
 export async function addProject(studentId: string, payload: Omit<Project, "id" | "studentId">) {
+  let project: Project
   if (!hasSupabaseConfig()) {
-    const project: Project = { ...payload, id: `proj-${Date.now()}`, studentId };
+    project = { ...payload, id: `proj-${Date.now()}`, studentId };
     demoStore().projects.unshift(project);
-    return project;
+  } else {
+    const { data, error } = await getSupabaseAdmin()
+      .from("projects")
+      .insert({
+        id: crypto.randomUUID(),
+        student_id: studentId,
+        title: payload.title,
+        description: payload.description,
+        tags: payload.tags,
+        status: payload.status,
+        progress: payload.progress,
+        date_label: payload.dateLabel,
+        emoji: payload.emoji,
+        gradient: payload.gradient,
+        cover_image: payload.coverImage ?? null
+      })
+      .select("*")
+      .single();
+
+    if (error) throw error;
+    project = mapProject(data);
   }
 
-  const { data, error } = await getSupabaseAdmin()
-    .from("projects")
-    .insert({
-      id: crypto.randomUUID(),
-      student_id: studentId,
-      title: payload.title,
-      description: payload.description,
-      tags: payload.tags,
-      status: payload.status,
-      progress: payload.progress,
-      date_label: payload.dateLabel,
-      emoji: payload.emoji,
-      gradient: payload.gradient,
-      cover_image: payload.coverImage ?? null
-    })
-    .select("*")
-    .single();
+  await notifyFollowersOfNewProject(studentId, project)
+  return project;
+}
 
-  if (error) throw error;
-  return mapProject(data);
+async function notifyFollowersOfNewProject(studentId: string, project: Project) {
+  if (!hasSupabaseConfig()) {
+    const store = demoStore()
+    for (const follow of store.follows.filter((f) => f.targetId === studentId)) {
+      store.studentAlerts.unshift({
+        id: `alert-${Date.now()}-${follow.studentId}`,
+        studentId: follow.studentId,
+        title: `Nouveau projet : ${project.title}`,
+        description: `${project.emoji} ${studentName(follow.studentId)} a publié un nouveau projet. Viens voir !`,
+        emoji: project.emoji,
+        read: false,
+        createdAt: new Date().toISOString(),
+      })
+    }
+    return
+  }
+
+  const { data: followers, error: followError } = await getSupabaseAdmin()
+    .from("follows")
+    .select("student_id")
+    .eq("target_id", studentId)
+  if (followError) throw followError
+
+  const student = await getStudentById(studentId)
+  await Promise.all(
+    (followers ?? []).map(async (f: any) => {
+      await getSupabaseAdmin().from("student_alerts").insert({
+        id: crypto.randomUUID(),
+        student_id: f.student_id,
+        title: `Nouveau projet : ${project.title}`,
+        description: `${student ? student.firstName : "Un élève"} a publié un nouveau projet.`,
+        emoji: project.emoji,
+        read: false,
+      })
+    })
+  )
+}
+
+function studentName(studentId: string) {
+  const student = demoStore().students.find((s) => s.id === studentId)
+  return student ? `${student.firstName} ${student.lastName}` : "Un élève"
 }
 
 export async function addCertification(studentId: string, payload: Omit<Certification, "id" | "studentId">) {
@@ -1222,6 +1322,406 @@ export async function markAllNotificationsRead() {
   if (error) throw error
 }
 
+// ─── Communauté & abonnements ─────────────────────────────
+
+export async function getFollowedIds(studentId: string): Promise<string[]> {
+  if (!hasSupabaseConfig()) {
+    return demoStore().follows.filter((f) => f.studentId === studentId).map((f) => f.targetId)
+  }
+  const { data, error } = await getSupabaseAdmin()
+    .from("follows")
+    .select("target_id")
+    .eq("student_id", studentId)
+  if (error) throw error
+  return (data ?? []).map((f: any) => f.target_id)
+}
+
+export async function toggleFollow(studentId: string, targetId: string): Promise<boolean> {
+  if (studentId === targetId) throw new Error("Impossible de se suivre soi-même")
+  if (!hasSupabaseConfig()) {
+    const store = demoStore()
+    const existing = store.follows.find((f) => f.studentId === studentId && f.targetId === targetId)
+    if (existing) {
+      store.follows = store.follows.filter((f) => f.id !== existing.id)
+      return false
+    }
+    store.follows.push({
+      id: `fol-${Date.now()}`,
+      studentId,
+      targetId,
+      createdAt: new Date().toISOString(),
+    })
+    return true
+  }
+  const { data: existing, error: lookupError } = await getSupabaseAdmin()
+    .from("follows")
+    .select("id")
+    .eq("student_id", studentId)
+    .eq("target_id", targetId)
+    .maybeSingle()
+  if (lookupError) throw lookupError
+  if (existing) {
+    const { error } = await getSupabaseAdmin().from("follows").delete().eq("id", existing.id)
+    if (error) throw error
+    return false
+  }
+  const { error: insertError } = await getSupabaseAdmin().from("follows").insert({
+    id: crypto.randomUUID(),
+    student_id: studentId,
+    target_id: targetId,
+  })
+  if (insertError) throw insertError
+  return true
+}
+
+export async function getFollowedPortfolios(studentId: string): Promise<StudentPortfolio[]> {
+  const ids = await getFollowedIds(studentId)
+  if (ids.length === 0) return []
+  const snapshot = await getDashboardSnapshot()
+  return snapshot.students.filter((s) => ids.includes(s.id))
+}
+
+export async function getCommunityFeed(studentId: string): Promise<CommunityFeedItem[]> {
+  const followed = await getFollowedPortfolios(studentId)
+  return followed.map((student) => ({
+    student,
+    projects: student.projects.filter((p) => p.status === "completed").slice(0, 6),
+  }))
+}
+
+// ─── Demandes élèves (certificats & heures) ───────────────
+
+export async function createStudentRequest(
+  studentId: string,
+  data: Omit<StudentRequest, "id" | "studentId" | "status" | "createdAt" | "processedAt" | "adminNotes">
+) {
+  if (!hasSupabaseConfig()) {
+    const request: StudentRequest = { ...data, id: `srq-${Date.now()}`, studentId, status: "pending", createdAt: new Date().toISOString() }
+    demoStore().studentRequests.unshift(request)
+    return request
+  }
+  const { data: row, error } = await getSupabaseAdmin()
+    .from("student_requests")
+    .insert({
+      id: crypto.randomUUID(),
+      student_id: studentId,
+      type: data.type,
+      title: data.title,
+      description: data.description,
+      hours: data.hours ?? null,
+      certificate_title: data.certificateTitle ?? null,
+      certificate_mention: data.certificateMention ?? null,
+      certificate_date_label: data.certificateDateLabel ?? null,
+      certificate_emoji: data.certificateEmoji ?? null,
+      certificate_gradient: data.certificateGradient ?? null,
+      status: "pending",
+    })
+    .select("*")
+    .single()
+  if (error) throw error
+  return mapStudentRequest(row)
+}
+
+export async function getStudentRequests(studentId: string): Promise<StudentRequest[]> {
+  if (!hasSupabaseConfig()) {
+    return demoStore().studentRequests.filter((r) => r.studentId === studentId)
+  }
+  const { data, error } = await getSupabaseAdmin()
+    .from("student_requests")
+    .select("*")
+    .eq("student_id", studentId)
+    .order("created_at", { ascending: false })
+  if (error) throw error
+  return (data ?? []).map(mapStudentRequest)
+}
+
+export async function getAllStudentRequests(): Promise<StudentRequest[]> {
+  if (!hasSupabaseConfig()) {
+    return demoStore().studentRequests
+  }
+  const { data, error } = await getSupabaseAdmin()
+    .from("student_requests")
+    .select("*")
+    .order("created_at", { ascending: false })
+  if (error) throw error
+  return (data ?? []).map(mapStudentRequest)
+}
+
+export async function processStudentRequest(id: string, action: "approve" | "refuse", adminNotes?: string): Promise<StudentRequest> {
+  const request = (await getAllStudentRequests()).find((r) => r.id === id)
+  if (!request) throw new Error("Demande introuvable")
+  if (request.status !== "pending") throw new Error("Cette demande a déjà été traitée")
+
+  const processedAt = new Date().toISOString()
+  if (action === "approve") {
+    if (request.type === "hours") {
+      await updateStudent(request.studentId, { hours: (request.hours ?? 0) + (await studentHours(request.studentId)) })
+    } else {
+      const existing = (await getStudentById(request.studentId))?.certifications.find(
+        (c) => c.title.toLowerCase() === (request.certificateTitle ?? request.title).toLowerCase()
+      )
+      if (existing) {
+        await updateCertification(existing.id, {
+          title: request.certificateTitle ?? request.title,
+          mention: request.certificateMention ?? "Validé",
+          dateLabel: request.certificateDateLabel ?? "Cette année",
+          emoji: request.certificateEmoji ?? "🏅",
+          gradient: request.certificateGradient ?? "linear-gradient(135deg,#f59e0b,#f97316)",
+        })
+      } else {
+        await addCertification(request.studentId, {
+          title: request.certificateTitle ?? request.title,
+          mention: request.certificateMention ?? "Validé",
+          dateLabel: request.certificateDateLabel ?? "Cette année",
+          emoji: request.certificateEmoji ?? "🏅",
+          gradient: request.certificateGradient ?? "linear-gradient(135deg,#f59e0b,#f97316)",
+        })
+      }
+    }
+  }
+
+  const description = action === "approve"
+    ? `Ta demande « ${request.title} » a été acceptée 🎉`
+    : `Ta demande « ${request.title} » a été refusée.`
+  await pushStudentAlert(request.studentId, {
+    title: action === "approve" ? "Demande acceptée" : "Demande refusée",
+    description: adminNotes ? `${description} Motif : ${adminNotes}` : description,
+    emoji: action === "approve" ? "🎉" : "ℹ️",
+  })
+
+  if (!hasSupabaseConfig()) {
+    const store = demoStore()
+    const stored = store.studentRequests.find((r) => r.id === id)
+    if (stored) {
+      stored.status = action === "approve" ? "accepted" : "refused"
+      stored.adminNotes = adminNotes ? adminNotes : (stored.adminNotes ?? "")
+      stored.processedAt = processedAt
+    }
+    return stored ?? request
+  }
+
+  const { data, error } = await getSupabaseAdmin()
+    .from("student_requests")
+    .update({ status: action === "approve" ? "accepted" : "refused", admin_notes: adminNotes ?? null, processed_at: processedAt })
+    .eq("id", id)
+    .select("*")
+    .single()
+  if (error) throw error
+  return mapStudentRequest(data)
+}
+
+async function studentHours(studentId: string): Promise<number> {
+  const student = await getStudentById(studentId)
+  return student?.hours ?? 0
+}
+
+async function updateCertification(certId: string, payload: { title: string; mention: string; dateLabel: string; emoji: string; gradient: string }) {
+  if (!hasSupabaseConfig()) {
+    const cert = demoStore().certifications.find((c) => c.id === certId)
+    if (cert) Object.assign(cert, payload)
+    return
+  }
+  const { error } = await getSupabaseAdmin()
+    .from("certifications")
+    .update({
+      title: payload.title,
+      mention: payload.mention,
+      date_label: payload.dateLabel,
+      emoji: payload.emoji,
+      gradient: payload.gradient,
+    })
+    .eq("id", certId)
+  if (error) throw error
+}
+
+// ─── Messages vers l'administration ───────────────────────
+
+export async function createStudentMessage(studentId: string, message: string) {
+  if (!hasSupabaseConfig()) {
+    const entry: StudentMessage = { id: `msg-${Date.now()}`, studentId, message, createdAt: new Date().toISOString() }
+    demoStore().studentMessages.unshift(entry)
+    return entry
+  }
+  const { data, error } = await getSupabaseAdmin()
+    .from("student_messages")
+    .insert({ id: crypto.randomUUID(), student_id: studentId, message })
+    .select("*")
+    .single()
+  if (error) throw error
+  return mapStudentMessage(data)
+}
+
+export async function getStudentMessages(studentId: string): Promise<StudentMessage[]> {
+  if (!hasSupabaseConfig()) {
+    return demoStore().studentMessages.filter((m) => m.studentId === studentId)
+  }
+  const { data, error } = await getSupabaseAdmin()
+    .from("student_messages")
+    .select("*")
+    .eq("student_id", studentId)
+    .order("created_at", { ascending: false })
+  if (error) throw error
+  return (data ?? []).map(mapStudentMessage)
+}
+
+export async function getAllStudentMessages(): Promise<StudentMessage[]> {
+  if (!hasSupabaseConfig()) {
+    return demoStore().studentMessages
+  }
+  const { data, error } = await getSupabaseAdmin()
+    .from("student_messages")
+    .select("*")
+    .order("created_at", { ascending: false })
+  if (error) throw error
+  return (data ?? []).map(mapStudentMessage)
+}
+
+export async function replyToStudentMessage(id: string, reply: string): Promise<StudentMessage> {
+  if (!hasSupabaseConfig()) {
+    const message = demoStore().studentMessages.find((m) => m.id === id)
+    if (!message) throw new Error("Message introuvable")
+    message.reply = reply
+    message.repliedAt = new Date().toISOString()
+    return message
+  }
+  const { data, error } = await getSupabaseAdmin()
+    .from("student_messages")
+    .update({ reply, replied_at: new Date().toISOString() })
+    .eq("id", id)
+    .select("*")
+    .single()
+  if (error) throw error
+  return mapStudentMessage(data)
+}
+
+// ─── Alertes & annonces ───────────────────────────────────
+
+export async function getStudentAlerts(studentId: string): Promise<StudentAlert[]> {
+  if (!hasSupabaseConfig()) {
+    return demoStore().studentAlerts
+      .filter((a) => a.studentId === "all" || a.studentId === studentId)
+      .slice(0, 30)
+  }
+  const { data, error } = await getSupabaseAdmin()
+    .from("student_alerts")
+    .select("*")
+    .or(`student_id.eq.${studentId},student_id.eq.all`)
+    .order("created_at", { ascending: false })
+    .limit(30)
+  if (error) throw error
+  return (data ?? []).map((row: any) => ({
+    id: row.id,
+    studentId: row.student_id,
+    title: row.title,
+    description: row.description,
+    emoji: row.emoji,
+    read: row.read,
+    createdAt: row.created_at,
+  }))
+}
+
+export async function getAllStudentAlerts(): Promise<StudentAlert[]> {
+  if (!hasSupabaseConfig()) {
+    return demoStore().studentAlerts.slice(0, 30)
+  }
+  const { data, error } = await getSupabaseAdmin()
+    .from("student_alerts")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(30)
+  if (error) throw error
+  return (data ?? []).map((row: any) => ({
+    id: row.id,
+    studentId: row.student_id,
+    title: row.title,
+    description: row.description,
+    emoji: row.emoji,
+    read: row.read,
+    createdAt: row.created_at,
+  }))
+}
+
+export async function createStudentAlert(data: { studentId?: string; title: string; description: string; emoji?: string }) {
+  const alert: Omit<StudentAlert, "id" | "read" | "createdAt"> = {
+    studentId: data.studentId ?? "all",
+    title: data.title,
+    description: data.description,
+    emoji: data.emoji ?? "📣",
+  }
+  if (!hasSupabaseConfig()) {
+    const entry: StudentAlert = { ...alert, id: `alert-${Date.now()}`, read: false, createdAt: new Date().toISOString() }
+    demoStore().studentAlerts.unshift(entry)
+    return entry
+  }
+  const { data: row, error } = await getSupabaseAdmin()
+    .from("student_alerts")
+    .insert({ id: crypto.randomUUID(), student_id: alert.studentId, title: alert.title, description: alert.description, emoji: alert.emoji, read: false })
+    .select("*")
+    .single()
+  if (error) throw error
+  return {
+    id: row.id,
+    studentId: row.student_id,
+    title: row.title,
+    description: row.description,
+    emoji: row.emoji,
+    read: row.read,
+    createdAt: row.created_at,
+  }
+}
+
+async function pushStudentAlert(studentId: string, data: { title: string; description: string; emoji: string }) {
+  await createStudentAlert({ studentId, ...data })
+}
+
+export async function markStudentAlertsRead(studentId: string) {
+  if (!hasSupabaseConfig()) {
+    for (const a of demoStore().studentAlerts) {
+      if ((a.studentId === "all" || a.studentId === studentId) && !a.read) a.read = true
+    }
+    return
+  }
+  const { error } = await getSupabaseAdmin()
+    .from("student_alerts")
+    .update({ read: true })
+    .or(`student_id.eq.${studentId},student_id.eq.all`)
+    .eq("read", false)
+  if (error) throw error
+}
+
+// ─── Map helpers ──────────────────────────────────────────
+
+function mapStudentRequest(row: any): StudentRequest {
+  return {
+    id: row.id,
+    studentId: row.student_id,
+    type: row.type,
+    status: row.status,
+    title: row.title,
+    description: row.description,
+    hours: row.hours ?? undefined,
+    certificateTitle: row.certificate_title ?? undefined,
+    certificateMention: row.certificate_mention ?? undefined,
+    certificateDateLabel: row.certificate_date_label ?? undefined,
+    certificateEmoji: row.certificate_emoji ?? undefined,
+    certificateGradient: row.certificate_gradient ?? undefined,
+    adminNotes: row.admin_notes ?? undefined,
+    createdAt: row.created_at,
+    processedAt: row.processed_at ?? undefined,
+  }
+}
+
+function mapStudentMessage(row: any): StudentMessage {
+  return {
+    id: row.id,
+    studentId: row.student_id,
+    message: row.message,
+    reply: row.reply ?? undefined,
+    repliedAt: row.replied_at ?? undefined,
+    createdAt: row.created_at,
+  }
+}
+
 // ─── Settings ─────────────────────────────────────────────
 
 const defaultSettings: AppSettings = {
@@ -1385,6 +1885,23 @@ const parentSeed: Parent[] = [
   },
 ]
 
+async function loadStudentPortfolio(studentId: string): Promise<StudentPortfolio | null> {
+  if (!hasSupabaseConfig()) {
+    const student = demoStore().students.find((s) => s.id === studentId)
+    return student ? withPortfolio(student) : null
+  }
+
+  const programs = await getPrograms()
+  const { data: studentData, error: studentError } = await getSupabaseAdmin()
+    .from("students")
+    .select("*, projects(*), certifications(*), gallery_items(*)")
+    .eq("id", studentId)
+    .maybeSingle()
+
+  if (studentError || !studentData) return null
+  return mapStudentPortfolio(studentData, programs)
+}
+
 export async function getParentByLogin(email: string, secret: string): Promise<{ parent: Parent; student: StudentPortfolio } | null> {
   const secretHash = hashSecret(secret)
 
@@ -1393,9 +1910,9 @@ export async function getParentByLogin(email: string, secret: string): Promise<{
     if (!store.parents) store.parents = structuredClone(parentSeed)
     const parent = store.parents.find((p: Parent) => p.email.toLowerCase() === email.toLowerCase() && p.secretHash === secretHash)
     if (!parent) return null
-    const student = demoStore().students.find((s) => s.id === parent.studentId)
+    const student = await loadStudentPortfolio(parent.studentId)
     if (!student) return null
-    return { parent, student: withPortfolio(student) }
+    return { parent, student }
   }
 
   const { data: parentData, error: parentError } = await getSupabaseAdmin()
@@ -1414,20 +1931,15 @@ export async function getParentByLogin(email: string, secret: string): Promise<{
     lastName: parentData.last_name,
     phone: parentData.phone,
     secretHash: parentData.secret_hash,
+    passwordHash: parentData.password_hash ?? undefined,
     studentId: parentData.student_id,
     createdAt: parentData.created_at,
   }
 
-  const programs = await getPrograms()
-  const { data: studentData, error: studentError } = await getSupabaseAdmin()
-    .from("students")
-    .select("*, projects(*), certifications(*), gallery_items(*)")
-    .eq("id", parent.studentId)
-    .maybeSingle()
+  const student = await loadStudentPortfolio(parent.studentId)
+  if (!student) return null
 
-  if (studentError || !studentData) return null
-
-  return { parent, student: mapStudentPortfolio(studentData, programs) }
+  return { parent, student }
 }
 
 export async function createParent(data: {
@@ -1480,9 +1992,110 @@ export async function createParent(data: {
     lastName: created.last_name,
     phone: created.phone,
     secretHash: created.secret_hash,
+    passwordHash: created.password_hash ?? undefined,
     studentId: created.student_id,
     createdAt: created.created_at,
   }
+}
+
+export async function getParentByEmail(email: string): Promise<Parent | null> {
+  if (!hasSupabaseConfig()) {
+    const store = demoStore() as any
+    if (!store.parents) store.parents = structuredClone(parentSeed)
+    return store.parents.find((p: Parent) => p.email.toLowerCase() === email.toLowerCase()) ?? null
+  }
+
+  const { data, error } = await getSupabaseAdmin()
+    .from("parents")
+    .select("*")
+    .ilike("email", email)
+    .maybeSingle()
+
+  if (error || !data) return null
+
+  return {
+    id: data.id,
+    email: data.email,
+    firstName: data.first_name,
+    lastName: data.last_name,
+    phone: data.phone,
+    secretHash: data.secret_hash,
+    passwordHash: data.password_hash ?? undefined,
+    studentId: data.student_id,
+    createdAt: data.created_at,
+  }
+}
+
+export async function getParentByPassword(email: string, password: string): Promise<{ parent: Parent; student: StudentPortfolio } | null> {
+  const parent = await getParentByEmail(email)
+  if (!parent?.passwordHash) return null
+
+  const ok = await verifyPassword(password, parent.passwordHash)
+  if (!ok) return null
+
+  const student = await loadStudentPortfolio(parent.studentId)
+  if (!student) return null
+
+  return { parent, student }
+}
+
+export async function setParentPassword(parentId: string, passwordHash: string): Promise<void> {
+  if (!hasSupabaseConfig()) {
+    const store = demoStore() as any
+    if (!store.parents) store.parents = structuredClone(parentSeed)
+    const parent = store.parents.find((p: Parent) => p.id === parentId)
+    if (parent) parent.passwordHash = passwordHash
+    return
+  }
+
+  const { error } = await getSupabaseAdmin()
+    .from("parents")
+    .update({ password_hash: passwordHash })
+    .eq("id", parentId)
+  if (error) throw error
+}
+
+export async function createParentPasswordReset(parentId: string, tokenHash: string, expiresAt: string): Promise<void> {
+  if (!hasSupabaseConfig()) {
+    const g = globalThis as any
+    if (!g.ecsParentResets) g.ecsParentResets = []
+    g.ecsParentResets.push({ tokenHash, parentId, expiresAt, used: false })
+    return
+  }
+
+  const { error } = await getSupabaseAdmin()
+    .from("parent_password_resets")
+    .insert({
+      id: crypto.randomUUID(),
+      parent_id: parentId,
+      token_hash: tokenHash,
+      expires_at: expiresAt,
+    })
+  if (error) throw error
+}
+
+export async function consumeParentPasswordReset(tokenHash: string): Promise<string | null> {
+  if (!hasSupabaseConfig()) {
+    const g = globalThis as any
+    const resets: Array<{ tokenHash: string; parentId: string; expiresAt: string; used: boolean }> = g.ecsParentResets ?? []
+    const reset = resets.find((r) => r.tokenHash === tokenHash && !r.used && new Date(r.expiresAt) > new Date())
+    if (!reset) return null
+    reset.used = true
+    return reset.parentId
+  }
+
+  const { data, error } = await getSupabaseAdmin()
+    .from("parent_password_resets")
+    .select("*")
+    .eq("token_hash", tokenHash)
+    .eq("used", false)
+    .maybeSingle()
+
+  if (error || !data) return null
+  if (new Date(data.expires_at) < new Date()) return null
+
+  await getSupabaseAdmin().from("parent_password_resets").update({ used: true }).eq("id", data.id)
+  return data.parent_id
 }
 
 export async function getParents(): Promise<ParentWithStudent[]> {

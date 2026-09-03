@@ -43,18 +43,18 @@ export function QuickContactForm() {
 
   return (
     <form onSubmit={onSubmit} className="card p-6">
-      <h3 className="font-display text-2xl font-extrabold text-ink">Contact rapide</h3>
+      <h3 className="font-display text-2xl font-black text-ink">Contact rapide</h3>
       <p className="mt-2 text-sm text-ink-soft">Question rapide? L&apos;équipe vous rappelle sans créer une inscription.</p>
       <div className="mt-5 grid gap-3">
-        <input required name="name" className="rounded-brand-sm border-2 border-border bg-surface px-4 py-3 text-sm text-ink outline-none focus:border-accent focus:ring-4 focus:ring-accent/15 placeholder:text-ink-soft/50" placeholder="Votre nom" />
-        <input required name="phone" type="tel" className="rounded-brand-sm border-2 border-border bg-surface px-4 py-3 text-sm text-ink outline-none focus:border-accent focus:ring-4 focus:ring-accent/15 placeholder:text-ink-soft/50" placeholder="Téléphone" />
+        <input required name="name" className="rounded-brand-sm border-2 border-border bg-surface px-4 py-2.5 text-sm text-ink outline-none transition focus:border-sky placeholder:text-ink-soft/50" placeholder="Votre nom" />
+        <input required name="phone" type="tel" className="rounded-brand-sm border-2 border-border bg-surface px-4 py-2.5 text-sm text-ink outline-none transition focus:border-sky placeholder:text-ink-soft/50" placeholder="Téléphone" />
         <Textarea name="message" required placeholder="Votre question…" className="min-h-24" />
       </div>
       <button type="submit" disabled={status === "loading"} className="btn-primary mt-5 w-full disabled:opacity-60">
         {status === "loading" ? "Envoi..." : "Envoyer le message"}
       </button>
       {message && (
-        <p className={`mt-4 rounded-brand-sm p-3 text-center text-sm ${status === "error" ? "bg-red-50 text-red-700" : "bg-emerald-50 text-emerald-700"}`}>
+        <p className={`mt-4 rounded-brand-sm p-3 text-center text-sm ${status === "error" ? "bg-coral/10 text-coral" : "bg-lime/10 text-lime"}`}>
           {message}
         </p>
       )}

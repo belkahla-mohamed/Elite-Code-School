@@ -55,8 +55,8 @@ export default function PublicNav() {
           <Link
             key={href}
             href={href}
-            className={`rounded-full px-4 py-2 text-sm font-bold transition hover:text-ink hover:bg-body ${
-              pathname === href ? "text-sky font-black" : "text-ink-soft"
+            className={`rounded-full px-4 py-2 text-sm font-bold transition hover:bg-surface hover:text-ink ${
+              pathname === href ? "font-black text-sky" : "text-ink-soft"
             }`}
           >
             {label}
@@ -67,9 +67,11 @@ export default function PublicNav() {
           <div className="relative ml-2" ref={profileRef}>
             <button
               onClick={() => setProfileOpen((v) => !v)}
-              className="flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 text-sm font-bold text-ink shadow-sm transition-all hover:border-ink-soft/30 hover:shadow-md active:scale-[0.97]"
+              aria-haspopup="menu"
+              aria-expanded={profileOpen}
+              className="flex items-center gap-2 rounded-full border-2 border-border bg-surface px-3 py-1.5 text-sm font-bold text-ink transition hover:border-sky active:scale-[0.97]"
             >
-              <span className="flex size-7 items-center justify-center rounded-full bg-gradient-to-br from-sky to-cyan text-[11px] font-black text-white shadow-sm">
+              <span className="flex size-7 items-center justify-center rounded-full bg-sky text-[11px] font-black text-white">
                 {initials}
               </span>
               <span className="max-w-28 truncate">{user?.name}</span>
@@ -78,12 +80,11 @@ export default function PublicNav() {
             {profileOpen && (
               <>
                 {/* Desktop dropdown */}
-                <div className="absolute right-0 top-full mt-2 hidden w-56 md:block">
-                  <div className="overflow-hidden rounded-xl border border-border bg-surface shadow-xl shadow-black/5 ring-1 ring-black/5 dark:ring-white/10">
+                <div className="absolute right-0 top-full mt-2 hidden w-56 overflow-hidden rounded-brand border-2 border-border bg-white dark:bg-surface md:block">
                     {/* Header section */}
-                    <div className="bg-gradient-to-br from-sky/5 to-cyan/5 px-4 py-4">
+                    <div className="bg-sky/5 px-4 py-4">
                       <div className="flex items-center gap-3">
-                        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-sky to-cyan text-sm font-black text-white shadow-md">
+                        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-sky text-sm font-black text-white">
                           {initials}
                         </span>
                         <div className="min-w-0">
@@ -100,9 +101,9 @@ export default function PublicNav() {
                         <Link
                           href="/dashboard"
                           onClick={() => setProfileOpen(false)}
-                          className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-bold text-ink transition hover:bg-sky/5 hover:text-sky"
+                          className="flex items-center gap-3 rounded-brand-sm px-3 py-2.5 text-sm font-bold text-ink transition hover:bg-sky/5 hover:text-sky"
                         >
-                          <span className="flex size-7 items-center justify-center rounded-lg bg-sky/10 text-sky">
+                          <span className="flex size-7 items-center justify-center rounded-brand-sm bg-sky/10 text-sky">
                             <LayoutDashboard className="size-3.5" />
                           </span>
                           Tableau de bord
@@ -111,9 +112,9 @@ export default function PublicNav() {
                         <Link
                           href="/parent"
                           onClick={() => setProfileOpen(false)}
-                          className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-bold text-ink transition hover:bg-sky/5 hover:text-sky"
+                          className="flex items-center gap-3 rounded-brand-sm px-3 py-2.5 text-sm font-bold text-ink transition hover:bg-sky/5 hover:text-sky"
                         >
-                          <span className="flex size-7 items-center justify-center rounded-lg bg-sky/10 text-sky">
+                          <span className="flex size-7 items-center justify-center rounded-brand-sm bg-sky/10 text-sky">
                             <GraduationCap className="size-3.5" />
                           </span>
                           Portfolio
@@ -121,27 +122,26 @@ export default function PublicNav() {
                       )}
                     </div>
 
-                    <div className="border-t border-border/50" />
+                    <div className="border-t-2 border-border" />
                     <div className="p-1.5">
                       <button
                         onClick={() => { setProfileOpen(false); logout(); }}
-                        className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-bold text-coral transition hover:bg-coral/5"
+                        className="flex w-full items-center gap-3 rounded-brand-sm px-3 py-2.5 text-sm font-bold text-coral transition hover:bg-coral/5"
                       >
-                        <span className="flex size-7 items-center justify-center rounded-lg bg-coral/10 text-coral">
+                        <span className="flex size-7 items-center justify-center rounded-brand-sm bg-coral/10 text-coral">
                           <LogOut className="size-3.5" />
                         </span>
                         Déconnexion
                       </button>
                     </div>
                   </div>
-                </div>
-              </>
-            )}
+                </>
+              )}
           </div>
         ) : (
           <Link
             href="/login"
-            className="ml-2 rounded-full bg-sky px-5 py-2 text-sm font-black uppercase tracking-wide text-white hover:bg-sky-dark transition"
+            className="btn-primary ml-2"
           >
             Connexion
           </Link>
@@ -155,7 +155,7 @@ export default function PublicNav() {
           onClick={() => setOpen((v) => !v)}
           aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
           aria-expanded={open}
-          className="flex size-10 items-center justify-center rounded-full border-2 border-border bg-surface text-ink transition hover:bg-body"
+          className="flex size-10 items-center justify-center rounded-full border-2 border-border bg-surface text-ink transition hover:bg-surface"
         >
           {open ? <X className="size-5" /> : <Menu className="size-5" />}
         </button>
@@ -170,12 +170,12 @@ export default function PublicNav() {
         >
           {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            className="absolute inset-0 bg-ink/60"
             onClick={() => setOpen(false)}
           />
 
           {/* Drawer panel */}
-          <div className="absolute right-0 top-0 flex h-full w-[75vw] max-w-xs flex-col bg-white shadow-2xl dark:bg-surface">
+          <div className="absolute right-0 top-0 flex h-full w-[75vw] max-w-xs flex-col border-l-2 border-border bg-white dark:bg-surface">
             {/* Header */}
             <div className="flex items-center justify-between border-b-2 border-border px-6 py-4">
               <Link href="/" className="flex items-center gap-2.5" onClick={() => setOpen(false)}>
@@ -200,9 +200,9 @@ export default function PublicNav() {
             {/* Links */}
             <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-4 py-6">
               {isAuthenticated && (
-                <div className="mb-4 overflow-hidden rounded-2xl bg-gradient-to-br from-sky/5 to-cyan/5 border border-border/50 px-4 py-3.5">
+                <div className="mb-4 overflow-hidden rounded-brand border-2 border-border bg-sky/5 px-4 py-3.5">
                   <div className="flex items-center gap-3">
-                    <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-sky to-cyan text-sm font-black text-white shadow-md">
+                    <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-sky text-sm font-black text-white">
                       {initials}
                     </span>
                     <div className="min-w-0">
@@ -219,7 +219,7 @@ export default function PublicNav() {
                   key={href}
                   href={href}
                   onClick={() => setOpen(false)}
-                  className={`flex items-center rounded-2xl px-4 py-3.5 text-base font-bold transition hover:bg-body ${
+                  className={`flex items-center rounded-brand px-4 py-3.5 text-base font-bold transition hover:bg-surface ${
                     pathname === href
                       ? "bg-sky/10 text-sky"
                       : "text-ink"
@@ -238,7 +238,7 @@ export default function PublicNav() {
                     <Link
                       href="/dashboard"
                       onClick={() => setOpen(false)}
-                      className="flex items-center justify-center gap-2 rounded-full border-2 border-border bg-surface px-5 py-3 text-sm font-bold text-ink transition hover:bg-body w-full"
+                      className="flex w-full items-center justify-center gap-2 rounded-full border-2 border-border bg-surface px-5 py-3 text-sm font-bold text-ink transition hover:bg-surface"
                     >
                       <LayoutDashboard className="size-4" />
                       Tableau de bord
@@ -247,7 +247,7 @@ export default function PublicNav() {
                     <Link
                       href="/parent"
                       onClick={() => setOpen(false)}
-                      className="flex items-center justify-center gap-2 rounded-full border-2 border-border bg-surface px-5 py-3 text-sm font-bold text-ink transition hover:bg-body w-full"
+                      className="flex w-full items-center justify-center gap-2 rounded-full border-2 border-border bg-surface px-5 py-3 text-sm font-bold text-ink transition hover:bg-surface"
                     >
                       <GraduationCap className="size-4" />
                       Portfolio

@@ -23,9 +23,9 @@ const levelLabels: Record<string, string> = {
 };
 
 const levelColors: Record<string, string> = {
-  debutant: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  intermediaire: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
-  avance: "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400",
+  debutant: "bg-lime/15 text-lime-700 dark:bg-lime/20 dark:text-lime",
+  intermediaire: "bg-amber/15 text-amber-700 dark:bg-amber/20 dark:text-amber",
+  avance: "bg-violet/15 text-violet-700 dark:bg-violet/20 dark:text-violet",
 };
 
 export default async function CurriculaDetailPage({ params }: Props) {
@@ -49,14 +49,15 @@ export default async function CurriculaDetailPage({ params }: Props) {
 
         {/* Hero Image */}
         <div className="relative aspect-[21/9] overflow-hidden rounded-brand mb-10">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={imgSrc(program.image, 1200)} alt={program.title} className="size-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-ink/40" />
         </div>
 
         {/* Header */}
         <div className="mb-8">
           <div className="flex flex-wrap items-center gap-3 mb-3">
-            <span className="rounded-full px-3 py-1 text-xs font-bold text-ink-soft bg-body">
+            <span className="rounded-full bg-surface px-3 py-1 text-xs font-bold text-ink-soft">
               {program.ageRange}
             </span>
             <span className={`rounded-full px-3 py-1 text-xs font-bold ${levelColor}`}>
@@ -160,7 +161,7 @@ export default async function CurriculaDetailPage({ params }: Props) {
           </p>
           <Link
             href={`/inscription?program=${program.id}`}
-            className="inline-flex items-center gap-2 rounded-full bg-sky px-8 py-3.5 text-sm font-black uppercase tracking-wide text-white hover:bg-sky-dark transition"
+            className="btn-primary inline-flex"
           >
             S&apos;inscrire à ce programme <ArrowRight className="size-4" />
           </Link>

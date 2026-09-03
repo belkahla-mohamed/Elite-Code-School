@@ -46,7 +46,7 @@ export default function CurriculaPage() {
         </section>
         <section className="container-shell grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="rounded-brand border border-border bg-white dark:bg-slate-950 overflow-hidden">
+            <div key={i} className="rounded-brand border-2 border-border bg-white overflow-hidden dark:bg-surface">
               <Skeleton className="h-40 w-full rounded-none" />
               <div className="p-6 space-y-3">
                 <Skeleton className="h-5 w-3/4" />
@@ -64,10 +64,10 @@ export default function CurriculaPage() {
     <div className="py-20">
       <ScrollReveal>
         <section className="container-shell text-center mb-12">
-          <h1 className="font-display text-5xl font-black tracking-[-0.04em] text-ink">
+          <h1 className="text-center font-display text-3xl sm:text-5xl font-black tracking-[-0.04em] text-ink">
             Nos programmes
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-ink-soft">
+          <p className="mx-auto mt-4 max-w-2xl text-center text-lg font-semibold leading-8 text-ink-soft">
             Du Scratch à l&apos;Intelligence Artificielle, chaque programme est conçu pour un âge et un niveau spécifique.
             Offrez à votre enfant les clés du numérique.
           </p>
@@ -82,7 +82,7 @@ export default function CurriculaPage() {
                 onClick={() => setActiveCategory(null)}
                 className={`rounded-full px-4 py-2 text-sm font-bold transition ${
                   activeCategory === null
-                    ? "bg-ink text-body"
+                    ? "bg-sky text-white"
                     : "bg-surface text-ink-soft hover:bg-border"
                 }`}
               >
@@ -94,7 +94,7 @@ export default function CurriculaPage() {
                   onClick={() => setActiveCategory(c.id)}
                   className={`rounded-full px-4 py-2 text-sm font-bold transition ${
                     activeCategory === c.id
-                      ? "bg-ink text-body"
+                      ? "bg-sky text-white"
                       : "bg-surface text-ink-soft hover:bg-border"
                   }`}
                 >

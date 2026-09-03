@@ -17,7 +17,7 @@ function ConfirmationContent() {
   const requestId = searchParams.get("id");
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-surface to-white py-20">
+    <main className="bg-surface py-20">
       <div className="container-shell max-w-lg">
         {/* Back link */}
         <Link
@@ -28,15 +28,15 @@ function ConfirmationContent() {
         </Link>
 
         {/* Success card */}
-        <div className="rounded-3xl border-2 border-border bg-white dark:bg-surface p-8 sm:p-12 text-center shadow-card">
+        <div className="rounded-brand border-2 border-border bg-white p-8 text-center dark:bg-surface sm:p-12">
           {/* Success animation */}
-          <div className="mx-auto flex size-24 items-center justify-center rounded-3xl bg-gradient-to-br from-sky to-cyan shadow-lg shadow-sky/20">
+          <div className="mx-auto flex size-24 items-center justify-center rounded-brand bg-sky">
             <PartyPopper className="size-12 text-white" />
           </div>
 
           {/* Title */}
-          <h1 className="mt-6 font-display text-3xl sm:text-4xl font-extrabold text-ink">
-            Demande envoyée ! 🎉
+          <h1 className="mt-6 font-display text-3xl font-black text-ink sm:text-4xl">
+            Demande envoyée !
           </h1>
           <p className="mt-3 text-ink-soft leading-relaxed">
             Merci pour votre confiance ! Votre demande d&apos;inscription a bien
@@ -45,7 +45,7 @@ function ConfirmationContent() {
 
           {/* Reference ID */}
           {requestId && (
-            <div className="mt-8 inline-flex items-center gap-3 rounded-2xl bg-sky/5 border-2 border-sky/20 px-6 py-4">
+            <div className="mt-8 inline-flex items-center gap-3 rounded-brand-sm border-2 border-sky/20 bg-sky/5 px-6 py-4">
               <CheckCircle2 className="size-6 text-sky" />
               <div className="text-left">
                 <p className="text-xs font-black uppercase tracking-wide text-ink-soft">
@@ -60,39 +60,39 @@ function ConfirmationContent() {
 
           {/* Info cards */}
           <div className="mt-8 grid gap-4 text-left">
-            <div className="rounded-2xl bg-surface border-2 border-border p-5 flex items-start gap-4">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-amber/10">
+            <div className="flex items-start gap-4 rounded-brand-sm border-2 border-border bg-surface p-5">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-brand-sm bg-amber/10">
                 <Clock className="size-5 text-amber" />
               </div>
               <div>
-                <h3 className="font-bold text-ink">Traitement sous 24h</h3>
-                <p className="mt-1 text-sm text-ink-soft leading-relaxed">
+                <h3 className="font-black text-ink">Traitement sous 24h</h3>
+                <p className="mt-1 text-sm leading-relaxed text-ink-soft">
                   Notre équipe examine chaque demande avec attention. Vous
                   recevrez une réponse par email ou téléphone.
                 </p>
               </div>
             </div>
 
-            <div className="rounded-2xl bg-surface border-2 border-border p-5 flex items-start gap-4">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-sky/10">
+            <div className="flex items-start gap-4 rounded-brand-sm border-2 border-border bg-surface p-5">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-brand-sm bg-sky/10">
                 <Mail className="size-5 text-sky" />
               </div>
               <div>
-                <h3 className="font-bold text-ink">Vérifiez vos emails</h3>
-                <p className="mt-1 text-sm text-ink-soft leading-relaxed">
+                <h3 className="font-black text-ink">Vérifiez vos emails</h3>
+                <p className="mt-1 text-sm leading-relaxed text-ink-soft">
                   Un email de confirmation vous sera envoyé. Pensez à vérifier
                   vos spams si vous ne recevez rien.
                 </p>
               </div>
             </div>
 
-            <div className="rounded-2xl bg-surface border-2 border-border p-5 flex items-start gap-4">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-lime/10">
+            <div className="flex items-start gap-4 rounded-brand-sm border-2 border-border bg-surface p-5">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-brand-sm bg-lime/10">
                 <Sparkles className="size-5 text-lime" />
               </div>
               <div>
-                <h3 className="font-bold text-ink">Prochaines étapes</h3>
-                <p className="mt-1 text-sm text-ink-soft leading-relaxed">
+                <h3 className="font-black text-ink">Prochaines étapes</h3>
+                <p className="mt-1 text-sm leading-relaxed text-ink-soft">
                   Une fois accepté, vous recevrez votre code d&apos;accès parent
                   pour suivre la progression de votre enfant.
                 </p>

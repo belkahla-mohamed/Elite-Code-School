@@ -1,6 +1,6 @@
 # Elite Code School
 
-Application MVP pour une école de robotique, coding et IA: landing page, demandes d'inscription, validation admin, portfolios élèves, espace parent, espace teacher et base Supabase/Postgres.
+Application MVP pour une école de robotique, coding et IA: landing page, demandes d'inscription, validation admin, portfolios élèves, espace parent et base Supabase/Postgres.
 
 ## Stack
 
@@ -60,7 +60,8 @@ Mettre `COOKIE_SECURE=true` uniquement en production HTTPS.
 
 - Admin: `/admin`, mot de passe `admin123` si `ADMIN_PASSWORD` n'est pas défini.
 - Parent: `/parent`, email `parent.youssef@example.com`, secret `YOUSEEF-2026`.
-- Teacher: `/teacher`, email `teacher.nadia@example.com`, secret `TEACHER-2026`.
+
+> 3 acteurs uniquement: Visiteur, Administrateur, Parent (le rôle teacher a été retiré — voir `supabase/migrations/20260701000001_cleanup_actors_and_constraints.sql`).
 
 ## Fonctionnalités MVP
 
@@ -68,11 +69,10 @@ Mettre `COOKIE_SECURE=true` uniquement en production HTTPS.
 - Page inscription en 3 étapes.
 - Une demande ne crée pas directement un élève.
 - Admin peut accepter/refuser les demandes.
-- Acceptation admin crée un élève + secret parent.
-- Admin peut créer les teachers + secret teacher.
-- Teacher peut enrichir projets, certificats et galerie.
+- Acceptation admin crée un élève + secret parent (le parent peut ensuite définir un mot de passe).
+- Parent peut enrichir projets, certificats et galerie.
 - Parent peut rendre le portfolio public/privé.
-- Portfolio public accessible via `/portfolio/[slug]`.
+- Portfolio public accessible via `/portfolios/[slug]`.
 
 ## Sécurité
 

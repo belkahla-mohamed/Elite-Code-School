@@ -185,6 +185,25 @@ model AdminUser {
   @@ignore
 }
 
+model AppSettings {
+  id                      BigInt   @id @default(1)
+  autoAcceptInscriptions  Boolean  @default(false) @map("auto_accept_inscriptions")
+  emailValidation         Boolean  @default(true) @map("email_validation")
+  publicPortfoliosDefault Boolean  @default(true) @map("public_portfolios_default")
+  maintenanceMode         Boolean  @default(false) @map("maintenance_mode")
+  emailNotifications      Boolean  @default(true) @map("email_notifications")
+  sessionDurationHours    Int      @default(8) @map("session_duration_hours")
+  minPasswordLength       Int      @default(6) @map("min_password_length")
+  contactEmail            String   @default("contact@elitecode.ma") @map("contact_email")
+  emailFrom               String   @default("Elite Code School <onboarding@resend.dev>") @map("email_from")
+  adminEmail              String   @default("") @map("admin_email")
+  createdAt               DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt               DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("app_settings")
+  @@ignore
+}
+
 model Notification {
   id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   type        String
@@ -198,16 +217,87 @@ model Notification {
 }
 
 model Parent {
-  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email      String
-  firstName  String   @map("first_name")
-  lastName   String   @map("last_name")
-  phone      String   @default("")
-  secretHash String   @map("secret_hash")
-  studentId  String   @map("student_id")
-  student    Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email        String
+  firstName    String   @map("first_name")
+  lastName     String   @map("last_name")
+  phone        String   @default("")
+  secretHash   String   @map("secret_hash")
+  passwordHash String?  @map("password_hash")
+  studentId    String   @map("student_id")
+  student      Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
   @@map("parents")
   @@ignore
+}
+
+model ParentPasswordReset {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  parentId  String   @map("parent_id")
+  tokenHash String   @unique @map("token_hash")
+  expiresAt DateTime @map("expires_at") @db.Timestamptz(6)
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@map("parent_password_resets")
+  @@ignore
+}
+
+model Follow {
+  id        String   @id @default(cuid())
+  studentId String   @map("student_id")
+  targetId  String   @map("target_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([studentId, targetId])
+  @@index([targetId])
+  @@map("follows")
+}
+
+model StudentRequest {
+  id                   String        @id @default(cuid())
+  studentId            String        @map("student_id")
+  type                 String
+  status               RequestStatus @default(pending)
+  title                String
+  description          String        @default("")
+  hours                Int?
+  certificateTitle     String?       @map("certificate_title")
+  certificateMention   String?       @map("certificate_mention")
+  certificateDateLabel String?       @map("certificate_date_label")
+  certificateEmoji     String?       @map("certificate_emoji")
+  certificateGradient  String?       @map("certificate_gradient")
+  adminNotes           String?       @map("admin_notes")
+  createdAt            DateTime      @default(now()) @map("created_at")
+  processedAt          DateTime?     @map("processed_at")
+
+  @@index([studentId])
+  @@index([status])
+  @@map("student_requests")
+}
+
+model StudentMessage {
+  id        String   @id @default(cuid())
+  studentId String   @map("student_id")
+  message   String
+  reply     String?
+  createdAt DateTime @default(now()) @map("created_at")
+  repliedAt DateTime? @map("replied_at")
+
+  @@index([studentId])
+  @@map("student_messages")
+}
+
+model StudentAlert {
+  id          String   @id @default(cuid())
+  studentId   String   @map("student_id")
+  title       String
+  description String   @default("")
+  emoji       String   @default("📣")
+  read        Boolean  @default(false)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([studentId])
+  @@map("student_alerts")
 }

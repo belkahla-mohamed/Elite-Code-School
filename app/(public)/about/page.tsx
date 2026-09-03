@@ -20,7 +20,7 @@ export default function AboutPage() {
         </p>
       </section>
 
-      <section className="bg-body py-20">
+      <section className="bg-surface py-20">
         <div className="container-shell grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           {[
             { icon: Target, title: "Mission", text: "Rendre la tech accessible, ludique et formatrice pour chaque enfant, quel que soit son niveau." },

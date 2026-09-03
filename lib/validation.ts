@@ -37,4 +37,47 @@ export const certificationSchema = z.object({
   emoji: z.string().trim().default("📸"),
   gradient: z.string().trim().default("linear-gradient(135deg,#06b6d4,#0ea5e9)"),
   imageUrl: z.string().trim().optional(),
+});
+
+export const followRequestSchema = z.object({
+  targetId: z.string().trim().min(1, "Élève requis"),
+});
+
+export const studentRequestSchema = z.discriminatedUnion("type", [
+  z.object({
+    type: z.literal("certificate"),
+    title: z.string().trim().min(3, "Titre du certificat requis"),
+    description: z.string().trim().min(10, "Explique ta demande (au moins 10 caractères)"),
+    certificateTitle: z.string().trim().optional(),
+    certificateMention: z.string().trim().optional(),
+    certificateDateLabel: z.string().trim().optional(),
+    certificateEmoji: z.string().trim().optional(),
+    certificateGradient: z.string().trim().optional(),
+  }),
+  z.object({
+    type: z.literal("hours"),
+    title: z.string().trim().min(3, "Titre de la demande requis"),
+    description: z.string().trim().min(10, "Décris le justificatif (ex : projet bonus réalisé à la maison)"),
+    hours: z.coerce.number().int().min(1, "Heures à ajouter (minimum 1)").max(500, "Maximum 500 heures"),
+  }),
+]);
+
+export const studentMessageSchema = z.object({
+  message: z.string().trim().min(3, "Message trop court").max(1000, "Message trop long (1000 caractères max)"),
+});
+
+export const studentAlertSchema = z.object({
+  title: z.string().trim().min(3, "Titre requis"),
+  description: z.string().trim().min(5, "Description requise"),
+  emoji: z.string().trim().default("📣"),
+  studentId: z.string().trim().default("all"),
+});
+
+export const requestActionSchema = z.object({
+  action: z.enum(["approve", "refuse"]),
+  adminNotes: z.string().trim().optional(),
+});
+
+export const messageReplySchema = z.object({
+  reply: z.string().trim().min(1, "Réponse requise").max(1000),
 });
