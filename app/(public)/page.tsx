@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -81,9 +82,7 @@ export default async function HomePage() {
               Séance découverte gratuite <ArrowRight className="size-4" />
             </Link>
           </div>
-          <div className="hidden lg:block">
-            <HeroPlayCard />
-          </div>
+          <HeroPhoto />
         </div>
       </section>
 
@@ -293,35 +292,32 @@ export default async function HomePage() {
   );
 }
 
-function HeroPlayCard() {
+function HeroPhoto() {
   return (
-    <div className="rounded-brand border border-sky/15 bg-sky/5 p-5">
-      <div className="relative min-h-[340px] overflow-hidden rounded-brand-sm border border-sky/15 bg-white p-6 shadow-card">
-        <div className="absolute inset-x-0 top-0 h-24 bg-sky/5" />
-        <div className="relative grid min-h-[290px] place-items-center">
-          <div className="grid w-full max-w-xl gap-5 sm:grid-cols-[.8fr_1.2fr_.8fr]">
-            <Mascot name="Logique" color="bg-sky" face=":)" />
-            <div className="grid place-items-center rounded-brand border border-sky/15 bg-sky/5 p-8 text-center">
-              <div className="flex size-24 items-center justify-center rounded-brand bg-sky text-white shadow-brand">
-                <MonitorPlay className="size-12" />
-              </div>
-              <p className="mt-5 font-display text-2xl font-semibold">Voir une mission STEM</p>
-            </div>
-            <Mascot name="Robot" color="bg-sky-dark" face=":D" />
-          </div>
-        </div>
+    <div className="relative pb-8 sm:pb-0">
+      <div className="relative overflow-hidden rounded-brand border border-border bg-surface shadow-card dark:border-border dark:bg-surface">
+        <Image
+          src="/images/hero-student.jpg"
+          alt="Élève en séance de coding à Elite Code School"
+          width={1200}
+          height={800}
+          priority
+          className="h-auto w-full object-cover"
+        />
       </div>
-    </div>
-  );
-}
-
-function Mascot({ name, color, face }: { name: string; color: string; face: string }) {
-  return (
-    <div className="flex flex-col items-center justify-end gap-3">
-      <div className={`grid size-28 place-items-center rounded-full border-4 border-white shadow-card ${color} font-display text-3xl font-semibold text-white`}>
-        {face}
+      <div className="absolute right-5 -top-4 flex items-center gap-2 rounded-brand-sm border border-border bg-white px-4 py-2.5 shadow-card dark:border-border dark:bg-surface">
+        <Star className="size-4 fill-amber text-amber" />
+        <span className="text-xs font-bold text-ink dark:text-ink">Dès 7 ans</span>
       </div>
-      <span className="rounded-full bg-white px-4 py-2 text-xs font-bold uppercase tracking-wide text-ink shadow-card">{name}</span>
+      <div className="absolute -bottom-2 left-4 hidden w-40 overflow-hidden rounded-brand-sm border-4 border-white bg-white shadow-card sm:block lg:-left-6 lg:w-48">
+        <Image
+          src="/images/hero-mentoring.jpg"
+          alt="Accompagnement personnalisé pendant un atelier"
+          width={400}
+          height={300}
+          className="h-auto w-full object-cover"
+        />
+      </div>
     </div>
   );
 }
