@@ -1,5 +1,7 @@
 # Elite Code School — Design System
 
+> **Direction: « Playful professionnel »** — la joie de l'école de code pour enfants, exécutée avec la discipline d'un produit premium. Une couleur forte, des accents maîtrisés, pas de cri visuel.
+
 ## Stack
 - Next.js 15+ App Router (RSC, `"use client"` where needed)
 - TypeScript strict
@@ -17,28 +19,26 @@
 | Token | Light | Dark |
 |---|---|---|
 | `--background` | `#ffffff` | `#090d16` |
-| `--surface` | `#f8fafc` | `#131c2e` |
+| `--surface` | `#f6f8fb` | `#131c2e` |
 | `--text` | `#0f172a` | `#f8fafc` |
 | `--text-soft` | `#475569` | `#94a3b8` |
-| `--border` | `#e2e8f0` | `#1e293b` |
+| `--border` | `#e5e9f0` | `#1e293b` |
+| `--brand` | `#2563eb` | `#60a5fa` (focus rings) |
 
 Tailwind classes: `bg-body` / `bg-surface` / `text-ink` / `text-ink-soft` / `border-border`
 
 ### Brand palette
 | Color | Class | Usage |
 |---|---|---|
-| Bleu | `sky` (#0284c7) | Primary actions, links, buttons |
-| Bleu foncé | `sky-dark` (#075985) | Hover states |
-| Bleu clair | `sky-light` (#38bdf8) | Accents |
-| Ambre | `amber` (#f59e0b) | Warning |
-| Lime | `lime` (#84cc16) | Success |
-| Violet | `violet` (#8b5cf6) | Creativity theme |
-| Mint | `mint` (#14b8a6) | Info |
-| Corail | `coral` (#f43f5e) | Danger/error |
-| Rose | `pink` (#c026d3) | Tags, special |
-| Crème | `cream` (#fef3c7) | Warm backgrounds |
+| **Bleu électrique** | `sky` (#2563eb) | **Couleur unique de la marque** : actions primaires, liens, hero, CTA |
+| Bleu foncé | `sky-dark` (#1d4ed8) | Hover states |
+| Bleu clair | `sky-light` (#60a5fa) | Accents en dark mode |
 
-### Safelisted gradient stops
+### Accents programmes (usage restreint)
+Les couleurs suivantes sont **réservées aux cartes programmes** (chaque programme garde son identité) — ne pas utiliser dans la navigation, les boutons ou les sections génériques:
+`amber` (#f59e0b) · `lime` (#84cc16) · `violet` (#8b5cf6) · `mint` (#14b8a6) · `coral` (#f43f5e, danger) · `pink` (#c026d3) · `cream` (#fef3c7)
+
+### Safelisted gradient stops (programmes uniquement)
 ```
 from-lime to-emerald
 from-sky to-cyan
@@ -46,21 +46,26 @@ from-amber to-orange
 from-violet to-purple
 ```
 
+### Règles d'usage
+- **1 couleur de marque** : tout ce qui est interactif ou important = `sky`. Pas de concurrence chromatique.
+- Les accents colorés encodent une information (thème du programme), ils ne décorent jamais.
+- Superficies neutres (`body`/`surface`) = 90% de l'écran ; la couleur attire l'œil là où on doit cliquer.
+
 ---
 
 ## Typography
 
 | Role | Font | Class |
 |---|---|---|
-| Body | Nunito | `font-body` |
-| Headings/Display | Fredoka | `font-display` |
+| Body | Nunito (500–800) | `font-body` |
+| Headings/Display | Fredoka (500–600) | `font-display` |
 | Code | JetBrains Mono | `font-mono` |
 
-- Heavy use of `font-black` (900) and `font-bold` (700)
-- Section headings: `font-display text-2xl sm:text-4xl font-black tracking-[-0.05em]`
-- Body text: `font-semibold leading-7 text-ink-soft`
-- UI labels: `font-black uppercase tracking-wide`
-- Imported via Google Fonts
+- **Interdit** : `font-black` + `uppercase` + `tracking-wide` combinés (l'ancien look « qui crie »)
+- Headings: `font-display text-2xl sm:text-4xl font-semibold tracking-[-0.02em]`
+- Body: `text-ink-soft leading-7 font-medium`
+- Boutons: `font-bold` — jamais `font-black uppercase`
+- Eyebrows/labels: `text-xs font-bold uppercase tracking-[0.12em] text-sky-dark`
 
 ---
 
@@ -68,8 +73,21 @@ from-violet to-purple
 
 | Token | Value | Usage |
 |---|---|---|
-| `rounded-brand` | 28px | Cards, sections |
-| `rounded-brand-sm` | 16px | Inputs, small cards |
+| `rounded-brand` | 20px | Cards, sections |
+| `rounded-brand-sm` | 12px | Buttons, inputs, small cards |
+| `rounded-full` | pill | Badges, tags, avatars **uniquement** |
+
+---
+
+## Elevation (shadows)
+
+| Token | Usage |
+|---|---|
+| `shadow-card` | Cards au repos (remplace `border-2`) |
+| `shadow-card-hover` | Hover cards (léger lift) |
+| `shadow-brand` | Boutons primaires (halo bleu doux) |
+
+Les bordures passent à `border` (1px) ; la profondeur vient des ombres, pas des bordures épaisses.
 
 ---
 

@@ -10,10 +10,11 @@
     --font-display: "Fredoka";
     --font-mono: "JetBrains Mono";
     --background: #ffffff;
-    --surface: #f8fafc;
+    --surface: #f6f8fb;
     --text: #0f172a;
     --text-soft: #475569;
-    --border: #e2e8f0;
+    --border: #e5e9f0;
+    --brand: #2563eb;
     color-scheme: light;
   }
 
@@ -23,7 +24,14 @@
     --text: #f8fafc;
     --text-soft: #94a3b8;
     --border: #1e293b;
+    --brand: #60a5fa;
     color-scheme: dark;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+    border-radius: 4px;
   }
 
   * {
@@ -74,15 +82,15 @@
   }
 
   .tag {
-    @apply inline-flex rounded-full bg-pink px-4 py-1.5 text-xs font-black uppercase tracking-[0.14em] text-white;
+    @apply inline-flex rounded-full bg-sky/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-sky-dark dark:text-sky-light;
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full bg-sky px-8 py-3 text-sm font-black uppercase tracking-wide text-white transition hover:bg-sky-dark;
+    @apply inline-flex items-center justify-center gap-2 rounded-brand-sm bg-sky px-6 py-3 text-sm font-bold text-white shadow-brand transition hover:bg-sky-dark hover:shadow-card-hover focus-visible:outline-none;
   }
 
   .btn-outline {
-    @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-sky bg-white px-8 py-3 text-sm font-black uppercase tracking-wide text-sky transition hover:bg-sky hover:text-white dark:bg-transparent dark:text-sky dark:hover:bg-sky dark:hover:text-white;
+    @apply inline-flex items-center justify-center gap-2 rounded-brand-sm border border-sky bg-white px-6 py-3 text-sm font-bold text-sky transition hover:bg-sky hover:text-white focus-visible:outline-none dark:bg-transparent dark:text-sky-light dark:hover:bg-sky dark:hover:text-white;
   }
 
   .section-padding {
@@ -90,11 +98,11 @@
   }
 
   .card {
-    @apply rounded-brand border-2 border-border bg-surface;
+    @apply rounded-brand border border-border bg-surface shadow-card;
   }
 
   .dash-card {
-    @apply rounded-brand-sm border-2 border-border bg-surface p-5;
+    @apply rounded-brand-sm border border-border bg-surface p-5;
   }
 
   .dash-table {
@@ -102,7 +110,7 @@
   }
 
   .dash-table th {
-    @apply px-4 py-3 font-black text-xs uppercase tracking-wider text-ink-soft;
+    @apply px-4 py-3 font-bold text-xs uppercase tracking-wider text-ink-soft;
   }
 
   .dash-table td {
@@ -110,7 +118,7 @@
   }
 
   .dash-badge {
-    @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-black uppercase tracking-wide;
+    @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide;
   }
 }
 
