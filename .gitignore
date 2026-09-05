@@ -17,3 +17,9 @@ supabase/.temp
 # Playwright
 playwright-report/
 test-results/
+
+# Dev scratch helpers
+scratch/
+
+tsconfig.tsbuildinfo
+

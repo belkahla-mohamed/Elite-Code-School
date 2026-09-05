@@ -56,7 +56,7 @@ export default function PublicNav() {
             key={href}
             href={href}
             className={`rounded-full px-4 py-2 text-sm font-bold transition hover:bg-surface hover:text-ink ${
-              pathname === href ? "font-black text-sky" : "text-ink-soft"
+              pathname === href ? "font-black text-brand" : "text-ink-soft"
             }`}
           >
             {label}
@@ -69,9 +69,9 @@ export default function PublicNav() {
               onClick={() => setProfileOpen((v) => !v)}
               aria-haspopup="menu"
               aria-expanded={profileOpen}
-              className="flex items-center gap-2 rounded-full border-2 border-border bg-surface px-3 py-1.5 text-sm font-bold text-ink transition hover:border-sky active:scale-[0.97]"
+              className="flex items-center gap-2 rounded-full border-2 border-border bg-surface px-3 py-1.5 text-sm font-bold text-ink transition hover:border-brand active:scale-[0.97]"
             >
-              <span className="flex size-7 items-center justify-center rounded-full bg-sky text-[11px] font-black text-white">
+              <span className="flex size-7 items-center justify-center rounded-full bg-brand text-[11px] font-black text-white">
                 {initials}
               </span>
               <span className="max-w-28 truncate">{user?.name}</span>
@@ -82,7 +82,7 @@ export default function PublicNav() {
                 {/* Desktop dropdown */}
                 <div className="absolute right-0 top-full mt-2 hidden w-56 overflow-hidden rounded-brand border-2 border-border bg-white dark:bg-surface md:block">
                     {/* Header section */}
-                    <div className="bg-sky/5 px-4 py-4">
+                    <div className="bg-brand/5 px-4 py-4">
                       <div className="flex items-center gap-3">
                         <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-sky text-sm font-black text-white">
                           {initials}
@@ -200,7 +200,7 @@ export default function PublicNav() {
             {/* Links */}
             <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-4 py-6">
               {isAuthenticated && (
-                <div className="mb-4 overflow-hidden rounded-brand border-2 border-border bg-sky/5 px-4 py-3.5">
+                <div className="mb-4 overflow-hidden rounded-brand border-2 border-border bg-brand/5 px-4 py-3.5">
                   <div className="flex items-center gap-3">
                     <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-sky text-sm font-black text-white">
                       {initials}
@@ -221,7 +221,7 @@ export default function PublicNav() {
                   onClick={() => setOpen(false)}
                   className={`flex items-center rounded-brand px-4 py-3.5 text-base font-bold transition hover:bg-surface ${
                     pathname === href
-                      ? "bg-sky/10 text-sky"
+                      ? "bg-brand/10 text-brand"
                       : "text-ink"
                   }`}
                 >

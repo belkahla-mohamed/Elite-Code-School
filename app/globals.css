@@ -10,11 +10,11 @@
     --font-display: "Fredoka";
     --font-mono: "JetBrains Mono";
     --background: #ffffff;
-    --surface: #f6f8fb;
-    --text: #0f172a;
-    --text-soft: #475569;
-    --border: #e5e9f0;
-    --brand: #2563eb;
+    --surface: #f2f2f2;
+    --text: #000000;
+    --text-soft: #545454;
+    --border: #e4e4e4;
+    --brand: #82b440;
     color-scheme: light;
   }
 
@@ -24,7 +24,7 @@
     --text: #f8fafc;
     --text-soft: #94a3b8;
     --border: #1e293b;
-    --brand: #60a5fa;
+    --brand: #9cc94f;
     color-scheme: dark;
   }
 
@@ -82,15 +82,15 @@
   }
 
   .tag {
-    @apply inline-flex rounded-full bg-sky/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-sky-dark dark:text-sky-light;
+    @apply inline-flex rounded-full bg-brand/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-brand dark:text-brand-light;
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-brand-sm bg-sky px-6 py-3 text-sm font-bold text-white shadow-brand transition hover:bg-sky-dark hover:shadow-card-hover focus-visible:outline-none;
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-bold text-white transition hover:bg-brand-dark focus-visible:outline-none;
   }
 
   .btn-outline {
-    @apply inline-flex items-center justify-center gap-2 rounded-brand-sm border border-sky bg-white px-6 py-3 text-sm font-bold text-sky transition hover:bg-sky hover:text-white focus-visible:outline-none dark:bg-transparent dark:text-sky-light dark:hover:bg-sky dark:hover:text-white;
+    @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-brand bg-white px-6 py-3 text-sm font-bold text-brand transition hover:bg-brand hover:text-white focus-visible:outline-none dark:border-brand-light dark:bg-transparent dark:text-brand-light dark:hover:bg-brand-light dark:hover:text-white;
   }
 
   .section-padding {
@@ -98,7 +98,7 @@
   }
 
   .card {
-    @apply rounded-brand border border-border bg-surface shadow-card;
+    @apply rounded-brand border border-border bg-surface;
   }
 
   .dash-card {
