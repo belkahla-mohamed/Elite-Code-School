@@ -1,4 +1,4 @@
-﻿import Image from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowUpRight,
@@ -15,7 +15,6 @@ import {
   MapPin,
   Phone,
   Puzzle,
-  Quote,
   Rocket,
   Sparkles,
   Star,
@@ -27,8 +26,9 @@ import {
 import { QuickContactForm } from "@/components/QuickContactForm";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { AnimatedNumber } from "@/components/ui/animated-number";
+import { ProgramsSection } from "@/components/programs-section";
+import { TestimonialsSection } from "@/components/testimonials-section";
 import { getPrograms } from "@/lib/store";
-import type { Program } from "@/lib/types";
 
 export default async function HomePage() {
   const programs = await getPrograms();
@@ -58,12 +58,12 @@ export default async function HomePage() {
       <Hero />
       <Welcome />
       <About />
-      <Programs programs={programs} />
+      <ProgramsSection programs={programs} />
       <StatsBand />
       <Team />
       <Facilities />
       <Gallery />
-      <Testimonials />
+      <TestimonialsSection />
       <News />
       <ContactCta />
     </div>
@@ -103,54 +103,87 @@ function TopBar() {
 
 function Hero() {
   return (
-    <section className="relative isolate">
-      <div className="absolute inset-0 -z-10">
-        <Image
-          src="/images/hero-student.jpg"
-          alt="Élève Elite Code School pendant un cours de programmation"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-ink/95 via-ink/80 to-ink/35" />
-      </div>
-      <div className="container-shell py-24 sm:py-32 lg:py-44">
-        <div className="max-w-2xl">
-          <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-bold text-white backdrop-blur">
-            <Sparkles className="size-3.5 text-amber" /> École de coding, robotique & IA — Marrakech
+    <section className="relative overflow-hidden bg-brand dark:bg-brand-dark">
+      {/* Decorative solid shapes — playful, no glow */}
+      <div aria-hidden className="absolute -left-20 -top-20 size-64 rounded-full bg-white/10" />
+      <div aria-hidden className="absolute -right-24 top-24 size-80 rounded-full bg-white/10" />
+      <div aria-hidden className="absolute -bottom-28 left-[40%] size-72 rounded-full bg-amber/25" />
+      <div aria-hidden className="absolute left-[6%] top-14 size-8 -rotate-12 rounded-lg bg-amber" />
+      <div aria-hidden className="absolute right-[34%] top-32 size-6 rotate-12 rounded-lg bg-cream/40" />
+      <div aria-hidden className="absolute bottom-16 left-[30%] size-5 rounded-full bg-sky-light" />
+      <div aria-hidden className="absolute bottom-24 right-[8%] size-4 rounded-full bg-lime" />
+
+      <div className="container-shell relative grid items-center gap-12 py-16 sm:py-20 lg:grid-cols-2 lg:gap-16 lg:py-28">
+        {/* Left — content */}
+        <div className="min-w-0">
+          <p className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/15 px-4 py-1.5 text-xs font-bold text-white">
+            <Sparkles className="size-3.5 text-amber" /> École de coding, robotique &amp; IA — Marrakech
           </p>
-          <h1 className="mt-5 font-display text-4xl font-semibold leading-[1.05] tracking-[-0.02em] text-white sm:text-6xl">
-            Une nouvelle façon d&apos;apprendre <span className="text-brand-light">le code</span>
+          <h1 className="mt-5 font-display text-4xl font-semibold leading-[1.08] tracking-[-0.01em] text-white sm:text-5xl lg:text-6xl">
+            Une nouvelle façon d&apos;apprendre{" "}
+            <span className="relative inline-block text-cream">
+              le code
+              <svg
+                aria-hidden
+                viewBox="0 0 120 12"
+                preserveAspectRatio="none"
+                className="absolute -bottom-2 left-0 h-3 w-full text-amber"
+              >
+                <path d="M3 9 Q 60 2 117 8" stroke="currentColor" strokeWidth="5" fill="none" strokeLinecap="round" />
+              </svg>
+            </span>
           </h1>
-          <p className="mt-5 max-w-xl text-base font-medium leading-7 text-white/85 sm:text-lg sm:leading-8">
+          <p className="mt-6 max-w-xl text-base font-medium leading-7 text-white/90 sm:text-lg sm:leading-8">
             Dès 7 ans : des missions ludiques sur Scratch et les robots. Ados : de vrais projets en Python, web et IA — avec un portfolio public et un suivi clair pour les parents.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
+<div className="mt-8 flex flex-wrap gap-3">
             <Link
               href="/inscription"
-              className="inline-flex items-center gap-2 rounded-full bg-brand px-7 py-3 text-sm font-bold text-white transition hover:bg-brand-dark"
+              className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-bold text-brand transition hover:bg-cream"
             >
               Inscription maintenant <ArrowRight className="size-4" />
             </Link>
             <Link
               href="/curricula"
-              className="inline-flex items-center gap-2 rounded-full border-2 border-white/50 px-7 py-3 text-sm font-bold text-white transition hover:bg-white/15"
+              className="inline-flex items-center gap-2 rounded-full border-2 border-white/40 bg-white/10 px-7 py-3 text-sm font-bold text-white transition hover:border-white hover:bg-white/20"
             >
               Nos programmes
             </Link>
           </div>
-          <div className="mt-10 flex flex-wrap gap-x-6 gap-y-2 text-xs font-bold text-white/80">
+          <div className="mt-9 flex flex-wrap gap-2.5">
             {["Sans prérequis", "8 élèves max par classe", "Portail parent", "Certificats validés"].map((item) => (
-              <span key={item} className="inline-flex items-center gap-1.5">
+              <span key={item} className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/15 px-3.5 py-1.5 text-xs font-bold text-white">
                 <Check className="size-3.5 text-amber" /> {item}
               </span>
             ))}
           </div>
+        </div>
 
-          {/* Floating gamification cards — desktop only, playful kids-coding signature */}
-          <div className="pointer-events-none absolute hidden lg:flex right-[4%] top-1/2 -translate-y-1/2 flex-col gap-4">
-            <div className="flex items-center gap-3 rounded-brand-sm border-2 border-brand/15 bg-white px-4 py-3">
+        {/* Right — photo frame + floating gamification cards */}
+        <div className="relative mx-auto w-full max-w-lg lg:ml-auto">
+          <div aria-hidden className="absolute -inset-3 -rotate-2 rounded-brand border-2 border-dashed border-white/40" />
+          <div className="absolute -right-3 top-8 rounded-2xl bg-amber px-4 py-2.5 font-display text-sm font-semibold text-white sm:-right-6">
+            7–17 ans
+          </div>
+          <div className="relative overflow-hidden rounded-brand border-4 border-white bg-white">
+            <Image
+              src="/images/hero-student.jpg"
+              alt="Élève Elite Code School pendant un cours de programmation"
+              width={800}
+              height={533}
+              priority
+              sizes="(max-width: 1024px) 90vw, 540px"
+              className="aspect-[4/3] w-full object-cover"
+            />
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/65 via-ink/15 to-transparent px-5 pb-4 pt-12 text-white">
+              <p className="font-display text-lg font-semibold">Makers en herbe</p>
+              <p className="text-xs font-bold text-white/85">Coding · Robotique · IA — Marrakech</p>
+            </div>
+          </div>
+
+          {/* Floating gamification cards — desktop only (they overlap on small screens) */}
+          <div className="absolute -left-3 bottom-16 hidden sm:-left-8 sm:block">
+            <div className="flex items-center gap-3 rounded-brand-sm border-2 border-brand bg-white px-4 py-3 dark:bg-surface">
               <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-amber/15">
                 <Trophy className="size-5 text-amber" />
               </span>
@@ -159,7 +192,9 @@ function Hero() {
                 <p className="text-[11px] font-semibold text-ink-soft">Logique — Mission Mars</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 rounded-brand-sm border-2 border-brand/15 bg-white px-4 py-3">
+          </div>
+          <div className="absolute -right-2 top-36 hidden sm:-right-6 sm:block">
+            <div className="flex items-center gap-3 rounded-brand-sm border-2 border-sky/20 bg-white px-4 py-3 dark:bg-surface">
               <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-sky/15">
                 <Zap className="size-5 text-sky-dark" />
               </span>
@@ -171,39 +206,88 @@ function Hero() {
           </div>
         </div>
       </div>
+
+      {/* Bottom wave divider */}
+      <svg
+        aria-hidden
+        viewBox="0 0 1440 64"
+        preserveAspectRatio="none"
+        className="absolute bottom-0 left-0 h-10 w-full text-white dark:text-body sm:h-14"
+      >
+        <path d="M0,40 C240,64 480,0 720,20 C960,40 1200,56 1440,28 L1440,64 L0,64 Z" fill="currentColor" />
+      </svg>
     </section>
   );
 }
 
 const welcomeItems = [
-  { icon: Puzzle, tint: "bg-[#E8F7FF] text-sky", title: "Apprentissage actif", text: "On touche, on teste, on casse, on répare : chaque notion passe par un projet concret." },
-  { icon: Users, tint: "bg-[#FFF3D6] text-amber", title: "Espace parents", text: "Portail sécurisé pour suivre les heures de code, projets, certificats et séances." },
-  { icon: GraduationCap, tint: "bg-[#F1EAFE] text-violet", title: "Formateurs experts", text: "Des passionnés de tech, formés à la pédagogie pour les 7–17 ans." },
-  { icon: Rocket, tint: "bg-[#EFF9D8] text-lime", title: "Projets réels", text: "Jeux, robots, sites web et IA : chaque parcours se termine par une démo publique." },
+  { icon: Puzzle, tint: "bg-brand/10 text-brand", title: "Apprentissage actif", text: "On touche, on teste, on casse, on répare : chaque notion passe par un projet concret." },
+  { icon: Users, tint: "bg-amber/15 text-amber", title: "Espace parents", text: "Portail sécurisé pour suivre les heures de code, projets, certificats et séances." },
+  { icon: GraduationCap, tint: "bg-violet/15 text-violet", title: "Formateurs experts", text: "Des passionnés de tech, formés à la pédagogie pour les 7–17 ans." },
+  { icon: Rocket, tint: "bg-sky/15 text-sky", title: "Projets réels", text: "Jeux, robots, sites web et IA : chaque parcours se termine par une démo publique." },
 ];
 
 function Welcome() {
   return (
     <section className="bg-white py-16 sm:py-24 dark:bg-body">
-      <div className="container-shell">
-        <SectionHeader
-          eyebrow="Bienvenue"
-          title="Bienvenue chez Elite Code School"
-          subtitle="L'école où les enfants deviennent des makers : on apprend la tech en créant de vraies choses, ensemble."
-        />
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {welcomeItems.map((item, i) => (
-            <ScrollReveal key={item.title} delay={i * 80} className="h-full">
-              <div className="h-full rounded-brand border border-border bg-surface p-6 text-center transition hover:border-sky dark:border-border dark:bg-surface">
-                <span className={`mx-auto flex size-14 items-center justify-center rounded-full ${item.tint}`}>
-                  <item.icon className="size-6" />
-                </span>
-                <h3 className="mt-4 font-display text-lg font-semibold text-ink dark:text-ink">{item.title}</h3>
-                <p className="mt-2 text-sm font-medium leading-6 text-ink-soft dark:text-ink-soft">{item.text}</p>
-              </div>
-            </ScrollReveal>
-          ))}
+      <div className="container-shell grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+        {/* Left — content + features */}
+        <div>
+          <ScrollReveal>
+            <span className="tag">Bienvenue</span>
+            <h2 className="mt-4 font-display text-3xl font-semibold tracking-[-0.02em] text-ink dark:text-ink sm:text-4xl lg:text-[2.75rem] lg:leading-[1.1]">
+              Bienvenue chez{" "}
+              <span className="text-brand">Elite Code School</span>
+            </h2>
+            <p className="mt-4 max-w-lg text-sm font-medium leading-7 text-ink-soft sm:text-base sm:leading-8 dark:text-ink-soft">
+              L&apos;école où les enfants deviennent des makers : on apprend la tech en créant de vraies choses, ensemble.
+            </p>
+          </ScrollReveal>
+
+          <div className="mt-8 grid gap-4 sm:grid-cols-2">
+            {welcomeItems.map((item, i) => (
+              <ScrollReveal key={item.title} delay={i * 80}>
+                <div className="flex gap-4 rounded-brand border border-border bg-surface p-5 transition hover:border-brand/30 dark:border-border dark:bg-surface">
+                  <span className={`flex size-12 shrink-0 items-center justify-center rounded-brand-sm ${item.tint}`}>
+                    <item.icon className="size-6" />
+                  </span>
+                  <div className="min-w-0">
+                    <h3 className="font-display text-base font-semibold text-ink dark:text-ink">{item.title}</h3>
+                    <p className="mt-1 text-xs font-medium leading-5 text-ink-soft dark:text-ink-soft">{item.text}</p>
+                  </div>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
         </div>
+
+        {/* Right — image */}
+        <ScrollReveal delay={200} className="relative hidden lg:block">
+          {/* Decorative accent shape */}
+          <div aria-hidden className="absolute -left-6 -top-6 size-32 rounded-brand bg-brand/10" />
+          <div aria-hidden className="absolute -bottom-4 -right-4 size-20 rounded-full bg-amber/15" />
+          {/* Main image */}
+          <div className="relative overflow-hidden rounded-brand border-4 border-white dark:border-body">
+            <Image
+              src="/images/kids-stem.jpg"
+              alt="Enfants en atelier STEM à Elite Code School"
+              width={800}
+              height={600}
+              sizes="(max-width: 1024px) 0vw, 480px"
+              className="aspect-[4/3] w-full object-cover"
+            />
+          </div>
+          {/* Floating badge */}
+          <div className="absolute -bottom-4 left-6 flex items-center gap-3 rounded-brand-sm border-2 border-brand bg-white px-4 py-3 dark:bg-surface">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand/10">
+              <Rocket className="size-5 text-brand" />
+            </span>
+            <div>
+              <p className="text-xs font-bold text-ink dark:text-ink">+300 projets créés</p>
+              <p className="text-[11px] font-semibold text-ink-soft dark:text-ink-soft">par nos élèves chaque année</p>
+            </div>
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );
@@ -218,116 +302,67 @@ const aboutPoints = [
 
 function About() {
   return (
-    <section className="bg-surface py-16 sm:py-24 dark:bg-body">
+    <section className="relative overflow-hidden bg-brand py-16 sm:py-24 dark:bg-brand-dark">
+      {/* Decorative shapes */}
+      <div aria-hidden className="absolute -left-16 top-12 size-40 rounded-full bg-white/10" />
+      <div aria-hidden className="absolute bottom-8 right-[15%] size-24 rounded-full bg-amber/20" />
+      <div aria-hidden className="absolute left-[8%] top-1/2 size-6 rotate-12 rounded-lg bg-cream/40" />
+      <div aria-hidden className="absolute right-[6%] top-16 size-8 -rotate-12 rounded-lg bg-white/15" />
+
       <div className="container-shell grid items-center gap-12 lg:grid-cols-2">
-        <div className="relative">
-          <div className="overflow-hidden rounded-brand border border-border">
+        {/* Left — image */}
+        <ScrollReveal className="relative">
+          <div className="relative overflow-hidden rounded-brand border-4 border-white/25">
             <Image
               src="/images/kids-stem.jpg"
               alt="Enfants en atelier scientifique et technique"
               width={1200}
               height={800}
-              className="h-auto w-full object-cover"
+              sizes="(max-width: 1024px) 90vw, 520px"
+              className="aspect-[4/3] w-full object-cover"
             />
           </div>
-          <div className="absolute -bottom-5 right-4 flex items-center gap-3 rounded-brand-sm border border-border bg-white px-4 py-3 sm:right-8 dark:border-border dark:bg-surface">
-            <span className="flex size-10 items-center justify-center rounded-full bg-amber/15">
+          {/* Floating badge */}
+          <div className="absolute -bottom-4 right-4 flex items-center gap-3 rounded-brand-sm border-2 border-white/30 bg-white px-4 py-3 sm:right-8">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-amber/15">
               <Star className="size-5 fill-amber text-amber" />
             </span>
-            <span>
-              <strong className="block font-display text-lg font-semibold text-ink dark:text-ink">4,9/5</strong>
-              <small className="text-xs font-bold text-ink-soft dark:text-ink-soft">avis des parents</small>
-            </span>
+            <div>
+              <p className="text-xs font-bold text-ink">4,9/5</p>
+              <p className="text-[11px] font-semibold text-ink-soft">avis des parents</p>
+            </div>
           </div>
-        </div>
-        <div>
-          <SectionHeaderAlign eyebrow="À propos" title="Une école où l'on apprend en créant" />
-          <p className="text-sm font-medium leading-7 text-ink-soft sm:text-base sm:leading-8 dark:text-ink-soft">
-            Chez Elite Code School, la tech n&apos;est pas une matière théorique. Les enfants explorent la logique et la créativité numérique, les ados construisent de vrais projets — et chaque famille suit les progrès en temps réel depuis son espace parent.
+        </ScrollReveal>
+
+        {/* Right — content */}
+        <ScrollReveal delay={150}>
+          <span className="inline-flex rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-white">
+            À propos
+          </span>
+          <h2 className="mt-4 font-display text-3xl font-semibold tracking-[-0.02em] text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.1]">
+            Une école où l&apos;on apprend en{" "}
+            <span className="text-cream">créant</span>
+          </h2>
+          <p className="mt-5 max-w-lg text-sm font-medium leading-7 text-white/80 sm:text-base sm:leading-8">
+            Chez Elite Code School, la tech n&apos;est pas une matière théorique. Les enfants explorent la logique et la créativité numérique, les ados construisent de vrais projets — et chaque famille suit les progrès en temps réel.
           </p>
           <ul className="mt-6 grid gap-3">
             {aboutPoints.map((point) => (
-              <li key={point} className="flex items-start gap-3 text-sm font-semibold text-ink dark:text-ink">
-                <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-brand/15">
-                  <Check className="size-3 text-brand" />
+              <li key={point} className="flex items-start gap-3 text-sm font-semibold text-white">
+                <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-white/20">
+                  <Check className="size-3 text-white" />
                 </span>
                 {point}
               </li>
             ))}
           </ul>
-          <Link href="/inscription" className="btn-primary mt-8 inline-flex text-sm">
-            Inscription maintenant <ArrowRight data-icon="inline-end" />
+          <Link
+            href="/inscription"
+            className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-bold text-brand transition hover:bg-cream"
+          >
+            Inscription maintenant <ArrowRight className="size-4" />
           </Link>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-const programAccents: Record<string, string> = {
-  accent: "#689033",
-  cyan: "#06b6d4",
-  amber: "#f59e0b",
-  green: "#22c55e",
-  rose: "#f43f5e",
-  purple: "#a855f7",
-};
-
-const programLevels: Record<string, string> = {
-  debutant: "Débutant",
-  intermediaire: "Intermédiaire",
-  avance: "Avancé",
-};
-
-function Programs({ programs }: { programs: Program[] }) {
-  return (
-    <section className="bg-white py-16 sm:py-24 dark:bg-body">
-      <div className="container-shell">
-        <SectionHeader
-          eyebrow="Nos classes"
-          title="Nos programmes populaires"
-          subtitle="Un parcours complet de 7 à 17 ans : chacun avance à son rythme, d'un premier jeu Scratch jusqu'à l'intelligence artificielle."
-        />
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {programs.slice(0, 6).map((program, index) => {
-            const accent = programAccents[program.color] ?? "#82b440";
-            return (
-              <ScrollReveal key={program.id} delay={(index % 3) * 90} className="h-full">
-                <article className="group flex h-full flex-col overflow-hidden rounded-brand border border-border bg-white transition hover:border-brand dark:border-border dark:bg-surface">
-                  <div className="relative h-44 overflow-hidden">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={program.image} alt={program.title} loading="lazy" className="size-full object-cover transition duration-500 group-hover:scale-105" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-ink/50 via-transparent to-transparent" />
-                    <span className="absolute left-4 top-4 rounded-full border border-border bg-white px-3 py-1 text-xs font-bold text-ink">{program.ageRange}</span>
-                    <span
-                      className="absolute bottom-3 left-4 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-white"
-                      style={{ backgroundColor: accent }}
-                    >
-                      <span className="size-1.5 rounded-full bg-white/80" /> {programLevels[program.level]}
-                    </span>
-                  </div>
-                  <div className="flex flex-1 flex-col p-6">
-                  <h3 className="font-display text-xl font-semibold text-ink dark:text-ink">{program.title}</h3>
-                  <p className="mt-2 line-clamp-2 text-sm font-medium leading-6 text-ink-soft dark:text-ink-soft">{program.description}</p>
-                  <ul className="mt-4 grid gap-2 border-t border-border pt-4 text-xs font-bold text-ink-soft dark:border-border dark:text-ink-soft">
-                    <li className="flex items-center gap-2"><Clock className="size-3.5 text-sky" /> {program.schedule}</li>
-                    <li className="flex items-center gap-2"><CalendarDays className="size-3.5 text-sky" /> {program.duration}</li>
-                    <li className="flex items-center gap-2"><Users className="size-3.5 text-sky" /> 8 élèves max</li>
-                  </ul>
-                  <div className="mt-auto flex items-center justify-between border-t border-border pt-5">
-                      <span className="font-display text-lg font-semibold text-ink dark:text-ink">
-                        {program.priceMonthly} <small className="text-xs font-bold text-ink-soft dark:text-ink-soft">DH/mois</small>
-                      </span>
-                    <Link href="/curricula" className="inline-flex items-center gap-1 text-xs font-bold text-brand transition group-hover:gap-2">
-                      Voir le détail <ArrowRight className="size-3.5" />
-                    </Link>
-                  </div>
-                  </div>
-                </article>
-              </ScrollReveal>
-            );
-          })}
-        </div>
+        </ScrollReveal>
       </div>
     </section>
   );
@@ -343,6 +378,11 @@ const stats = [
 function StatsBand() {
   return (
     <section className="relative isolate overflow-hidden bg-brand">
+      {/* Decorative shapes — matching About section */}
+      <div aria-hidden className="absolute -left-16 top-12 size-40 rounded-full bg-white/10" />
+      <div aria-hidden className="absolute bottom-8 right-[15%] size-24 rounded-full bg-amber/20" />
+      <div aria-hidden className="absolute left-[8%] top-1/2 size-6 rotate-12 rounded-lg bg-cream/40" />
+      <div aria-hidden className="absolute right-[6%] top-16 size-8 -rotate-12 rounded-lg bg-white/15" />
       <div
         className="absolute inset-0 -z-10 opacity-20"
         style={{ backgroundImage: "radial-gradient(circle at 20% 30%, rgba(255,255,255,.35) 0, transparent 40%), radial-gradient(circle at 80% 70%, rgba(255,255,255,.25) 0, transparent 40%)" }}
@@ -367,39 +407,40 @@ function StatsBand() {
 }
 
 const team = [
-  { name: "Mehdi A.", role: "Robotique & Arduino", image: "/images/teacher-board.jpg", tint: "bg-[#E8F7FF] text-sky", initials: "MA" },
-  { name: "Salma B.", role: "Scratch & Créativité", image: null, tint: "bg-[#F1EAFE] text-violet", initials: "SB" },
-  { name: "Yassine K.", role: "Développement Web", image: null, tint: "bg-[#EFF9D8] text-lime", initials: "YK" },
-  { name: "Nadia R.", role: "Intelligence artificielle", image: null, tint: "bg-[#FFF3D6] text-amber", initials: "NR" },
+  { name: "Mehdi A.", role: "Robotique & Arduino", image: "/images/teacher-board.jpg", tint: "bg-brand/10 text-brand", initials: "MA" },
+  { name: "Salma B.", role: "Scratch & Créativité", image: null, tint: "bg-violet/15 text-violet", initials: "SB" },
+  { name: "Yassine K.", role: "Développement Web", image: null, tint: "bg-sky/15 text-sky", initials: "YK" },
+  { name: "Nadia R.", role: "Intelligence artificielle", image: null, tint: "bg-amber/15 text-amber", initials: "NR" },
 ];
 
 function Team() {
   return (
-    <section className="bg-surface py-16 sm:py-24 dark:bg-body">
+    <section className="bg-white py-16 sm:py-24 dark:bg-body">
       <div className="container-shell">
         <SectionHeader
           eyebrow="Notre équipe"
           title="Nos formateurs"
           subtitle="Des professionnels de la tech qui aiment transmettre — et qui savent parler aux enfants comme aux ados."
         />
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {team.map((member) => (
-            <article key={member.name} className="rounded-brand border border-border bg-white p-6 text-center transition hover:border-amber dark:border-border dark:bg-surface">
+            <article key={member.name} className="text-center">
               {member.image ? (
                 <Image
                   src={member.image}
                   alt={member.name}
                   width={300}
                   height={300}
-                  className="mx-auto size-24 rounded-full object-cover"
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 180px"
+                  className="mx-auto size-36 rounded-full object-cover"
                 />
               ) : (
-                <span className={`mx-auto flex size-24 items-center justify-center rounded-full font-display text-2xl font-semibold ${member.tint}`}>
+                <span className={`mx-auto flex size-36 items-center justify-center rounded-full font-display text-3xl font-semibold ${member.tint}`}>
                   {member.initials}
                 </span>
               )}
-              <h3 className="mt-4 font-display text-lg font-semibold text-ink dark:text-ink">{member.name}</h3>
-              <p className="mt-1 text-xs font-bold uppercase tracking-wider text-ink-soft dark:text-ink-soft">{member.role}</p>
+              <h3 className="mt-5 font-display text-lg font-semibold text-ink dark:text-ink">{member.name}</h3>
+              <p className="mt-1 text-sm font-medium text-ink-soft dark:text-ink-soft">{member.role}</p>
             </article>
           ))}
         </div>
@@ -409,29 +450,56 @@ function Team() {
 }
 
 const facilities = [
-  { icon: CircuitBoard, tint: "bg-[#E8F7FF] text-sky", title: "Robotique & hardware", text: "mBot, Arduino, Micro:bit, Raspberry Pi : de vraies machines à programmer, pas des simulations." },
-  { icon: BrainCircuit, tint: "bg-[#F1EAFE] text-violet", title: "Coding & IA", text: "De Scratch à Python jusqu'aux projets d'IA : un cursus structuré qui suit l'élève pendant des années." },
-  { icon: Trophy, tint: "bg-[#FFF3D6] text-amber", title: "Suivi & certificats", text: "Portfolio public, heures de code comptabilisées, badges et certificats validés par l'administration." },
+  { icon: CircuitBoard, iconTint: "bg-brand text-white", image: "/images/hero-student.jpg", title: "Robotique & hardware", text: "mBot, Arduino, Micro:bit, Raspberry Pi : de vraies machines à programmer, pas des simulations." },
+  { icon: BrainCircuit, iconTint: "bg-amber text-white", image: "/images/kid-elearning.jpg", title: "Coding & IA", text: "De Scratch à Python jusqu'aux projets d'IA : un cursus structuré qui suit l'élève pendant des années." },
+  { icon: Trophy, iconTint: "bg-sky text-white", image: "/images/hero-family.jpg", title: "Suivi & certificats", text: "Portfolio public, heures de code comptabilisées, badges et certificats validés par l'administration." },
 ];
 
 function Facilities() {
   return (
-    <section className="bg-white py-16 sm:py-24 dark:bg-body">
+    <section className="relative overflow-hidden bg-brand py-16 sm:py-24 dark:bg-brand-dark">
+      {/* Decorative shapes */}
+      <div aria-hidden className="absolute -left-16 top-12 size-40 rounded-full bg-white/10" />
+      <div aria-hidden className="absolute bottom-8 right-[15%] size-24 rounded-full bg-amber/20" />
+      <div aria-hidden className="absolute left-[8%] top-1/2 size-6 rotate-12 rounded-lg bg-cream/40" />
+      <div aria-hidden className="absolute right-[6%] top-16 size-8 -rotate-12 rounded-lg bg-white/15" />
+
       <div className="container-shell">
-        <SectionHeader
-          eyebrow="Nos atouts"
-          title="Ce qui fait la différence"
-          subtitle="Du matériel réel, un cursus complet et un suivi transparent pour toute la famille."
-        />
-        <div className="grid gap-6 md:grid-cols-3">
+        {/* Header */}
+        <div className="mb-10 text-center sm:mb-14">
+          <span className="inline-flex rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-white">
+            Nos atouts
+          </span>
+          <h2 className="mx-auto mt-4 max-w-3xl font-display text-3xl font-semibold tracking-[-0.02em] text-white md:text-5xl">
+            Ce qui fait la différence
+          </h2>
+          <p className="mx-auto mt-3 max-w-2xl text-sm font-medium leading-7 text-white/80 sm:mt-4 sm:text-base sm:leading-8">
+            Du matériel réel, un cursus complet et un suivi transparent pour toute la famille.
+          </p>
+        </div>
+
+        {/* Cards */}
+        <div className="grid gap-8 md:grid-cols-3">
           {facilities.map((item) => (
-            <div key={item.title} className="flex gap-4 rounded-brand border border-border bg-surface p-6 dark:border-border dark:bg-surface">
-              <span className={`flex size-12 shrink-0 items-center justify-center rounded-brand-sm ${item.tint}`}>
-                <item.icon className="size-6" />
-              </span>
-              <div>
-                <h3 className="font-display text-lg font-semibold text-ink dark:text-ink">{item.title}</h3>
-                <p className="mt-2 text-sm font-medium leading-6 text-ink-soft dark:text-ink-soft">{item.text}</p>
+            <div key={item.title} className="group overflow-hidden rounded-brand">
+              {/* Image */}
+              <div className="relative overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  loading="lazy"
+                  className="aspect-[4/3] w-full object-cover transition duration-500 group-hover:scale-105"
+                />
+                {/* Icon overlapping bottom */}
+                <span className={`absolute -bottom-5 left-6 flex size-14 items-center justify-center rounded-full shadow-lg ${item.iconTint}`}>
+                  <item.icon className="size-7" />
+                </span>
+              </div>
+              {/* Content */}
+              <div className="bg-white px-6 pt-10 pb-6">
+                <h3 className="font-display text-lg font-semibold text-ink">{item.title}</h3>
+                <p className="mt-2 text-sm font-medium leading-6 text-ink-soft">{item.text}</p>
               </div>
             </div>
           ))}
@@ -452,7 +520,7 @@ const gallery = [
 
 function Gallery() {
   return (
-    <section className="bg-surface py-16 sm:py-24 dark:bg-body">
+    <section className="bg-white py-16 sm:py-24 dark:bg-body">
       <div className="container-shell">
         <SectionHeader
           eyebrow="Galerie"
@@ -483,55 +551,6 @@ function Gallery() {
   );
 }
 
-const testimonials = [
-  {
-    quote: "Mon fils compte les jours avant son cours. Il a commencé par des jeux Scratch, aujourd'hui il programme son propre robot.",
-    author: "Nadia",
-    context: "maman d'Adam, 9 ans",
-  },
-  {
-    quote: "Le portail parent change tout : je vois les heures de code, les projets et les certificats sans jamais avoir à réclamer un compte-rendu.",
-    author: "Youssef",
-    context: "papa de Lina, 12 ans",
-  },
-  {
-    quote: "En un an, ma fille est passée de Scratch à un vrai site web qu'elle a présenté devant toute la classe. Le portfolio est superbe.",
-    author: "Khadija",
-    context: "maman de Sara, 14 ans",
-  },
-];
-
-function Testimonials() {
-  return (
-    <section className="bg-white py-16 sm:py-24 dark:bg-body">
-      <div className="container-shell">
-        <SectionHeader
-          eyebrow="Témoignages"
-          title="Ce que disent les parents"
-          subtitle="La confiance des familles est notre meilleure preuve de qualité."
-        />
-        <div className="grid gap-6 md:grid-cols-3">
-          {testimonials.map((item) => (
-            <blockquote key={item.author} className="relative rounded-brand border border-border bg-surface p-6 dark:border-border dark:bg-surface">
-              <Quote aria-hidden="true" className="absolute right-5 top-5 size-9 text-sky/10" />
-              <div className="flex gap-1">
-                {Array.from({ length: 5 }, (_, i) => (
-                  <Star key={i} className="size-4 fill-amber text-amber" />
-                ))}
-              </div>
-              <p className="mt-4 text-sm font-medium leading-7 text-ink dark:text-ink">&ldquo;{item.quote}&rdquo;</p>
-              <footer className="mt-4 border-t border-border pt-4 dark:border-border">
-                <strong className="block text-sm font-bold text-ink dark:text-ink">{item.author}</strong>
-                <span className="text-xs font-semibold text-ink-soft dark:text-ink-soft">{item.context}</span>
-              </footer>
-            </blockquote>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 const news = [
   { image: "/images/kids-stem.jpg", date: "12 sept. 2026", title: "Lancement de la Mission Planète Mars", text: "Le grand défi de l'année : concevoir, coder et présenter un rover martien en équipe." },
   { image: "/images/kid-elearning.jpg", date: "26 sept. 2026", title: "Journée portes ouvertes", text: "Venez découvrir les robots, les projets des élèves et rencontrer nos formateurs." },
@@ -540,7 +559,7 @@ const news = [
 
 function News() {
   return (
-    <section className="bg-surface py-16 sm:py-24 dark:bg-body">
+    <section className="bg-white py-16 sm:py-24 dark:bg-body">
       <div className="container-shell">
         <SectionHeader
           eyebrow="Actualités"
@@ -573,31 +592,61 @@ function News() {
 
 function ContactCta() {
   return (
-    <section className="bg-white py-16 sm:py-24 dark:bg-body">
-      <div className="container-shell">
-        <SectionHeader
-          eyebrow="Contact"
-          title="Une question ? Écrivez-nous"
-          subtitle="Nous répondons sous 24h ouvrées — ou passez nous voir à Marrakech."
-        />
-        <div className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-3">
-          <a href="tel:+212600000000" suppressHydrationWarning className="rounded-brand border border-border bg-surface p-5 text-center transition hover:border-brand dark:border-border dark:bg-surface">
-            <Phone className="mx-auto size-5 text-brand" />
-            <strong className="mt-2 block text-sm font-bold text-ink dark:text-ink">+212 600 000 000</strong>
-            <small className="text-xs font-semibold text-ink-soft dark:text-ink-soft">Lun – Sam, 9h30 – 18h30</small>
-          </a>
-          <a href="mailto:contact@elitecodeschool.ma" className="rounded-brand border border-border bg-surface p-5 text-center transition hover:border-brand dark:border-border dark:bg-surface">
-            <Mail className="mx-auto size-5 text-brand" />
-            <strong className="mt-2 block break-all text-sm font-bold text-ink dark:text-ink">contact@elitecodeschool.ma</strong>
-            <small className="text-xs font-semibold text-ink-soft dark:text-ink-soft">Réponse sous 24h</small>
-          </a>
-          <span className="rounded-brand border border-border bg-surface p-5 text-center dark:border-border dark:bg-surface">
-            <MapPin className="mx-auto size-5 text-brand" />
-            <strong className="mt-2 block text-sm font-bold text-ink dark:text-ink">Marrakech, Maroc</strong>
-            <small className="text-xs font-semibold text-ink-soft dark:text-ink-soft">Adresse exacte sur demande</small>
+    <section className="relative overflow-hidden bg-brand py-16 sm:py-24 dark:bg-brand-dark">
+      {/* Decorative shapes */}
+      <div aria-hidden className="absolute -left-16 top-12 size-40 rounded-full bg-white/10" />
+      <div aria-hidden className="absolute bottom-8 right-[15%] size-24 rounded-full bg-amber/20" />
+      <div aria-hidden className="absolute left-[8%] top-1/2 size-6 rotate-12 rounded-lg bg-cream/40" />
+      <div aria-hidden className="absolute right-[6%] top-16 size-8 -rotate-12 rounded-lg bg-white/15" />
+
+      <div className="container-shell grid items-end gap-12 lg:grid-cols-2 lg:gap-16">
+        {/* Left — info */}
+        <div>
+          <span className="inline-flex rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-white">
+            Contact
           </span>
+          <h2 className="mt-4 font-display text-3xl font-semibold tracking-[-0.02em] text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.1]">
+            Une question ?{" "}
+            <span className="text-cream">Ecrivez-nous</span>
+          </h2>
+          <p className="mt-4 max-w-lg text-sm font-medium leading-7 text-white/80 sm:text-base sm:leading-8">
+            Nous repondons sous 24h ouvrees — ou passez nous voir a Marrakech.
+          </p>
+
+          {/* Info cards */}
+          <div className="mt-8 grid gap-4 sm:grid-cols-3 lg:grid-cols-1 lg:gap-3">
+            <a href="tel:+212600000000" suppressHydrationWarning className="flex items-center gap-4 rounded-brand border border-white/20 bg-white/10 p-4 transition hover:border-white/40 hover:bg-white/15">
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-white/15">
+                <Phone className="size-5 text-white" />
+              </span>
+              <div>
+                <strong className="block text-sm font-bold text-white">+212 600 000 000</strong>
+                <small className="text-xs font-semibold text-white/60">Lun – Sam, 9h30 – 18h30</small>
+              </div>
+            </a>
+            <a href="mailto:contact@elitecodeschool.ma" className="flex items-center gap-4 rounded-brand border border-white/20 bg-white/10 p-4 transition hover:border-white/40 hover:bg-white/15">
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-white/15">
+                <Mail className="size-5 text-white" />
+              </span>
+              <div>
+                <strong className="block text-sm font-bold text-white">contact@elitecodeschool.ma</strong>
+                <small className="text-xs font-semibold text-white/60">Reponse sous 24h</small>
+              </div>
+            </a>
+            <span className="flex items-center gap-4 rounded-brand border border-white/20 bg-white/10 p-4">
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-white/15">
+                <MapPin className="size-5 text-white" />
+              </span>
+              <div>
+                <strong className="block text-sm font-bold text-white">Marrakech, Maroc</strong>
+                <small className="text-xs font-semibold text-white/60">Adresse exacte sur demande</small>
+              </div>
+            </span>
+          </div>
         </div>
-        <div className="mx-auto mt-10 max-w-2xl rounded-brand border border-border bg-surface p-6 sm:p-8 dark:border-border dark:bg-surface">
+
+        {/* Right — form */}
+        <div className="rounded-brand bg-white p-6 sm:p-8">
           <QuickContactForm />
         </div>
       </div>

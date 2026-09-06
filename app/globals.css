@@ -14,7 +14,7 @@
     --text: #000000;
     --text-soft: #545454;
     --border: #e4e4e4;
-    --brand: #82b440;
+    --brand: #e41d23;
     color-scheme: light;
   }
 
@@ -24,7 +24,7 @@
     --text: #f8fafc;
     --text-soft: #94a3b8;
     --border: #1e293b;
-    --brand: #9cc94f;
+    --brand: #f5747a;
     color-scheme: dark;
   }
 

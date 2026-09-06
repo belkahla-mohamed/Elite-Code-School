@@ -42,13 +42,13 @@ export function QuickContactForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="card p-6">
+    <form onSubmit={onSubmit}>
       <h3 className="font-display text-2xl font-black text-ink">Contact rapide</h3>
-      <p className="mt-2 text-sm text-ink-soft">Question rapide? L&apos;équipe vous rappelle sans créer une inscription.</p>
+      <p className="mt-2 text-sm text-ink-soft">Question rapide? L&apos;equipe vous rappelle sans creer une inscription.</p>
       <div className="mt-5 grid gap-3">
-        <input required name="name" className="rounded-brand-sm border-2 border-border bg-surface px-4 py-2.5 text-sm text-ink outline-none transition focus:border-sky placeholder:text-ink-soft/50" placeholder="Votre nom" />
-        <input required name="phone" type="tel" className="rounded-brand-sm border-2 border-border bg-surface px-4 py-2.5 text-sm text-ink outline-none transition focus:border-sky placeholder:text-ink-soft/50" placeholder="Téléphone" />
-        <Textarea name="message" required placeholder="Votre question…" className="min-h-24" />
+        <input required name="name" className="rounded-brand-sm border-2 border-border px-4 py-2.5 text-sm text-ink outline-none transition focus:border-brand placeholder:text-ink-soft/50" placeholder="Votre nom" />
+        <input required name="phone" type="tel" className="rounded-brand-sm border-2 border-border px-4 py-2.5 text-sm text-ink outline-none transition focus:border-brand placeholder:text-ink-soft/50" placeholder="Telephone" />
+        <Textarea name="message" required placeholder="Votre question..." className="min-h-24 bg-white focus:border-brand" />
       </div>
       <button type="submit" disabled={status === "loading"} className="btn-primary mt-5 w-full disabled:opacity-60">
         {status === "loading" ? "Envoi..." : "Envoyer le message"}

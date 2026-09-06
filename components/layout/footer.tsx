@@ -1,12 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin, Facebook, Instagram, Youtube } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="bg-ink">
+    <footer className="bg-surface dark:bg-body">
       <div className="container-shell py-10 sm:py-16">
-        <div className="grid gap-8 sm:gap-10 sm:grid-cols-3">
+        <div className="grid gap-8 sm:gap-10 sm:grid-cols-2 lg:grid-cols-4">
+          {/* Brand */}
           <div>
             <div className="mb-4 flex items-center gap-2.5">
               <Image
@@ -16,47 +17,69 @@ export function Footer() {
                 height={36}
                 className="size-9"
               />
-              <span className="font-display text-lg font-black text-white">Elite Code School</span>
+              <span className="font-display text-lg font-black text-ink">Elite Code School</span>
             </div>
-            <p className="max-w-xs text-sm leading-relaxed text-white/70">
-              Robotique, programmation et IA pour les jeunes de 7 à 17 ans à Marrakech.
+            <p className="max-w-xs text-sm leading-relaxed text-ink-soft">
+              Robotique, programmation et IA pour les jeunes de 7 a 17 ans a Marrakech.
             </p>
+            <div className="mt-4 flex gap-3">
+              <a href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="Facebook" className="flex size-9 items-center justify-center rounded-full bg-border transition hover:bg-brand hover:text-white">
+                <Facebook className="size-4 text-ink-soft" />
+              </a>
+              <a href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram" className="flex size-9 items-center justify-center rounded-full bg-border transition hover:bg-brand hover:text-white">
+                <Instagram className="size-4 text-ink-soft" />
+              </a>
+              <a href="https://youtube.com" target="_blank" rel="noreferrer" aria-label="YouTube" className="flex size-9 items-center justify-center rounded-full bg-border transition hover:bg-brand hover:text-white">
+                <Youtube className="size-4 text-ink-soft" />
+              </a>
+            </div>
           </div>
 
+          {/* Links */}
           <div>
-            <h4 className="mb-4 font-mono text-sm uppercase tracking-wider text-white/50">Liens rapides</h4>
+            <h4 className="mb-4 text-xs font-bold uppercase tracking-wider text-ink-soft">Liens rapides</h4>
             <nav className="flex flex-col gap-2">
-              <Link href="/" className="text-sm text-white/70 transition hover:text-white">Accueil</Link>
-              <Link href="/curricula" className="text-sm text-white/70 transition hover:text-white">Programmes</Link>
-              <Link href="/portfolios" className="text-sm text-white/70 transition hover:text-white">Portfolios</Link>
-              <Link href="/about" className="text-sm text-white/70 transition hover:text-white">À propos</Link>
-              <Link href="/contact" className="text-sm text-white/70 transition hover:text-white">Contact</Link>
-              <Link href="/login" className="text-sm text-white/70 transition hover:text-white">Connexion</Link>
+              <Link href="/" className="text-sm text-ink-soft transition hover:text-brand">Accueil</Link>
+              <Link href="/curricula" className="text-sm text-ink-soft transition hover:text-brand">Programmes</Link>
+              <Link href="/portfolios" className="text-sm text-ink-soft transition hover:text-brand">Portfolios</Link>
+              <Link href="/about" className="text-sm text-ink-soft transition hover:text-brand">A propos</Link>
+              <Link href="/contact" className="text-sm text-ink-soft transition hover:text-brand">Contact</Link>
             </nav>
           </div>
 
+          {/* Contact */}
           <div>
-            <h4 className="mb-4 font-mono text-sm uppercase tracking-wider text-white/50">Contact</h4>
+            <h4 className="mb-4 text-xs font-bold uppercase tracking-wider text-ink-soft">Contact</h4>
             <div className="flex flex-col gap-3">
-              <a href="mailto:contact@elitecodeschool.ma" className="flex items-center gap-2 text-sm text-white/70 transition hover:text-white">
+              <a href="mailto:contact@elitecodeschool.ma" className="flex items-center gap-2 text-sm text-ink-soft transition hover:text-brand">
                 <Mail className="size-4" /> contact@elitecodeschool.ma
               </a>
-              <a href="tel:+212600000000" suppressHydrationWarning className="flex items-center gap-2 text-sm text-white/70 transition hover:text-white">
+              <a href="tel:+212600000000" suppressHydrationWarning className="flex items-center gap-2 text-sm text-ink-soft transition hover:text-brand">
                 <Phone className="size-4" /> +212 600 000 000
               </a>
-              <span className="flex items-center gap-2 text-sm text-white/70">
+              <span className="flex items-center gap-2 text-sm text-ink-soft">
                 <MapPin className="size-4" /> Marrakech, Maroc
               </span>
             </div>
           </div>
+
+          {/* Hours */}
+          <div>
+            <h4 className="mb-4 text-xs font-bold uppercase tracking-wider text-ink-soft">Horaires</h4>
+            <div className="flex flex-col gap-2 text-sm text-ink-soft">
+              <span>Lun – Ven : 9h30 – 18h30</span>
+              <span>Samedi : 9h30 – 13h00</span>
+              <span>Dimanche : Ferme</span>
+            </div>
+          </div>
         </div>
 
-        <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t-2 border-white/15 pt-6 sm:mt-12 sm:flex-row">
-          <p className="text-xs text-white/50">
-            &copy; {new Date().getFullYear()} Elite Code School. Tous droits réservés.
+        <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-border pt-6 sm:mt-12 sm:flex-row">
+          <p className="text-xs text-ink-soft">
+            &copy; {new Date().getFullYear()} Elite Code School. Tous droits reserves.
           </p>
           <div className="flex gap-4">
-            <Link href="/privacy" className="text-xs text-white/50 transition hover:text-white">Politique de confidentialité</Link>
+            <Link href="/privacy" className="text-xs text-ink-soft transition hover:text-brand">Politique de confidentialite</Link>
           </div>
         </div>
       </div>
