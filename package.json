@@ -13,7 +13,8 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:seed-supabase": "tsx scripts/seed-supabase.ts",
     "db:studio": "prisma studio",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "dev:clean": "node scripts/dev-clean.mjs"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
