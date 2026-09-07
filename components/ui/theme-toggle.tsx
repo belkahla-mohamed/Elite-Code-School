@@ -28,7 +28,7 @@ export function ThemeToggle() {
       aria-checked={isDark}
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       title={isDark ? "Light mode" : "Dark mode"}
-      className="relative inline-flex h-7 w-12 shrink-0 cursor-pointer items-center rounded-full border-2 border-border bg-surface transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky focus-visible:ring-offset-2 focus-visible:ring-offset-body"
+      className="relative inline-flex h-7 w-12 shrink-0 cursor-pointer items-center rounded-full border-2 border-border dark:border-white/15 bg-surface dark:bg-[#1e293b] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 focus-visible:ring-offset-body"
     >
       <span className="absolute left-1 flex items-center justify-center pointer-events-none">
         <Sun className={`h-3 w-3 transition-all duration-300 ${
@@ -43,7 +43,7 @@ export function ThemeToggle() {
       <span
         className={`pointer-events-none block h-5 w-5 rounded-full border-2 border-border transition-all duration-300 flex items-center justify-center ${
           isDark
-            ? "translate-x-5 bg-sky"
+            ? "translate-x-5 bg-brand"
             : "translate-x-0 bg-white"
         }`}
       >

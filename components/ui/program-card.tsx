@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ArrowRight, ArrowUpRight } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 
 interface Category {
   id: string
@@ -130,70 +130,74 @@ function getTheme(program: Program): Theme {
   }
 }
 
+const programLevels: Record<string, { label: string; color: string }> = {
+  debutant: { label: "Débutant", color: "#22c55e" },
+  intermediaire: { label: "Intermédiaire", color: "#f59e0b" },
+  avance: { label: "Avancé", color: "#ef4444" },
+}
+
 export function ProgramCard({ program }: { program: Program }) {
   const theme = getTheme(program)
-
-  const levelLabel = program.level === "debutant" ? "Débutant"
-    : program.level === "intermediaire" ? "Intermédiaire"
-    : "Avancé"
+  const level = programLevels[program.level] ?? programLevels.debutant
 
   return (
     <Link
       href={`/curricula/${program.id}`}
-      className="group block overflow-hidden rounded-brand border-2 border-border bg-white transition hover:border-sky dark:bg-surface"
+      className="group block overflow-hidden rounded-brand border-2 border-border bg-white transition duration-300 ease-out hover:-translate-y-0.5 hover:border-sky hover:shadow-md dark:bg-[#1e293b]"
     >
       {/* Top: Image Header */}
-      <div
-        className="relative h-40 overflow-hidden"
-        style={{ backgroundColor: theme.headerBg }}
-      >
+      <div className="relative h-48 overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={program.image || FALLBACK_IMAGE}
           alt={program.title}
           loading="lazy"
-          className="size-full object-cover transition duration-500 group-hover:scale-105"
+          className="size-full object-cover transition duration-700 ease-out group-hover:scale-105"
         />
+        <div className="absolute inset-x-0 top-0 flex items-start justify-between p-3">
+          {program.priceMonthly && (
+            <span className="rounded-full bg-brand px-3 py-1 text-xs font-bold text-white shadow-sm">
+              {program.priceMonthly} DH/mois
+            </span>
+          )}
+          <span className="rounded-full bg-ink/70 px-3 py-1 text-xs font-bold text-white backdrop-blur-sm ml-auto">
+            {program.ageRange}
+          </span>
+        </div>
       </div>
 
       {/* Bottom: Content */}
-      <div className="relative bg-white p-6 pt-5 dark:bg-surface">
-        <ArrowUpRight className="absolute right-4 top-4 size-5 text-ink-soft/40 transition-colors group-hover:text-sky" style={{ strokeWidth: 2.5 }} />
+      <div className="relative flex flex-1 flex-col bg-white p-6 dark:bg-[#1e293b]">
+        <span
+          className="mb-3 inline-flex w-fit items-center rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-white"
+          style={{ backgroundColor: level.color }}
+        >
+          {level.label}
+        </span>
 
-        <h3 className="pr-8 font-display text-xl font-black leading-tight text-ink dark:text-body">
+        <h3 className="font-display text-xl font-black leading-tight text-ink dark:text-white">
           {program.title}
         </h3>
 
-        <p className="mt-2 font-body text-sm leading-6 text-ink-soft line-clamp-2">
+        <p className="mt-2 font-body text-sm leading-6 text-ink-soft line-clamp-2 dark:text-slate-300">
           {program.description}
         </p>
 
         {/* Metadata */}
-        <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 font-body text-xs text-ink-soft/70">
-          <span>{program.ageRange}</span>
-          {program.duration && <><span className="text-ink-soft/40">·</span><span>{program.duration}</span></>}
-          {program.priceMonthly && <><span className="text-ink-soft/40">·</span><span>{program.priceMonthly} DH/mois</span></>}
-        </div>
+        <div className="mt-auto">
+          <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-border pt-4 font-body text-xs font-medium text-ink-soft/70 dark:border-white/10 dark:text-slate-400">
+            {program.duration && <span>{program.duration}</span>}
+            {program.schedule && <><span className="text-ink-soft/40">·</span><span>{program.schedule}</span></>}
+          </div>
 
-        {/* Level badge + Découvrir */}
-        <div className="mt-5 flex items-center justify-between">
-          <span className={`rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wide ${
-            program.level === "debutant" ? "bg-lime/15 text-lime-700 dark:bg-lime/20 dark:text-lime" :
-            program.level === "intermediaire" ? "bg-amber/15 text-amber-700 dark:bg-amber/20 dark:text-amber" :
-            "bg-violet/15 text-violet-700 dark:bg-violet/20 dark:text-violet"
-          }`}>
-            {levelLabel}
-          </span>
-
-          <span
-            className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold transition-all duration-300 group-hover:gap-2.5"
-            style={{
-              backgroundColor: theme.buttonBg,
-              color: theme.buttonText,
-            }}
-          >
-            Découvrir <ArrowRight className="size-3.5" />
-          </span>
+          <div className="mt-4">
+            <span
+              className="inline-flex items-center gap-1.5 text-xs font-bold transition-all duration-300 ease-out group-hover:gap-2.5"
+              style={{ color: theme.accent }}
+            >
+              Découvrir <ArrowRight className="size-3.5" />
+            </span>
+          </div>
         </div>
       </div>
     </Link>

@@ -50,18 +50,20 @@ export default function PublicNav() {
   return (
     <>
       {/* ── Desktop Nav ─────────────────────────────── */}
-      <nav className="hidden md:flex items-center gap-1">
-        {links.map(({ href, label }) => (
-          <Link
-            key={href}
-            href={href}
-            className={`rounded-full px-4 py-2 text-sm font-bold transition hover:bg-surface hover:text-ink ${
-              pathname === href ? "font-black text-brand" : "text-ink-soft"
-            }`}
-          >
-            {label}
-          </Link>
-        ))}
+      <nav className="hidden md:flex items-center gap-1" suppressHydrationWarning>
+        {links.map(({ href, label }) => {
+          const active = pathname === href;
+          return (
+            <Link
+              key={href}
+              href={href}
+              suppressHydrationWarning
+              className={`rounded-full px-4 py-2 text-sm font-bold transition hover:text-ink dark:hover:text-white ${active ? "font-black text-brand" : "text-ink-soft"}`}
+            >
+              {label}
+            </Link>
+          );
+        })}
         <ThemeToggle />
         {isAuthenticated ? (
           <div className="relative ml-2" ref={profileRef}>
@@ -69,7 +71,7 @@ export default function PublicNav() {
               onClick={() => setProfileOpen((v) => !v)}
               aria-haspopup="menu"
               aria-expanded={profileOpen}
-              className="flex items-center gap-2 rounded-full border-2 border-border bg-surface px-3 py-1.5 text-sm font-bold text-ink transition hover:border-brand active:scale-[0.97]"
+              className="flex items-center gap-2 rounded-full border-2 border-border dark:border-white/15 bg-surface dark:bg-[#1e293b] px-3 py-1.5 text-sm font-bold text-ink transition hover:border-brand active:scale-[0.97]"
             >
               <span className="flex size-7 items-center justify-center rounded-full bg-brand text-[11px] font-black text-white">
                 {initials}
@@ -80,11 +82,11 @@ export default function PublicNav() {
             {profileOpen && (
               <>
                 {/* Desktop dropdown */}
-                <div className="absolute right-0 top-full mt-2 hidden w-56 overflow-hidden rounded-brand border-2 border-border bg-white dark:bg-surface md:block">
+                <div className="absolute right-0 top-full mt-2 hidden w-56 overflow-hidden rounded-brand border-2 border-border dark:border-white/10 bg-white dark:bg-[#0f172a] md:block">
                     {/* Header section */}
                     <div className="bg-brand/5 px-4 py-4">
                       <div className="flex items-center gap-3">
-                        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-sky text-sm font-black text-white">
+                        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand text-sm font-black text-white">
                           {initials}
                         </span>
                         <div className="min-w-0">
@@ -101,9 +103,9 @@ export default function PublicNav() {
                         <Link
                           href="/dashboard"
                           onClick={() => setProfileOpen(false)}
-                          className="flex items-center gap-3 rounded-brand-sm px-3 py-2.5 text-sm font-bold text-ink transition hover:bg-sky/5 hover:text-sky"
+                          className="flex items-center gap-3 rounded-brand-sm px-3 py-2.5 text-sm font-bold text-ink transition hover:bg-brand/5 hover:text-brand"
                         >
-                          <span className="flex size-7 items-center justify-center rounded-brand-sm bg-sky/10 text-sky">
+                          <span className="flex size-7 items-center justify-center rounded-brand-sm bg-brand/10 text-brand">
                             <LayoutDashboard className="size-3.5" />
                           </span>
                           Tableau de bord
@@ -112,9 +114,9 @@ export default function PublicNav() {
                         <Link
                           href="/parent"
                           onClick={() => setProfileOpen(false)}
-                          className="flex items-center gap-3 rounded-brand-sm px-3 py-2.5 text-sm font-bold text-ink transition hover:bg-sky/5 hover:text-sky"
+                          className="flex items-center gap-3 rounded-brand-sm px-3 py-2.5 text-sm font-bold text-ink transition hover:bg-brand/5 hover:text-brand"
                         >
-                          <span className="flex size-7 items-center justify-center rounded-brand-sm bg-sky/10 text-sky">
+                          <span className="flex size-7 items-center justify-center rounded-brand-sm bg-brand/10 text-brand">
                             <GraduationCap className="size-3.5" />
                           </span>
                           Portfolio
@@ -122,7 +124,7 @@ export default function PublicNav() {
                       )}
                     </div>
 
-                    <div className="border-t-2 border-border" />
+                    <div className="border-t-2 border-border dark:border-white/10" />
                     <div className="p-1.5">
                       <button
                         onClick={() => { setProfileOpen(false); logout(); }}
@@ -155,7 +157,8 @@ export default function PublicNav() {
           onClick={() => setOpen((v) => !v)}
           aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
           aria-expanded={open}
-          className="flex size-10 items-center justify-center rounded-full border-2 border-border bg-surface text-ink transition hover:bg-surface"
+          className="flex size-10 items-center justify-center rounded-full border-2 border-border dark:border-white/15 bg-surface dark:bg-[#1e293b] text-ink transition hover:bg-surface dark:hover:bg-white/5"
+          suppressHydrationWarning
         >
           {open ? <X className="size-5" /> : <Menu className="size-5" />}
         </button>
@@ -175,9 +178,9 @@ export default function PublicNav() {
           />
 
           {/* Drawer panel */}
-          <div className="absolute right-0 top-0 flex h-full w-[75vw] max-w-xs flex-col border-l-2 border-border bg-white dark:bg-surface">
+          <div className="absolute right-0 top-0 flex h-full w-[75vw] max-w-xs flex-col border-l-2 border-border dark:border-white/10 bg-white dark:bg-[#0f172a]">
             {/* Header */}
-            <div className="flex items-center justify-between border-b-2 border-border px-6 py-4">
+            <div className="flex items-center justify-between border-b-2 border-border dark:border-white/10 px-6 py-4">
               <Link href="/" className="flex items-center gap-2.5" onClick={() => setOpen(false)}>
                 <Image
                   src="/logos/logo-icon.png"
@@ -202,7 +205,7 @@ export default function PublicNav() {
               {isAuthenticated && (
                 <div className="mb-4 overflow-hidden rounded-brand border-2 border-border bg-brand/5 px-4 py-3.5">
                   <div className="flex items-center gap-3">
-                    <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-sky text-sm font-black text-white">
+                    <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand text-sm font-black text-white">
                       {initials}
                     </span>
                     <div className="min-w-0">
@@ -214,31 +217,31 @@ export default function PublicNav() {
                   </div>
                 </div>
               )}
-              {links.map(({ href, label }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  onClick={() => setOpen(false)}
-                  className={`flex items-center rounded-brand px-4 py-3.5 text-base font-bold transition hover:bg-surface ${
-                    pathname === href
-                      ? "bg-brand/10 text-brand"
-                      : "text-ink"
-                  }`}
-                >
-                  {label}
-                </Link>
-              ))}
+              {links.map(({ href, label }) => {
+                const active = pathname === href;
+                return (
+                  <Link
+                    key={href}
+                    href={href}
+                    onClick={() => setOpen(false)}
+                    suppressHydrationWarning
+                    className={`flex items-center rounded-brand px-4 py-3.5 text-base font-bold transition ${active ? "bg-brand/10 text-brand" : "text-ink"}`}
+                  >
+                    {label}
+                  </Link>
+                );
+              })}
             </nav>
 
             {/* CTA / Profile actions */}
-            <div className="border-t-2 border-border px-4 py-6">
+            <div className="border-t-2 border-border dark:border-white/10 px-4 py-6">
               {isAuthenticated ? (
                 <div className="space-y-2">
                   {isAdmin ? (
                     <Link
                       href="/dashboard"
                       onClick={() => setOpen(false)}
-                      className="flex w-full items-center justify-center gap-2 rounded-full border-2 border-border bg-surface px-5 py-3 text-sm font-bold text-ink transition hover:bg-surface"
+                      className="flex w-full items-center justify-center gap-2 rounded-full border-2 border-border dark:border-white/15 bg-surface dark:bg-[#1e293b] px-5 py-3 text-sm font-bold text-ink transition hover:bg-surface dark:hover:bg-white/5"
                     >
                       <LayoutDashboard className="size-4" />
                       Tableau de bord
@@ -247,7 +250,7 @@ export default function PublicNav() {
                     <Link
                       href="/parent"
                       onClick={() => setOpen(false)}
-                      className="flex w-full items-center justify-center gap-2 rounded-full border-2 border-border bg-surface px-5 py-3 text-sm font-bold text-ink transition hover:bg-surface"
+                      className="flex w-full items-center justify-center gap-2 rounded-full border-2 border-border dark:border-white/15 bg-surface dark:bg-[#1e293b] px-5 py-3 text-sm font-bold text-ink transition hover:bg-surface dark:hover:bg-white/5"
                     >
                       <GraduationCap className="size-4" />
                       Portfolio

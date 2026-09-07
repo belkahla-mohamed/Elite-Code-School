@@ -3,10 +3,8 @@ import Link from "next/link";
 import {
   ArrowUpRight,
   ArrowRight,
-  BrainCircuit,
   CalendarDays,
   Check,
-  CircuitBoard,
   Clock,
   Facebook,
   GraduationCap,
@@ -17,11 +15,8 @@ import {
   Puzzle,
   Rocket,
   Sparkles,
-  Star,
-  Trophy,
   Users,
   Youtube,
-  Zap,
 } from "lucide-react";
 import { QuickContactForm } from "@/components/QuickContactForm";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
@@ -78,20 +73,20 @@ function TopBar() {
           <Clock className="size-3.5" /> Lun – Sam : 9h30 – 18h30
         </span>
         <div className="flex items-center gap-4">
-          <a href="tel:+212600000000" suppressHydrationWarning className="inline-flex items-center gap-1.5 transition hover:opacity-80">
+          <a href="tel:+212600000000" suppressHydrationWarning className="inline-flex items-center gap-1.5 transition duration-200 ease-out hover:opacity-80">
             <Phone className="size-3.5" /> +212 600 000 000
           </a>
           <span className="hidden items-center gap-1.5 sm:inline-flex">
             <MapPin className="size-3.5" /> Marrakech, Maroc
           </span>
           <span className="hidden items-center gap-3 md:flex">
-            <a aria-label="Facebook" href="https://facebook.com" target="_blank" rel="noreferrer" className="transition hover:opacity-80">
+            <a aria-label="Facebook" href="https://facebook.com" target="_blank" rel="noreferrer" className="transition duration-200 ease-out hover:opacity-80">
               <Facebook className="size-3.5" />
             </a>
-            <a aria-label="Instagram" href="https://instagram.com" target="_blank" rel="noreferrer" className="transition hover:opacity-80">
+            <a aria-label="Instagram" href="https://instagram.com" target="_blank" rel="noreferrer" className="transition duration-200 ease-out hover:opacity-80">
               <Instagram className="size-3.5" />
             </a>
-            <a aria-label="YouTube" href="https://youtube.com" target="_blank" rel="noreferrer" className="transition hover:opacity-80">
+            <a aria-label="YouTube" href="https://youtube.com" target="_blank" rel="noreferrer" className="transition duration-200 ease-out hover:opacity-80">
               <Youtube className="size-3.5" />
             </a>
           </span>
@@ -139,13 +134,13 @@ function Hero() {
 <div className="mt-8 flex flex-wrap gap-3">
             <Link
               href="/inscription"
-              className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-bold text-brand transition hover:bg-cream"
+              className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-bold text-brand transition duration-200 ease-out hover:bg-cream"
             >
               Inscription maintenant <ArrowRight className="size-4" />
             </Link>
             <Link
               href="/curricula"
-              className="inline-flex items-center gap-2 rounded-full border-2 border-white/40 bg-white/10 px-7 py-3 text-sm font-bold text-white transition hover:border-white hover:bg-white/20"
+              className="inline-flex items-center gap-2 rounded-full border-2 border-white/40 bg-white/10 px-7 py-3 text-sm font-bold text-white transition duration-200 ease-out hover:border-white hover:bg-white/20"
             >
               Nos programmes
             </Link>
@@ -162,9 +157,6 @@ function Hero() {
         {/* Right — photo frame + floating gamification cards */}
         <div className="relative mx-auto w-full max-w-lg lg:ml-auto">
           <div aria-hidden className="absolute -inset-3 -rotate-2 rounded-brand border-2 border-dashed border-white/40" />
-          <div className="absolute -right-3 top-8 rounded-2xl bg-amber px-4 py-2.5 font-display text-sm font-semibold text-white sm:-right-6">
-            7–17 ans
-          </div>
           <div className="relative overflow-hidden rounded-brand border-4 border-white bg-white">
             <Image
               src="/images/hero-student.jpg"
@@ -178,30 +170,6 @@ function Hero() {
             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/65 via-ink/15 to-transparent px-5 pb-4 pt-12 text-white">
               <p className="font-display text-lg font-semibold">Makers en herbe</p>
               <p className="text-xs font-bold text-white/85">Coding · Robotique · IA — Marrakech</p>
-            </div>
-          </div>
-
-          {/* Floating gamification cards — desktop only (they overlap on small screens) */}
-          <div className="absolute -left-3 bottom-16 hidden sm:-left-8 sm:block">
-            <div className="flex items-center gap-3 rounded-brand-sm border-2 border-brand bg-white px-4 py-3 dark:bg-surface">
-              <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-amber/15">
-                <Trophy className="size-5 text-amber" />
-              </span>
-              <div>
-                <p className="text-xs font-bold text-ink">Badge débloqué</p>
-                <p className="text-[11px] font-semibold text-ink-soft">Logique — Mission Mars</p>
-              </div>
-            </div>
-          </div>
-          <div className="absolute -right-2 top-36 hidden sm:-right-6 sm:block">
-            <div className="flex items-center gap-3 rounded-brand-sm border-2 border-sky/20 bg-white px-4 py-3 dark:bg-surface">
-              <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-sky/15">
-                <Zap className="size-5 text-sky-dark" />
-              </span>
-              <div>
-                <p className="text-xs font-bold text-ink">+120 XP cette semaine</p>
-                <p className="text-[11px] font-semibold text-ink-soft">Niveau 3 · Apprenti codeur</p>
-              </div>
             </div>
           </div>
         </div>
@@ -247,7 +215,7 @@ function Welcome() {
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
             {welcomeItems.map((item, i) => (
               <ScrollReveal key={item.title} delay={i * 80}>
-                <div className="flex gap-4 rounded-brand border border-border bg-surface p-5 transition hover:border-brand/30 dark:border-border dark:bg-surface">
+                <div className="flex gap-4 rounded-brand border border-border bg-surface p-5 transition duration-300 ease-out hover:-translate-y-0.5 hover:border-brand/30 hover:shadow-md dark:border-white/10 dark:bg-[#1e293b]">
                   <span className={`flex size-12 shrink-0 items-center justify-center rounded-brand-sm ${item.tint}`}>
                     <item.icon className="size-6" />
                   </span>
@@ -276,16 +244,6 @@ function Welcome() {
               sizes="(max-width: 1024px) 0vw, 480px"
               className="aspect-[4/3] w-full object-cover"
             />
-          </div>
-          {/* Floating badge */}
-          <div className="absolute -bottom-4 left-6 flex items-center gap-3 rounded-brand-sm border-2 border-brand bg-white px-4 py-3 dark:bg-surface">
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand/10">
-              <Rocket className="size-5 text-brand" />
-            </span>
-            <div>
-              <p className="text-xs font-bold text-ink dark:text-ink">+300 projets créés</p>
-              <p className="text-[11px] font-semibold text-ink-soft dark:text-ink-soft">par nos élèves chaque année</p>
-            </div>
           </div>
         </ScrollReveal>
       </div>
@@ -322,16 +280,6 @@ function About() {
               className="aspect-[4/3] w-full object-cover"
             />
           </div>
-          {/* Floating badge */}
-          <div className="absolute -bottom-4 right-4 flex items-center gap-3 rounded-brand-sm border-2 border-white/30 bg-white px-4 py-3 sm:right-8">
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-amber/15">
-              <Star className="size-5 fill-amber text-amber" />
-            </span>
-            <div>
-              <p className="text-xs font-bold text-ink">4,9/5</p>
-              <p className="text-[11px] font-semibold text-ink-soft">avis des parents</p>
-            </div>
-          </div>
         </ScrollReveal>
 
         {/* Right — content */}
@@ -358,7 +306,7 @@ function About() {
           </ul>
           <Link
             href="/inscription"
-            className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-bold text-brand transition hover:bg-cream"
+            className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-bold text-brand transition duration-200 ease-out hover:bg-cream"
           >
             Inscription maintenant <ArrowRight className="size-4" />
           </Link>
@@ -377,7 +325,7 @@ const stats = [
 
 function StatsBand() {
   return (
-    <section className="relative isolate overflow-hidden bg-brand">
+    <section className="relative isolate overflow-hidden bg-brand dark:bg-brand-dark">
       {/* Decorative shapes — matching About section */}
       <div aria-hidden className="absolute -left-16 top-12 size-40 rounded-full bg-white/10" />
       <div aria-hidden className="absolute bottom-8 right-[15%] size-24 rounded-full bg-amber/20" />
@@ -450,9 +398,9 @@ function Team() {
 }
 
 const facilities = [
-  { icon: CircuitBoard, iconTint: "bg-brand text-white", image: "/images/hero-student.jpg", title: "Robotique & hardware", text: "mBot, Arduino, Micro:bit, Raspberry Pi : de vraies machines à programmer, pas des simulations." },
-  { icon: BrainCircuit, iconTint: "bg-amber text-white", image: "/images/kid-elearning.jpg", title: "Coding & IA", text: "De Scratch à Python jusqu'aux projets d'IA : un cursus structuré qui suit l'élève pendant des années." },
-  { icon: Trophy, iconTint: "bg-sky text-white", image: "/images/hero-family.jpg", title: "Suivi & certificats", text: "Portfolio public, heures de code comptabilisées, badges et certificats validés par l'administration." },
+  { image: "/images/hero-student.jpg", title: "Robotique & hardware", text: "mBot, Arduino, Micro:bit, Raspberry Pi : de vraies machines à programmer, pas des simulations." },
+  { image: "/images/kid-elearning.jpg", title: "Coding & IA", text: "De Scratch à Python jusqu'aux projets d'IA : un cursus structuré qui suit l'élève pendant des années." },
+  { image: "/images/hero-family.jpg", title: "Suivi & certificats", text: "Portfolio public, heures de code comptabilisées, badges et certificats validés par l'administration." },
 ];
 
 function Facilities() {
@@ -489,17 +437,13 @@ function Facilities() {
                   src={item.image}
                   alt={item.title}
                   loading="lazy"
-                  className="aspect-[4/3] w-full object-cover transition duration-500 group-hover:scale-105"
+                  className="aspect-[4/3] w-full object-cover transition duration-700 ease-out group-hover:scale-105"
                 />
-                {/* Icon overlapping bottom */}
-                <span className={`absolute -bottom-5 left-6 flex size-14 items-center justify-center rounded-full shadow-lg ${item.iconTint}`}>
-                  <item.icon className="size-7" />
-                </span>
               </div>
               {/* Content */}
-              <div className="bg-white px-6 pt-10 pb-6">
-                <h3 className="font-display text-lg font-semibold text-ink">{item.title}</h3>
-                <p className="mt-2 text-sm font-medium leading-6 text-ink-soft">{item.text}</p>
+              <div className="bg-white px-6 py-6 dark:bg-[#1e293b]">
+                <h3 className="font-display text-lg font-semibold text-ink dark:text-white">{item.title}</h3>
+                <p className="mt-2 text-sm font-medium leading-6 text-ink-soft dark:text-slate-300">{item.text}</p>
               </div>
             </div>
           ))}
@@ -529,13 +473,13 @@ function Gallery() {
         />
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
           {gallery.map((item) => (
-            <figure key={item.src} className="group relative overflow-hidden rounded-brand border border-border">
+            <figure key={item.src} className="group relative overflow-hidden rounded-brand border border-border dark:border-white/10">
               <Image
                 src={item.src}
                 alt={item.alt}
                 width={600}
                 height={450}
-                className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                className="h-full w-full object-cover transition duration-500 ease-out group-hover:scale-105"
               />
               <figcaption className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 bg-gradient-to-t from-ink/85 via-ink/40 to-transparent p-4 pt-12 text-xs font-bold text-white">
                 <span>{item.label}</span>
@@ -569,15 +513,14 @@ function News() {
         <div className="grid gap-6 md:grid-cols-3">
           {news.map((item, i) => (
             <ScrollReveal key={item.title} delay={i * 90} className="h-full">
-              <article className="group flex h-full flex-col overflow-hidden rounded-brand border border-border bg-white transition hover:border-brand dark:border-border dark:bg-surface">
+              <article className="group flex h-full flex-col overflow-hidden rounded-brand border border-border bg-white transition duration-300 ease-out hover:-translate-y-0.5 hover:border-brand hover:shadow-md dark:border-white/10 dark:bg-[#1e293b]">
                 <div className="relative">
                   <Image src={item.image} alt={item.title} width={600} height={400} className="h-44 w-full object-cover" />
-                  <span className="absolute left-4 top-4 rounded-full border border-border bg-white px-3 py-1 text-[11px] font-bold text-ink">{item.date}</span>
                 </div>
                 <div className="flex flex-1 flex-col p-6">
-                  <h3 className="font-display text-lg font-semibold text-ink transition group-hover:text-brand dark:text-ink">{item.title}</h3>
+                  <h3 className="font-display text-lg font-semibold text-ink transition duration-300 ease-out group-hover:text-brand dark:text-ink">{item.title}</h3>
                   <p className="mt-2 line-clamp-2 text-sm font-medium leading-6 text-ink-soft dark:text-ink-soft">{item.text}</p>
-                  <span className="mt-auto inline-flex items-center gap-1.5 pt-4 text-xs font-bold text-brand transition group-hover:gap-2.5">
+                  <span className="mt-auto inline-flex items-center gap-1.5 pt-4 text-xs font-bold text-brand transition duration-300 ease-out group-hover:gap-2.5">
                     Lire la suite <ArrowRight className="size-3.5" />
                   </span>
                 </div>
@@ -615,7 +558,7 @@ function ContactCta() {
 
           {/* Info cards */}
           <div className="mt-8 grid gap-4 sm:grid-cols-3 lg:grid-cols-1 lg:gap-3">
-            <a href="tel:+212600000000" suppressHydrationWarning className="flex items-center gap-4 rounded-brand border border-white/20 bg-white/10 p-4 transition hover:border-white/40 hover:bg-white/15">
+            <a href="tel:+212600000000" suppressHydrationWarning className="flex items-center gap-4 rounded-brand border border-white/20 bg-white/10 p-4 transition duration-300 ease-out hover:-translate-y-0.5 hover:border-white/40 hover:bg-white/15 hover:shadow-lg">
               <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-white/15">
                 <Phone className="size-5 text-white" />
               </span>
@@ -624,7 +567,7 @@ function ContactCta() {
                 <small className="text-xs font-semibold text-white/60">Lun – Sam, 9h30 – 18h30</small>
               </div>
             </a>
-            <a href="mailto:contact@elitecodeschool.ma" className="flex items-center gap-4 rounded-brand border border-white/20 bg-white/10 p-4 transition hover:border-white/40 hover:bg-white/15">
+            <a href="mailto:contact@elitecodeschool.ma" className="flex items-center gap-4 rounded-brand border border-white/20 bg-white/10 p-4 transition duration-300 ease-out hover:-translate-y-0.5 hover:border-white/40 hover:bg-white/15 hover:shadow-lg">
               <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-white/15">
                 <Mail className="size-5 text-white" />
               </span>
@@ -646,7 +589,7 @@ function ContactCta() {
         </div>
 
         {/* Right — form */}
-        <div className="rounded-brand bg-white p-6 sm:p-8">
+        <div className="rounded-brand bg-white p-6 sm:p-8 dark:bg-surface">
           <QuickContactForm />
         </div>
       </div>

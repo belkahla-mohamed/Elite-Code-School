@@ -19,11 +19,11 @@
   }
 
   .dark {
-    --background: #090d16;
-    --surface: #131c2e;
+    --background: #0b1120;
+    --surface: #182032;
     --text: #f8fafc;
     --text-soft: #94a3b8;
-    --border: #1e293b;
+    --border: #293548;
     --brand: #f5747a;
     color-scheme: dark;
   }
@@ -86,11 +86,11 @@
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-bold text-white transition hover:bg-brand-dark focus-visible:outline-none;
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-bold text-white transition duration-200 ease-out hover:bg-brand-dark focus-visible:outline-none;
   }
 
   .btn-outline {
-    @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-brand bg-white px-6 py-3 text-sm font-bold text-brand transition hover:bg-brand hover:text-white focus-visible:outline-none dark:border-brand-light dark:bg-transparent dark:text-brand-light dark:hover:bg-brand-light dark:hover:text-white;
+    @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-brand bg-white px-6 py-3 text-sm font-bold text-brand transition duration-200 ease-out hover:bg-brand hover:text-white focus-visible:outline-none dark:border-brand-light dark:bg-transparent dark:text-brand-light dark:hover:bg-brand-light dark:hover:text-white;
   }
 
   .section-padding {

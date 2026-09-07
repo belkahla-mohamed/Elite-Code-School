@@ -35,6 +35,7 @@ export function ScrollReveal({ children, className = "", delay = 0, threshold = 
     <div
       ref={ref}
       className={className}
+      suppressHydrationWarning
       style={{
         opacity: visible ? 1 : 0,
         transform: visible ? "translateY(0)" : "translateY(24px)",

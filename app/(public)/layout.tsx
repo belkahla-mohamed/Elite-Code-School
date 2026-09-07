@@ -6,7 +6,7 @@ import PublicNav from "@/components/layout/public-nav";
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <header className="sticky top-0 z-40 border-b-2 border-border bg-surface">
+      <header className="sticky top-0 z-40 border-b-2 border-border bg-surface dark:bg-[#0f172a] dark:border-white/10" suppressHydrationWarning>
         <div className="container-shell flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5 shrink-0">
             <Image
