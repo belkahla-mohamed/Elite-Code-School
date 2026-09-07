@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ArrowRight, Clock, CalendarDays, Users } from "lucide-react"
+import { ArrowRight, ChevronLeft, ChevronRight, Clock, CalendarDays, Search, Users } from "lucide-react"
 import { AnimatePresence, motion } from "framer-motion"
 import type { Program } from "@/lib/types"
 
@@ -21,21 +21,54 @@ const tabs = [
 
 type TabKey = (typeof tabs)[number]["key"]
 
+const PAGE_SIZE = 4
+
 export function CurriculaClient({ programs }: { programs: Program[] }) {
   const [active, setActive] = useState<TabKey>("all")
+  const [query, setQuery] = useState("")
+  const [page, setPage] = useState(1)
 
-  const filtered = active === "all"
+  const byLevel = active === "all"
     ? programs
     : programs.filter((p) => p.level === active)
+
+  const q = query.trim().toLowerCase()
+  const filtered = q
+    ? byLevel.filter((p) =>
+        p.title.toLowerCase().includes(q) ||
+        p.description.toLowerCase().includes(q) ||
+        p.tools.some((t) => t.toLowerCase().includes(q))
+      )
+    : byLevel
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const safePage = Math.min(page, totalPages)
+  const visible = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
 
   return (
     <section className="bg-white py-16 sm:py-20 dark:bg-body">
       <div className="container-shell">
-        <div className="mb-8 flex flex-wrap items-center justify-center gap-2" suppressHydrationWarning>
+        {/* Search */}
+        <div className="mx-auto mb-6 max-w-xl">
+          <label className="relative block">
+            <span className="sr-only">Rechercher un programme</span>
+            <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-ink-soft" />
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => { setQuery(e.target.value); setPage(1) }}
+              placeholder="Rechercher : Scratch, robot, Python, IA…"
+              className="w-full rounded-full border border-border bg-white py-3 pl-11 pr-4 text-sm font-medium text-ink outline-none transition duration-200 ease-out placeholder:text-ink-soft/60 focus:border-brand focus:ring-2 focus:ring-brand/15 dark:border-white/10 dark:bg-[#1e293b] dark:text-white"
+            />
+          </label>
+        </div>
+
+        {/* Level filter tabs */}
+        <div className="mb-6 flex flex-wrap items-center justify-center gap-2" suppressHydrationWarning>
           {tabs.map((tab) => (
             <button
               key={tab.key}
-              onClick={() => setActive(tab.key)}
+              onClick={() => { setActive(tab.key); setPage(1) }}
               className={`rounded-full px-5 py-2 text-xs font-bold uppercase tracking-wide transition duration-200 ease-out ${
                 active === tab.key
                   ? "text-white"
@@ -48,9 +81,15 @@ export function CurriculaClient({ programs }: { programs: Program[] }) {
           ))}
         </div>
 
+        {/* Results count */}
+        <p className="mb-6 text-center text-xs font-bold uppercase tracking-wide text-ink-soft">
+          {filtered.length} programme{filtered.length > 1 ? "s" : ""} trouvé{filtered.length > 1 ? "s" : ""}
+          {q ? <> pour «&nbsp;{query}&nbsp;»</> : ""}
+        </p>
+
         <motion.div layout className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           <AnimatePresence mode="popLayout">
-            {filtered.map((program, index) => {
+            {visible.map((program, index) => {
               const level = programLevels[program.level] ?? programLevels.debutant
               return (
                 <motion.div
@@ -112,10 +151,56 @@ export function CurriculaClient({ programs }: { programs: Program[] }) {
           </AnimatePresence>
         </motion.div>
 
+        {/* Empty state */}
         {filtered.length === 0 && (
-          <p className="py-12 text-center text-sm font-medium text-ink-soft dark:text-slate-400">
-            Aucun programme pour ce niveau.
-          </p>
+          <div className="py-12 text-center">
+            <p className="text-sm font-medium text-ink-soft dark:text-slate-400">
+              Aucun programme{q ? <> pour «&nbsp;{query}&nbsp;»</> : " pour ce niveau"}.
+            </p>
+            {(q || active !== "all") && (
+              <button
+                onClick={() => { setQuery(""); setActive("all"); setPage(1) }}
+                className="mt-4 inline-flex items-center gap-2 rounded-full border-2 border-brand bg-white px-5 py-2 text-xs font-bold text-brand transition duration-200 ease-out hover:bg-brand hover:text-white dark:bg-transparent"
+              >
+                Réinitialiser les filtres
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="mt-10 flex items-center justify-center gap-2" suppressHydrationWarning>
+            <button
+              onClick={() => setPage(Math.max(1, safePage - 1))}
+              disabled={safePage === 1}
+              className="inline-flex items-center gap-1 rounded-full border border-border bg-white px-4 py-2.5 text-xs font-bold text-ink-soft transition duration-200 ease-out hover:border-brand/30 hover:text-ink disabled:cursor-not-allowed disabled:opacity-40 dark:border-white/10 dark:bg-[#1e293b]"
+            >
+              <ChevronLeft className="size-4" /> <span className="hidden sm:inline">Précédent</span>
+            </button>
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setPage(i + 1)}
+                aria-label={`Page ${i + 1}`}
+                aria-current={safePage === i + 1 ? "page" : undefined}
+                className={`flex size-10 items-center justify-center rounded-full text-sm font-bold transition duration-200 ease-out ${
+                  safePage === i + 1
+                    ? "bg-brand text-white"
+                    : "border border-border bg-white text-ink-soft hover:border-brand/30 hover:text-ink dark:border-white/10 dark:bg-[#1e293b]"
+                }`}
+              >
+                {i + 1}
+              </button>
+            ))}
+            <button
+              onClick={() => setPage(Math.min(totalPages, safePage + 1))}
+              disabled={safePage === totalPages}
+              className="inline-flex items-center gap-1 rounded-full border border-border bg-white px-4 py-2.5 text-xs font-bold text-ink-soft transition duration-200 ease-out hover:border-brand/30 hover:text-ink disabled:cursor-not-allowed disabled:opacity-40 dark:border-white/10 dark:bg-[#1e293b]"
+            >
+              <span className="hidden sm:inline">Suivant</span> <ChevronRight className="size-4" />
+            </button>
+          </div>
         )}
       </div>
     </section>
