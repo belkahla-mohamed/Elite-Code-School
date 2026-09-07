@@ -25,6 +25,8 @@ import { ProgramsSection } from "@/components/programs-section";
 import { TestimonialsSection } from "@/components/testimonials-section";
 import { getPrograms } from "@/lib/store";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const programs = await getPrograms();
 

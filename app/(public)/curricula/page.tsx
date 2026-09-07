@@ -8,6 +8,8 @@ export const metadata: Metadata = {
   description: "Parcours complet de 7 à 17 ans : Scratch, robotique, web, Python et IA à Marrakech.",
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function CurriculaPage() {
   const programs = await getPrograms()
 

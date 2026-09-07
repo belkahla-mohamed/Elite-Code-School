@@ -159,26 +159,31 @@ export async function getCategories(): Promise<Category[]> {
 export async function getPrograms(): Promise<Program[]> {
   if (!hasSupabaseConfig()) return demoStore().programs.map(fillImage).map(p => ({ ...p, category: demoStore().categories.find(c => c.id === p.categoryId) }));
 
-  const { data, error } = await getSupabaseAdmin().from("programs").select("*").order("sort_order");
-  if (error) throw error;
-  const categories = await getCategories().catch(() => [] as Category[])
-  return data.map((row) => ({
-    id: row.id,
-    title: row.title,
-    ageRange: row.age_range,
-    level: row.level,
-    description: row.description,
-    tools: row.tools ?? [],
-    priceMonthly: row.price_monthly,
-    color: row.color,
-    image: row.image || FALLBACK_IMAGE,
-    duration: row.duration ?? "",
-    objectives: row.objectives ?? "",
-    prerequisites: row.prerequisites ?? "",
-    schedule: row.schedule ?? "",
-    categoryId: row.category_id ?? undefined,
-    category: categories.find(c => c.id === row.category_id),
-  }));
+  try {
+    const { data, error } = await getSupabaseAdmin().from("programs").select("*").order("sort_order");
+    if (error) throw error;
+    const categories = await getCategories().catch(() => [] as Category[])
+    return data.map((row) => ({
+      id: row.id,
+      title: row.title,
+      ageRange: row.age_range,
+      level: row.level,
+      description: row.description,
+      tools: row.tools ?? [],
+      priceMonthly: row.price_monthly,
+      color: row.color,
+      image: row.image || FALLBACK_IMAGE,
+      duration: row.duration ?? "",
+      objectives: row.objectives ?? "",
+      prerequisites: row.prerequisites ?? "",
+      schedule: row.schedule ?? "",
+      categoryId: row.category_id ?? undefined,
+      category: categories.find(c => c.id === row.category_id),
+    }));
+  } catch (e) {
+    console.error("getPrograms: Supabase unavailable, falling back to demo data", e);
+    return demoStore().programs.map(fillImage).map(p => ({ ...p, category: demoStore().categories.find(c => c.id === p.categoryId) }));
+  }
 }
 
 function fillImage(p: Program): Program {
@@ -456,15 +461,20 @@ export async function getPublicPortfolios() {
     return demoStore().students.filter((student) => student.isPublic).map((student) => withPortfolio(student));
   }
 
-  const programs = await getPrograms();
-  const { data, error } = await getSupabaseAdmin()
-    .from("students")
-    .select("*, projects(*), certifications(*), gallery_items(*)")
-    .eq("is_public", true)
-    .order("created_at", { ascending: false });
+  try {
+    const programs = await getPrograms();
+    const { data, error } = await getSupabaseAdmin()
+      .from("students")
+      .select("*, projects(*), certifications(*), gallery_items(*)")
+      .eq("is_public", true)
+      .order("created_at", { ascending: false });
 
-  if (error) throw error;
-  return data.map((row) => mapStudentPortfolio(row, programs));
+    if (error) throw error;
+    return data.map((row) => mapStudentPortfolio(row, programs));
+  } catch (e) {
+    console.error("getPublicPortfolios: Supabase unavailable, falling back to demo data", e);
+    return demoStore().students.filter((student) => student.isPublic).map((student) => withPortfolio(student));
+  }
 }
 
 export async function getPortfolioBySlug(slug: string, allowPrivate = false) {
@@ -474,13 +484,20 @@ export async function getPortfolioBySlug(slug: string, allowPrivate = false) {
     return withPortfolio(student);
   }
 
-  const programs = await getPrograms();
-  let query = getSupabaseAdmin().from("students").select("*, projects(*), certifications(*), gallery_items(*)").eq("slug", slug);
-  if (!allowPrivate) query = query.eq("is_public", true);
-  const { data, error } = await query.maybeSingle();
+  try {
+    const programs = await getPrograms();
+    let query = getSupabaseAdmin().from("students").select("*, projects(*), certifications(*), gallery_items(*)").eq("slug", slug);
+    if (!allowPrivate) query = query.eq("is_public", true);
+    const { data, error } = await query.maybeSingle();
 
-  if (error) throw error;
-  return data ? mapStudentPortfolio(data, programs) : null;
+    if (error) throw error;
+    return data ? mapStudentPortfolio(data, programs) : null;
+  } catch (e) {
+    console.error("getPortfolioBySlug: Supabase unavailable, falling back to demo data", e);
+    const student = demoStore().students.find((item) => item.slug === slug);
+    if (!student || (!student.isPublic && !allowPrivate)) return null;
+    return withPortfolio(student);
+  }
 }
 
 export async function getStudentByParentLogin(email: string, secret: string) {

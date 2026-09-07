@@ -8,6 +8,8 @@ export const metadata: Metadata = {
   description: "Découvrez les portfolios des élèves d'Elite Code School — projets, certificats et galerie.",
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function PortfoliosPage() {
   const portfolios = await getPublicPortfolios()
   const programs = await getPrograms()
