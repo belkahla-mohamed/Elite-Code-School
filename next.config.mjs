@@ -10,6 +10,15 @@ const securityHeaders = [
 
 const nextConfig = {
   reactStrictMode: true,
+  // Dev-only: the persistent filesystem cache gets corrupted when the dev
+  // server is killed mid-compile ("Cannot read properties of undefined
+  // (reading 'call')"). Memory cache is slower across restarts but reliable.
+  webpack: (config, { dev }) => {
+    if (dev) {
+      config.cache = { type: "memory" };
+    }
+    return config;
+  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "**.supabase.co" },
