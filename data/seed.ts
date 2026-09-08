@@ -125,7 +125,7 @@ export const students: Student[] = [
     isPublic: true,
     parentEmail: "parent.youssef@example.com",
     parentSecretHash: hashSecret("YOUSEEF-2026"),
-    createdAt: new Date("2023-09-10").toISOString()
+    createdAt: new Date(Date.now() - 165 * 86_400_000).toISOString()
   },
   {
     id: "stu-mariam",
@@ -142,7 +142,7 @@ export const students: Student[] = [
     isPublic: true,
     parentEmail: "parent.mariam@example.com",
     parentSecretHash: hashSecret("MARIAM-2026"),
-    createdAt: new Date("2024-01-08").toISOString()
+    createdAt: new Date(Date.now() - 150 * 86_400_000).toISOString()
   },
   {
     id: "stu-adam",
@@ -159,7 +159,7 @@ export const students: Student[] = [
     isPublic: true,
     parentEmail: "parent.adam@example.com",
     parentSecretHash: hashSecret("ADAM-2026"),
-    createdAt: new Date("2023-10-05").toISOString()
+    createdAt: new Date(Date.now() - 135 * 86_400_000).toISOString()
   },
   {
     id: "stu-sarah",
@@ -176,7 +176,7 @@ export const students: Student[] = [
     isPublic: true,
     parentEmail: "parent.sarah@example.com",
     parentSecretHash: hashSecret("SARAH-2026"),
-    createdAt: new Date("2024-02-12").toISOString()
+    createdAt: new Date(Date.now() - 120 * 86_400_000).toISOString()
   },
   {
     id: "stu-aymane",
@@ -193,7 +193,7 @@ export const students: Student[] = [
     isPublic: true,
     parentEmail: "parent.aymane@example.com",
     parentSecretHash: hashSecret("AYMANE-2026"),
-    createdAt: new Date("2024-03-01").toISOString()
+    createdAt: new Date(Date.now() - 90 * 86_400_000).toISOString()
   },
   {
     id: "stu-ines",
@@ -210,7 +210,7 @@ export const students: Student[] = [
     isPublic: true,
     parentEmail: "parent.ines@example.com",
     parentSecretHash: hashSecret("INES-2026"),
-    createdAt: new Date("2024-04-15").toISOString()
+    createdAt: new Date(Date.now() - 75 * 86_400_000).toISOString()
   },
   {
     id: "stu-oumaima",
@@ -227,7 +227,7 @@ export const students: Student[] = [
     isPublic: true,
     parentEmail: "parent.oumaima@example.com",
     parentSecretHash: hashSecret("OUMAIMA-2026"),
-    createdAt: new Date("2023-09-05").toISOString()
+    createdAt: new Date(Date.now() - 60 * 86_400_000).toISOString()
   },
   {
     id: "stu-rayan",
@@ -244,7 +244,7 @@ export const students: Student[] = [
     isPublic: false,
     parentEmail: "parent.rayan@example.com",
     parentSecretHash: hashSecret("RAYAN-2026"),
-    createdAt: new Date("2024-05-20").toISOString()
+    createdAt: new Date(Date.now() - 30 * 86_400_000).toISOString()
   }
 ];
 

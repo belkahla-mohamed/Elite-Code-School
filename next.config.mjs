@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const isDev = process.env.NODE_ENV !== "production";
+
 const securityHeaders = [
   { key: "X-Frame-Options", value: "DENY" },
   { key: "X-Content-Type-Options", value: "nosniff" },
@@ -40,7 +42,12 @@ const nextConfig = {
       {
         source: "/_next/static/(.*)",
         headers: [
-          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+          {
+            key: "Cache-Control",
+            // Immutable caching is prod-only: browsers must not keep stale
+            // dev chunks across server restarts (no-store in dev).
+            value: isDev ? "no-store" : "public, max-age=31536000, immutable",
+          },
         ],
       },
     ];

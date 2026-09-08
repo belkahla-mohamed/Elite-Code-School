@@ -1,3 +1,4 @@
+import { timingSafeEqual } from "crypto";
 import {
   categories as seedCategories,
   certifications as seedCertifications,
@@ -9,7 +10,7 @@ import {
   students as seedStudents,
 } from "@/data/seed";
 import { hashSecret, generateAccessSecret } from "@/lib/auth";
-import { verifyPassword } from "@/lib/passwords";
+import { hashPassword, verifyPassword } from "@/lib/passwords";
 import { hasSupabaseConfig, getSupabaseAdmin } from "@/lib/supabase";
 import { sendAdminNotification, sendAcceptanceEmail, sendRejectionEmail } from "@/lib/email";
 import type {
@@ -1078,20 +1079,84 @@ export async function batchRejectEnrollments(ids: string[], rejectionMessage?: s
 
 // ─── Admin Users ─────────────────────────────────────────────
 
+type DemoAdminRecord = AdminUser & { passwordHash?: string };
+
+const ENV_ADMIN_ID = "admin-0";
+
+const envAdminEmail = () => process.env.ADMIN_EMAIL ?? "admin@elitecodeschool.com";
+const envAdminPassword = () => process.env.ADMIN_PASSWORD ?? "admin123";
+
+// Demo-mode admin accounts (in-memory, like the rest of the demo store).
+// The env super admin always exists; created admins land here with hashed passwords.
+const globalForDemoAdmins = globalThis as unknown as { ecsDemoAdmins?: DemoAdminRecord[] };
+
+function demoAdmins(): DemoAdminRecord[] {
+  if (!globalForDemoAdmins.ecsDemoAdmins) globalForDemoAdmins.ecsDemoAdmins = [];
+  return globalForDemoAdmins.ecsDemoAdmins;
+}
+
+function envSuperAdmin(): AdminUser {
+  return {
+    id: ENV_ADMIN_ID,
+    email: envAdminEmail(),
+    firstName: "Super",
+    lastName: "Admin",
+    role: "super_admin",
+    createdAt: new Date("2024-01-01").toISOString(),
+  };
+}
+
+function toAdminUser(record: DemoAdminRecord): AdminUser {
+  const { passwordHash: _passwordHash, ...user } = record;
+  return user;
+}
+
+function timingSafeStrEqual(a: string, b: string) {
+  const ab = Buffer.from(a);
+  const bb = Buffer.from(b);
+  return ab.length === bb.length && timingSafeEqual(ab, bb);
+}
+
 export async function verifyAdminCredentials(email: string, password: string): Promise<AdminUser | null> {
   if (!hasSupabaseConfig()) {
-    const expectedEmail = process.env.ADMIN_EMAIL ?? "admin@elitecodeschool.com";
-    const expectedPassword = process.env.ADMIN_PASSWORD ?? "admin123";
-    if (email.toLowerCase() !== expectedEmail.toLowerCase() || password !== expectedPassword) return null;
-    return { id: "admin-0", email: expectedEmail, firstName: "Super", lastName: "Admin", role: "super_admin", createdAt: new Date().toISOString() };
+    const normalized = email.toLowerCase();
+    for (const record of demoAdmins()) {
+      if (record.email.toLowerCase() !== normalized || !record.passwordHash) continue;
+      const ok = record.passwordHash.startsWith("scrypt:")
+        ? await verifyPassword(password, record.passwordHash)
+        : timingSafeStrEqual(password, record.passwordHash);
+      if (!ok) return null;
+      if (!record.passwordHash.startsWith("scrypt:")) {
+        record.passwordHash = await hashPassword(password);
+      }
+      record.lastLogin = new Date().toISOString();
+      return toAdminUser(record);
+    }
+    if (normalized !== envAdminEmail().toLowerCase()) return null;
+    const override = demoAdmins().find((r) => r.id === ENV_ADMIN_ID);
+    const envOk = override?.passwordHash
+      ? await verifyPassword(password, override.passwordHash)
+      : timingSafeStrEqual(password, envAdminPassword());
+    if (!envOk) return null;
+    const admin = envSuperAdmin();
+    admin.lastLogin = new Date().toISOString();
+    return admin;
   }
   const { data, error } = await getSupabaseAdmin()
     .from("admin_users")
-    .select("id, email, first_name, last_name, role, created_at")
+    .select("id, email, first_name, last_name, role, created_at, password_hash")
     .ilike("email", email)
-    .eq("password_hash", password)
     .maybeSingle()
   if (error || !data) return null
+  const storedHash: string = data.password_hash ?? ""
+  const ok = storedHash.startsWith("scrypt:")
+    ? await verifyPassword(password, storedHash)
+    : storedHash.length > 0 && timingSafeStrEqual(password, storedHash)
+  if (!ok) return null
+  // Upgrade legacy plaintext rows to scrypt on first successful login
+  if (!storedHash.startsWith("scrypt:")) {
+    await updateAdminPassword(data.id, password)
+  }
   return {
     id: data.id,
     email: data.email,
@@ -1108,32 +1173,30 @@ export async function updateAdminLastLogin(id: string) {
 }
 
 export async function updateAdminPassword(id: string, newPassword: string) {
+  const passwordHash = await hashPassword(newPassword);
   if (!hasSupabaseConfig()) {
-    const g = globalThis as any
-    g.ecsAdminPassword = newPassword
-    return
+    const record = demoAdmins().find((r) => r.id === id);
+    if (record) {
+      record.passwordHash = passwordHash;
+      return;
+    }
+    if (id === ENV_ADMIN_ID) {
+      // Password override for the env super admin (wins over ADMIN_PASSWORD)
+      demoAdmins().push({ ...envSuperAdmin(), passwordHash });
+      return;
+    }
+    throw new Error("Admin introuvable");
   }
-  const { error } = await getSupabaseAdmin().from("admin_users").update({ password_hash: newPassword }).eq("id", id)
+  const { error } = await getSupabaseAdmin().from("admin_users").update({ password_hash: passwordHash }).eq("id", id)
   if (error) throw error
 }
 
-const adminSeed: AdminUser[] = [
-  {
-    id: "admin-1",
-    email: "admin@elitecode.ma",
-    firstName: "Super",
-    lastName: "Admin",
-    role: "super_admin",
-    createdAt: new Date("2024-01-01").toISOString(),
-    lastLogin: new Date().toISOString(),
-  },
-];
-
 export async function getAdminUsers(): Promise<AdminUser[]> {
   if (!hasSupabaseConfig()) {
-    const store = demoStore() as any;
-    if (!store.adminUsers) store.adminUsers = structuredClone(adminSeed);
-    return store.adminUsers;
+    const created = demoAdmins()
+      .filter((r) => r.id !== ENV_ADMIN_ID)
+      .map(toAdminUser);
+    return [envSuperAdmin(), ...created];
   }
   const { data, error } = await getSupabaseAdmin()
     .from("admin_users")
@@ -1152,22 +1215,23 @@ export async function getAdminUsers(): Promise<AdminUser[]> {
 }
 
 export async function createAdminUser(data: { email: string; firstName: string; lastName: string; password: string }) {
+  const passwordHash = await hashPassword(data.password);
   if (!hasSupabaseConfig()) {
-    const store = demoStore() as any;
-    if (!store.adminUsers) store.adminUsers = structuredClone(adminSeed);
-    const exists = store.adminUsers.find((u: AdminUser) => u.email === data.email);
+    const exists = demoAdmins().some((r) => r.email.toLowerCase() === data.email.toLowerCase())
+      || data.email.toLowerCase() === envAdminEmail().toLowerCase();
     if (exists) throw new Error("Cet email est déjà utilisé");
-    const user: AdminUser = {
+    const user: DemoAdminRecord = {
       id: `admin-${Date.now()}`,
       email: data.email,
       firstName: data.firstName,
       lastName: data.lastName,
       role: "admin",
       createdAt: new Date().toISOString(),
+      passwordHash,
     };
-    store.adminUsers.push(user);
+    demoAdmins().push(user);
     addActivityAndNotify("request", "Admin créé", `${data.firstName} ${data.lastName} (${data.email})`);
-    return user;
+    return toAdminUser(user);
   }
   const { error } = await getSupabaseAdmin().from("admin_users").insert({
     id: crypto.randomUUID(),
@@ -1175,7 +1239,7 @@ export async function createAdminUser(data: { email: string; firstName: string; 
     first_name: data.firstName,
     last_name: data.lastName,
     role: "admin",
-    password_hash: data.password,
+    password_hash: passwordHash,
   });
   if (error) {
     if (error.code === "23505") throw new Error("Cet email est déjà utilisé");
@@ -1187,16 +1251,18 @@ export async function createAdminUser(data: { email: string; firstName: string; 
 
 export async function updateAdminUser(id: string, data: { firstName?: string; lastName?: string; email?: string; role?: string }) {
   if (!hasSupabaseConfig()) {
-    const store = (demoStore() as any);
-    if (!store.adminUsers) store.adminUsers = structuredClone(adminSeed);
-    const user = store.adminUsers.find((u: AdminUser) => u.id === id);
+    const user = demoAdmins().find((r) => r.id === id);
     if (!user) throw new Error("Admin introuvable");
+    if (id === ENV_ADMIN_ID && data.role !== undefined) throw new Error("Le rôle du super admin ne peut pas être modifié");
     if (data.firstName !== undefined) user.firstName = data.firstName;
     if (data.lastName !== undefined) user.lastName = data.lastName;
     if (data.email !== undefined) user.email = data.email;
-    if (data.role !== undefined) user.role = data.role;
+    if (data.role !== undefined) {
+      if (!["admin", "super_admin"].includes(data.role)) throw new Error("Rôle invalide");
+      user.role = data.role as DemoAdminRecord["role"];
+    }
     addActivityAndNotify("request", "Admin modifié", `${user.firstName} ${user.lastName} (${user.email})`);
-    return user;
+    return toAdminUser(user);
   }
   const updateData: Record<string, any> = {};
   if (data.firstName !== undefined) updateData.first_name = data.firstName;
@@ -1210,11 +1276,10 @@ export async function updateAdminUser(id: string, data: { firstName?: string; la
 
 export async function deleteAdminUser(id: string) {
   if (!hasSupabaseConfig()) {
-    const store = demoStore() as any;
-    if (!store.adminUsers) store.adminUsers = structuredClone(adminSeed);
-    const idx = store.adminUsers.findIndex((u: AdminUser) => u.id === id);
+    if (id === ENV_ADMIN_ID) throw new Error("Le super admin ne peut pas être supprimé");
+    const idx = demoAdmins().findIndex((r) => r.id === id);
     if (idx === -1) throw new Error("Admin introuvable");
-    const removed = store.adminUsers.splice(idx, 1)[0];
+    const removed = demoAdmins().splice(idx, 1)[0];
     addActivityAndNotify("request", "Admin supprimé", `${removed.firstName} ${removed.lastName} (${removed.email})`);
     return;
   }
@@ -2166,9 +2231,9 @@ export async function deleteParent(id: string) {
 
 export async function getAdminProfile(id: string): Promise<AdminUser | null> {
   if (!hasSupabaseConfig()) {
-    const store = demoStore() as any
-    if (!store.adminUsers) store.adminUsers = structuredClone(adminSeed)
-    return store.adminUsers.find((u: AdminUser) => u.id === id) ?? null
+    if (id === ENV_ADMIN_ID) return envSuperAdmin();
+    const record = demoAdmins().find((r) => r.id === id);
+    return record ? toAdminUser(record) : null;
   }
   const { data, error } = await getSupabaseAdmin()
     .from("admin_users")
@@ -2189,14 +2254,12 @@ export async function getAdminProfile(id: string): Promise<AdminUser | null> {
 
 export async function updateAdminProfile(id: string, data: { firstName?: string; lastName?: string; email?: string }) {
   if (!hasSupabaseConfig()) {
-    const store = demoStore() as any
-    if (!store.adminUsers) store.adminUsers = structuredClone(adminSeed)
-    const user = store.adminUsers.find((u: AdminUser) => u.id === id)
+    const user = demoAdmins().find((r) => r.id === id)
     if (!user) throw new Error("Admin introuvable")
     if (data.firstName !== undefined) user.firstName = data.firstName
     if (data.lastName !== undefined) user.lastName = data.lastName
     if (data.email !== undefined) user.email = data.email
-    return user
+    return toAdminUser(user)
   }
   const payload: Record<string, any> = {}
   if (data.firstName !== undefined) payload.first_name = data.firstName

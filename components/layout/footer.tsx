@@ -23,14 +23,14 @@ export function Footer() {
               Robotique, programmation et IA pour les jeunes de 7 a 17 ans a Marrakech.
             </p>
             <div className="mt-4 flex gap-3">
-              <a href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="Facebook" className="flex size-9 items-center justify-center rounded-full bg-border transition hover:bg-brand hover:text-white">
-                <Facebook className="size-4 text-ink-soft" />
+              <a href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="Facebook" className="flex size-9 items-center justify-center rounded-full bg-border text-ink-soft transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-brand hover:text-white">
+                <Facebook className="size-4" />
               </a>
-              <a href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram" className="flex size-9 items-center justify-center rounded-full bg-border transition hover:bg-brand hover:text-white">
-                <Instagram className="size-4 text-ink-soft" />
+              <a href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram" className="flex size-9 items-center justify-center rounded-full bg-border text-ink-soft transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-brand hover:text-white">
+                <Instagram className="size-4" />
               </a>
-              <a href="https://youtube.com" target="_blank" rel="noreferrer" aria-label="YouTube" className="flex size-9 items-center justify-center rounded-full bg-border transition hover:bg-brand hover:text-white">
-                <Youtube className="size-4 text-ink-soft" />
+              <a href="https://youtube.com" target="_blank" rel="noreferrer" aria-label="YouTube" className="flex size-9 items-center justify-center rounded-full bg-border text-ink-soft transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-brand hover:text-white">
+                <Youtube className="size-4" />
               </a>
             </div>
           </div>

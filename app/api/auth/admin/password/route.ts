@@ -1,23 +1,33 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
+import { z } from "zod";
+import { isAdminAuthenticated } from "@/lib/auth";
 import { getAdminUsers, updateAdminPassword } from "@/lib/store";
 import { validateContentType } from "@/lib/xss-utils";
+
+const passwordSchema = z.object({
+  currentPassword: z.string().min(1, "Mot de passe actuel requis").max(200),
+  newPassword: z
+    .string()
+    .min(8, "Le nouveau mot de passe doit contenir au moins 8 caractères")
+    .max(200)
+    .regex(/[A-Za-z]/, "Doit contenir au moins une lettre")
+    .regex(/[0-9]/, "Doit contenir au moins un chiffre"),
+});
 
 export async function POST(request: Request) {
   try {
     const ct = validateContentType(request);
     if (ct) return ct;
 
-    const jar = await cookies();
-    const adminCookie = jar.get("ecs_admin")?.value;
-    if (!adminCookie) {
+    if (!(await isAdminAuthenticated())) {
       return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
     }
 
-    const { currentPassword, newPassword } = await request.json();
-    if (!newPassword || newPassword.length < 6) {
-      return NextResponse.json({ error: "Le nouveau mot de passe doit contenir au moins 6 caractères" }, { status: 400 });
+    const parsed = passwordSchema.safeParse(await request.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
     }
+    const { currentPassword, newPassword } = parsed.data;
 
     const users = await getAdminUsers();
     const admin = users.find((u) => u.role === "super_admin");

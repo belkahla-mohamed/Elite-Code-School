@@ -129,16 +129,16 @@ export default function LoginPage() {
     }
   }
 
-  const inputClass = "rounded-brand-sm border-2 border-border bg-white dark:bg-surface px-4 py-2.5 font-body text-ink transition focus:border-sky focus:outline-none placeholder:text-ink-soft/50";
+  const inputClass = "rounded-brand-sm border-2 border-border bg-white px-4 py-2.5 font-body text-sm text-ink outline-none transition duration-200 ease-out focus:border-brand placeholder:text-ink-soft/50 dark:border-white/10 dark:bg-[#1e293b] dark:text-white dark:placeholder:text-slate-400";
 
   return (
-    <div className="py-20">
+    <div className="bg-white py-16 sm:py-24 dark:bg-body">
       <div className="container-shell max-w-md">
-        <Link href="/" className="inline-flex items-center gap-2 text-sm font-bold text-ink-soft hover:text-sky transition mb-8">
+        <Link href="/" className="mb-8 inline-flex items-center gap-2 text-sm font-bold text-ink-soft transition duration-200 ease-out hover:text-ink dark:hover:text-white">
           <ArrowLeft className="size-4" /> Retour à l&apos;accueil
         </Link>
 
-        <div className="mb-8 rounded-brand border-2 border-border bg-white dark:bg-surface p-6">
+        <div className="rounded-brand border border-border bg-white p-6 sm:p-8 dark:border-white/10 dark:bg-[#1e293b]">
           <Image
             src="/logos/logo-icon.png"
             alt="Elite Code School"
@@ -146,18 +146,20 @@ export default function LoginPage() {
             height={36}
             className="size-9"
           />
-          <h1 className="mt-3 font-display text-3xl font-black text-ink">
+          <div className="mt-4">
+            <span className="tag">Espace parent</span>
+          </div>
+          <h1 className="mt-3 font-display text-3xl font-semibold tracking-[-0.02em] text-ink dark:text-white">
             {mode === "forgot" ? "Mot de passe oublié" : "Connexion Parent"}
           </h1>
-          <p className="mt-2 text-sm text-ink-soft">
+          <p className="mt-2 text-sm font-medium leading-6 text-ink-soft dark:text-slate-300">
             {mode === "forgot"
               ? "Entrez votre email pour recevoir un lien de réinitialisation."
               : "Entrez votre email et votre mot de passe (ou le code d'accès fourni par l'école) pour accéder au portfolio de votre enfant."}
           </p>
-        </div>
 
         {mode === "login" && (
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleLogin} className="mt-6 space-y-4">
           <label className="flex flex-col gap-2 text-sm font-semibold text-ink">
             Email
             <input
@@ -182,7 +184,7 @@ export default function LoginPage() {
                 placeholder="••••••••"
                 className={`w-full pr-10 ${inputClass}`}
               />
-              <button type="button" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"} className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-soft">
+              <button type="button" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"} className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-soft transition duration-200 ease-out hover:text-ink">
                 {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
               </button>
             </div>
@@ -197,7 +199,7 @@ export default function LoginPage() {
           <button
             type="button"
             onClick={() => { setMode("forgot"); setError(""); setInfo(""); }}
-            className="w-full text-center text-sm font-semibold text-sky hover:underline"
+            className="w-full text-center text-sm font-semibold text-brand transition duration-200 ease-out hover:underline"
           >
             Mot de passe oublié ?
           </button>
@@ -205,7 +207,7 @@ export default function LoginPage() {
         )}
 
         {mode === "forgot" && (
-        <form onSubmit={handleForgot} className="space-y-4">
+        <form onSubmit={handleForgot} className="mt-6 space-y-4">
           <label className="flex flex-col gap-2 text-sm font-semibold text-ink">
             Email
             <input
@@ -220,7 +222,7 @@ export default function LoginPage() {
           </label>
 
           {error && <p className="text-sm text-coral bg-coral/10 rounded-brand-sm px-4 py-3">{error}</p>}
-          {info && <p className="text-sm text-green-600 bg-green-600/10 rounded-brand-sm px-4 py-3">{info}</p>}
+          {info && <p className="text-sm text-lime bg-lime/10 rounded-brand-sm px-4 py-3">{info}</p>}
 
           <button type="submit" disabled={loading} className="w-full btn-primary disabled:opacity-50">
             {loading ? <Loader2 className="size-4 animate-spin" /> : "Envoyer le lien"}
@@ -237,7 +239,7 @@ export default function LoginPage() {
         )}
 
         {mode === "reset" && (
-        <form onSubmit={handleReset} className="space-y-4">
+        <form onSubmit={handleReset} className="mt-6 space-y-4">
           <label className="flex flex-col gap-2 text-sm font-semibold text-ink">
             Nouveau mot de passe
             <input
@@ -264,7 +266,7 @@ export default function LoginPage() {
           </label>
 
           {error && <p className="text-sm text-coral bg-coral/10 rounded-brand-sm px-4 py-3">{error}</p>}
-          {info && <p className="text-sm text-green-600 bg-green-600/10 rounded-brand-sm px-4 py-3">{info}</p>}
+          {info && <p className="text-sm text-lime bg-lime/10 rounded-brand-sm px-4 py-3">{info}</p>}
 
           <button type="submit" disabled={loading} className="w-full btn-primary disabled:opacity-50">
             {loading ? <Loader2 className="size-4 animate-spin" /> : "Définir le mot de passe"}
@@ -279,15 +281,16 @@ export default function LoginPage() {
           </button>
         </form>
         )}
+        </div>
 
         {mode === "login" && (
-          <p className="mt-6 text-center text-sm text-ink-soft">
+          <p className="mt-6 text-center text-sm font-medium text-ink-soft dark:text-slate-400">
             Pas de code d&apos;accès? Contactez l&apos;école.
           </p>
         )}
 
         <div className="mt-6 text-center">
-          <Link href="/admin-login" className="inline-flex items-center gap-1 text-sm font-bold text-ink-soft transition hover:text-sky">
+          <Link href="/admin-login" className="inline-flex items-center gap-1 text-sm font-bold text-ink-soft transition duration-200 ease-out hover:text-brand">
             Espace administration <ArrowRight className="size-4" />
           </Link>
         </div>

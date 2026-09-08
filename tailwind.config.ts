@@ -10,11 +10,11 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        body: "var(--background)",
-        surface: "var(--surface)",
-        ink: "var(--text)",
-        "ink-soft": "var(--text-soft)",
-        border: "var(--border)",
+        body: "rgb(var(--background-rgb) / <alpha-value>)",
+        surface: "rgb(var(--surface-rgb) / <alpha-value>)",
+        ink: "rgb(var(--text-rgb) / <alpha-value>)",
+        "ink-soft": "rgb(var(--text-soft-rgb) / <alpha-value>)",
+        border: "rgb(var(--border-rgb) / <alpha-value>)",
         sky: {
           DEFAULT: "#2563eb",
           dark: "#1d4ed8",

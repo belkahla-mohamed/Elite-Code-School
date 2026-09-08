@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Bell, BellOff, CheckCheck, Trash2, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { showToast } from "@/components/ui/toast";
+import { NotificationIcon } from "@/components/ui/notification-icon";
 import type { AppNotification } from "@/lib/types";
 
 export default function NotificationsPage() {
@@ -53,10 +54,6 @@ export default function NotificationsPage() {
     return new Date(dateStr).toLocaleDateString("fr-FR");
   }
 
-  const typeEmoji: Record<string, string> = {
-    student: "👤", project: "💼", certification: "🏅", request: "📋", contact: "✉️",
-  };
-
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
@@ -94,9 +91,7 @@ export default function NotificationsPage() {
                 !n.read ? "border-sky bg-sky/5" : "border-border"
               )}
             >
-              <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-surface text-lg">
-                {typeEmoji[n.type] ?? "🔔"}
-              </span>
+              <NotificationIcon type={n.type} className="size-10" />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   <h3 className={cn("text-sm", !n.read ? "font-bold text-ink" : "text-ink-soft")}>{n.title}</h3>

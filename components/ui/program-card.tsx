@@ -143,7 +143,7 @@ export function ProgramCard({ program }: { program: Program }) {
   return (
     <Link
       href={`/curricula/${program.id}`}
-      className="group block overflow-hidden rounded-brand border-2 border-border bg-white transition duration-300 ease-out hover:-translate-y-0.5 hover:border-sky hover:shadow-md dark:bg-[#1e293b]"
+      className="group block overflow-hidden rounded-brand border border-border bg-white transition duration-300 ease-out hover:-translate-y-0.5 hover:border-brand hover:shadow-md dark:border-white/10 dark:bg-[#1e293b]"
     >
       {/* Top: Image Header */}
       <div className="relative h-48 overflow-hidden">
@@ -175,7 +175,7 @@ export function ProgramCard({ program }: { program: Program }) {
           {level.label}
         </span>
 
-        <h3 className="font-display text-xl font-black leading-tight text-ink dark:text-white">
+        <h3 className="font-display text-xl font-semibold leading-tight text-ink dark:text-white">
           {program.title}
         </h3>
 

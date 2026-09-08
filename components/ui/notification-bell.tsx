@@ -5,6 +5,7 @@ import { Bell, BellOff, CheckCheck, Clock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import type { AppNotification } from "@/lib/types";
+import { NotificationIcon } from "@/components/ui/notification-icon";
 
 export function NotificationBell() {
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
@@ -67,10 +68,6 @@ export function NotificationBell() {
     return `Il y a ${days}j`;
   }
 
-  const typeEmoji: Record<string, string> = {
-    student: "👤", project: "💼", certification: "🏅", request: "📋", contact: "✉️",
-  };
-
   return (
     <div className="relative" ref={dropdownRef}>
       <button
@@ -120,7 +117,7 @@ export function NotificationBell() {
                     !n.read && "bg-sky/5"
                   )}
                 >
-                  <span className="text-lg shrink-0">{typeEmoji[n.type] ?? "🔔"}</span>
+                  <NotificationIcon type={n.type} className="size-8" />
                   <div className="min-w-0 flex-1">
                     <p className={cn("text-sm", !n.read ? "font-bold text-ink" : "text-ink-soft")}>{n.title}</p>
                     <p className="truncate text-xs text-ink-soft/70">{n.description}</p>

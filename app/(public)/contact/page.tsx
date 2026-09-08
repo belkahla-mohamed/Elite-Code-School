@@ -47,7 +47,7 @@ export default function ContactPage() {
                       <card.icon className="size-6" />
                     </span>
                     <div className="min-w-0">
-                      <strong className="block font-display text-sm font-semibold text-ink dark:text-ink">{card.title}</strong>
+                      <strong className="block break-all font-display text-sm font-semibold text-ink dark:text-ink">{card.title}</strong>
                       <small className="mt-1 block text-xs font-medium leading-5 text-ink-soft dark:text-ink-soft">{card.text}</small>
                     </div>
                   </>

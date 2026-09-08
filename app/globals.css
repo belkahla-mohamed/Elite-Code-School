@@ -15,6 +15,12 @@
     --text-soft: #545454;
     --border: #e4e4e4;
     --brand: #e41d23;
+    /* RGB triplets — used by Tailwind alpha modifiers (bg-ink/80, bg-surface/50…) */
+    --background-rgb: 255 255 255;
+    --surface-rgb: 242 242 242;
+    --text-rgb: 0 0 0;
+    --text-soft-rgb: 84 84 84;
+    --border-rgb: 228 228 228;
     color-scheme: light;
   }
 
@@ -25,6 +31,11 @@
     --text-soft: #94a3b8;
     --border: #293548;
     --brand: #f5747a;
+    --background-rgb: 11 17 32;
+    --surface-rgb: 24 32 50;
+    --text-rgb: 248 250 252;
+    --text-soft-rgb: 148 163 184;
+    --border-rgb: 41 53 72;
     color-scheme: dark;
   }
 

@@ -83,11 +83,6 @@ export async function clearSessions() {
   jar.delete(PARENT_COOKIE);
 }
 
-export function verifyAdminPassword(password: string) {
-  const expected = process.env.ADMIN_PASSWORD ?? "admin123";
-  return password === expected;
-}
-
 function adminToken() {
   const secret = process.env.AUTH_COOKIE_SECRET ?? "elite-code-school-dev-secret";
   return hashSecret(`admin:${secret}`);

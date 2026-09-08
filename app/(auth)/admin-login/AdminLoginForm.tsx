@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import Image from "next/image";
-import { Eye, EyeOff, LogIn } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ArrowLeft, Eye, EyeOff, Loader2 } from "lucide-react";
 import { showToast } from "@/components/ui/toast";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
+
+const inputClass = "rounded-brand-sm border-2 border-border bg-white px-4 py-2.5 font-body text-sm text-ink outline-none transition duration-200 ease-out focus:border-brand placeholder:text-ink-soft/50 dark:border-white/10 dark:bg-[#1e293b] dark:text-white dark:placeholder:text-slate-400";
 
 export function AdminLoginForm() {
   const [email, setEmail] = useState("");
@@ -51,129 +53,77 @@ export function AdminLoginForm() {
   }
 
   return (
-    <div className="flex flex-1">
-      {/* Left Panel — Branding / Welcome */}
-      <div className="hidden w-1/2 flex-col items-center justify-center bg-gradient-to-br from-[#0F172A] via-[#1E293B] to-[#0F172A] p-12 lg:flex relative overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.03]">
-          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="admin-grid" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-                <circle cx="20" cy="20" r="1.5" fill="white" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#admin-grid)" />
-          </svg>
-        </div>
-        <div className="absolute top-0 left-0 w-full h-full">
-          <svg viewBox="0 0 800 800" className="absolute -bottom-40 -left-40 w-[600px] h-[600px] opacity-[0.04]">
-            <circle cx="400" cy="400" r="350" fill="none" stroke="white" strokeWidth="2" />
-            <circle cx="400" cy="400" r="250" fill="none" stroke="white" strokeWidth="1.5" />
-            <circle cx="400" cy="400" r="150" fill="none" stroke="white" strokeWidth="1" />
-          </svg>
-        </div>
-        <div className="relative z-10 max-w-md text-center">
-          <div className="mx-auto mb-8 flex size-20 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm p-4">
-            <Image
-              src="/logos/logo-icon.png"
-              alt="Elite Code School"
-              width={48}
-              height={48}
-              className="size-12"
-            />
-          </div>
-          <h1 className="font-display text-4xl font-black text-white">Espace Administration</h1>
-          <p className="mt-4 text-base text-white/60 leading-relaxed">
-            Accédez au tableau de bord pour gérer les inscriptions, les élèves, les enseignants et les programmes pédagogiques.
-          </p>
-          <div className="mt-10 flex items-center justify-center gap-6 text-sm text-white/40">
-            <span className="flex items-center gap-2">
-              <span className="size-1.5 rounded-full bg-lime" />
-              Sécurisé
-            </span>
-            <span className="flex items-center gap-2">
-              <span className="size-1.5 rounded-full bg-sky" />
-              Privé
-            </span>
-            <span className="flex items-center gap-2">
-              <span className="size-1.5 rounded-full bg-amber" />
-              Restreint
-            </span>
-          </div>
-        </div>
-      </div>
+    <div className="flex flex-1 items-center bg-white py-16 sm:py-24 dark:bg-body">
+      <div className="container-shell w-full max-w-md">
+        <Link href="/" className="mb-8 inline-flex items-center gap-2 text-sm font-bold text-ink-soft transition duration-200 ease-out hover:text-ink dark:hover:text-white">
+          <ArrowLeft className="size-4" /> Retour à l&apos;accueil
+        </Link>
 
-      {/* Right Panel — Login Form */}
-      <div className="flex w-full lg:w-1/2 items-center justify-center bg-body p-6">
-        <div className="w-full max-w-sm">
-          <div className="dash-card p-8">
-            <div className="text-center">
-              <div className="mx-auto mb-5 flex size-14 items-center justify-center rounded-brand-sm bg-white dark:bg-surface p-2.5">
-                <Image
-                  src="/logos/logo-icon.png"
-                  alt="Elite Code School"
-                  width={36}
-                  height={36}
-                  className="size-9"
-                />
-              </div>
-              <h1 className="font-display text-2xl font-black text-ink">Bon retour</h1>
-              <p className="mt-1 text-sm text-ink-soft">Connectez-vous à l&apos;espace administration</p>
-            </div>
+        <div className="rounded-brand border border-border bg-white p-6 sm:p-8 dark:border-white/10 dark:bg-[#1e293b]">
+          <Image
+            src="/logos/logo-icon.png"
+            alt="Elite Code School"
+            width={36}
+            height={36}
+            className="size-9"
+          />
+          <div className="mt-4">
+            <span className="tag">Administration</span>
+          </div>
+          <h1 className="mt-3 font-display text-3xl font-semibold tracking-[-0.02em] text-ink dark:text-white">Bon retour</h1>
+          <p className="mt-2 text-sm font-medium leading-6 text-ink-soft dark:text-slate-300">Connectez-vous à l&apos;espace administration</p>
 
-            <form onSubmit={handleSubmit} className="mt-8 space-y-5">
-              <div>
-                <label className="mb-1.5 block text-xs font-black uppercase tracking-wider text-ink-soft">
-                  Email ou nom d&apos;utilisateur
-                </label>
+          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            <label className="flex flex-col gap-2 text-sm font-semibold text-ink">
+              Email ou nom d&apos;utilisateur
+              <input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                placeholder="admin@elitecodeschool.com"
+                className={inputClass}
+                autoComplete="username"
+                autoFocus
+              />
+            </label>
+            <label className="flex flex-col gap-2 text-sm font-semibold text-ink">
+              Mot de passe
+              <div className="relative">
                 <input
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  type="text"
-                  placeholder="admin@elitecodeschool.com"
-                  className="w-full rounded-full border-2 border-border bg-body px-5 py-3 text-sm text-ink outline-none transition focus:border-sky"
-                  autoFocus
+                  key={String(showPassword)}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Saisissez votre mot de passe"
+                  className={`w-full pr-10 ${inputClass}`}
+                  autoComplete="current-password"
                 />
+                <button
+                  type="button"
+                  onClick={togglePassword}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-soft transition duration-200 ease-out hover:text-ink"
+                  aria-label={showPassword ? "Masquer" : "Afficher"}
+                >
+                  {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                </button>
               </div>
-              <div>
-                <label className="mb-1.5 block text-xs font-black uppercase tracking-wider text-ink-soft">
-                  Mot de passe
-                </label>
-                <div className="relative">
-                  <input
-                    key={String(showPassword)}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Saisissez votre mot de passe"
-                    className="w-full rounded-full border-2 border-border bg-body px-5 py-3 pr-12 text-sm text-ink outline-none transition focus:border-sky"
-                    autoComplete="off"
-                  />
-                  <button
-                    type="button"
-                    onClick={togglePassword}
-                    className="absolute right-1 top-0 z-10 flex h-full w-10 items-center justify-center rounded-full text-ink-soft hover:text-ink transition cursor-pointer"
-                    aria-label={showPassword ? "Masquer" : "Afficher"}
-                  >
-                    {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                  </button>
-                </div>
-              </div>
+            </label>
 
-              <Button type="submit" className="w-full" size="lg" isLoading={loading}>
-                <LogIn className="size-4" />
-                {loading ? "Connexion en cours..." : "Se connecter"}
-              </Button>
-            </form>
-
-            <p className="mt-6 text-center text-xs text-ink-soft">
-              Accès réservé aux administrateurs d&apos;Elite Code School.
-            </p>
-          </div>
-
-          <p className="mt-4 text-center text-xs text-ink-soft/60">
-            Identifiants demo: <code className="rounded bg-body px-2 py-0.5 font-mono text-xs text-sky">admin@elitecodeschool.com</code> / <code className="rounded bg-body px-2 py-0.5 font-mono text-xs text-sky">admin1234</code>
-          </p>
+            <button type="submit" disabled={loading} className="btn-primary w-full disabled:opacity-50">
+              {loading ? <Loader2 className="size-4 animate-spin" /> : "Se connecter"}
+            </button>
+          </form>
         </div>
+
+        <p className="mt-6 text-center text-xs font-medium text-ink-soft dark:text-slate-400">
+          Accès réservé aux administrateurs d&apos;Elite Code School.
+        </p>
+
+        {process.env.NODE_ENV === "development" && (
+          <p className="mt-4 text-center text-xs text-ink-soft/60">
+            Identifiants demo: <code className="rounded bg-surface px-2 py-0.5 font-mono text-xs text-brand">admin@elitecodeschool.com</code> / <code className="rounded bg-surface px-2 py-0.5 font-mono text-xs text-brand">admin1234</code>
+          </p>
+        )}
       </div>
     </div>
   );

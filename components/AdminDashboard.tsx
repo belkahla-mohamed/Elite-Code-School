@@ -14,6 +14,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { showToast } from "@/components/ui/toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
+import { NotificationIcon } from "@/components/ui/notification-icon";
 
 const BarChart = dynamic(() => import("recharts").then((m) => m.BarChart), { ssr: false })
 const Bar = dynamic(() => import("recharts").then((m) => m.Bar), { ssr: false })
@@ -53,12 +54,12 @@ function TableSkeleton({ rows = 5 }: { rows?: number }) {
 }
 
 const statCards = [
-  { label: "Total Élèves", key: "totalStudents" as const, icon: Users, color: "from-sky to-cyan", bg: "bg-sky/10 text-sky" },
-  { label: "Revenu Mensuel", key: "revenue" as const, icon: DollarSign, color: "from-lime to-emerald", bg: "bg-lime/10 text-lime" },
-  { label: "En Attente", key: "pendingRequests" as const, icon: BookOpen, color: "from-amber to-orange", bg: "bg-amber/10 text-amber" },
-  { label: "Taux Complétion", key: "completionRate" as const, icon: CheckCircle, color: "from-violet to-purple", bg: "bg-violet/10 text-violet" },
-  { label: "Programmes", key: "totalPrograms" as const, icon: Lightbulb, color: "from-pink to-rose", bg: "bg-pink/10 text-pink" },
-  { label: "Acceptées", key: "acceptedRequests" as const, icon: GraduationCap, color: "from-teal to-cyan", bg: "bg-teal/10 text-teal" },
+  { label: "Total Élèves", key: "totalStudents" as const, icon: Users, accent: "bg-sky", bg: "bg-sky/10 text-sky" },
+  { label: "Revenu Mensuel", key: "revenue" as const, icon: DollarSign, accent: "bg-lime", bg: "bg-lime/10 text-lime" },
+  { label: "En Attente", key: "pendingRequests" as const, icon: BookOpen, accent: "bg-amber", bg: "bg-amber/10 text-amber" },
+  { label: "Taux Complétion", key: "completionRate" as const, icon: CheckCircle, accent: "bg-violet", bg: "bg-violet/10 text-violet" },
+  { label: "Programmes", key: "totalPrograms" as const, icon: Lightbulb, accent: "bg-pink", bg: "bg-pink/10 text-pink" },
+  { label: "Acceptées", key: "acceptedRequests" as const, icon: GraduationCap, accent: "bg-mint", bg: "bg-mint/10 text-mint" },
 ];
 
 export function AdminDashboard() {
@@ -70,8 +71,16 @@ export function AdminDashboard() {
   const [confirmAction, setConfirmAction] = useState<{ id: string; action: "accept" | "reject" } | null>(null);
   const [processingDashboard, setProcessingDashboard] = useState(false);
   const [createdSecret, setCreatedSecret] = useState("");
+  const [chartsReady, setChartsReady] = useState(false);
 
   useEffect(() => { loadData(); }, []);
+
+  // Recharts v3 measures its container before layout settles on first paint → 0-width charts.
+  // Mount charts one frame after the cards are laid out.
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setChartsReady(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
 
   async function loadData() {
     setLoading(true);
@@ -200,16 +209,18 @@ export function AdminDashboard() {
       {/* 6 stat cards */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
         {statCards.map((card) => (
-          <div key={card.key} className="dash-card relative overflow-hidden">
-            <div className={`absolute right-0 top-0 size-24 -translate-y-1/3 translate-x-1/3 rounded-full opacity-5 bg-gradient-to-br ${card.color}`} />
-            <div className="relative z-10">
-              <span className={`mb-3 flex size-10 items-center justify-center rounded-brand-sm ${card.bg}`}>
+          <div key={card.key} className="dash-card relative overflow-hidden p-5">
+            <span className={`absolute inset-x-0 top-0 h-1 ${card.accent}`} />
+            <div className="flex items-center justify-between gap-2">
+              <div className="min-w-0">
+                <p className="font-display text-2xl font-black text-ink">
+                  {renderStatValue(card.key)}
+                </p>
+                <p className="mt-1 truncate text-sm font-bold text-ink-soft">{card.label}</p>
+              </div>
+              <span className={`flex size-10 shrink-0 items-center justify-center rounded-brand-sm ${card.bg}`}>
                 <card.icon className="size-5" />
               </span>
-              <p className="font-display text-2xl font-black text-ink">
-                {renderStatValue(card.key)}
-              </p>
-              <p className="mt-1 text-sm font-bold text-ink-soft">{card.label}</p>
             </div>
           </div>
         ))}
@@ -226,16 +237,23 @@ export function AdminDashboard() {
             </div>
           </div>
           {hasGrowthData ? (
-            <ResponsiveContainer width="100%" height={220}>
-              <LineChart data={data.growthData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#6b7280" }} />
-                <Tooltip />
-                <Line type="monotone" dataKey="count" stroke="#4f46e5" strokeWidth={2.5} dot={{ r: 3, fill: "#4f46e5" }} name="Élèves" />
-              </LineChart>
-            </ResponsiveContainer>
+            chartsReady ? (
+              <ResponsiveContainer width="100%" height={220}>
+                <LineChart data={data.growthData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#6b7280" }} />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="count" stroke="#4f46e5" strokeWidth={2.5} dot={{ r: 3, fill: "#4f46e5" }} name="Élèves" />
+                </LineChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-[220px]" />
+            )
           ) : (
-            <div className="flex items-center justify-center py-12 text-ink-soft/50"><TrendingUp className="size-8" /></div>
+            <div className="flex flex-col items-center justify-center gap-2 py-12 text-ink-soft/60">
+              <TrendingUp className="size-8" />
+              <p className="text-sm font-bold">Aucune inscription sur les 6 derniers mois</p>
+            </div>
           )}
         </div>
 
@@ -248,15 +266,19 @@ export function AdminDashboard() {
             </div>
           </div>
           {hasChartData ? (
-            <ResponsiveContainer width="100%" height={220}>
-              <BarChart data={data.studentsByProgram} layout="vertical" margin={{ left: 0, right: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                <XAxis type="number" allowDecimals={false} tick={{ fontSize: 11, fill: "#6b7280" }} />
-                <YAxis type="category" dataKey="name" width={100} tick={{ fontSize: 11, fill: "#6b7280" }} />
-                <Tooltip />
-                <Bar dataKey="count" fill="#4f46e5" radius={[0, 6, 6, 0]} name="Élèves" />
-              </BarChart>
-            </ResponsiveContainer>
+            chartsReady ? (
+              <ResponsiveContainer width="100%" height={220}>
+                <BarChart data={data.studentsByProgram} layout="vertical" margin={{ left: 0, right: 20 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis type="number" allowDecimals={false} tick={{ fontSize: 11, fill: "#6b7280" }} />
+                  <YAxis type="category" dataKey="name" width={100} tick={{ fontSize: 11, fill: "#6b7280" }} />
+                  <Tooltip />
+                  <Bar dataKey="count" fill="#4f46e5" radius={[0, 6, 6, 0]} name="Élèves" />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-[220px]" />
+            )
           ) : (
             <div className="flex items-center justify-center py-12 text-ink-soft/50"><FolderOpen className="size-8" /></div>
           )}
@@ -371,9 +393,7 @@ export function AdminDashboard() {
             <div className="space-y-3">
               {activities.slice(0, 7).map((a: any) => (
                 <div key={a.id} className="flex items-start gap-3 rounded-brand-sm bg-body p-3 transition hover:bg-sky/5">
-                  <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-surface text-sm">
-                    {a.type === "student" ? "👤" : a.type === "request" ? "📋" : "📦"}
-                  </span>
+                  <NotificationIcon type={a.type} className="size-8" />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-bold text-ink">{a.description}</p>
                     <p className="text-xs text-ink-soft">
