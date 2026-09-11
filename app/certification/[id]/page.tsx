@@ -2,7 +2,7 @@ import { getCertificationById } from "@/lib/store";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, CheckCircle, ExternalLink, Linkedin, Share2 } from "lucide-react";
+import { ArrowLeft, CheckCircle, ArrowSquareOut, LinkedinLogo, ShareNetwork } from "@phosphor-icons/react/dist/ssr";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -85,7 +85,7 @@ export default async function CertificationPage({ params }: Props) {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full bg-[#0A66C2] px-6 py-3 text-sm font-bold text-white hover:bg-[#0A66C2]/90 transition"
               >
-                <Linkedin className="size-4" />
+                <LinkedinLogo className="size-4" />
                 LinkedIn
               </a>
               <a
@@ -94,11 +94,11 @@ export default async function CertificationPage({ params }: Props) {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-6 py-3 text-sm font-bold text-white hover:bg-[#25D366]/90 transition"
               >
-                <Share2 className="size-4" />
+                <ShareNetwork className="size-4" />
                 WhatsApp
               </a>
               <Link href={`/portfolios/${student.slug}`} className="btn-outline px-6 py-3">
-                <ExternalLink className="size-4" /> Portfolio
+                <ArrowSquareOut className="size-4" /> Portfolio
               </Link>
             </div>
           </div>

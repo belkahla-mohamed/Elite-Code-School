@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { User, Key, Mail, Calendar, Shield, Save, Camera } from "lucide-react";
+import { User, Key, EnvelopeSimple, CalendarBlank, Shield, FloppyDisk, Camera } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { showToast } from "@/components/ui/toast";
 import { useAuth } from "@/lib/auth-context";
@@ -132,7 +132,7 @@ export function ProfileContent() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="dash-card">
           <div className="flex items-center gap-5 mb-6">
-            <div className="relative">
+            <div className="relative shrink-0">
               <div className="flex size-20 items-center justify-center rounded-full bg-gradient-to-br from-sky to-cyan font-display text-2xl font-black text-white">
                 {initials}
               </div>
@@ -140,8 +140,8 @@ export function ProfileContent() {
                 <Camera className="size-3.5" />
               </button>
             </div>
-            <div>
-              <h3 className="font-display text-xl font-black text-ink">{profile?.firstName} {profile?.lastName}</h3>
+            <div className="min-w-0">
+              <h3 className="break-words font-display text-xl font-black text-ink">{profile?.firstName} {profile?.lastName}</h3>
               <div className="flex items-center gap-2 mt-1">
                 <span className="rounded-full bg-sky/10 px-3 py-0.5 text-xs font-bold text-sky">{roleLabel}</span>
               </div>
@@ -150,11 +150,11 @@ export function ProfileContent() {
 
           <div className="space-y-3 mb-6">
             <div className="flex items-center gap-2 text-sm text-ink-soft">
-              <Mail className="size-4 shrink-0" />
-              <span className="truncate">{profile?.email}</span>
+              <EnvelopeSimple className="size-4 shrink-0" />
+              <span className="min-w-0 flex-1 truncate">{profile?.email}</span>
             </div>
             <div className="flex items-center gap-2 text-sm text-ink-soft">
-              <Calendar className="size-4 shrink-0" />
+              <CalendarBlank className="size-4 shrink-0" />
               <span>Membre depuis {createdDate}</span>
             </div>
             <div className="flex items-center gap-2 text-sm text-ink-soft">
@@ -167,7 +167,7 @@ export function ProfileContent() {
             <h4 className="font-bold text-ink flex items-center gap-2">
               <User className="size-4" /> Modifier les informations
             </h4>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <label className="mb-1 block text-xs font-bold text-ink-soft uppercase tracking-wider">Prénom</label>
                 <input
@@ -198,7 +198,7 @@ export function ProfileContent() {
               />
             </div>
             <Button type="submit" isLoading={saving}>
-              <Save className="size-4" />
+              <FloppyDisk className="size-4" />
               {saving ? "Enregistrement..." : "Enregistrer"}
             </Button>
           </form>
@@ -233,7 +233,7 @@ export function ProfileContent() {
               required
             />
             <Button type="submit" isLoading={changingPassword} className="self-start">
-              <Save className="size-4" />
+              <FloppyDisk className="size-4" />
               {changingPassword ? "Mise à jour..." : "Enregistrer"}
             </Button>
           </form>

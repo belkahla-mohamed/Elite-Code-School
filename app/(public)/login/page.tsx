@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Eye, EyeClosed, SpinnerGap } from "@phosphor-icons/react";
 import { useAuth } from "@/lib/auth-context";
+import { showToast } from "@/components/ui/toast";
 
 type Mode = "login" | "forgot" | "reset";
 
@@ -52,6 +53,7 @@ export default function LoginPage() {
       const data = await res.json();
       if (!res.ok) {
         setError(data.error ?? "Identifiants incorrects");
+        showToast(data.error ?? "Identifiants incorrects", "error");
         setLoading(false);
         return;
       }
@@ -60,6 +62,7 @@ export default function LoginPage() {
       router.replace("/parent");
     } catch {
       setError("Erreur de connexion");
+      showToast("Erreur de connexion", "error");
       setLoading(false);
     }
   }
@@ -185,15 +188,25 @@ export default function LoginPage() {
                 className={`w-full pr-10 ${inputClass}`}
               />
               <button type="button" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"} className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-soft transition duration-200 ease-out hover:text-ink">
-                {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                {showPassword ? <EyeClosed className="size-4" /> : <Eye className="size-4" />}
               </button>
             </div>
           </label>
 
-          {error && <p className="text-sm text-coral bg-coral/10 rounded-brand-sm px-4 py-3">{error}</p>}
+          {error && (
+            <div className="rounded-md bg-coral/10 p-3 text-sm font-medium text-coral">
+              {error}
+            </div>
+          )}
 
           <button type="submit" disabled={loading} className="w-full btn-primary disabled:opacity-50">
-            {loading ? <Loader2 className="size-4 animate-spin" /> : "Se connecter"}
+            {loading ? (
+              <span className="flex items-center justify-center gap-2">
+                <SpinnerGap className="size-4 animate-spin" /> Connexion en cours...
+              </span>
+            ) : (
+              "Se connecter"
+            )}
           </button>
 
           <button
@@ -225,7 +238,7 @@ export default function LoginPage() {
           {info && <p className="text-sm text-lime bg-lime/10 rounded-brand-sm px-4 py-3">{info}</p>}
 
           <button type="submit" disabled={loading} className="w-full btn-primary disabled:opacity-50">
-            {loading ? <Loader2 className="size-4 animate-spin" /> : "Envoyer le lien"}
+            {loading ? <SpinnerGap className="size-4 animate-spin" /> : "Envoyer le lien"}
           </button>
 
           <button
@@ -269,7 +282,7 @@ export default function LoginPage() {
           {info && <p className="text-sm text-lime bg-lime/10 rounded-brand-sm px-4 py-3">{info}</p>}
 
           <button type="submit" disabled={loading} className="w-full btn-primary disabled:opacity-50">
-            {loading ? <Loader2 className="size-4 animate-spin" /> : "Définir le mot de passe"}
+            {loading ? <SpinnerGap className="size-4 animate-spin" /> : "Définir le mot de passe"}
           </button>
 
           <button

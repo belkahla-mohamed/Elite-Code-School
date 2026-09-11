@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Search, Eye, Download, Globe, Lock, Trash2, CheckSquare, Plus, X, LayoutGrid, LayoutList } from "lucide-react";
+import { MagnifyingGlass, Eye, DownloadSimple, Globe, Lock, Trash, CheckSquare, Plus, X, GridFour, ListDashes } from "@phosphor-icons/react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { downloadCsv } from "@/lib/csv-export";
 import { ViewToggle, useViewMode } from "@/components/ui/view-toggle";
@@ -131,7 +131,7 @@ export default function StudentsPage() {
   function renderTable() {
     return (
       <div className="overflow-x-auto rounded-brand border-2 border-border bg-white dark:bg-surface">
-        <table className="w-full text-sm">
+        <table className="w-full min-w-[560px] text-sm">
           <thead>
             <tr className="border-b-2 border-border bg-surface text-left">
               <th className="w-10 px-3 py-3.5">
@@ -192,22 +192,22 @@ export default function StudentsPage() {
     return (
       <div className={cardColumns === 2 ? "grid grid-cols-1 md:grid-cols-2 gap-3" : "space-y-3"}>
         {filtered.map((student) => (
-          <div key={student.id} className={`flex items-center justify-between rounded-brand border-2 bg-white dark:bg-surface px-5 py-4 transition hover:shadow-sm ${
+          <div key={student.id} className={`flex items-center justify-between gap-3 rounded-brand border-2 bg-white dark:bg-surface px-5 py-4 transition hover:shadow-sm ${
             selectedIds.has(student.id) ? "border-sky bg-sky/5" : "border-border hover:border-sky"
           }`}>
-            <div className="flex items-center gap-4">
+            <div className="flex min-w-0 flex-1 items-center gap-4">
               <input type="checkbox" checked={selectedIds.has(student.id)}
                 onChange={() => toggleSelect(student.id)}
                 className="size-4 rounded border-2 border-border accent-sky cursor-pointer shrink-0" />
               <div className="flex size-10 items-center justify-center rounded-full bg-gradient-to-br from-sky to-cyan font-display font-black text-sm text-white">
                 {student.avatar || student.firstName[0]}
               </div>
-              <div>
-                <h3 className="font-bold text-ink">{student.firstName} {student.lastName}</h3>
-                <p className="text-sm text-ink-soft">{student.age} ans · {student.levelLabel} · {student.hours}h</p>
+              <div className="min-w-0 flex-1">
+                <h3 className="truncate font-bold text-ink">{student.firstName} {student.lastName}</h3>
+                <p className="truncate text-sm text-ink-soft">{student.age} ans · {student.levelLabel} · {student.hours}h</p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex shrink-0 items-center gap-3">
               <span className={`rounded-full px-3 py-1 text-xs font-bold ${student.isPublic ? "bg-lime/15 text-lime" : "bg-ink-soft/10 text-ink-soft"}`}>
                 {student.isPublic ? "Public" : "Privé"}
               </span>
@@ -228,7 +228,7 @@ export default function StudentsPage() {
           <h1 className="font-display text-3xl font-black text-ink">Élèves</h1>
           <p className="text-sm text-ink-soft mt-1">Gérez les profils et portfolios des élèves</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <button onClick={() => setShowAddForm(true)} className="btn-primary py-2">
             <Plus className="mr-1 inline size-4" /> Ajouter
           </button>
@@ -238,18 +238,18 @@ export default function StudentsPage() {
           {students.length > 0 && (
             <button onClick={() => downloadCsv(students.map((s) => ({ Prénom: s.firstName, Nom: s.lastName, Âge: s.age, Niveau: s.levelLabel, Heures: s.hours, Email: s.parentEmail })), "eleves.csv")}
               className="btn-outline py-1.5 text-xs">
-              <Download className="mr-1 inline size-3" /> CSV
+              <DownloadSimple className="mr-1 inline size-3" /> CSV
             </button>
           )}
           {viewMode === "cards" && (
             <div className="flex items-center rounded-full border-2 border-border bg-white dark:bg-surface p-0.5">
               <button onClick={() => setCardColumns(1)}
                 className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold transition ${cardColumns === 1 ? "bg-sky text-white shadow-sm" : "text-ink-soft hover:text-ink"}`}>
-                <LayoutList className="size-3.5" /> 1
+                <ListDashes className="size-3.5" /> 1
               </button>
               <button onClick={() => setCardColumns(2)}
                 className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold transition ${cardColumns === 2 ? "bg-sky text-white shadow-sm" : "text-ink-soft hover:text-ink"}`}>
-                <LayoutGrid className="size-3.5" /> 2
+                <GridFour className="size-3.5" /> 2
               </button>
             </div>
           )}
@@ -258,7 +258,7 @@ export default function StudentsPage() {
       </div>
 
       <div className="relative mb-6">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-ink-soft" />
+        <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-ink-soft" />
         <input value={search} onChange={(e) => setSearch(e.target.value)}
           placeholder="Rechercher un élève..."
           className="w-full rounded-full border-2 border-border bg-white dark:bg-surface pl-10 pr-4 py-2.5 text-sm text-ink outline-none transition focus:border-sky" />
@@ -270,7 +270,7 @@ export default function StudentsPage() {
         </div>
       ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-ink-soft">
-          <Search className="size-12 mb-3 opacity-40" />
+          <MagnifyingGlass className="size-12 mb-3 opacity-40" />
           <p className="font-bold text-lg">Aucun élève trouvé</p>
           <p className="text-sm mt-1">Aucun élève ne correspond à votre recherche.</p>
         </div>
@@ -290,11 +290,11 @@ export default function StudentsPage() {
               </button>
               <button onClick={() => downloadCsv(students.filter((s) => selectedIds.has(s.id)).map((s) => ({ Prénom: s.firstName, Nom: s.lastName, Âge: s.age, Niveau: s.levelLabel, Heures: s.hours, Email: s.parentEmail })), "eleves-selection.csv")}
                 className="rounded-full bg-sky/10 px-3 py-1.5 text-xs font-bold text-sky hover:bg-sky/20 transition flex items-center gap-1">
-                <Download className="size-3" /> CSV
+                <DownloadSimple className="size-3" /> CSV
               </button>
               <button onClick={() => setDeleteConfirm(true)} disabled={processing}
                 className="rounded-full bg-coral/10 px-3 py-1.5 text-xs font-bold text-coral hover:bg-coral/20 transition disabled:opacity-50 flex items-center gap-1">
-                <Trash2 className="size-3" /> Supprimer
+                <Trash className="size-3" /> Supprimer
               </button>
             </div>
           )}
@@ -311,7 +311,7 @@ export default function StudentsPage() {
               <button onClick={() => setShowAddForm(false)}><X className="size-5 text-ink-soft" /></button>
             </div>
             <form onSubmit={createStudent} className="space-y-3">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <input value={addForm.firstName} onChange={(e) => setAddForm({ ...addForm, firstName: e.target.value })}
                   placeholder="Prénom" required className="rounded-brand-sm border-2 border-border bg-body px-3 py-2 text-sm text-ink focus:border-sky focus:outline-none" />
                 <input value={addForm.lastName} onChange={(e) => setAddForm({ ...addForm, lastName: e.target.value })}

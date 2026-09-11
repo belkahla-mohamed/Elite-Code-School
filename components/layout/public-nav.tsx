@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
-import { Menu, X, ChevronDown, LayoutDashboard, LogOut, GraduationCap } from "lucide-react";
+import { List, X, CaretDown, SquaresFour, SignOut, GraduationCap } from "@phosphor-icons/react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useAuth } from "@/lib/auth-context";
 import Image from "next/image";
@@ -77,7 +77,7 @@ export default function PublicNav() {
                 {initials}
               </span>
               <span className="max-w-28 truncate">{user?.name}</span>
-              <ChevronDown className={`size-3.5 text-ink-soft/60 transition duration-200 ${profileOpen ? "rotate-180" : ""}`} />
+              <CaretDown className={`size-3.5 text-ink-soft/60 transition duration-200 ${profileOpen ? "rotate-180" : ""}`} />
             </button>
             {profileOpen && (
               <>
@@ -106,7 +106,7 @@ export default function PublicNav() {
                           className="flex items-center gap-3 rounded-brand-sm px-3 py-2.5 text-sm font-bold text-ink transition hover:bg-brand/5 hover:text-brand"
                         >
                           <span className="flex size-7 items-center justify-center rounded-brand-sm bg-brand/10 text-brand">
-                            <LayoutDashboard className="size-3.5" />
+                            <SquaresFour className="size-3.5" />
                           </span>
                           Tableau de bord
                         </Link>
@@ -131,7 +131,7 @@ export default function PublicNav() {
                         className="flex w-full items-center gap-3 rounded-brand-sm px-3 py-2.5 text-sm font-bold text-coral transition hover:bg-coral/5"
                       >
                         <span className="flex size-7 items-center justify-center rounded-brand-sm bg-coral/10 text-coral">
-                          <LogOut className="size-3.5" />
+                          <SignOut className="size-3.5" />
                         </span>
                         Déconnexion
                       </button>
@@ -160,7 +160,7 @@ export default function PublicNav() {
           className="flex size-10 items-center justify-center rounded-full border-2 border-border dark:border-white/15 bg-surface dark:bg-[#1e293b] text-ink transition hover:bg-surface dark:hover:bg-white/5"
           suppressHydrationWarning
         >
-          {open ? <X className="size-5" /> : <Menu className="size-5" />}
+          {open ? <X className="size-5" /> : <List className="size-5" />}
         </button>
       </div>
 
@@ -243,7 +243,7 @@ export default function PublicNav() {
                       onClick={() => setOpen(false)}
                       className="flex w-full items-center justify-center gap-2 rounded-full border-2 border-border dark:border-white/15 bg-surface dark:bg-[#1e293b] px-5 py-3 text-sm font-bold text-ink transition hover:bg-surface dark:hover:bg-white/5"
                     >
-                      <LayoutDashboard className="size-4" />
+                      <SquaresFour className="size-4" />
                       Tableau de bord
                     </Link>
                   ) : (
@@ -260,7 +260,7 @@ export default function PublicNav() {
                     onClick={() => { setOpen(false); logout(); }}
                     className="flex w-full items-center justify-center gap-2 rounded-full border-2 border-coral/30 bg-coral/10 px-5 py-3 text-sm font-bold text-coral transition hover:bg-coral/20"
                   >
-                    <LogOut className="size-4" />
+                    <SignOut className="size-4" />
                     Déconnexion
                   </button>
                 </div>

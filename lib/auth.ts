@@ -37,9 +37,19 @@ export function generateAccessSecret() {
   return randomBytes(9).toString("base64url").toUpperCase().slice(0, 12);
 }
 
-export async function isAdminAuthenticated() {
+export async function getAdminSession() {
   const jar = await cookies();
-  return jar.get(ADMIN_COOKIE)?.value === adminToken();
+  const token = jar.get(ADMIN_COOKIE)?.value;
+  if (!token) return null;
+  // Fallback for old static hash session for smooth transition (optional, but good)
+  if (token === adminToken()) {
+    return { id: "admin-0", role: "super_admin", permissions: ["inscriptions", "programs", "categories", "students", "cms", "certificates", "admins"] };
+  }
+  return verifyToken(token) as { id: string; role: string; permissions: string[] } | null;
+}
+
+export async function isAdminAuthenticated() {
+  return (await getAdminSession()) !== null;
 }
 
 export async function getParentStudentId() {
@@ -51,9 +61,9 @@ export async function getParentStudentId() {
   return payload.studentId;
 }
 
-export async function setAdminSession() {
+export async function setAdminSession(user: { id: string; role: string; permissions: string[] }) {
   const jar = await cookies();
-  jar.set(ADMIN_COOKIE, adminToken(), {
+  jar.set(ADMIN_COOKIE, generateToken(user, 24 * 7), {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.COOKIE_SECURE === "true",

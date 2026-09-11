@@ -5,7 +5,7 @@ import { showToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { ViewToggle, useViewMode } from "@/components/ui/view-toggle";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Plus, Trash2, Pencil, Eye, X, BookOpen, Download, LayoutGrid, LayoutList, Image as ImageIcon } from "lucide-react";
+import { Plus, Trash, Pencil, Eye, X, BookOpen, DownloadSimple, GridFour, ListDashes, Image as ImageIcon } from "@phosphor-icons/react";
 import { downloadCsv } from "@/lib/csv-export";
 import Link from "next/link";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -125,7 +125,7 @@ export default function CurriculaAdminPage() {
   function renderTable() {
     return (
       <div className="overflow-x-auto rounded-brand border-2 border-border bg-white dark:bg-surface">
-        <table className="w-full text-sm">
+        <table className="w-full min-w-[460px] text-sm">
           <thead>
               <tr className="border-b-2 border-border bg-surface text-left">
                 <th className="px-5 py-3.5 font-black text-xs uppercase tracking-wider text-ink-soft">Programme</th>
@@ -166,7 +166,7 @@ export default function CurriculaAdminPage() {
                     <div className="flex justify-end gap-2">
                       <Link href={`/curricula/${p.id}`} className="rounded-full bg-ink-soft/10 p-2 text-ink-soft hover:bg-ink-soft/20 transition"><Eye className="size-4" /></Link>
                       <button onClick={() => openEdit(p)} className="rounded-full bg-sky/10 p-2 text-sky hover:bg-sky/20 transition"><Pencil className="size-4" /></button>
-                      <button onClick={() => setConfirmDelete(p.id)} className="rounded-full bg-coral/10 p-2 text-coral hover:bg-coral/20 transition"><Trash2 className="size-4" /></button>
+                      <button onClick={() => setConfirmDelete(p.id)} className="rounded-full bg-coral/10 p-2 text-coral hover:bg-coral/20 transition"><Trash className="size-4" /></button>
                     </div>
                   </td>
                 </tr>
@@ -181,24 +181,24 @@ export default function CurriculaAdminPage() {
     return (
       <div className={cardColumns === 2 ? "grid grid-cols-1 md:grid-cols-2 gap-3" : "space-y-3"}>
         {programs.map((p) => (
-          <div key={p.id} className="flex items-center justify-between rounded-brand border-2 border-border bg-white dark:bg-surface px-5 py-4 transition hover:border-sky hover:shadow-sm">
-            <div className="flex items-center gap-4">
+          <div key={p.id} className="flex items-center justify-between gap-3 rounded-brand border-2 border-border bg-white dark:bg-surface px-5 py-4 transition hover:border-sky hover:shadow-sm">
+            <div className="flex min-w-0 flex-1 items-center gap-4">
               {p.image ? (
                 <OptimizedImage src={p.image} alt="" width={56} height={56} className="size-14 shrink-0 rounded-lg object-cover" />
               ) : (
                 <span className="flex size-14 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-surface to-border text-2xl font-bold text-ink-soft">{p.title?.charAt(0) || "?"}</span>
               )}
-              <div>
-                <h3 className="font-bold text-ink">{p.title}</h3>
-                <p className="text-sm text-ink-soft">{p.ageRange} · {levelLabels[p.level] || p.level} · {p.priceMonthly} DH/mois{p.category ? ` · ${p.category.name}` : ""}</p>
+              <div className="min-w-0 flex-1">
+                <h3 className="truncate font-bold text-ink">{p.title}</h3>
+                <p className="truncate text-sm text-ink-soft">{p.ageRange} · {levelLabels[p.level] || p.level} · {p.priceMonthly} DH/mois{p.category ? ` · ${p.category.name}` : ""}</p>
                 {p.description && <p className="text-xs text-ink-soft/60 mt-0.5 line-clamp-1">{p.description}</p>}
                 {p.duration && <p className="text-xs text-ink-soft/60 mt-0.5">{p.duration}{p.schedule ? ` · ${p.schedule}` : ""}</p>}
               </div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex shrink-0 gap-2">
               <Link href={`/curricula/${p.id}`} className="rounded-full bg-ink-soft/10 p-2.5 text-ink-soft hover:bg-ink-soft/20 transition"><Eye className="size-4" /></Link>
               <button onClick={() => openEdit(p)} className="rounded-full bg-sky/10 p-2.5 text-sky hover:bg-sky/20 transition"><Pencil className="size-4" /></button>
-              <button onClick={() => setConfirmDelete(p.id)} className="rounded-full bg-coral/10 p-2.5 text-coral hover:bg-coral/20 transition"><Trash2 className="size-4" /></button>
+              <button onClick={() => setConfirmDelete(p.id)} className="rounded-full bg-coral/10 p-2.5 text-coral hover:bg-coral/20 transition"><Trash className="size-4" /></button>
             </div>
           </div>
         ))}
@@ -213,7 +213,7 @@ export default function CurriculaAdminPage() {
           <h1 className="font-display text-3xl font-black text-ink">Programmes</h1>
           <p className="text-sm text-ink-soft mt-1">Gérez les programmes pédagogiques</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           {programs.length > 0 && (
             <button onClick={() => downloadCsv(programs.map((p) => ({
               Titre: p.title, Niveau: levelLabels[p.level] ?? p.level, "Tranche d'âge": p.ageRange,
@@ -224,7 +224,7 @@ export default function CurriculaAdminPage() {
               Outils: (p.tools ?? []).join("; "),
             })), "programmes.csv")}
               className="btn-outline py-1.5 text-xs">
-              <Download className="mr-1 inline size-3" /> CSV
+              <DownloadSimple className="mr-1 inline size-3" /> CSV
             </button>
           )}
           <button onClick={openNew} className="btn-primary py-2">
@@ -234,11 +234,11 @@ export default function CurriculaAdminPage() {
             <div className="flex items-center rounded-full border-2 border-border bg-white dark:bg-surface p-0.5">
               <button onClick={() => setCardColumns(1)}
                 className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold transition ${cardColumns === 1 ? "bg-sky text-white shadow-sm" : "text-ink-soft hover:text-ink"}`}>
-                <LayoutList className="size-3.5" /> 1
+                <ListDashes className="size-3.5" /> 1
               </button>
               <button onClick={() => setCardColumns(2)}
                 className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold transition ${cardColumns === 2 ? "bg-sky text-white shadow-sm" : "text-ink-soft hover:text-ink"}`}>
-                <LayoutGrid className="size-3.5" /> 2
+                <GridFour className="size-3.5" /> 2
               </button>
             </div>
           )}

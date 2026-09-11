@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Target, Heart, Lightbulb, Users, Check } from "lucide-react"
+import { Target, Heart, Lightbulb, Users, Check } from "@phosphor-icons/react/dist/ssr";
 import { PageHero, CtaBand } from "@/components/page-sections"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 

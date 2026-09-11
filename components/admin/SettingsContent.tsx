@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Settings, Shield, Bell, Eye, FileText, Save, Mail, Clock, Key, AlertTriangle } from "lucide-react";
+import { Gear, Shield, Bell, Eye, FileText, FloppyDisk, EnvelopeSimple, Clock, Key, Warning } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { showToast } from "@/components/ui/toast";
 import { Switch } from "@/components/ui/switch";
@@ -83,13 +83,13 @@ export function SettingsContent() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h2 className="font-display text-2xl font-black text-ink">Paramètres</h2>
           <p className="text-sm text-ink-soft">Configuration générale de l&apos;application</p>
         </div>
         <Button onClick={handleSave} isLoading={saving}>
-          <Save className="size-4" />
+          <FloppyDisk className="size-4" />
           {saving ? "Enregistrement..." : "Enregistrer"}
         </Button>
       </div>
@@ -139,7 +139,7 @@ export function SettingsContent() {
                 onCheckedChange={(v) => update("maintenanceMode", v)}
               />
               <Label htmlFor="maintenance" className="flex items-center gap-2 text-sm text-ink cursor-pointer">
-                {settings.maintenanceMode && <AlertTriangle className="size-4 text-coral" />}
+                {settings.maintenanceMode && <Warning className="size-4 text-coral" />}
                 Mode maintenance
               </Label>
             </div>
@@ -163,7 +163,7 @@ export function SettingsContent() {
             </div>
             <div>
               <label className="mb-1 block text-xs font-bold text-ink-soft uppercase tracking-wider">
-                <Mail className="mr-1 inline size-3" /> Email de contact
+                <EnvelopeSimple className="mr-1 inline size-3" /> Email de contact
               </label>
               <input
                 value={settings.contactEmail}
@@ -218,7 +218,7 @@ export function SettingsContent() {
         <div className="dash-card lg:col-span-2">
           <div className="flex items-center gap-3 mb-2">
             <span className="flex size-10 items-center justify-center rounded-brand-sm bg-sky/10 text-sky">
-              <Mail className="size-5" />
+              <EnvelopeSimple className="size-5" />
             </span>
             <div>
               <h3 className="font-bold text-ink">Email</h3>
@@ -236,9 +236,9 @@ export function SettingsContent() {
                 type="text"
                 className="w-full rounded-full border-2 border-border bg-body px-5 py-2.5 text-sm text-ink outline-none transition focus:border-sky"
               />
-              <p className="mt-1.5 text-xs text-ink-soft">
-                Format: <code className="rounded bg-surface px-1 py-0.5 text-xs">Nom &lt;email@domaine.com&gt;</code>.
-                Par défaut <code className="rounded bg-surface px-1 py-0.5 text-xs">onboarding@resend.dev</code> (test, admin seulement).
+              <p className="mt-1.5 break-words text-xs text-ink-soft">
+                Format: <code className="break-all rounded bg-surface px-1 py-0.5 text-xs">Nom &lt;email@domaine.com&gt;</code>.
+                Par défaut <code className="break-all rounded bg-surface px-1 py-0.5 text-xs">onboarding@resend.dev</code> (test, admin seulement).
                 Pour envoyer aux parents, vérifie un domaine sur <a href="https://resend.com" target="_blank" rel="noopener noreferrer" className="text-sky underline">resend.com</a>.
               </p>
             </div>

@@ -12,6 +12,7 @@ import {
 import { hashSecret, generateAccessSecret } from "@/lib/auth";
 import { hashPassword, verifyPassword } from "@/lib/passwords";
 import { hasSupabaseConfig, getSupabaseAdmin } from "@/lib/supabase";
+export { hasSupabaseConfig, getSupabaseAdmin };
 import { sendAdminNotification, sendAcceptanceEmail, sendRejectionEmail } from "@/lib/email";
 import type {
   AdminUser,
@@ -23,6 +24,7 @@ import type {
   DashboardSnapshot,
   Follow,
   GalleryItem,
+  ContentBlock,
   InscriptionRequest,
   Parent,
   ParentWithStudent,
@@ -66,11 +68,12 @@ type DemoStore = {
   studentRequests: StudentRequest[];
   studentMessages: StudentMessage[];
   studentAlerts: StudentAlert[];
+  contentBlocks: ContentBlock[];
 };
 
 const globalForStore = globalThis as unknown as { eliteCodeSchoolStore?: DemoStore };
 
-function demoStore() {
+export function demoStore() {
   if (!globalForStore.eliteCodeSchoolStore) {
     globalForStore.eliteCodeSchoolStore = {
       requests: structuredClone(seedRequests),
@@ -85,6 +88,7 @@ function demoStore() {
       studentRequests: [],
       studentMessages: [],
       studentAlerts: alertsSeed(),
+      contentBlocks: [],
     };
   }
 
@@ -143,6 +147,8 @@ function withPortfolio(student: Student, programs: Program[] = demoStore().progr
 }
 
 const FALLBACK_IMAGE = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 400'%3E%3Crect width='800' height='400' fill='%23e5e7eb'/%3E%3Ctext x='400' y='210' text-anchor='middle' fill='%239ca3af' font-size='40' font-weight='bold' font-family='sans-serif'%3EImage%3C/text%3E%3C/svg%3E";
+
+
 
 export async function getCategories(): Promise<Category[]> {
   if (!hasSupabaseConfig()) return demoStore().categories;
@@ -521,6 +527,100 @@ export async function getStudentByParentLogin(email: string, secret: string) {
 
   if (error) throw error;
   return data ? mapStudentPortfolio(data, programs) : null;
+}
+
+export async function getCertificationById(certId: string) {
+  if (!hasSupabaseConfig()) {
+    const cert = demoStore().certifications.find((c) => c.id === certId);
+    if (!cert) return null;
+    const student = demoStore().students.find((s) => s.id === cert.studentId);
+    if (!student) return null;
+    return { certification: cert, student: { firstName: student.firstName, lastName: student.lastName, slug: student.slug } };
+  }
+  const { data, error } = await getSupabaseAdmin()
+    .from("certifications")
+    .select("*, students(first_name, last_name, slug)")
+    .eq("id", certId)
+    .single();
+
+  if (error || !data) return null;
+  return {
+    certification: mapCertification(data),
+    student: {
+      firstName: data.students?.first_name || "",
+      lastName: data.students?.last_name || "",
+      slug: data.students?.slug || "",
+    },
+  };
+}
+
+export async function getAllCertifications() {
+  if (!hasSupabaseConfig()) {
+    const allCerts: any[] = [];
+    demoStore().certifications.forEach((cert) => {
+      const student = demoStore().students.find((s) => s.id === cert.studentId);
+      if (student) {
+        allCerts.push({
+          certification: cert,
+          student: { firstName: student.firstName, lastName: student.lastName, slug: student.slug },
+        });
+      }
+    });
+    return allCerts.sort((a, b) => new Date(b.certification.issueDate).getTime() - new Date(a.certification.issueDate).getTime());
+  }
+
+  const { data, error } = await getSupabaseAdmin()
+    .from("certifications")
+    .select("*, students(first_name, last_name, slug)")
+    .order("issue_date", { ascending: false });
+
+  if (error || !data) return [];
+  return data.map((d: any) => ({
+    certification: mapCertification(d),
+    student: {
+      firstName: d.students?.first_name || "",
+      lastName: d.students?.last_name || "",
+      slug: d.students?.slug || "",
+    },
+  }));
+}
+
+export async function createCertification(data: { studentId: string; title: string; mention: string; dateLabel: string; emoji: string; gradient: string; issueDate: string; serialCode: string; imageUrl?: string }) {
+  if (!hasSupabaseConfig()) {
+    const cert = {
+      id: `cert-${Date.now()}`,
+      studentId: data.studentId,
+      title: data.title,
+      mention: data.mention,
+      dateLabel: data.dateLabel,
+      emoji: data.emoji,
+      gradient: data.gradient,
+      issueDate: data.issueDate,
+      serialCode: data.serialCode,
+      imageUrl: data.imageUrl,
+      createdAt: new Date().toISOString(),
+    };
+    demoStore().certifications.push(cert as any);
+    addActivityAndNotify("certification", "Certificat généré", `${data.title} pour un élève`);
+    return cert;
+  }
+
+  const { data: inserted, error } = await getSupabaseAdmin().from("certifications").insert({
+    id: crypto.randomUUID(),
+    student_id: data.studentId,
+    title: data.title,
+    mention: data.mention,
+    date_label: data.dateLabel,
+    emoji: data.emoji,
+    gradient: data.gradient,
+    issue_date: data.issueDate,
+    serial_code: data.serialCode,
+    image_url: data.imageUrl,
+  }).select().single();
+
+  if (error) throw error;
+  addActivityAndNotify("certification", "Certificat généré", `${data.title} pour un élève`);
+  return inserted;
 }
 
 export async function getStudentById(id: string) {
@@ -943,9 +1043,15 @@ function studentName(studentId: string) {
   return student ? `${student.firstName} ${student.lastName}` : "Un élève"
 }
 
-export async function addCertification(studentId: string, payload: Omit<Certification, "id" | "studentId">) {
+export async function addCertification(studentId: string, payload: Omit<Certification, "id" | "studentId" | "serialCode" | "issueDate"> & { serialCode?: string, issueDate?: string }) {
   if (!hasSupabaseConfig()) {
-    const certification: Certification = { ...payload, id: `cert-${Date.now()}`, studentId };
+    const certification: Certification = {
+      ...payload,
+      id: `cert-${Date.now()}`,
+      studentId,
+      serialCode: payload.serialCode ?? `CERT-${Date.now()}`,
+      issueDate: payload.issueDate ?? new Date().toISOString()
+    };
     demoStore().certifications.unshift(certification);
     return certification;
   }
@@ -960,6 +1066,8 @@ export async function addCertification(studentId: string, payload: Omit<Certific
       date_label: payload.dateLabel,
       emoji: payload.emoji,
       gradient: payload.gradient,
+      serial_code: payload.serialCode ?? `CERT-${Date.now()}`,
+      issue_date: payload.issueDate ?? new Date().toISOString(),
       image_url: payload.imageUrl ?? null
     })
     .select("*")
@@ -991,15 +1099,6 @@ export async function addGalleryItem(studentId: string, payload: Omit<GalleryIte
 
   if (error) throw error;
   return mapGalleryItem(data);
-}
-
-export async function getCertificationById(certId: string) {
-  const snapshot = await getDashboardSnapshot();
-  for (const student of snapshot.students) {
-    const cert = student.certifications.find((c) => c.id === certId);
-    if (cert) return { certification: cert, student: { firstName: student.firstName, lastName: student.lastName, slug: student.slug } };
-  }
-  return null;
 }
 
 export async function batchUpdateStudentPrivacy(ids: string[], isPublic: boolean) {
@@ -1102,6 +1201,7 @@ function envSuperAdmin(): AdminUser {
     firstName: "Super",
     lastName: "Admin",
     role: "super_admin",
+    permissions: ["inscriptions", "programs", "categories", "students", "cms", "certificates", "admins"],
     createdAt: new Date("2024-01-01").toISOString(),
   };
 }
@@ -1144,7 +1244,7 @@ export async function verifyAdminCredentials(email: string, password: string): P
   }
   const { data, error } = await getSupabaseAdmin()
     .from("admin_users")
-    .select("id, email, first_name, last_name, role, created_at, password_hash")
+    .select("id, email, first_name, last_name, role, permissions, created_at, password_hash")
     .ilike("email", email)
     .maybeSingle()
   if (error || !data) return null
@@ -1163,6 +1263,7 @@ export async function verifyAdminCredentials(email: string, password: string): P
     firstName: data.first_name,
     lastName: data.last_name,
     role: data.role,
+    permissions: data.permissions || [],
     createdAt: data.created_at,
   }
 }
@@ -1200,7 +1301,7 @@ export async function getAdminUsers(): Promise<AdminUser[]> {
   }
   const { data, error } = await getSupabaseAdmin()
     .from("admin_users")
-    .select("id, email, first_name, last_name, role, created_at, last_login")
+    .select("id, email, first_name, last_name, role, permissions, created_at, last_login")
     .order("created_at", { ascending: true });
   if (error) throw error;
   return data.map((row: any) => ({
@@ -1209,12 +1310,13 @@ export async function getAdminUsers(): Promise<AdminUser[]> {
     firstName: row.first_name,
     lastName: row.last_name,
     role: row.role,
+    permissions: row.permissions || [],
     createdAt: row.created_at,
     lastLogin: row.last_login ?? undefined,
   }));
 }
 
-export async function createAdminUser(data: { email: string; firstName: string; lastName: string; password: string }) {
+export async function createAdminUser(data: { email: string; firstName: string; lastName: string; password: string; permissions?: string[] }) {
   const passwordHash = await hashPassword(data.password);
   if (!hasSupabaseConfig()) {
     const exists = demoAdmins().some((r) => r.email.toLowerCase() === data.email.toLowerCase())
@@ -1226,6 +1328,7 @@ export async function createAdminUser(data: { email: string; firstName: string; 
       firstName: data.firstName,
       lastName: data.lastName,
       role: "admin",
+      permissions: data.permissions || [],
       createdAt: new Date().toISOString(),
       passwordHash,
     };
@@ -1239,6 +1342,7 @@ export async function createAdminUser(data: { email: string; firstName: string; 
     first_name: data.firstName,
     last_name: data.lastName,
     role: "admin",
+    permissions: data.permissions || [],
     password_hash: passwordHash,
   });
   if (error) {
@@ -1246,10 +1350,10 @@ export async function createAdminUser(data: { email: string; firstName: string; 
     throw error;
   }
   addActivityAndNotify("request", "Admin créé", `${data.firstName} ${data.lastName} (${data.email})`);
-  return { id: "", email: data.email, firstName: data.firstName, lastName: data.lastName, role: "admin", createdAt: new Date().toISOString() };
+  return { id: "", email: data.email, firstName: data.firstName, lastName: data.lastName, role: "admin", permissions: data.permissions || [], createdAt: new Date().toISOString() };
 }
 
-export async function updateAdminUser(id: string, data: { firstName?: string; lastName?: string; email?: string; role?: string }) {
+export async function updateAdminUser(id: string, data: { firstName?: string; lastName?: string; email?: string; role?: string; permissions?: string[] }) {
   if (!hasSupabaseConfig()) {
     const user = demoAdmins().find((r) => r.id === id);
     if (!user) throw new Error("Admin introuvable");
@@ -1261,6 +1365,7 @@ export async function updateAdminUser(id: string, data: { firstName?: string; la
       if (!["admin", "super_admin"].includes(data.role)) throw new Error("Rôle invalide");
       user.role = data.role as DemoAdminRecord["role"];
     }
+    if (data.permissions !== undefined) user.permissions = data.permissions;
     addActivityAndNotify("request", "Admin modifié", `${user.firstName} ${user.lastName} (${user.email})`);
     return toAdminUser(user);
   }
@@ -1269,6 +1374,7 @@ export async function updateAdminUser(id: string, data: { firstName?: string; la
   if (data.lastName !== undefined) updateData.last_name = data.lastName;
   if (data.email !== undefined) updateData.email = data.email;
   if (data.role !== undefined) updateData.role = data.role;
+  if (data.permissions !== undefined) updateData.permissions = data.permissions;
   const { error } = await getSupabaseAdmin().from("admin_users").update(updateData).eq("id", id);
   if (error) throw error;
   addActivityAndNotify("request", "Admin modifié", `${data.firstName ?? ""} ${data.lastName ?? ""} (${data.email ?? ""})`);
@@ -2237,7 +2343,7 @@ export async function getAdminProfile(id: string): Promise<AdminUser | null> {
   }
   const { data, error } = await getSupabaseAdmin()
     .from("admin_users")
-    .select("id, email, first_name, last_name, role, created_at, last_login")
+    .select("id, email, first_name, last_name, role, permissions, created_at, last_login")
     .eq("id", id)
     .maybeSingle()
   if (error || !data) return null
@@ -2247,6 +2353,7 @@ export async function getAdminProfile(id: string): Promise<AdminUser | null> {
     firstName: data.first_name,
     lastName: data.last_name,
     role: data.role,
+    permissions: data.permissions || [],
     createdAt: data.created_at,
     lastLogin: data.last_login ?? undefined,
   }
@@ -2314,6 +2421,8 @@ function mapCertification(row: any): Certification {
     dateLabel: row.date_label,
     emoji: row.emoji,
     gradient: row.gradient,
+    serialCode: row.serial_code ?? undefined,
+    issueDate: row.issue_date ?? undefined,
     imageUrl: row.image_url ?? undefined
   };
 }
@@ -2355,4 +2464,33 @@ function mapStudentPortfolio(row: any, programs: Program[]): StudentPortfolio {
     certifications: (row.certifications ?? []).map(mapCertification),
     gallery: (row.gallery_items ?? []).map(mapGalleryItem)
   };
+}
+
+export async function getContentBlocks() {
+  if (!hasSupabaseConfig()) return demoStore().contentBlocks;
+  const { data, error } = await getSupabaseAdmin().from("content_blocks").select("*");
+  if (error || !data) return [];
+  return data.map((d: any) => ({
+    key: d.key,
+    value: d.value,
+    createdAt: d.created_at,
+    updatedAt: d.updated_at,
+  }));
+}
+
+export async function updateContentBlock(key: string, value: string) {
+  if (!hasSupabaseConfig()) {
+    const block = demoStore().contentBlocks.find(b => b.key === key);
+    if (block) {
+      block.value = value;
+      block.updatedAt = new Date().toISOString();
+    } else {
+      demoStore().contentBlocks.push({ key, value, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+    }
+    return;
+  }
+  const { error } = await getSupabaseAdmin()
+    .from("content_blocks")
+    .upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: "key" });
+  if (error) throw error;
 }

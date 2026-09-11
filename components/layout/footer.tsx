@@ -1,6 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
-import { Mail, Phone, MapPin, Facebook, Instagram, Youtube } from "lucide-react";
+import { EnvelopeSimple, Phone, MapPin, FacebookLogo, InstagramLogo, YoutubeLogo } from "@phosphor-icons/react";
 
 export function Footer() {
   return (
@@ -23,14 +25,14 @@ export function Footer() {
               Robotique, programmation et IA pour les jeunes de 7 a 17 ans a Marrakech.
             </p>
             <div className="mt-4 flex gap-3">
-              <a href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="Facebook" className="flex size-9 items-center justify-center rounded-full bg-border text-ink-soft transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-brand hover:text-white">
-                <Facebook className="size-4" />
+              <a href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="FacebookLogo" className="flex size-9 items-center justify-center rounded-full bg-border text-ink-soft transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-brand hover:text-white">
+                <FacebookLogo className="size-4" />
               </a>
-              <a href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram" className="flex size-9 items-center justify-center rounded-full bg-border text-ink-soft transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-brand hover:text-white">
-                <Instagram className="size-4" />
+              <a href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="InstagramLogo" className="flex size-9 items-center justify-center rounded-full bg-border text-ink-soft transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-brand hover:text-white">
+                <InstagramLogo className="size-4" />
               </a>
               <a href="https://youtube.com" target="_blank" rel="noreferrer" aria-label="YouTube" className="flex size-9 items-center justify-center rounded-full bg-border text-ink-soft transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-brand hover:text-white">
-                <Youtube className="size-4" />
+                <YoutubeLogo className="size-4" />
               </a>
             </div>
           </div>
@@ -52,7 +54,7 @@ export function Footer() {
             <h4 className="mb-4 text-xs font-bold uppercase tracking-wider text-ink-soft">Contact</h4>
             <div className="flex flex-col gap-3">
               <a href="mailto:contact@elitecodeschool.ma" className="flex items-center gap-2 text-sm text-ink-soft transition hover:text-brand">
-                <Mail className="size-4" /> contact@elitecodeschool.ma
+                <EnvelopeSimple className="size-4" /> contact@elitecodeschool.ma
               </a>
               <a href="tel:+212600000000" suppressHydrationWarning className="flex items-center gap-2 text-sm text-ink-soft transition hover:text-brand">
                 <Phone className="size-4" /> +212 600 000 000

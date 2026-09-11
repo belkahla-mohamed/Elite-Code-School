@@ -2,13 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useParentStudent } from "@/hooks/useParentStudent";
-import { Breadcrumb } from "@/components/layout/parent-nav";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Calendar, CheckCircle2, XCircle, Clock, AlertCircle,
-  BookOpen, Target, ChevronRight, Award, Zap,
-  CalendarDays, ListTodo
-} from "lucide-react";
+import { CalendarBlank, CheckCircle, XCircle, Clock, BookOpen, Target, CaretRight, Medal, User, Warning, WarningCircle, Lightning, ListChecks } from "@phosphor-icons/react";
 import Link from "next/link";
 import type { StudentPlanning, WeeklySlot } from "@/lib/types";
 
@@ -26,10 +22,10 @@ const todayDayName = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendre
 
 function seanceStatusConfig(status: string) {
   switch (status) {
-    case "completed": return { label: "Terminé", class: "bg-lime/15 text-lime", icon: CheckCircle2 };
+    case "completed": return { label: "Terminé", class: "bg-lime/15 text-lime", icon: CheckCircle };
     case "absent": return { label: "Absent", class: "bg-coral/15 text-coral", icon: XCircle };
     case "scheduled": return { label: "Planifié", class: "bg-sky/15 text-sky", icon: Clock };
-    case "cancelled": return { label: "Annulé", class: "bg-amber/15 text-amber", icon: AlertCircle };
+    case "cancelled": return { label: "Annulé", class: "bg-amber/15 text-amber", icon: WarningCircle };
     default: return { label: status, class: "bg-surface text-ink-soft", icon: Clock };
   }
 }
@@ -92,7 +88,7 @@ export default function ParentPlanningPage() {
       <div>
         <Breadcrumb items={[{ label: "Espace parent", href: "/parent" }, { label: "Planning" }]} />
         <div className="mx-auto max-w-md rounded-brand border-2 border-border bg-white dark:bg-surface p-8 text-center">
-          <Calendar className="mx-auto size-12 text-ink-soft/40" />
+          <CalendarBlank className="mx-auto size-12 text-ink-soft/40" />
           <h2 className="mt-4 font-display text-xl font-bold text-ink">{studentError}</h2>
           <p className="mt-2 text-sm text-ink-soft">Veuillez vous reconnecter.</p>
           <Link href="/login" className="btn-primary mt-6 inline-flex">Se connecter</Link>
@@ -144,7 +140,7 @@ export default function ParentPlanningPage() {
               </div>
             </div>
             <div className="flex items-center gap-2 rounded-brand-sm border-2 border-border bg-surface px-4 py-2.5">
-              <div className="flex size-9 items-center justify-center rounded-lg bg-gradient-to-br from-sky to-cyan text-white">
+              <div className="flex size-9 items-center justify-center rounded-lg bg-sky text-white">
                 <BookOpen className="size-4" />
               </div>
               <div>
@@ -158,46 +154,46 @@ export default function ParentPlanningPage() {
         {/* ── Stats Grid ── */}
         <div className="grid grid-cols-3 gap-3 md:grid-cols-6">
           <StatCard
-            icon={<Calendar className="size-4" />}
+            icon={<CalendarBlank className="size-4" />}
             label="Total"
             value={String(planning.totalSeances)}
             sub="séances"
-            color="from-sky to-cyan"
+            color="bg-sky"
           />
           <StatCard
-            icon={<CheckCircle2 className="size-4" />}
+            icon={<CheckCircle className="size-4" />}
             label="Terminées"
             value={String(planning.completedSeances)}
             sub={`${planning.progression}% du programme`}
-            color="from-lime to-emerald"
+            color="bg-lime"
           />
           <StatCard
-            icon={<XCircle className="size-4" />}
+            icon={<WarningCircle className="size-5 shrink-0" />}
             label="Absences"
             value={String(planning.absentSeances)}
             sub={planning.absentSeances > 0 ? "à rattraper" : "aucune"}
-            color="from-coral to-rose"
+            color="bg-coral"
           />
           <StatCard
             icon={<Clock className="size-4" />}
             label="Planifiées"
             value={String(planning.scheduledSeances)}
             sub={planning.scheduledSeances > 0 ? "à venir" : "aucune"}
-            color="from-amber to-orange"
+            color="bg-amber"
           />
           <StatCard
-            icon={<Zap className="size-4" />}
+            icon={<Lightning className="size-4" />}
             label="Heures faites"
             value={`${planning.hoursCompleted}h`}
             sub={`sur ${planning.hoursTotal}h`}
-            color="from-violet to-purple"
+            color="bg-violet"
           />
           <StatCard
-            icon={<Award className="size-4" />}
+            icon={<Medal className="size-4" />}
             label="Progression"
             value={`${planning.progression}%`}
             sub={planning.progression >= 100 ? "complété !" : "en cours"}
-            color="from-pink to-rose"
+            color="bg-pink"
           />
         </div>
 
@@ -207,7 +203,7 @@ export default function ParentPlanningPage() {
           {/* Progress Ring */}
           <div className="rounded-brand border-2 border-border bg-white dark:bg-surface p-6 lg:col-span-2">
             <h2 className="font-display text-lg font-bold text-ink mb-4 flex items-center gap-2">
-              <Target className="size-5 text-sky" />
+              <Lightning className="size-6 text-brand" />
               Progression
             </h2>
             <div className="flex flex-col items-center">
@@ -238,7 +234,7 @@ export default function ParentPlanningPage() {
           {/* Weekly Schedule */}
           <div className="rounded-brand border-2 border-border bg-white dark:bg-surface p-6 lg:col-span-3">
             <h2 className="font-display text-lg font-bold text-ink mb-4 flex items-center gap-2">
-              <CalendarDays className="size-5 text-sky" />
+              <CalendarBlank className="size-5 text-sky" />
               Calendrier hebdomadaire
             </h2>
             {planning.weeklySchedule.length > 0 ? (
@@ -253,7 +249,7 @@ export default function ParentPlanningPage() {
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center py-8 text-ink-soft">
-                <Calendar className="size-10 mb-2 opacity-40" />
+                <CalendarBlank className="size-10 mb-2 opacity-40" />
                 <p className="text-sm">Aucun horaire défini pour ce programme</p>
               </div>
             )}
@@ -264,7 +260,7 @@ export default function ParentPlanningPage() {
         <div className="rounded-brand border-2 border-border bg-white dark:bg-surface p-6 md:p-8">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
             <h2 className="font-display text-lg font-bold text-ink flex items-center gap-2">
-              <ListTodo className="size-5 text-sky" />
+              <ListChecks className="size-6 text-indigo" />
               Séances
               <span className="text-sm font-normal text-ink-soft">({planning.sessions.length})</span>
             </h2>
@@ -287,7 +283,7 @@ export default function ParentPlanningPage() {
           <div className="space-y-2">
             {displayedSessions.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 text-ink-soft">
-                <Calendar className="size-12 mb-3 opacity-30" />
+                <CalendarBlank className="size-12 mb-3 opacity-30" />
                 <p className="font-semibold">Aucune séance à venir</p>
                 <p className="text-sm mt-1">Toutes les séances sont complétées !</p>
               </div>
@@ -324,7 +320,7 @@ export default function ParentPlanningPage() {
                       <div className="flex flex-wrap items-center gap-x-4 gap-y-0.5 mt-0.5 text-xs text-ink-soft">
                         <span>{formatDate(seance.date)}</span>
                         <span>{seance.startTime} – {seance.endTime}</span>
-                        {seance.topic && <span className="flex items-center gap-1"><Zap className="size-3" />{seance.topic}</span>}
+                        {seance.topic && <span className="flex items-center gap-1"><Lightning className="size-3" />{seance.topic}</span>}
                       </div>
                     </div>
                   </div>
@@ -376,7 +372,7 @@ export default function ParentPlanningPage() {
                 href={`/curricula/${student.program.id}`}
                 className="inline-flex items-center gap-1 text-sm font-bold text-sky hover:underline"
               >
-                Voir le programme complet <ChevronRight className="size-4" />
+                Voir le programme complet <CaretRight className="size-4" />
               </Link>
             </div>
           </div>
@@ -392,7 +388,7 @@ function StatCard({ icon, label, value, sub, color }: {
 }) {
   return (
     <div className="rounded-brand-sm border-2 border-border bg-white dark:bg-surface p-3 md:p-4 transition hover:shadow-sm">
-      <div className={`inline-flex size-8 items-center justify-center rounded-xl bg-gradient-to-br ${color} text-white mb-2`}>
+      <div className={`inline-flex size-8 items-center justify-center rounded-xl ${color} text-white mb-2`}>
         {icon}
       </div>
       <div className="font-display text-xl font-extrabold text-ink md:text-2xl">{value}</div>

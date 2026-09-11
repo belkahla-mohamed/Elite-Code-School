@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, Eye, EyeOff, Loader2 } from "lucide-react";
+import { ArrowLeft, Eye, EyeClosed, SpinnerGap } from "@phosphor-icons/react";
 import { showToast } from "@/components/ui/toast";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
@@ -15,6 +15,7 @@ export function AdminLoginForm() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const { login } = useAuth();
   const router = useRouter();
 
@@ -24,7 +25,9 @@ export function AdminLoginForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setErrorMessage("");
     if (!email.trim() || !password.trim()) {
+      setErrorMessage("Veuillez remplir tous les champs");
       showToast("Veuillez remplir tous les champs", "error");
       return;
     }
@@ -39,6 +42,7 @@ export function AdminLoginForm() {
 
       const data = await res.json();
       if (!res.ok) {
+        setErrorMessage(data.error ?? "Identifiants incorrects");
         showToast(data.error ?? "Identifiants incorrects", "error");
         return;
       }
@@ -46,6 +50,7 @@ export function AdminLoginForm() {
       login(data.user, data.token);
       router.replace("/dashboard");
     } catch {
+      setErrorMessage("Erreur de connexion au serveur");
       showToast("Erreur de connexion", "error");
     } finally {
       setLoading(false);
@@ -104,13 +109,25 @@ export function AdminLoginForm() {
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-soft transition duration-200 ease-out hover:text-ink"
                   aria-label={showPassword ? "Masquer" : "Afficher"}
                 >
-                  {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                  {showPassword ? <EyeClosed className="size-4" /> : <Eye className="size-4" />}
                 </button>
               </div>
             </label>
 
+            {errorMessage && (
+              <div className="rounded-md bg-coral/10 p-3 text-sm font-medium text-coral">
+                {errorMessage}
+              </div>
+            )}
+
             <button type="submit" disabled={loading} className="btn-primary w-full disabled:opacity-50">
-              {loading ? <Loader2 className="size-4 animate-spin" /> : "Se connecter"}
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <SpinnerGap className="size-4 animate-spin" /> Connexion en cours...
+                </span>
+              ) : (
+                "Se connecter"
+              )}
             </button>
           </form>
         </div>

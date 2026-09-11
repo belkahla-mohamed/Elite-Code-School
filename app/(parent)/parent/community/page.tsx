@@ -2,15 +2,14 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useParentStudent } from "@/hooks/useParentStudent";
-import { Breadcrumb } from "@/components/layout/parent-nav";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
 import { showToast } from "@/components/ui/toast";
 import { apiFetch } from "@/lib/api-fetch";
 import { cn } from "@/lib/utils";
 import type { CommunityFeedItem, StudentPortfolio } from "@/lib/types";
-import {
-  User, Users, Sparkles, Copy, Check, Share2, Heart, Bell,
-} from "lucide-react";
+import { User, Users, Globe, LockKey, Sparkle, Link as LinkIcon, ShareNetwork, Star, Megaphone, Bell, MagnifyingGlass, Lightbulb, Lightning, Briefcase, CheckCircle, Wrench, FolderOpen } from "@phosphor-icons/react/dist/ssr";
+import { Check, Copy, Heart } from "@phosphor-icons/react";
 import Link from "next/link";
 
 const avatarColors = ["bg-sky", "bg-pink", "bg-amber", "bg-violet", "bg-lime", "bg-mint"];
@@ -134,10 +133,12 @@ export default function ParentCommunityPage() {
       ]} />
 
       {/* Hero playful */}
-      <div className="mb-6 overflow-hidden rounded-brand bg-gradient-to-br from-sky via-cyan to-mint p-6 text-white md:p-8">
+      <div className="mb-6 overflow-hidden rounded-brand bg-brand p-6 text-white md:p-8">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="grid size-14 place-items-center rounded-2xl bg-white/20 text-3xl">🌟</div>
+            <div className="grid size-14 place-items-center rounded-2xl bg-white/20 text-3xl">
+              <Star className="size-8" weight="fill" />
+            </div>
             <div>
               <h1 className="font-display text-2xl font-black tracking-tight">La Communauté</h1>
               <p className="text-sm text-white/85">
@@ -174,7 +175,7 @@ export default function ParentCommunityPage() {
             </div>
           ) : feed.length === 0 ? (
             <div className="flex flex-col items-center justify-center rounded-2xl bg-surface px-6 py-12 text-center">
-              <div className="text-5xl">🤝</div>
+              <div className="text-ink/20"><Users className="size-16" weight="duotone" /></div>
               <p className="mt-3 font-display text-lg font-bold text-ink">
                 Tu n&apos;es abonné à personne
               </p>
@@ -188,8 +189,7 @@ export default function ParentCommunityPage() {
                 <div key={followed.id} className="rounded-2xl border-2 border-border bg-surface p-4">
                   <div className="mb-3 flex items-center gap-3">
                     <div
-                      className="flex size-10 items-center justify-center rounded-xl font-display text-sm font-black text-white"
-                      style={{ background: followed.avatarGradient }}
+                      className="flex size-10 items-center justify-center rounded-xl bg-brand font-display text-sm font-black text-white"
                     >
                       {followed.avatar}
                     </div>
@@ -199,8 +199,8 @@ export default function ParentCommunityPage() {
                       </Link>
                       <p className="truncate text-xs text-ink-soft">{followed.levelLabel}</p>
                     </div>
-                    <span className="rounded-full bg-lime/15 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-lime">
-                      ⭐ Suivi
+                    <span className="flex items-center gap-1 rounded-full bg-lime/15 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-lime">
+                      <Star className="size-3" weight="fill" /> Suivi
                     </span>
                   </div>
                   {projects.length === 0 ? (
@@ -215,12 +215,15 @@ export default function ParentCommunityPage() {
                           className="overflow-hidden rounded-2xl border-2 border-border bg-white transition hover:border-sky"
                         >
                           <div
-                            className="relative flex h-20 items-center justify-center text-3xl"
-                            style={{ background: project.gradient }}
+                            className="relative flex h-20 items-center justify-center text-3xl bg-surface"
                           >
-                            {project.emoji}
-                            <span className="absolute right-2 top-2 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-bold text-ink">
-                              {project.status === "completed" ? "✔ Fini !" : "🔧 En cours"}
+                            <FolderOpen className="size-8 text-ink/20" />
+                            <span className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-bold text-ink">
+                              {project.status === "completed" ? (
+                                <><CheckCircle className="size-3 text-lime" weight="fill" /> Fini !</>
+                              ) : (
+                                <><Wrench className="size-3 text-amber" weight="fill" /> En cours</>
+                              )}
                             </span>
                           </div>
                           <div className="p-3">
@@ -246,9 +249,11 @@ export default function ParentCommunityPage() {
         </div>
 
         {/* Share your profile */}
-        <div className="h-fit overflow-hidden rounded-brand border-2 border-[#FFD489] bg-gradient-to-br from-amber-50 to-cream p-6 dark:bg-surface">
+        <div className="h-fit overflow-hidden rounded-brand border-2 border-border bg-white p-6 dark:bg-surface">
           <div className="mb-4 flex items-center gap-3">
-            <div className="flex size-11 items-center justify-center rounded-xl bg-amber/15 text-3xl">📣</div>
+            <div className="flex size-11 items-center justify-center rounded-xl bg-amber/15 text-amber">
+              <Megaphone className="size-6" weight="fill" />
+            </div>
             <div>
               <h2 className="font-display text-lg font-black text-ink">Partage mon profil</h2>
               <p className="text-xs font-semibold text-ink-soft">
@@ -259,8 +264,7 @@ export default function ParentCommunityPage() {
           <div className="overflow-hidden rounded-2xl border-2 border-white bg-white p-4">
             <div className="flex items-center gap-3">
               <div
-                className="flex size-12 items-center justify-center rounded-xl font-display text-base font-black text-white"
-                style={{ background: student.avatarGradient }}
+                className="flex size-12 items-center justify-center rounded-xl bg-brand font-display text-base font-black text-white"
               >
                 {student.avatar}
               </div>
@@ -283,7 +287,7 @@ export default function ParentCommunityPage() {
                 onClick={shareWhatsApp}
                 className="flex flex-1 items-center justify-center gap-2 rounded-full bg-lime px-4 py-2.5 text-xs font-black uppercase tracking-wide text-white transition hover:opacity-90"
               >
-                <Share2 className="size-4" /> WhatsApp
+                <ShareNetwork className="size-4" /> WhatsApp
               </button>
             </div>
             {!student.isPublic && (
@@ -296,7 +300,8 @@ export default function ParentCommunityPage() {
             )}
           </div>
           <div className="mt-4 rounded-2xl border-2 border-white/60 bg-white/50 p-3 text-xs font-semibold text-ink-soft dark:bg-transparent">
-            💡 Astuce : plus tu publies de projets, plus tes abonnés reçoivent des notifications !
+            <Lightbulb className="mr-1.5 inline size-4 text-amber" weight="fill" />
+            Astuce : plus tu publies de projets, plus tes abonnés reçoivent des notifications !
           </div>
         </div>
       </div>
@@ -305,7 +310,7 @@ export default function ParentCommunityPage() {
       <div className="rounded-brand border-2 border-border bg-white dark:bg-surface p-6 md:p-8">
         <div className="mb-6 flex items-center gap-3">
           <div className="flex size-11 items-center justify-center rounded-xl bg-violet/10 text-violet">
-            <Sparkles className="size-5" />
+            <Sparkle className="size-5" />
           </div>
           <div>
             <h2 className="font-display text-lg font-black text-ink">Explorer les créateurs</h2>
@@ -323,7 +328,7 @@ export default function ParentCommunityPage() {
           </div>
         ) : catalog.filter((p) => p.id !== student.id).length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-2xl bg-surface px-6 py-12 text-center">
-            <div className="text-5xl">🔍</div>
+            <div className="text-ink/20"><MagnifyingGlass className="size-16" weight="duotone" /></div>
             <p className="mt-3 font-display text-lg font-bold text-ink">Aucun portfolio public</p>
           </div>
         ) : (
@@ -355,8 +360,8 @@ export default function ParentCommunityPage() {
                     </div>
                     <div className="mb-4 flex flex-wrap gap-2 text-[11px] font-bold">
                       <span className="rounded-full bg-sky/10 px-2.5 py-1 text-sky">{portfolio.age} ans</span>
-                      <span className="rounded-full bg-lime/15 px-2.5 py-1 text-lime">⚡ {portfolio.hours}h</span>
-                      <span className="rounded-full bg-amber/15 px-2.5 py-1 text-amber">💼 {portfolio.projects.length} projets</span>
+                      <span className="flex items-center gap-1 rounded-full bg-lime/15 px-2.5 py-1 text-lime"><Lightning className="size-3" weight="fill" /> {portfolio.hours}h</span>
+                      <span className="flex items-center gap-1 rounded-full bg-amber/15 px-2.5 py-1 text-amber"><Briefcase className="size-3" weight="fill" /> {portfolio.projects.length} projets</span>
                     </div>
                     <div className="mt-auto flex gap-2">
                       <Link

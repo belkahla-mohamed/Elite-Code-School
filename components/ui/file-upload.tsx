@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Loader2, Upload } from "lucide-react";
+import { SpinnerGap, UploadSimple } from "@phosphor-icons/react";
 
 type FileUploadProps = {
   folder: string;
@@ -36,8 +36,8 @@ export function FileUpload({ folder, onUploaded, children, accept = "image/*" }:
       <input ref={ref} type="file" accept={accept} className="sr-only" onChange={handleFile} />
       {children || (
         <span className="inline-flex items-center gap-2 rounded-brand-sm bg-sky px-4 py-2 text-sm font-bold text-white hover:bg-sky/90 transition">
-          {uploading ? <Loader2 className="size-4 animate-spin" /> : <Upload className="size-4" />}
-          {uploading ? "Upload..." : "Upload"}
+          {uploading ? <SpinnerGap className="size-4 animate-spin" /> : <UploadSimple className="size-4" />}
+          {uploading ? "UploadSimple..." : "UploadSimple"}
         </span>
       )}
     </label>

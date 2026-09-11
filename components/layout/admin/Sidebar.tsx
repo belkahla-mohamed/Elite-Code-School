@@ -7,50 +7,38 @@ import { useTheme } from "next-themes";
 import { useAuth } from "@/lib/auth-context";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import {
-  LayoutDashboard,
-  ClipboardList,
-  BookOpen,
-  Award,
-  Image as ImageIcon,
-  Settings,
-  LogOut,
-  ChevronLeft,
-  Shield,
-  Activity,
-  Users,
-  Library,
-  BarChart3,
-  Bell,
-  Filter,
-  User,
-  ClipboardCheck,
-  MessageSquare,
-  Megaphone,
-} from "lucide-react";
+import { SquaresFour, BookOpen, Medal, Image as ImageIcon, Gear, SignOut, CaretLeft, Shield, Pulse, Users, Books, ChartBar, Bell, Faders, Globe, User, Chat, Megaphone, ClipboardText } from "@phosphor-icons/react";
 import { Separator } from "@/components/ui/separator";
 
 const sidebarLinks = [
-  { type: "separator", label: "Tableau de bord" },
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { type: "separator", label: "Gestion" },
-  { href: "/admin/enrollments", label: "Inscriptions", icon: ClipboardList },
-  { href: "/admin/students", label: "Élèves", icon: Users },
-  { href: "/admin/curricula", label: "Programmes", icon: Library },
-  { href: "/dashboard/categories", label: "Catégories", icon: Filter },
-  { href: "/dashboard/projects", label: "Projets", icon: Award },
-  { href: "/dashboard/gallery", label: "Galerie", icon: ImageIcon },
-  { href: "/dashboard/requests", label: "Demandes élèves", icon: ClipboardCheck },
-  { href: "/dashboard/messages", label: "Messages familles", icon: MessageSquare },
-  { href: "/dashboard/announcements", label: "Annonces", icon: Megaphone },
-  { type: "separator", label: "Système" },
-  { href: "/dashboard/parents", label: "Parents", icon: Users },
-  { href: "/dashboard/admin-users", label: "Administrateurs", icon: Shield },
-  { href: "/dashboard/activity", label: "Activité", icon: Activity },
+  { type: "separator", label: "Vue d'ensemble" },
+  { href: "/dashboard", label: "Dashboard", icon: SquaresFour },
+  { href: "/dashboard/analytics", label: "Analytiques", icon: ChartBar },
+
+  { type: "separator", label: "Scolarité & Élèves" },
+  { href: "/admin/enrollments", label: "Inscriptions", icon: ClipboardText, permission: "inscriptions" },
+  { href: "/admin/students", label: "Élèves", icon: Users, permission: "students" },
+  { href: "/dashboard/parents", label: "Parents", icon: Users, permission: "students" },
+  { href: "/admin/curricula", label: "Programmes", icon: Books, permission: "programs" },
+  { href: "/dashboard/certifications", label: "Certificats", icon: Medal, permission: "certificates" },
+
+  { type: "separator", label: "Contenu & Site Web" },
+  { href: "/dashboard/cms", label: "Site Public", icon: Globe, permission: "cms" },
+  { href: "/dashboard/categories", label: "Catégories", icon: Faders, permission: "categories" },
+  { href: "/dashboard/projects", label: "Projets", icon: Medal, permission: "cms" },
+  { href: "/dashboard/gallery", label: "Galerie", icon: ImageIcon, permission: "cms" },
+  { href: "/dashboard/announcements", label: "Annonces", icon: Megaphone, permission: "cms" },
+
+  { type: "separator", label: "Communication" },
+  { href: "/dashboard/messages", label: "Messages familles", icon: Chat },
+  { href: "/dashboard/requests", label: "Demandes", icon: ClipboardText },
+
+  { type: "separator", label: "Système & Paramètres" },
+  { href: "/dashboard/admin-users", label: "Administrateurs", icon: Shield, permission: "admins" },
+  { href: "/dashboard/activity", label: "Activité", icon: Pulse },
   { href: "/dashboard/notifications", label: "Notifications", icon: Bell },
-  { href: "/dashboard/analytics", label: "Analytiques", icon: BarChart3 },
   { href: "/dashboard/profile", label: "Mon Profil", icon: User },
-  { href: "/dashboard/settings", label: "Paramètres", icon: Settings },
+  { href: "/dashboard/settings", label: "Paramètres", icon: Gear },
 ];
 
 interface SidebarProps {
@@ -122,7 +110,7 @@ export function Sidebar({ collapsed, mobileOpen, onCloseMobile, onToggle }: Side
             )}
             title={collapsed ? "Étendre" : "Réduire"}
           >
-            <ChevronLeft className={cn("size-4 transition", collapsed && "rotate-180")} />
+            <CaretLeft className={cn("size-4 transition", collapsed && "rotate-180")} />
           </button>
         </div>
 
@@ -148,6 +136,14 @@ export function Sidebar({ collapsed, mobileOpen, onCloseMobile, onToggle }: Side
                     )}
                   </div>
                 );
+              }
+
+              if (link.permission) {
+                if (user?.role !== "super_admin") {
+                  if (!user?.permissions?.includes(link.permission)) {
+                    return null;
+                  }
+                }
               }
 
               const isActive =
@@ -202,7 +198,7 @@ export function Sidebar({ collapsed, mobileOpen, onCloseMobile, onToggle }: Side
             )}
             title={collapsed ? "Déconnexion" : undefined}
           >
-            <LogOut className="size-4 shrink-0" />
+            <SignOut className="size-4 shrink-0" />
             <span className={cn(collapsed && "hidden")}>Déconnexion</span>
           </button>
         </div>

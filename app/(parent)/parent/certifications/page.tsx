@@ -2,11 +2,9 @@
 
 import { useState } from "react";
 import { useParentStudent } from "@/hooks/useParentStudent";
-import { Breadcrumb } from "@/components/layout/parent-nav";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  User, Share2, Copy, Check, Linkedin, ExternalLink, Award
-} from "lucide-react";
+import { User, ShareNetwork, Copy, Check, LinkedinLogo, ArrowSquareOut, Medal } from "@phosphor-icons/react";
 import Link from "next/link";
 import { showToast } from "@/components/ui/toast";
 
@@ -80,7 +78,7 @@ export default function ParentCertificationsPage() {
       <div className="rounded-brand border-2 border-border bg-white dark:bg-surface p-6 md:p-8">
         <div className="flex items-center gap-4 mb-8">
           <div className="flex size-14 items-center justify-center rounded-2xl bg-amber/10 text-amber">
-            <Award className="size-7" />
+            <Medal className="size-7" />
           </div>
           <div>
             <h1 className="font-display text-2xl font-extrabold text-ink">Certifications</h1>
@@ -95,7 +93,7 @@ export default function ParentCertificationsPage() {
 
         {student.certifications.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-2xl bg-surface py-16">
-            <Award className="size-16 text-ink-soft/20" />
+            <Medal className="size-16 text-ink-soft/20" />
             <p className="mt-4 text-sm text-ink-soft">Aucune certification pour le moment</p>
           </div>
         ) : (
@@ -121,7 +119,7 @@ export default function ParentCertificationsPage() {
                     href={`/certification/${cert.id}`}
                     className="inline-flex items-center gap-1.5 text-sm font-semibold text-sky hover:text-sky/80 transition"
                   >
-                    <ExternalLink className="size-4" />
+                    <ArrowSquareOut className="size-4" />
                     Voir détail
                   </Link>
                   <div className="flex gap-2">
@@ -141,14 +139,14 @@ export default function ParentCertificationsPage() {
                       className="rounded-full bg-green-100 p-2.5 text-green-700 hover:bg-green-200 transition"
                       title="Partager WhatsApp"
                     >
-                      <Share2 className="size-4" />
+                      <ShareNetwork className="size-4" />
                     </button>
                     <button
                       onClick={() => shareLinkedin(cert)}
                       className="rounded-full bg-blue-100 p-2.5 text-blue-700 hover:bg-blue-200 transition"
                       title="Partager LinkedIn"
                     >
-                      <Linkedin className="size-4" />
+                      <LinkedinLogo className="size-4" />
                     </button>
                   </div>
                 </div>

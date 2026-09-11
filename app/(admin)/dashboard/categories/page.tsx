@@ -5,7 +5,7 @@ import { showToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { ViewToggle, useViewMode } from "@/components/ui/view-toggle";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Plus, Trash2, Pencil, X, Filter, LayoutGrid, LayoutList } from "lucide-react";
+import { Plus, Trash, Pencil, X, Faders, GridFour, ListDashes } from "@phosphor-icons/react";
 
 interface Category {
   id: string;
@@ -87,7 +87,7 @@ export default function CategoriesPage() {
   function renderTable() {
     return (
       <div className="overflow-x-auto rounded-brand border-2 border-border bg-white dark:bg-surface">
-        <table className="w-full text-sm">
+        <table className="w-full min-w-[480px] text-sm">
           <thead>
             <tr className="border-b-2 border-border bg-surface text-left">
               <th className="px-5 py-3.5 font-black text-xs uppercase tracking-wider text-ink-soft">Nom</th>
@@ -112,7 +112,7 @@ export default function CategoriesPage() {
                 <td className="px-5 py-4 text-right">
                   <div className="flex justify-end gap-2">
                     <button onClick={() => openEdit(c)} className="rounded-full bg-sky/10 p-2 text-sky hover:bg-sky/20 transition"><Pencil className="size-4" /></button>
-                    <button onClick={() => setConfirmDelete(c.id)} className="rounded-full bg-coral/10 p-2 text-coral hover:bg-coral/20 transition"><Trash2 className="size-4" /></button>
+                    <button onClick={() => setConfirmDelete(c.id)} className="rounded-full bg-coral/10 p-2 text-coral hover:bg-coral/20 transition"><Trash className="size-4" /></button>
                   </div>
                 </td>
               </tr>
@@ -127,20 +127,20 @@ export default function CategoriesPage() {
     return (
       <div className={cardColumns === 2 ? "grid grid-cols-1 md:grid-cols-2 gap-3" : "space-y-3"}>
         {categories.map((c) => (
-          <div key={c.id} className="flex items-center justify-between rounded-brand border-2 border-border bg-white dark:bg-surface px-5 py-4 transition hover:border-sky">
-            <div className="flex items-center gap-4">
+          <div key={c.id} className="flex items-center justify-between gap-3 rounded-brand border-2 border-border bg-white dark:bg-surface px-5 py-4 transition hover:border-sky">
+            <div className="flex min-w-0 flex-1 items-center gap-4">
               <span className="size-4 rounded-full shrink-0" style={{ backgroundColor: colorBg(c.color) }} />
-              <div>
-                <div className="flex items-center gap-2">
-                  <h3 className="font-bold text-ink">{c.name}</h3>
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h3 className="truncate font-bold text-ink">{c.name}</h3>
                   <span className="rounded-full px-2.5 py-0.5 text-xs font-bold text-white" style={{ backgroundColor: colorBg(c.color) }}>{c.slug}</span>
                 </div>
                 {c.description && <p className="text-xs text-ink-soft mt-0.5 line-clamp-1">{c.description}</p>}
               </div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex shrink-0 gap-2">
               <button onClick={() => openEdit(c)} className="rounded-full bg-sky/10 p-2.5 text-sky hover:bg-sky/20 transition"><Pencil className="size-4" /></button>
-              <button onClick={() => setConfirmDelete(c.id)} className="rounded-full bg-coral/10 p-2.5 text-coral hover:bg-coral/20 transition"><Trash2 className="size-4" /></button>
+              <button onClick={() => setConfirmDelete(c.id)} className="rounded-full bg-coral/10 p-2.5 text-coral hover:bg-coral/20 transition"><Trash className="size-4" /></button>
             </div>
           </div>
         ))}
@@ -155,7 +155,7 @@ export default function CategoriesPage() {
           <h1 className="font-display text-3xl font-black text-ink">Catégories</h1>
           <p className="text-sm text-ink-soft mt-1">Gérez les catégories de programmes</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center justify-end gap-3">
           <button onClick={openNew} className="btn-primary py-2">
             <Plus className="mr-1.5 inline size-4" /> Ajouter
           </button>
@@ -163,11 +163,11 @@ export default function CategoriesPage() {
             <div className="flex items-center rounded-full border-2 border-border bg-white dark:bg-surface p-0.5">
               <button onClick={() => setCardColumns(1)}
                 className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold transition ${cardColumns === 1 ? "bg-sky text-white shadow-sm" : "text-ink-soft hover:text-ink"}`}>
-                <LayoutList className="size-3.5" /> 1
+                <ListDashes className="size-3.5" /> 1
               </button>
               <button onClick={() => setCardColumns(2)}
                 className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold transition ${cardColumns === 2 ? "bg-sky text-white shadow-sm" : "text-ink-soft hover:text-ink"}`}>
-                <LayoutGrid className="size-3.5" /> 2
+                <GridFour className="size-3.5" /> 2
               </button>
             </div>
           )}
@@ -178,7 +178,7 @@ export default function CategoriesPage() {
       {/* Form Modal */}
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4" onClick={() => setShowForm(false)}>
-          <div className="w-full max-w-lg rounded-brand bg-white dark:bg-surface shadow-card" onClick={(e) => e.stopPropagation()}>
+          <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-brand bg-white dark:bg-surface shadow-card" onClick={(e) => e.stopPropagation()}>
             <div className="sticky top-0 z-10 flex items-center justify-between border-b-2 border-border bg-white dark:bg-surface px-6 py-4">
               <h2 className="font-display text-lg font-black text-ink">{editing ? "Modifier" : "Nouvelle"} catégorie</h2>
               <button onClick={() => setShowForm(false)} className="flex size-8 items-center justify-center rounded-full text-ink-soft hover:bg-surface hover:text-ink transition"><X className="size-4" /></button>
@@ -225,7 +225,7 @@ export default function CategoriesPage() {
         </div>
       ) : categories.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-ink-soft">
-          <Filter className="size-12 mb-3 opacity-40" />
+          <Faders className="size-12 mb-3 opacity-40" />
           <p className="font-bold text-lg">Aucune catégorie</p>
           <p className="text-sm mt-1">Créez votre première catégorie de programmes.</p>
         </div>

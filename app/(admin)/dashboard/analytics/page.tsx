@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardHeader, CardBody } from "@/components/ui/card";
-import { Users, BookOpen, CheckCircle, Clock } from "lucide-react";
+import { Users, BookOpen, CheckCircle, Clock } from "@phosphor-icons/react";
 
 const BarChart = dynamic(() => import("recharts").then((m) => m.BarChart), { ssr: false })
 const Bar = dynamic(() => import("recharts").then((m) => m.Bar), { ssr: false })
@@ -178,7 +178,7 @@ export default function AnalyticsPage() {
           {statusData.length === 0 ? (
             <p className="text-sm text-ink-soft py-8 text-center">Aucune donnée</p>
           ) : (
-            <div className="flex items-center gap-6">
+            <div className="flex flex-col flex-wrap items-center gap-6 sm:flex-row">
               <ResponsiveContainer width={180} height={180}>
                 <PieChart>
                   <Pie data={statusData} cx="50%" cy="50%" innerRadius={45} outerRadius={80} paddingAngle={4} dataKey="value">
@@ -214,9 +214,9 @@ export default function AnalyticsPage() {
               const pct = maxCount > 0 ? (count / maxCount) * 100 : 0;
               return (
                 <div key={p.id}>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span className="text-ink font-semibold">{p.title}</span>
-                    <span className="text-ink-soft">{count} élève{count > 1 ? "s" : ""}</span>
+                  <div className="flex justify-between gap-3 text-sm mb-1">
+                    <span className="min-w-0 flex-1 truncate font-semibold text-ink">{p.title}</span>
+                    <span className="shrink-0 text-ink-soft">{count} élève{count > 1 ? "s" : ""}</span>
                   </div>
                   <div className="h-2 rounded-full bg-sky/10 overflow-hidden">
                     <div className="h-full rounded-full bg-gradient-to-r from-sky to-cyan transition-all" style={{ width: `${pct}%` }} />

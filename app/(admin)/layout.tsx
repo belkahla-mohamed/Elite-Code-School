@@ -16,13 +16,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         onCloseMobile={() => setMobileOpen(false)}
         onToggle={() => setCollapsed(!collapsed)}
       />
-      <div className={`flex flex-1 flex-col transition-all duration-300 ${collapsed ? "md:ml-20" : "md:ml-64"}`}>
+      <div className={`flex min-w-0 flex-1 flex-col transition-all duration-300 ${collapsed ? "md:ml-20" : "md:ml-64"}`}>
         <AdminHeader
           collapsed={collapsed}
           onToggleSidebar={() => setCollapsed(!collapsed)}
           onOpenMobile={() => setMobileOpen(true)}
         />
-        <main className="flex-1 bg-body p-6">{children}</main>
+        <main className="min-w-0 flex-1 bg-body p-4 sm:p-6">{children}</main>
       </div>
     </div>
   );

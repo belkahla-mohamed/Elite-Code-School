@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight, BookOpen, CalendarDays, CheckCircle, Clock, GraduationCap, Sparkles, Target, Users } from "lucide-react";
+import { ArrowLeft, ArrowRight, BookOpen, CalendarBlank, CheckCircle, Clock, GraduationCap, Sparkle, Target, Users } from "@phosphor-icons/react/dist/ssr";
 import { getPrograms } from "@/lib/store";
 import { imgSrc } from "@/lib/image-url-server";
 import { ProgramCard } from "@/components/ui/program-card";
@@ -119,7 +119,7 @@ export default async function CurriculaDetailPage({ params }: Props) {
             {program.schedule && (
               <div className="rounded-brand border border-border bg-surface p-5 transition duration-300 ease-out hover:-translate-y-0.5 hover:border-brand/30 hover:shadow-md dark:border-white/10 dark:bg-[#1e293b]">
                 <span className="flex size-12 items-center justify-center rounded-brand-sm bg-amber/15">
-                  <CalendarDays className="size-6 text-amber" />
+                  <CalendarBlank className="size-6 text-amber" />
                 </span>
                 <p className="mt-4 text-xs font-bold uppercase tracking-wider text-ink-soft dark:text-slate-400">Horaires</p>
                 <p className="mt-1 font-display text-base font-semibold text-ink dark:text-white">{program.schedule}</p>
@@ -128,7 +128,7 @@ export default async function CurriculaDetailPage({ params }: Props) {
             {program.priceMonthly && (
               <div className="rounded-brand border border-border bg-surface p-5 transition duration-300 ease-out hover:-translate-y-0.5 hover:border-brand/30 hover:shadow-md dark:border-white/10 dark:bg-[#1e293b]">
                 <span className="flex size-12 items-center justify-center rounded-brand-sm bg-violet/15">
-                  <Sparkles className="size-6 text-violet" />
+                  <Sparkle className="size-6 text-violet" />
                 </span>
                 <p className="mt-4 text-xs font-bold uppercase tracking-wider text-ink-soft dark:text-slate-400">Prix</p>
                 <p className="mt-1 font-display text-base font-semibold text-ink dark:text-white">{program.priceMonthly} DH/mois</p>

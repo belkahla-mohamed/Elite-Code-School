@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { Check, Facebook, Link2, Linkedin, MessageCircle, Share2, Twitter, X } from "lucide-react";
+import { Check, FacebookLogo, Link, LinkedinLogo, ChatCircle, ShareNetwork, TwitterLogo, X } from "@phosphor-icons/react";
 import { showToast } from "./toast";
 
 interface ShareMenuProps {
@@ -91,28 +91,28 @@ export function ShareMenu({ title, text, url, label, triggerClassName }: ShareMe
     {
       key: "whatsapp",
       label: "WhatsApp",
-      icon: MessageCircle,
+      icon: ChatCircle,
       circle: "bg-[#25D366]/10 text-[#25D366]",
       href: `https://wa.me/?text=${encodedText}%20${encodedUrl}`,
     },
     {
       key: "facebook",
-      label: "Facebook",
-      icon: Facebook,
+      label: "FacebookLogo",
+      icon: FacebookLogo,
       circle: "bg-[#1877F2]/10 text-[#1877F2]",
       href: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
     },
     {
       key: "x",
       label: "X",
-      icon: Twitter,
+      icon: TwitterLogo,
       circle: "bg-ink/5 text-ink dark:bg-white/10 dark:text-white",
       href: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedText}`,
     },
     {
       key: "linkedin",
       label: "LinkedIn",
-      icon: Linkedin,
+      icon: LinkedinLogo,
       circle: "bg-[#0A66C2]/10 text-[#0A66C2]",
       href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
     },
@@ -128,7 +128,7 @@ export function ShareMenu({ title, text, url, label, triggerClassName }: ShareMe
         aria-expanded={open}
         className={triggerClassName}
       >
-        {label ?? (<><Share2 className="size-4" /> Partager</>)}
+        {label ?? (<><ShareNetwork className="size-4" /> Partager</>)}
       </button>
 
       {open &&
@@ -177,7 +177,7 @@ export function ShareMenu({ title, text, url, label, triggerClassName }: ShareMe
                 className="flex flex-col items-center gap-1 rounded-brand-sm p-1.5 transition duration-200 ease-out hover:bg-surface dark:hover:bg-white/5"
               >
                 <span className={`flex size-9 items-center justify-center rounded-full transition duration-200 ${copied ? "bg-lime/15 text-lime" : "bg-brand/10 text-brand"}`}>
-                  {copied ? <Check className="size-4" /> : <Link2 className="size-4" />}
+                  {copied ? <Check className="size-4" /> : <Link className="size-4" />}
                 </span>
                 <span className="text-[9px] font-bold text-ink-soft dark:text-slate-400">{copied ? "Copié !" : "Copier"}</span>
               </button>
@@ -189,7 +189,7 @@ export function ShareMenu({ title, text, url, label, triggerClassName }: ShareMe
                   className="flex flex-col items-center gap-1 rounded-brand-sm p-1.5 transition duration-200 ease-out hover:bg-surface dark:hover:bg-white/5"
                 >
                   <span className="flex size-9 items-center justify-center rounded-full bg-amber/15 text-amber">
-                    <Share2 className="size-4" />
+                    <ShareNetwork className="size-4" />
                   </span>
                   <span className="text-[9px] font-bold text-ink-soft dark:text-slate-400">Plus</span>
                 </button>
@@ -197,7 +197,7 @@ export function ShareMenu({ title, text, url, label, triggerClassName }: ShareMe
             </div>
 
             <div className="mt-2 flex items-center gap-1.5 rounded-full bg-surface px-2.5 py-1.5 dark:bg-white/5">
-              <Link2 className="size-3 shrink-0 text-ink-soft dark:text-slate-400" />
+              <Link className="size-3 shrink-0 text-ink-soft dark:text-slate-400" />
               <span className="min-w-0 flex-1 truncate text-[10px] font-semibold text-ink-soft dark:text-slate-400">{pageUrl}</span>
               <button
                 type="button"

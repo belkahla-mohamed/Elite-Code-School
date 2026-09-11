@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { MessageSquare, Loader2, Send } from "lucide-react";
+import { Chat, SpinnerGap, PaperPlaneRight } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 import { showToast } from "@/components/ui/toast";
 import { apiFetch } from "@/lib/api-fetch";
@@ -76,7 +76,7 @@ export default function StudentMessagesPage() {
           <p className="mt-1 text-sm text-ink-soft">Questions et demandes de suivi envoyées depuis l&apos;espace parent.</p>
         </div>
         <div className="flex flex-col items-center justify-center rounded-brand border-2 border-border bg-white dark:bg-surface py-20 text-ink-soft">
-          <MessageSquare className="mb-4 size-12 opacity-40" />
+          <Chat className="mb-4 size-12 opacity-40" />
           <p className="text-lg font-bold">Aucun message</p>
           <p className="mt-1 text-sm">Les messages des parents apparaîtront ici.</p>
         </div>
@@ -123,11 +123,11 @@ export default function StudentMessagesPage() {
                       </span>
                     )}
                   </div>
-                  <p className="mt-1.5 rounded-xl bg-surface p-3 text-sm font-semibold text-ink">{message.message}</p>
+                  <p className="mt-1.5 break-words rounded-xl bg-surface p-3 text-sm font-semibold text-ink">{message.message}</p>
                   {message.reply && (
                     <div className="mt-2 rounded-xl rounded-tl-sm border-2 border-sky/20 bg-sky/5 p-3">
                       <p className="mb-1 text-[10px] font-black uppercase tracking-wide text-sky">Votre réponse</p>
-                      <p className="text-sm font-semibold text-ink">{message.reply}</p>
+                      <p className="break-words text-sm font-semibold text-ink">{message.reply}</p>
                     </div>
                   )}
                   {!message.reply && (
@@ -145,7 +145,7 @@ export default function StudentMessagesPage() {
                           disabled={sending || replyingId !== message.id || !draft.trim()}
                           className="inline-flex items-center gap-2 rounded-full bg-sky px-5 py-2 text-xs font-black uppercase tracking-wide text-white transition hover:bg-sky-dark disabled:opacity-40"
                         >
-                          {sending && replyingId === message.id ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
+                          {sending && replyingId === message.id ? <SpinnerGap className="size-4 animate-spin" /> : <PaperPlaneRight className="size-4" />}
                           Envoyer la réponse
                         </button>
                       </div>

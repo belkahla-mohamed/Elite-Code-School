@@ -2,12 +2,13 @@
 
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
 
-export type UserRole = "admin" | "parent" | null;
+export type UserRole = "super_admin" | "admin" | "parent" | null;
 
 interface AuthUser {
   id: string;
   name: string;
   role: UserRole;
+  permissions?: string[];
 }
 
 interface AuthContextType {
@@ -43,7 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const payload = JSON.parse(atob(stored.split(".")[1]));
         if (payload.exp && payload.exp >= Math.floor(Date.now() / 1000)) {
-          setUser({ id: payload.id ?? "", name: payload.name ?? "", role: payload.role });
+          setUser({ id: payload.id ?? "", name: payload.name ?? "", role: payload.role, permissions: payload.permissions });
           setToken(stored);
         } else {
           localStorage.removeItem("ecs_token");
@@ -63,7 +64,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {}
     setUser(null);
     setToken(null);
     localStorage.removeItem("ecs_token");
@@ -80,7 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         logout,
         isAuthenticated: !!user,
         isParent: user?.role === "parent",
-        isAdmin: user?.role === "admin",
+        isAdmin: user?.role === "admin" || user?.role === "super_admin",
       }}
     >
       {children}

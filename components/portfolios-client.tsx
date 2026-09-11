@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react"
 import Link from "next/link"
-import { ArrowRight, ChevronLeft, ChevronRight, Search, Users } from "lucide-react"
+import { ArrowRight, CaretLeft, CaretRight, MagnifyingGlass, Users } from "@phosphor-icons/react";
 import { AnimatePresence, motion } from "framer-motion"
 import type { StudentPortfolio } from "@/lib/types"
 
@@ -47,11 +47,11 @@ export function PortfoliosClient({ portfolios, programs }: { portfolios: Student
   return (
     <section className="bg-white py-16 sm:py-20 dark:bg-body">
       <div className="container-shell">
-        {/* Search */}
+        {/* MagnifyingGlass */}
         <div className="mx-auto mb-6 max-w-xl">
           <label className="relative block">
             <span className="sr-only">Rechercher un élève</span>
-            <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-ink-soft" />
+            <MagnifyingGlass className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-ink-soft" />
             <input
               type="search"
               value={query}
@@ -155,7 +155,7 @@ export function PortfoliosClient({ portfolios, programs }: { portfolios: Student
                   disabled={safePage === 1}
                   className="inline-flex items-center gap-1 rounded-full border border-border bg-white px-4 py-2.5 text-xs font-bold text-ink-soft transition duration-200 ease-out hover:border-brand/30 hover:text-ink disabled:cursor-not-allowed disabled:opacity-40 dark:border-white/10 dark:bg-[#1e293b]"
                 >
-                  <ChevronLeft className="size-4" /> <span className="hidden sm:inline">Précédent</span>
+                  <CaretLeft className="size-4" /> <span className="hidden sm:inline">Précédent</span>
                 </button>
                 {Array.from({ length: totalPages }).map((_, i) => (
                   <button
@@ -177,7 +177,7 @@ export function PortfoliosClient({ portfolios, programs }: { portfolios: Student
                   disabled={safePage === totalPages}
                   className="inline-flex items-center gap-1 rounded-full border border-border bg-white px-4 py-2.5 text-xs font-bold text-ink-soft transition duration-200 ease-out hover:border-brand/30 hover:text-ink disabled:cursor-not-allowed disabled:opacity-40 dark:border-white/10 dark:bg-[#1e293b]"
                 >
-                  <span className="hidden sm:inline">Suivant</span> <ChevronRight className="size-4" />
+                  <span className="hidden sm:inline">Suivant</span> <CaretRight className="size-4" />
                 </button>
               </div>
             )}

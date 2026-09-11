@@ -151,6 +151,8 @@ model Certification {
   emoji      String   @default("🏅")
   gradient   String   @default("linear-gradient(135deg,#f59e0b,#f97316)")
   imageUrl   String?  @map("image_url")
+  serialCode String   @unique @default(cuid()) @map("serial_code")
+  issueDate  DateTime @default(now()) @map("issue_date")
   createdAt  DateTime @default(now()) @map("created_at")
 
   @@index([studentId])
@@ -177,6 +179,7 @@ model AdminUser {
   firstName    String    @map("first_name")
   lastName     String    @map("last_name")
   role         String    @default("admin")
+  permissions  String[]  @default([])
   passwordHash String    @map("password_hash")
   createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
   lastLogin    DateTime? @map("last_login") @db.Timestamptz(6)
@@ -300,4 +303,14 @@ model StudentAlert {
 
   @@index([studentId])
   @@map("student_alerts")
+}
+
+model ContentBlock {
+  key       String   @id
+  value     String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("content_blocks")
+  @@ignore
 }

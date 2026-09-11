@@ -1,6 +1,6 @@
 "use client";
 
-import { Share2 } from "lucide-react";
+import { ShareNetwork } from "@phosphor-icons/react";
 import { showToast } from "./toast";
 import { cn } from "@/lib/utils";
 
@@ -31,7 +31,7 @@ function ShareButton({ shareLink, title = "Partager", className }: ShareButtonPr
       )}
       aria-label={title}
     >
-      <Share2 className="size-4" />
+      <ShareNetwork className="size-4" />
       {title}
     </button>
   );

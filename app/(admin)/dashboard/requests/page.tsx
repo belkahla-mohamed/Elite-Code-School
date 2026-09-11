@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { ClipboardCheck, Loader2, Check, X } from "lucide-react";
+import { ClipboardText, SpinnerGap, Check, X } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 import { showToast } from "@/components/ui/toast";
 import { apiFetch } from "@/lib/api-fetch";
@@ -129,8 +129,8 @@ export default function StudentRequestsPage() {
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-brand border-2 border-border bg-white dark:bg-surface py-20 text-ink-soft">
-          <ClipboardCheck className="mb-4 size-12 opacity-40" />
+        <div className="flex flex-col items-center justify-center rounded-brand border-2 border-border bg-white dark:bg-surface px-4 py-20 text-center text-ink-soft">
+          <ClipboardText className="mb-4 size-12 opacity-40" />
           <p className="text-lg font-bold">Aucune demande</p>
           <p className="mt-1 text-sm">Les demandes envoyées depuis l&apos;espace parent apparaîtront ici.</p>
         </div>
@@ -148,14 +148,14 @@ export default function StudentRequestsPage() {
                 )}
               >
                 <div className="flex flex-wrap items-start justify-between gap-4">
-                  <div className="flex items-start gap-3">
+                  <div className="flex min-w-0 flex-1 items-start gap-3">
                     <div
                       className="flex size-11 shrink-0 items-center justify-center rounded-xl font-display text-sm font-black text-white"
                       style={{ background: student?.avatarGradient ?? "linear-gradient(135deg,#0284c7,#38bdf8)" }}
                     >
                       {student?.avatar ?? "?"}
                     </div>
-                    <div>
+                    <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
                         <p className="text-sm font-bold text-ink">
                           {student ? `${student.firstName} ${student.lastName}` : "Élève inconnu"}
@@ -197,7 +197,7 @@ export default function StudentRequestsPage() {
                   </div>
 
                   {status === "pending" && (
-                    <div className="flex shrink-0 gap-2">
+                    <div className="flex shrink-0 flex-wrap gap-2">
                       <button
                         onClick={() => openAction(request, "approve")}
                         className="inline-flex items-center gap-1.5 rounded-full bg-lime px-4 py-2 text-xs font-black uppercase tracking-wide text-white transition hover:opacity-85"
@@ -253,7 +253,7 @@ export default function StudentRequestsPage() {
                 actionMode === "approve" ? "bg-lime hover:opacity-85" : "bg-coral hover:opacity-85"
               )}
             >
-              {processing && <Loader2 className="size-4 animate-spin" />}
+              {processing && <SpinnerGap className="size-4 animate-spin" />}
               {actionMode === "approve" ? "Accepter" : "Refuser"}
             </button>
           </div>

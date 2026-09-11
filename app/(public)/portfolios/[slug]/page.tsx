@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Lock, CakeSlice, MapPin, CalendarCheck, Award, Share2, Clock, FolderOpen } from "lucide-react";
+import { ArrowLeft, Lock, Cake, MapPin, CalendarCheck, Medal, ShareNetwork, Clock, FolderOpen } from "@phosphor-icons/react/dist/ssr";
 import { getPortfolioBySlug } from "@/lib/store";
 import { PortfolioTabs } from "@/components/PortfolioTabs";
 import { ShareMenu } from "@/components/ui/share-menu";
@@ -23,7 +23,7 @@ const avatarColors = ["bg-brand", "bg-amber", "bg-violet", "bg-lime", "bg-mint",
 const stats = (completedCount: number, hours: number, certs: number) => [
   { icon: FolderOpen, tint: "bg-brand/10", iconColor: "text-brand", value: String(completedCount), label: "Projets terminés" },
   { icon: Clock, tint: "bg-amber/15", iconColor: "text-amber", value: `${hours}h`, label: "Heures de code" },
-  { icon: Award, tint: "bg-violet/15", iconColor: "text-violet", value: String(certs), label: "Certificats" },
+  { icon: Medal, tint: "bg-violet/15", iconColor: "text-violet", value: String(certs), label: "Certificats" },
 ];
 
 export default async function PortfolioDetailPage({ params }: Props) {
@@ -79,10 +79,10 @@ export default async function PortfolioDetailPage({ params }: Props) {
               <p className="mt-1 text-sm font-bold text-white/80">{portfolio.levelLabel}</p>
               <div className="mt-4 flex flex-wrap gap-2">
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-xs font-bold text-white">
-                  <CakeSlice className="size-4" /> {portfolio.age} ans
+                  <Cake className="size-4" /> {portfolio.age} ans
                 </span>
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-xs font-bold text-white">
-                  <Award className="size-4" /> {portfolio.certifications.length} certificat(s)
+                  <Medal className="size-4" /> {portfolio.certifications.length} certificat(s)
                 </span>
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-xs font-bold text-white">
                   <MapPin className="size-4" /> Marrakech
@@ -96,7 +96,7 @@ export default async function PortfolioDetailPage({ params }: Props) {
               title={`Portfolio de ${portfolio.firstName} ${portfolio.lastName}`}
               text={`Découvre le portfolio de ${portfolio.firstName} ${portfolio.lastName} sur Elite Code School`}
               triggerClassName="inline-flex items-center gap-2 rounded-full border-2 border-white/40 bg-white/10 px-5 py-2.5 text-xs font-bold text-white transition duration-200 ease-out hover:border-white hover:bg-white/20"
-              label={<><Share2 className="size-4" /> Partager</>}
+              label={<><ShareNetwork className="size-4" /> Partager</>}
             />
           </div>
         </div>

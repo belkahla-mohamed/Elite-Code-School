@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Image as ImageIcon, User, ChevronLeft, ChevronRight, CalendarDays, Eye, LayoutGrid, LayoutList } from "lucide-react";
+import { Image as ImageIcon, User, CaretLeft, CaretRight, CalendarBlank, Eye, GridFour, ListDashes } from "@phosphor-icons/react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { showToast } from "@/components/ui/toast";
 import { ViewToggle, useViewMode } from "@/components/ui/view-toggle";
+import { GalleryFormModal } from "./GalleryFormModal";
 
 const PAGE_SIZE = 6;
 
@@ -16,6 +17,7 @@ export function GalleryContent() {
   const [page, setPage] = useState(1);
   const [viewMode, setViewMode] = useViewMode("gallery-view");
   const [cardColumns, setCardColumns] = useState<1 | 2>(2);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => { load(); }, []);
 
@@ -40,7 +42,7 @@ export function GalleryContent() {
   function renderTable() {
     return (
       <div className="overflow-x-auto rounded-brand border-2 border-border bg-white dark:bg-surface">
-        <table className="w-full text-sm">
+        <table className="w-full min-w-[480px] text-sm">
           <thead>
             <tr className="border-b-2 border-border bg-surface text-left">
               <th className="px-5 py-3.5 font-black text-xs uppercase tracking-wider text-ink-soft">Aperçu</th>
@@ -120,19 +122,24 @@ export function GalleryContent() {
           <h2 className="font-display text-2xl font-black text-ink">Galerie</h2>
           <p className="text-sm text-ink-soft">Médias des portfolios des élèves</p>
         </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <button onClick={() => setShowModal(true)} className="btn-primary py-2">
+            <span className="font-bold">+ Ajouter à la galerie</span>
+          </button>
         {viewMode === "cards" && (
           <div className="flex items-center rounded-full border-2 border-border bg-white dark:bg-surface p-0.5">
             <button onClick={() => setCardColumns(1)}
               className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold transition ${cardColumns === 1 ? "bg-sky text-white shadow-sm" : "text-ink-soft hover:text-ink"}`}>
-              <LayoutList className="size-3.5" /> 1
+              <ListDashes className="size-3.5" /> 1
             </button>
             <button onClick={() => setCardColumns(2)}
               className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold transition ${cardColumns === 2 ? "bg-sky text-white shadow-sm" : "text-ink-soft hover:text-ink"}`}>
-              <LayoutGrid className="size-3.5" /> 2
+              <GridFour className="size-3.5" /> 2
             </button>
           </div>
         )}
         <ViewToggle mode={viewMode} onChange={setViewMode} />
+        </div>
       </div>
 
       {loading ? (
@@ -149,10 +156,10 @@ export function GalleryContent() {
               <p className="text-sm text-ink-soft">Page {page} sur {totalPages}</p>
               <div className="flex gap-2">
                 <Button variant="secondary" size="sm" disabled={page <= 1} onClick={() => setPage(page - 1)}>
-                  <ChevronLeft className="size-4" />
+                  <CaretLeft className="size-4" />
                 </Button>
                 <Button variant="secondary" size="sm" disabled={page >= totalPages} onClick={() => setPage(page + 1)}>
-                  <ChevronRight className="size-4" />
+                  <CaretRight className="size-4" />
                 </Button>
               </div>
             </div>
@@ -164,6 +171,16 @@ export function GalleryContent() {
           <p className="font-bold text-lg">Aucun média</p>
           <p className="text-sm mt-1">Les élèves n&apos;ont pas encore ajouté de médias à leur galerie.</p>
         </div>
+      )}
+
+      {showModal && (
+        <GalleryFormModal 
+          onClose={() => setShowModal(false)}
+          onSuccess={() => {
+            setShowModal(false);
+            load();
+          }}
+        />
       )}
     </div>
   );

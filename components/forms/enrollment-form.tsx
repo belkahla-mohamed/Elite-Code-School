@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   Popover, PopoverContent, PopoverTrigger,
 } from "@/components/ui/popover";
-import { Info } from "lucide-react";
+import { Info } from "@phosphor-icons/react";
 
 type Props = { programs: Program[]; initialProgramId?: string };
 

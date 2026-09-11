@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Sparkles, ArrowRight, Phone } from "lucide-react"
+import { Sparkle, ArrowRight, Phone } from "@phosphor-icons/react/dist/ssr";
 
 interface PageHeroProps {
   badge: string
@@ -21,7 +21,7 @@ export function PageHero({ badge, titleBefore, titleHighlight, titleAfter, subti
 
       <div className="container-shell relative py-16 text-center sm:py-20">
         <span className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/15 px-4 py-1.5 text-xs font-bold text-white">
-          <Sparkles className="size-3.5 text-amber" /> {badge}
+          <Sparkle className="size-3.5 text-amber" /> {badge}
         </span>
         <h1 className="mx-auto mt-5 max-w-3xl font-display text-3xl font-semibold leading-[1.1] tracking-[-0.02em] text-white sm:text-5xl">
           {titleBefore}{" "}

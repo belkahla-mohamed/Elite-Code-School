@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { toast } from "react-hot-toast";
-import { CheckCircle, XCircle, AlertTriangle, Info, X } from "lucide-react";
+import { CheckCircle, XCircle, Warning, Info, X } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 
 type ToastVariant = "success" | "error" | "warning" | "info";
@@ -10,7 +10,7 @@ type ToastVariant = "success" | "error" | "warning" | "info";
 const icons: Record<ToastVariant, React.ReactNode> = {
   success: <CheckCircle className="size-5 text-lime" />,
   error: <XCircle className="size-5 text-coral" />,
-  warning: <AlertTriangle className="size-5 text-amber" />,
+  warning: <Warning className="size-5 text-amber" />,
   info: <Info className="size-5 text-sky" />,
 };
 

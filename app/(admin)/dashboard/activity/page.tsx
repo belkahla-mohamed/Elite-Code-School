@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Search, Activity, UserPlus, FileText, Award, ClipboardList, ChevronLeft, ChevronRight, Download } from "lucide-react";
+import { MagnifyingGlass, Pulse, UserPlus, FileText, Medal, ClipboardText, CaretLeft, CaretRight, DownloadSimple } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { showToast } from "@/components/ui/toast";
 import { downloadCsv } from "@/lib/csv-export";
@@ -14,11 +14,11 @@ interface ActivityEntry {
   createdAt: string;
 }
 
-const typeIcons: Record<string, { icon: typeof Activity; bg: string; fg: string }> = {
+const typeIcons: Record<string, { icon: typeof Pulse; bg: string; fg: string }> = {
   student: { icon: UserPlus, bg: "bg-sky/10", fg: "text-sky" },
-  project: { icon: Award, bg: "bg-amber/10", fg: "text-amber" },
+  project: { icon: Medal, bg: "bg-amber/10", fg: "text-amber" },
   certification: { icon: FileText, bg: "bg-lime/10", fg: "text-lime" },
-  request: { icon: ClipboardList, bg: "bg-purple/10", fg: "text-purple" },
+  request: { icon: ClipboardText, bg: "bg-purple/10", fg: "text-purple" },
 };
 
 const typeLabels: Record<string, string> = {
@@ -71,7 +71,7 @@ export default function ActivityPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
       <div>
         <h1 className="font-display text-2xl font-black text-ink">Journal d&apos;activité</h1>
         <p className="text-sm text-ink-soft">Historique complet des actions administrateurs</p>
@@ -84,7 +84,7 @@ export default function ActivityPage() {
           Description: a.description,
         })), "activite.csv")}
           className="btn-outline py-1.5 text-xs shrink-0">
-          <Download className="mr-1 inline size-3" /> CSV
+          <DownloadSimple className="mr-1 inline size-3" /> CSV
         </button>
       )}
       </div>
@@ -92,7 +92,7 @@ export default function ActivityPage() {
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3">
         <div className="relative flex-1 min-w-[200px] max-w-sm">
-          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-soft" />
+          <MagnifyingGlass className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-soft" />
           <input
             value={search}
             onChange={(e) => { setSearch(e.target.value); setPage(1); }}
@@ -135,7 +135,7 @@ export default function ActivityPage() {
         </div>
       ) : paged.length === 0 ? (
         <div className="dash-card flex flex-col items-center py-16 text-ink-soft">
-          <Activity className="mb-4 size-12" />
+          <Pulse className="size-5 text-indigo" />
           <p className="font-bold text-lg">Aucune activité</p>
           <p className="text-sm mt-1">Aucune activité ne correspond à vos critères.</p>
         </div>
@@ -147,13 +147,13 @@ export default function ActivityPage() {
                 const meta = typeIcons[entry.type] ?? typeIcons.student;
                 const Icon = meta.icon;
                 return (
-                  <div key={entry.id} className="flex items-start gap-4 px-5 py-4 transition hover:bg-sky/[0.02]">
+                  <div key={entry.id} className="flex flex-wrap items-start gap-4 px-5 py-4 transition hover:bg-sky/[0.02]">
                     <div className={`flex size-10 shrink-0 items-center justify-center rounded-full ${meta.bg}`}>
                       <Icon className={`size-4 ${meta.fg}`} />
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-bold text-ink">{entry.action}</p>
-                      <p className="text-sm text-ink-soft">{entry.description}</p>
+                      <p className="break-words text-sm text-ink-soft">{entry.description}</p>
                       <p className="mt-0.5 text-xs text-ink-soft/60">
                         {new Date(entry.createdAt).toLocaleDateString("fr-FR", {
                           day: "numeric",
@@ -174,16 +174,16 @@ export default function ActivityPage() {
           </div>
 
           {totalPages > 1 && (
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-3">
               <p className="text-sm text-ink-soft">
                 Page {page} sur {totalPages} — {filtered.length} entrée{filtered.length > 1 ? "s" : ""}
               </p>
               <div className="flex gap-2">
                 <Button variant="secondary" size="sm" disabled={page <= 1} onClick={() => setPage(page - 1)}>
-                  <ChevronLeft className="size-4" />
+                  <CaretLeft className="size-4" />
                 </Button>
                 <Button variant="secondary" size="sm" disabled={page >= totalPages} onClick={() => setPage(page + 1)}>
-                  <ChevronRight className="size-4" />
+                  <CaretRight className="size-4" />
                 </Button>
               </div>
             </div>

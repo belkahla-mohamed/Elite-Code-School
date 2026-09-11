@@ -2,22 +2,14 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useParentStudent } from "@/hooks/useParentStudent";
-import { Breadcrumb } from "@/components/layout/parent-nav";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
 import { showToast } from "@/components/ui/toast";
+import { cn } from "@/lib/utils";
 import { apiFetch } from "@/lib/api-fetch";
 import type { StudentRequest } from "@/lib/types";
-import { User, ClipboardCheck, Clock, Award, Loader2 } from "lucide-react";
+import { User, ClipboardText, Clock, Medal, SpinnerGap, PaperPlaneTilt, ChatCircleText } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
-
-const certEmojis = ["🏅", "🎨", "🚀", "🤖", "🎮", "💡", "🧩", "🐍", "🌍", "⚡"];
-const certGradients = [
-  "linear-gradient(135deg,#f59e0b,#f97316)",
-  "linear-gradient(135deg,#2563EB,#06B6D4)",
-  "linear-gradient(135deg,#8B5CF6,#FB7185)",
-  "linear-gradient(135deg,#059669,#84CC16)",
-  "linear-gradient(135deg,#EC4899,#8B5CF6)",
-];
 
 const statusConfig: Record<string, { label: string; classes: string; dot: string }> = {
   pending: { label: "En attente", classes: "bg-amber/10 text-amber", dot: "bg-amber" },
@@ -33,8 +25,6 @@ export default function ParentRequestsPage() {
 
   const [certTitle, setCertTitle] = useState("");
   const [certDescription, setCertDescription] = useState("");
-  const [certEmoji, setCertEmoji] = useState(certEmojis[0]);
-  const [certGradient, setCertGradient] = useState(certGradients[0]);
 
   const [hoursTitle, setHoursTitle] = useState("");
   const [hoursDescription, setHoursDescription] = useState("");
@@ -84,8 +74,6 @@ export default function ParentRequestsPage() {
       title: certTitle,
       description: certDescription,
       certificateTitle: certTitle,
-      certificateEmoji: certEmoji,
-      certificateGradient: certGradient,
     });
     if (ok) {
       setCertTitle("");
@@ -144,9 +132,11 @@ export default function ParentRequestsPage() {
         { label: "Demandes" }
       ]} />
 
-      <div className="mb-6 overflow-hidden rounded-brand bg-gradient-to-br from-amber via-orange-400 to-coral p-6 text-white md:p-8">
+      <div className="mb-6 overflow-hidden rounded-brand bg-brand p-6 text-white md:p-8">
         <div className="flex items-center gap-4">
-          <div className="grid size-14 place-items-center rounded-2xl bg-white/20 text-3xl">📬</div>
+          <div className="grid size-14 place-items-center rounded-2xl bg-white/20 text-3xl">
+            <PaperPlaneTilt className="size-8" weight="fill" />
+          </div>
           <div>
             <h1 className="font-display text-2xl font-black tracking-tight">Certificats &amp; Heures de code</h1>
             <p className="text-sm text-white/85">
@@ -161,7 +151,7 @@ export default function ParentRequestsPage() {
         <div className="rounded-brand border-2 border-border bg-white dark:bg-surface p-6">
           <div className="mb-5 flex items-center gap-3">
             <div className="flex size-11 items-center justify-center rounded-xl bg-amber/10 text-amber">
-              <Award className="size-5" />
+              <Medal className="size-5" />
             </div>
             <div>
               <h2 className="font-display text-lg font-black text-ink">Demander un certificat</h2>
@@ -197,40 +187,13 @@ export default function ParentRequestsPage() {
                 className="w-full rounded-xl border-2 border-border bg-white px-4 py-2.5 text-sm font-semibold outline-none transition focus:border-sky"
               />
             </div>
-            <div>
-              <span className="mb-1.5 block text-xs font-black uppercase tracking-wide text-ink-soft">Emoji</span>
-              <div className="flex flex-wrap gap-1.5">
-                {certEmojis.map((emoji) => (
-                  <button
-                    key={emoji}
-                    onClick={() => setCertEmoji(emoji)}
-                    className={`grid size-10 place-items-center rounded-xl border-2 text-lg transition ${certEmoji === emoji ? "border-sky bg-sky/10" : "border-border bg-surface hover:border-sky"}`}
-                  >
-                    {emoji}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div>
-              <p className="mb-1.5 block text-xs font-black uppercase tracking-wide text-ink-soft">Couleur</p>
-              <div className="flex gap-2">
-                {certGradients.map((gradient) => (
-                  <button
-                    key={gradient}
-                    onClick={() => setCertGradient(gradient)}
-                    className={`size-10 rounded-xl transition ${certGradient === gradient ? "ring-2 ring-sky ring-offset-2" : ""}`}
-                    style={{ background: gradient }}
-                    aria-label="Choisir la couleur"
-                  />
-                ))}
-              </div>
-            </div>
+
             <button
               onClick={submitCertificate}
               disabled={sending || !certTitle || certDescription.length < 10}
               className="flex w-full items-center justify-center gap-2 rounded-full bg-amber px-6 py-3 text-sm font-black uppercase tracking-wide text-white transition hover:opacity-90 disabled:opacity-40"
             >
-              {sending ? <Loader2 className="size-4 animate-spin" /> : <Award className="size-4" />}
+              {sending ? <SpinnerGap className="size-4 animate-spin" /> : <Medal className="size-4" />}
               Envoyer la demande
             </button>
           </div>
@@ -297,7 +260,7 @@ export default function ParentRequestsPage() {
               disabled={sending || !hoursTitle || hoursDescription.length < 10}
               className="flex w-full items-center justify-center gap-2 rounded-full bg-lime px-6 py-3 text-sm font-black uppercase tracking-wide text-white transition hover:opacity-85 disabled:opacity-40"
             >
-              {sending ? <Loader2 className="size-4 animate-spin" /> : <Clock className="size-4" />}
+              {sending ? <SpinnerGap className="size-4 animate-spin" /> : <Clock className="size-4" />}
               Demander l&apos;ajustement
             </button>
           </div>
@@ -308,7 +271,7 @@ export default function ParentRequestsPage() {
       <div className="rounded-brand border-2 border-border bg-white dark:bg-surface p-6 md:p-8">
         <div className="mb-5 flex items-center gap-3">
           <div className="flex size-11 items-center justify-center rounded-xl bg-sky/10 text-sky">
-            <ClipboardCheck className="size-5" />
+            <ClipboardText className="size-5" />
           </div>
           <div>
             <h2 className="font-display text-lg font-black text-ink">Suivi de mes demandes</h2>
@@ -342,10 +305,12 @@ export default function ParentRequestsPage() {
                   className="flex items-start gap-4 rounded-2xl border-2 border-border bg-surface p-4"
                 >
                   <div
-                    className="grid size-12 shrink-0 place-items-center rounded-xl text-xl text-white"
-                    style={{ background: request.type === "hours" ? "linear-gradient(135deg,#059669,#84CC16)" : request.certificateGradient ?? "linear-gradient(135deg,#f59e0b,#f97316)" }}
+                    className={cn(
+                      "flex size-12 shrink-0 items-center justify-center rounded-xl",
+                      request.type === "hours" ? "bg-lime/10 text-lime" : "bg-amber/10 text-amber"
+                    )}
                   >
-                    {request.type === "hours" ? "🕒" : (request.certificateEmoji ?? "🏅")}
+                    {request.type === "hours" ? <Clock className="size-6" /> : <Medal className="size-6" />}
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
@@ -361,7 +326,9 @@ export default function ParentRequestsPage() {
                     )}
                     {request.adminNotes && (
                       <div className="mt-2 rounded-xl border-2 border-border bg-white p-3 text-xs font-semibold text-ink-soft">
-                        <span className="font-black uppercase tracking-wide text-ink">💬 Note de l&apos;administration : </span>
+                        <span className="flex items-center gap-1.5 font-black uppercase tracking-wide text-ink mb-1">
+                          <ChatCircleText className="size-4" /> Note de l&apos;administration :
+                        </span>
                         {request.adminNotes}
                       </div>
                     )}

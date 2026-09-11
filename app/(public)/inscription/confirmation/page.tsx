@@ -3,14 +3,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import {
-  ArrowLeft,
-  CheckCircle2,
-  Clock,
-  Mail,
-  PartyPopper,
-  Sparkles,
-} from "lucide-react";
+import { ArrowLeft, CheckCircle, Clock, EnvelopeSimple, Confetti, Sparkle } from "@phosphor-icons/react";
 
 function ConfirmationContent() {
   const searchParams = useSearchParams();
@@ -31,7 +24,7 @@ function ConfirmationContent() {
         <div className="rounded-brand border-2 border-border bg-white p-8 text-center dark:bg-surface sm:p-12">
           {/* Success animation */}
           <div className="mx-auto flex size-24 items-center justify-center rounded-brand bg-sky">
-            <PartyPopper className="size-12 text-white" />
+            <Confetti className="size-12 text-white" />
           </div>
 
           {/* Title */}
@@ -46,7 +39,7 @@ function ConfirmationContent() {
           {/* Reference ID */}
           {requestId && (
             <div className="mt-8 inline-flex items-center gap-3 rounded-brand-sm border-2 border-sky/20 bg-sky/5 px-6 py-4">
-              <CheckCircle2 className="size-6 text-sky" />
+              <CheckCircle className="size-6 text-sky" />
               <div className="text-left">
                 <p className="text-xs font-black uppercase tracking-wide text-ink-soft">
                   Numéro de dossier
@@ -75,7 +68,7 @@ function ConfirmationContent() {
 
             <div className="flex items-start gap-4 rounded-brand-sm border-2 border-border bg-surface p-5">
               <div className="flex size-10 shrink-0 items-center justify-center rounded-brand-sm bg-sky/10">
-                <Mail className="size-5 text-sky" />
+                <EnvelopeSimple className="size-5 text-sky" />
               </div>
               <div>
                 <h3 className="font-black text-ink">Vérifiez vos emails</h3>
@@ -88,7 +81,7 @@ function ConfirmationContent() {
 
             <div className="flex items-start gap-4 rounded-brand-sm border-2 border-border bg-surface p-5">
               <div className="flex size-10 shrink-0 items-center justify-center rounded-brand-sm bg-lime/10">
-                <Sparkles className="size-5 text-lime" />
+                <Sparkle className="size-5 text-lime" />
               </div>
               <div>
                 <h3 className="font-black text-ink">Prochaines étapes</h3>

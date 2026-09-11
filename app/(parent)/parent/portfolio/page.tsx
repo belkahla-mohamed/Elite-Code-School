@@ -2,10 +2,10 @@
 
 import { useParentStudent } from "@/hooks/useParentStudent";
 import { PortfolioTabs } from "@/components/PortfolioTabs";
-import { Breadcrumb } from "@/components/layout/parent-nav";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { LoadingPage } from "@/components/ui/loading-spinner";
 import { Skeleton } from "@/components/ui/skeleton";
-import { User, ExternalLink } from "lucide-react";
+import { User, ArrowSquareOut } from "@phosphor-icons/react";
 import Link from "next/link";
 
 export default function ParentPortfolioPage() {
@@ -71,7 +71,7 @@ export default function ParentPortfolioPage() {
             href={`/portfolios/${student.slug}`}
             className="btn-outline px-4 py-2 text-sm"
           >
-            <ExternalLink className="mr-1 inline size-4" />
+            <ArrowSquareOut className="mr-1 inline size-4" />
             Voir la vue publique
           </Link>
         </div>

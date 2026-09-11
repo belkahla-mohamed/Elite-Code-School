@@ -124,7 +124,7 @@ export const students: Student[] = [
     hours: 120,
     isPublic: true,
     parentEmail: "parent.youssef@example.com",
-    parentSecretHash: hashSecret("YOUSEEF-2026"),
+    parentSecretHash: hashSecret("YOUSSEF-2026"),
     createdAt: new Date(Date.now() - 165 * 86_400_000).toISOString()
   },
   {
@@ -477,7 +477,9 @@ export const certifications: Certification[] = [
     mention: "Très bien",
     dateLabel: "Déc. 2023",
     emoji: "🏅",
-    gradient: "linear-gradient(135deg,#2563EB,#06B6D4)"
+    gradient: "linear-gradient(135deg,#2563EB,#06B6D4)",
+    serialCode: `CERT-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    issueDate: new Date().toISOString()
   },
   {
     id: "cert-y-2",
@@ -486,7 +488,9 @@ export const certifications: Certification[] = [
     mention: "Bien",
     dateLabel: "Avril 2024",
     emoji: "⚡",
-    gradient: "linear-gradient(135deg,#F59E0B,#84CC16)"
+    gradient: "linear-gradient(135deg,#F59E0B,#84CC16)",
+    serialCode: `CERT-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    issueDate: new Date().toISOString()
   },
   {
     id: "cert-m-1",
@@ -495,7 +499,9 @@ export const certifications: Certification[] = [
     mention: "Excellent",
     dateLabel: "Mars 2024",
     emoji: "🐍",
-    gradient: "linear-gradient(135deg,#84CC16,#2DD4BF)"
+    gradient: "linear-gradient(135deg,#84CC16,#2DD4BF)",
+    serialCode: `CERT-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    issueDate: new Date().toISOString()
   },
   {
     id: "cert-m-2",
@@ -504,7 +510,9 @@ export const certifications: Certification[] = [
     mention: "Très bien",
     dateLabel: "Juin 2024",
     emoji: "🧠",
-    gradient: "linear-gradient(135deg,#8B5CF6,#06B6D4)"
+    gradient: "linear-gradient(135deg,#8B5CF6,#06B6D4)",
+    serialCode: `CERT-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    issueDate: new Date().toISOString()
   },
   {
     id: "cert-a-1",
@@ -513,7 +521,9 @@ export const certifications: Certification[] = [
     mention: "Élève du mois",
     dateLabel: "Jan. 2024",
     emoji: "🧩",
-    gradient: "linear-gradient(135deg,#F59E0B,#FB7185)"
+    gradient: "linear-gradient(135deg,#F59E0B,#FB7185)",
+    serialCode: `CERT-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    issueDate: new Date().toISOString()
   },
   {
     id: "cert-s-1",
@@ -522,7 +532,9 @@ export const certifications: Certification[] = [
     mention: "Excellent",
     dateLabel: "Avril 2024",
     emoji: "🌐",
-    gradient: "linear-gradient(135deg,#EC4899,#FBBF24)"
+    gradient: "linear-gradient(135deg,#EC4899,#FBBF24)",
+    serialCode: `CERT-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    issueDate: new Date().toISOString()
   },
   {
     id: "cert-ay-1",
@@ -531,7 +543,9 @@ export const certifications: Certification[] = [
     mention: "Très bien",
     dateLabel: "Juin 2024",
     emoji: "🐍",
-    gradient: "linear-gradient(135deg,#10B981,#3B82F6)"
+    gradient: "linear-gradient(135deg,#10B981,#3B82F6)",
+    serialCode: `CERT-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    issueDate: new Date().toISOString()
   },
   {
     id: "cert-i-1",
@@ -540,7 +554,9 @@ export const certifications: Certification[] = [
     mention: "Bien",
     dateLabel: "Juin 2024",
     emoji: "💡",
-    gradient: "linear-gradient(135deg,#F43F5E,#FBBF24)"
+    gradient: "linear-gradient(135deg,#F43F5E,#FBBF24)",
+    serialCode: `CERT-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    issueDate: new Date().toISOString()
   },
   {
     id: "cert-o-1",
@@ -549,7 +565,9 @@ export const certifications: Certification[] = [
     mention: "Excellent",
     dateLabel: "Déc. 2023",
     emoji: "🏆",
-    gradient: "linear-gradient(135deg,#7C3AED,#EC4899)"
+    gradient: "linear-gradient(135deg,#7C3AED,#EC4899)",
+    serialCode: `CERT-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    issueDate: new Date().toISOString()
   },
   {
     id: "cert-o-2",
@@ -558,7 +576,9 @@ export const certifications: Certification[] = [
     mention: "Très bien",
     dateLabel: "Mai 2024",
     emoji: "🧠",
-    gradient: "linear-gradient(135deg,#06B6D4,#7C3AED)"
+    gradient: "linear-gradient(135deg,#06B6D4,#7C3AED)",
+    serialCode: `CERT-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    issueDate: new Date().toISOString()
   }
 ];
 

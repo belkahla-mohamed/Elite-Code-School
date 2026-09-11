@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import { SpinnerGap } from "@phosphor-icons/react";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose,
 } from "@/components/ui/dialog";
@@ -52,7 +52,7 @@ export function ConfirmDialog({
             onClick={() => { if (!loading) { setOpen(false); setTimeout(onConfirm, 200); } }}
             className={`rounded-full px-4 py-2 text-sm font-black uppercase tracking-wide text-white transition disabled:opacity-50 ${variant === "danger" ? "bg-coral hover:bg-coral/90" : "bg-sky hover:bg-sky-dark"}`}
           >
-            {loading ? <><Loader2 className="mr-1 inline size-4 animate-spin" /> {confirmLabel}</> : confirmLabel}
+            {loading ? <><SpinnerGap className="mr-1 inline size-4 animate-spin" /> {confirmLabel}</> : confirmLabel}
           </button>
         </DialogFooter>
       </DialogContent>

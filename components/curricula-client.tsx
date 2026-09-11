@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ArrowRight, ChevronLeft, ChevronRight, Clock, CalendarDays, Search, Users } from "lucide-react"
+import { ArrowRight, CaretLeft, CaretRight, Clock, CalendarBlank, MagnifyingGlass, Users } from "@phosphor-icons/react";
 import { AnimatePresence, motion } from "framer-motion"
 import type { Program } from "@/lib/types"
 
@@ -48,11 +48,11 @@ export function CurriculaClient({ programs }: { programs: Program[] }) {
   return (
     <section className="bg-white py-16 sm:py-20 dark:bg-body">
       <div className="container-shell">
-        {/* Search */}
+        {/* MagnifyingGlass */}
         <div className="mx-auto mb-6 max-w-xl">
           <label className="relative block">
             <span className="sr-only">Rechercher un programme</span>
-            <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-ink-soft" />
+            <MagnifyingGlass className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-ink-soft" />
             <input
               type="search"
               value={query}
@@ -134,7 +134,7 @@ export function CurriculaClient({ programs }: { programs: Program[] }) {
                       <div className="mt-auto">
                         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border pt-4 text-xs font-medium text-ink-soft dark:border-white/10 dark:text-slate-400">
                           {program.schedule && <span className="inline-flex items-center gap-1.5"><Clock className="size-3.5 text-brand" /> {program.schedule}</span>}
-                          {program.duration && <span className="inline-flex items-center gap-1.5"><CalendarDays className="size-3.5 text-brand" /> {program.duration}</span>}
+                          {program.duration && <span className="inline-flex items-center gap-1.5"><CalendarBlank className="size-3.5 text-brand" /> {program.duration}</span>}
                           <span className="inline-flex items-center gap-1.5"><Users className="size-3.5 text-brand" /> 8 élèves max</span>
                         </div>
                         <div className="mt-4">
@@ -176,7 +176,7 @@ export function CurriculaClient({ programs }: { programs: Program[] }) {
               disabled={safePage === 1}
               className="inline-flex items-center gap-1 rounded-full border border-border bg-white px-4 py-2.5 text-xs font-bold text-ink-soft transition duration-200 ease-out hover:border-brand/30 hover:text-ink disabled:cursor-not-allowed disabled:opacity-40 dark:border-white/10 dark:bg-[#1e293b]"
             >
-              <ChevronLeft className="size-4" /> <span className="hidden sm:inline">Précédent</span>
+              <CaretLeft className="size-4" /> <span className="hidden sm:inline">Précédent</span>
             </button>
             {Array.from({ length: totalPages }).map((_, i) => (
               <button
@@ -198,7 +198,7 @@ export function CurriculaClient({ programs }: { programs: Program[] }) {
               disabled={safePage === totalPages}
               className="inline-flex items-center gap-1 rounded-full border border-border bg-white px-4 py-2.5 text-xs font-bold text-ink-soft transition duration-200 ease-out hover:border-brand/30 hover:text-ink disabled:cursor-not-allowed disabled:opacity-40 dark:border-white/10 dark:bg-[#1e293b]"
             >
-              <span className="hidden sm:inline">Suivant</span> <ChevronRight className="size-4" />
+              <span className="hidden sm:inline">Suivant</span> <CaretRight className="size-4" />
             </button>
           </div>
         )}

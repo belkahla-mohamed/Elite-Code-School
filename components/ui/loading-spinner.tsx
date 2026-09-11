@@ -1,4 +1,4 @@
-import { Loader2 } from "lucide-react";
+import { SpinnerGap } from "@phosphor-icons/react/dist/ssr";
 import { cn } from "@/lib/utils";
 
 type SpinnerSize = "sm" | "md" | "lg";
@@ -24,7 +24,7 @@ const colorMap: Record<SpinnerColor, string> = {
 
 function LoadingSpinner({ size = "md", color = "sky", className }: LoadingSpinnerProps) {
   return (
-    <Loader2
+    <SpinnerGap
       className={cn("animate-spin", sizeMap[size], colorMap[color], className)}
     />
   );

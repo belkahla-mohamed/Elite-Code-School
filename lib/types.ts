@@ -87,6 +87,8 @@ export type Certification = {
   emoji: string;
   gradient: string;
   imageUrl?: string;
+  serialCode: string;
+  issueDate: string;
 };
 
 export type SeanceStatus = "completed" | "absent" | "scheduled" | "cancelled"
@@ -174,6 +176,7 @@ export type AdminUser = {
   firstName: string;
   lastName: string;
   role: "super_admin" | "admin";
+  permissions: string[];
   createdAt: string;
   lastLogin?: string;
 };
@@ -249,4 +252,11 @@ export type StudentAlert = {
 export type CommunityFeedItem = {
   student: StudentPortfolio;
   projects: Project[];
+};
+
+export type ContentBlock = {
+  key: string;
+  value: string;
+  createdAt: string;
+  updatedAt: string;
 };

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { LayoutGrid, List } from "lucide-react";
+import { GridFour, List } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 
 export type ViewMode = "cards" | "table";
@@ -40,7 +40,7 @@ export function ViewToggle({ mode, onChange }: { mode: ViewMode; onChange: (mode
         )}
         title="Affichage cartes"
       >
-        <LayoutGrid className="size-3.5" />
+        <GridFour className="size-3.5" />
         <span className="hidden sm:inline">Cartes</span>
       </button>
       <button

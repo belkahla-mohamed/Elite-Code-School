@@ -2,12 +2,12 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useParentStudent } from "@/hooks/useParentStudent";
-import { Breadcrumb } from "@/components/layout/parent-nav";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
 import { showToast } from "@/components/ui/toast";
 import { apiFetch } from "@/lib/api-fetch";
 import type { StudentMessage } from "@/lib/types";
-import { User, MessageCircle, Send, Loader2 } from "lucide-react";
+import { User, ChatCircle, PaperPlaneRight, SpinnerGap, EnvelopeSimple } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 
 export default function ParentMessagesPage() {
@@ -94,9 +94,11 @@ export default function ParentMessagesPage() {
         { label: "Messages" }
       ]} />
 
-      <div className="mb-6 overflow-hidden rounded-brand bg-gradient-to-br from-violet to-pink p-6 text-white md:p-8">
+      <div className="mb-6 overflow-hidden rounded-brand bg-brand p-6 text-white md:p-8">
         <div className="flex items-center gap-4">
-          <div className="grid size-14 place-items-center rounded-2xl bg-white/20 text-3xl">💌</div>
+          <div className="grid size-14 place-items-center rounded-2xl bg-white/20 text-3xl">
+            <EnvelopeSimple className="size-8" weight="fill" />
+          </div>
           <div>
             <h1 className="font-display text-2xl font-black tracking-tight">Parler à l&apos;administration</h1>
             <p className="text-sm text-white/85">
@@ -111,7 +113,7 @@ export default function ParentMessagesPage() {
         <div className="h-fit rounded-brand border-2 border-border bg-white dark:bg-surface p-6">
           <div className="mb-4 flex items-center gap-3">
             <div className="flex size-11 items-center justify-center rounded-xl bg-pink/10 text-pink">
-              <MessageCircle className="size-5" />
+              <ChatCircle className="size-5" />
             </div>
             <div>
               <h2 className="font-display text-lg font-black text-ink">Nouveau message</h2>
@@ -130,7 +132,7 @@ export default function ParentMessagesPage() {
             disabled={sending || !draft.trim()}
             className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-pink px-6 py-3 text-sm font-black uppercase tracking-wide text-white transition hover:opacity-90 disabled:opacity-40"
           >
-            {sending ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />}
+            {sending ? <SpinnerGap className="size-4 animate-spin" /> : <PaperPlaneRight className="size-4" />}
             Envoyer
           </button>
         </div>
@@ -140,7 +142,7 @@ export default function ParentMessagesPage() {
           <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="flex size-11 items-center justify-center rounded-xl bg-sky/10 text-sky">
-                <MessageCircle className="size-5" />
+                <ChatCircle className="size-5" />
               </div>
               <div>
                 <h2 className="font-display text-lg font-black text-ink">Conversations</h2>

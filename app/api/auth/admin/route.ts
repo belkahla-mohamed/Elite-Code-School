@@ -29,9 +29,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Identifiants incorrects" }, { status: 401 });
     }
     await updateAdminLastLogin(user.id)
-    await setAdminSession();
-    const token = generateToken({ id: user.id, name: `${user.firstName} ${user.lastName}`, role: "admin" });
-    return NextResponse.json({ ok: true, token, user: { id: user.id, name: `${user.firstName} ${user.lastName}`, role: "admin" } });
+    await setAdminSession({ id: user.id, role: user.role, permissions: user.permissions });
+    const token = generateToken({ id: user.id, name: `${user.firstName} ${user.lastName}`, role: user.role, permissions: user.permissions });
+    return NextResponse.json({ ok: true, token, user: { id: user.id, name: `${user.firstName} ${user.lastName}`, role: user.role, permissions: user.permissions } });
   } catch (e: any) {
     return NextResponse.json({ error: e.message ?? "Erreur serveur" }, { status: 500 });
   }

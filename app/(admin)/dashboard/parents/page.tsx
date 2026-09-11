@@ -1,10 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import {
-  Users, Search, Plus, Trash2, X, Loader2, Mail, Phone, User, Shield,
-  ExternalLink, Key, Copy, Check,
-} from "lucide-react";
+import { Users, MagnifyingGlass, Plus, Trash, X, SpinnerGap, EnvelopeSimple, Phone, User, Shield, ArrowSquareOut, Key, Copy, Check } from "@phosphor-icons/react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { showToast } from "@/components/ui/toast";
 import {
@@ -125,10 +122,10 @@ export default function ParentsPage() {
       {createdSecret && (
         <div className="mb-6 rounded-brand border-2 border-lime/30 bg-lime/5 p-4">
           <p className="text-sm font-bold text-lime">Parent créé avec succès !</p>
-          <div className="mt-2 flex items-center gap-3">
-            <code className="rounded bg-body px-4 py-2 font-mono text-lg font-bold text-ink tracking-widest">
-              {createdSecret}
-            </code>
+            <div className="mt-2 flex flex-wrap items-center gap-3">
+              <code className="min-w-0 break-all rounded bg-body px-4 py-2 font-mono text-lg font-bold text-ink tracking-widest">
+                {createdSecret}
+              </code>
             <button
               onClick={() => copySecret(createdSecret)}
               className="flex size-9 items-center justify-center rounded-full bg-lime/10 text-lime hover:bg-lime hover:text-white transition"
@@ -146,9 +143,9 @@ export default function ParentsPage() {
         </div>
       )}
 
-      {/* Search */}
+      {/* MagnifyingGlass */}
       <div className="relative mb-6 max-w-sm">
-        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-soft" />
+        <MagnifyingGlass className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-soft" />
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -170,7 +167,7 @@ export default function ParentsPage() {
         </div>
       ) : (
         <div className="overflow-x-auto rounded-brand border-2 border-border bg-white dark:bg-surface">
-          <table className="w-full text-sm">
+          <table className="w-full min-w-[560px] text-sm">
             <thead>
               <tr className="border-b-2 border-border bg-surface text-left">
                 <th className="px-4 py-3.5 font-black text-xs uppercase tracking-wider text-ink-soft">Parent</th>
@@ -199,7 +196,7 @@ export default function ParentsPage() {
                   <td className="px-4 py-4 text-ink-soft hidden md:table-cell">
                     <div className="space-y-1">
                       <span className="flex items-center gap-1.5">
-                        <Mail className="size-3" /> {parent.email}
+                        <EnvelopeSimple className="size-3" /> {parent.email}
                       </span>
                       {parent.phone && (
                         <span className="flex items-center gap-1.5">
@@ -222,7 +219,7 @@ export default function ParentsPage() {
                       className="flex size-8 items-center justify-center rounded-full bg-coral/10 text-coral transition hover:bg-coral hover:text-white"
                       title="Supprimer"
                     >
-                      <Trash2 className="size-4" />
+                      <Trash className="size-4" />
                     </button>
                   </td>
                 </tr>
@@ -253,7 +250,7 @@ export default function ParentsPage() {
                 required
               />
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
                 <label className="mb-1 block text-xs font-bold text-ink-soft uppercase tracking-wider">Prénom</label>
                 <input
@@ -304,7 +301,7 @@ export default function ParentsPage() {
               </DialogClose>
               <button type="submit" disabled={creating || !form.email || !form.studentId}
                 className="btn-primary px-6 py-2 disabled:opacity-50">
-                {creating ? <><Loader2 className="mr-1 inline size-4 animate-spin" /> Création...</> : "Créer le parent"}
+                {creating ? <><SpinnerGap className="mr-1 inline size-4 animate-spin" /> Création...</> : "Créer le parent"}
               </button>
             </DialogFooter>
           </form>

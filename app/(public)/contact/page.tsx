@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Mail, Phone, MapPin, Clock, CalendarCheck } from "lucide-react"
+import { EnvelopeSimple, Phone, MapPin, Clock, CalendarCheck } from "@phosphor-icons/react/dist/ssr";
 import { QuickContactForm } from "@/components/QuickContactForm"
 import { PageHero, CtaBand } from "@/components/page-sections"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 const contactCards = [
   { icon: Phone, tint: "bg-[#E8F7FF] text-sky", href: "tel:+212600000000", title: "+212 600 000 000", text: "Lun – Sam, 9h30 – 18h30" },
-  { icon: Mail, tint: "bg-[#FDE9EA] text-brand", href: "mailto:contact@elitecodeschool.ma", title: "contact@elitecodeschool.ma", text: "Réponse sous 24h ouvrées" },
+  { icon: EnvelopeSimple, tint: "bg-[#FDE9EA] text-brand", href: "mailto:contact@elitecodeschool.ma", title: "contact@elitecodeschool.ma", text: "Réponse sous 24h ouvrées" },
   { icon: MapPin, tint: "bg-[#FFF3D6] text-amber", href: null, title: "Marrakech, Maroc", text: "Adresse exacte sur demande" },
   { icon: Clock, tint: "bg-[#F1EAFE] text-violet", href: null, title: "Horaires d'ouverture", text: "Lundi – Samedi : 9h30 – 18h30" },
 ]

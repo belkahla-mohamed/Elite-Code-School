@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Trash2, Plus, Loader2, Camera, X, Pencil } from "lucide-react";
+import { ArrowLeft, Trash, Plus, SpinnerGap, Camera, X, Pencil } from "@phosphor-icons/react";
 import { showToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { FileUpload } from "@/components/ui/file-upload";
@@ -168,8 +168,8 @@ export default function StudentDetailPage() {
         <ArrowLeft className="size-4" /> Retour
       </button>
 
-      <div className="mb-8 flex items-center gap-4">
-        <div className="group relative">
+      <div className="mb-8 flex flex-wrap items-center gap-4">
+        <div className="group relative shrink-0">
           <div
             className="flex size-16 items-center justify-center rounded-2xl font-display text-2xl font-black text-white"
             style={{ background: student.avatarGradient }}>
@@ -189,13 +189,13 @@ export default function StudentDetailPage() {
             </FileUpload>
           </div>
         </div>
-        <div>
-          <h1 className="font-display text-3xl font-black text-ink">{student.firstName} {student.lastName}</h1>
-          <p className="text-sm text-ink-soft">{student.age} ans · {student.levelLabel} · {student.hours}h</p>
+        <div className="min-w-0 flex-1">
+          <h1 className="truncate font-display text-2xl font-black text-ink sm:text-3xl">{student.firstName} {student.lastName}</h1>
+          <p className="truncate text-sm text-ink-soft">{student.age} ans · {student.levelLabel} · {student.hours}h</p>
         </div>
-        <div className="ml-auto flex gap-2">
+        <div className="ml-auto flex shrink-0 flex-wrap gap-2">
           <button onClick={openEdit} className="btn-outline py-2"><Pencil className="mr-1 inline size-4" /> Modifier</button>
-          <button onClick={() => setDeleteStudentConfirm(true)} className="rounded-brand-sm bg-coral px-4 py-2 text-sm font-bold text-white hover:bg-coral/90 transition"><Trash2 className="mr-1 inline size-4" /> Supprimer</button>
+          <button onClick={() => setDeleteStudentConfirm(true)} className="rounded-brand-sm bg-coral px-4 py-2 text-sm font-bold text-white hover:bg-coral/90 transition"><Trash className="mr-1 inline size-4" /> Supprimer</button>
         </div>
       </div>
 
@@ -227,10 +227,10 @@ export default function StudentDetailPage() {
         <h2 className="mb-4 font-display text-xl font-black">Projets ({student.projects.length})</h2>
         <div className="mb-4 space-y-2">
           {student.projects.map((p: any) => (
-            <div key={p.id} className="flex items-center justify-between rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface px-4 py-3">
-              <span className="text-sm font-bold">{p.emoji} {p.title}</span>
-              <button onClick={() => setConfirmDelete({ type: "project", name: p.title, id: p.id })} className="text-coral hover:text-coral/80">
-                <Trash2 className="size-4" />
+            <div key={p.id} className="flex items-center justify-between gap-3 rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface px-4 py-3">
+              <span className="min-w-0 flex-1 truncate text-sm font-bold">{p.emoji} {p.title}</span>
+              <button onClick={() => setConfirmDelete({ type: "project", name: p.title, id: p.id })} className="shrink-0 text-coral hover:text-coral/80">
+                <Trash className="size-4" />
               </button>
             </div>
           ))}
@@ -245,13 +245,13 @@ export default function StudentDetailPage() {
             <option value="done">Terminé</option>
           </select>
           <input name="progress" type="number" min="0" max="100" defaultValue="40" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
-          <div className="sm:col-span-2 flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3 sm:col-span-2">
             <FileUpload folder={`projects/${id}`} onUploaded={(url) => { setProjectCover(url); showToast("Cover ajoutée", "success"); }}>
               <span className="inline-flex items-center gap-1 rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm font-semibold text-ink-soft hover:border-sky transition">
                  {projectCover ? "✅ Cover" : "🖼️ Cover"}
               </span>
             </FileUpload>
-            <button type="submit" disabled={addingProject} className="flex-1 btn-primary py-2 disabled:opacity-50">{addingProject ? <><Loader2 className="mr-1 inline size-4 animate-spin" /> Ajout...</> : <><Plus className="mr-1 inline size-4" /> Ajouter</>}</button>
+            <button type="submit" disabled={addingProject} className="flex-1 btn-primary py-2 disabled:opacity-50">{addingProject ? <><SpinnerGap className="mr-1 inline size-4 animate-spin" /> Ajout...</> : <><Plus className="mr-1 inline size-4" /> Ajouter</>}</button>
           </div>
         </form>
       </section>
@@ -261,10 +261,10 @@ export default function StudentDetailPage() {
         <h2 className="mb-4 font-display text-xl font-black">Certifications ({student.certifications.length})</h2>
         <div className="mb-4 space-y-2">
           {student.certifications.map((c: any) => (
-            <div key={c.id} className="flex items-center justify-between rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface px-4 py-3">
-              <span className="text-sm font-bold">{c.emoji} {c.title} — {c.mention}</span>
-              <button onClick={() => setConfirmDelete({ type: "certification", name: c.title, id: c.id })} className="text-coral hover:text-coral/80">
-                <Trash2 className="size-4" />
+              <div key={c.id} className="flex items-center justify-between gap-3 rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface px-4 py-3">
+              <span className="min-w-0 flex-1 truncate text-sm font-bold">{c.emoji} {c.title} — {c.mention}</span>
+              <button onClick={() => setConfirmDelete({ type: "certification", name: c.title, id: c.id })} className="shrink-0 text-coral hover:text-coral/80">
+                <Trash className="size-4" />
               </button>
             </div>
           ))}
@@ -273,13 +273,13 @@ export default function StudentDetailPage() {
           <input name="title" required placeholder="Titre" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
           <input name="mention" required placeholder="Mention" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
           <input name="dateLabel" placeholder="Date" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <FileUpload folder={`certifications/${id}`} onUploaded={(url) => { setCertifImage(url); showToast("Image ajoutée", "success"); }}>
               <span className="inline-flex items-center gap-1 rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm font-semibold text-ink-soft hover:border-sky transition">
                  {certifImage ? "✅ Image" : "🖼️ Image"}
               </span>
             </FileUpload>
-            <button type="submit" disabled={addingCert} className="flex-1 btn-primary py-2 disabled:opacity-50">{addingCert ? <><Loader2 className="mr-1 inline size-4 animate-spin" /> Ajout...</> : <><Plus className="mr-1 inline size-4" /> Ajouter</>}</button>
+            <button type="submit" disabled={addingCert} className="flex-1 btn-primary py-2 disabled:opacity-50">{addingCert ? <><SpinnerGap className="mr-1 inline size-4 animate-spin" /> Ajout...</> : <><Plus className="mr-1 inline size-4" /> Ajouter</>}</button>
           </div>
         </form>
       </section>
@@ -314,7 +314,7 @@ export default function StudentDetailPage() {
               <button onClick={() => setEditOpen(false)}><X className="size-5 text-ink-soft" /></button>
             </div>
             <div className="space-y-3">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <input value={editForm.firstName} onChange={(e) => setEditForm({ ...editForm, firstName: e.target.value })} placeholder="Prénom" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
                 <input value={editForm.lastName} onChange={(e) => setEditForm({ ...editForm, lastName: e.target.value })} placeholder="Nom" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
               </div>

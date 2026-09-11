@@ -2,12 +2,9 @@
 
 import { useState } from "react";
 import { useParentStudent } from "@/hooks/useParentStudent";
-import { Breadcrumb } from "@/components/layout/parent-nav";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  User, Download, Loader2, FileText, BarChart3, Clock,
-  FolderOpen, Award, Eye, Calendar, BookOpen
-} from "lucide-react";
+import { User, DownloadSimple, SpinnerGap, FileText, ChartBar, Clock, FolderOpen, Medal, Eye, CalendarBlank, BookOpen } from "@phosphor-icons/react";
 import Link from "next/link";
 import { generateStudentReport, downloadBlob } from "@/lib/pdf-generator";
 import { showToast } from "@/components/ui/toast";
@@ -104,28 +101,28 @@ export default function ParentReportPage() {
             label="Projets"
             value={String(totalProjects)}
             sub={`${completedProjects} terminés`}
-            color="from-sky to-cyan"
+            color="bg-sky"
           />
           <StatCard
-            icon={<Award className="size-5" />}
+            icon={<Medal className="size-5" />}
             label="Certifications"
             value={String(student.certifications.length)}
             sub="obtenues"
-            color="from-amber to-orange"
+            color="bg-amber"
           />
           <StatCard
             icon={<Clock className="size-5" />}
             label="Heures de code"
             value={`${student.hours}h`}
             sub="cumulées"
-            color="from-lime to-emerald"
+            color="bg-lime"
           />
           <StatCard
-            icon={<BarChart3 className="size-5" />}
+            icon={<ChartBar className="size-5" />}
             label="Avancement"
             value={`${totalProjects > 0 ? Math.round((completedProjects / totalProjects) * 100) : 0}%`}
             sub="projets complétés"
-            color="from-violet to-purple"
+            color="bg-violet"
           />
         </div>
 
@@ -137,32 +134,32 @@ export default function ParentReportPage() {
               label="Projets complétés"
               value={totalProjects > 0 ? completedProjects : 0}
               max={Math.max(totalProjects, 1)}
-              color="from-lime to-emerald"
+              color="bg-lime"
             />
             <ProgressBar
               label="Projets en cours"
               value={inProgressProjects}
               max={Math.max(totalProjects, 1)}
-              color="from-sky to-cyan"
+              color="bg-sky"
             />
             <ProgressBar
               label="Heures de code"
               value={Math.min(student.hours, 40)}
               max={40}
               suffix="h / 40h"
-              color="from-amber to-orange"
+              color="bg-amber"
             />
             <ProgressBar
               label="Certifications"
               value={student.certifications.length}
               max={8}
-              color="from-violet to-purple"
+              color="bg-violet"
             />
           </div>
         </div>
 
-        {/* Download Section */}
-        <div className="rounded-brand border-2 border-sky/20 bg-gradient-to-br from-sky/5 to-cyan/5 p-6 md:p-8">
+        {/* DownloadSimple Section */}
+        <div className="rounded-brand border-2 border-border bg-sky/5 p-6 md:p-8">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
             <div className="flex items-start gap-4">
               <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-sky/10 text-sky">
@@ -179,10 +176,10 @@ export default function ParentReportPage() {
                     <BookOpen className="size-3" />{totalProjects} projet{totalProjects > 1 ? "s" : ""}
                   </span>
                   <span className="flex items-center gap-1">
-                    <Award className="size-3" />{student.certifications.length} certification{student.certifications.length > 1 ? "s" : ""}
+                    <Medal className="size-3" />{student.certifications.length} certification{student.certifications.length > 1 ? "s" : ""}
                   </span>
                   <span className="flex items-center gap-1">
-                    <Calendar className="size-3" />{student.joinDateLabel}
+                    <CalendarBlank className="size-3" />{student.joinDateLabel}
                   </span>
                 </div>
               </div>
@@ -194,12 +191,12 @@ export default function ParentReportPage() {
             >
               {pdfLoading ? (
                 <>
-                  <Loader2 className="mr-2 inline size-5 animate-spin" />
+                  <SpinnerGap className="mr-2 inline size-5 animate-spin" />
                   Génération...
                 </>
               ) : (
                 <>
-                  <Download className="mr-2 inline size-5" />
+                  <DownloadSimple className="mr-2 inline size-5" />
                   Télécharger PDF
                 </>
               )}
@@ -226,7 +223,7 @@ function StatCard({
 }) {
   return (
     <div className="rounded-brand border-2 border-border bg-white dark:bg-surface p-4 md:p-5">
-      <div className={`inline-flex size-9 items-center justify-center rounded-xl bg-gradient-to-br ${color} text-white mb-3`}>
+      <div className={`inline-flex size-9 items-center justify-center rounded-xl ${color} text-white mb-3`}>
         {icon}
       </div>
       <div className="font-display text-2xl font-extrabold text-ink">{value}</div>
@@ -258,7 +255,7 @@ function ProgressBar({
       </div>
       <div className="h-2.5 rounded-full bg-surface">
         <div
-          className={`h-2.5 rounded-full bg-gradient-to-r ${color} transition-all duration-700`}
+          className={`h-2.5 rounded-full ${color} transition-all duration-700`}
           style={{ width: `${percent}%` }}
         />
       </div>

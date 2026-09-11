@@ -2,12 +2,12 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useParentStudent } from "@/hooks/useParentStudent";
-import { Breadcrumb } from "@/components/layout/parent-nav";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
 import { showToast } from "@/components/ui/toast";
 import { apiFetch } from "@/lib/api-fetch";
 import type { StudentAlert } from "@/lib/types";
-import { User, BellRing, CheckCheck } from "lucide-react";
+import { User, BellRinging, Checks, RocketLaunch, Moon } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 
 export default function ParentNotificationsPage() {
@@ -87,10 +87,12 @@ export default function ParentNotificationsPage() {
         { label: "Notifications" }
       ]} />
 
-      <div className="mb-6 overflow-hidden rounded-brand bg-gradient-to-br from-sky to-violet p-6 text-white md:p-8">
+      <div className="mb-6 overflow-hidden rounded-brand bg-brand p-6 text-white md:p-8">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="grid size-14 place-items-center rounded-2xl bg-white/20 text-3xl">🔔</div>
+            <div className="grid size-14 place-items-center rounded-2xl bg-white/20 text-3xl">
+              <BellRinging className="size-8" weight="fill" />
+            </div>
             <div>
               <h1 className="font-display text-2xl font-black tracking-tight">Notifications</h1>
               <p className="text-sm text-white/85">
@@ -104,16 +106,18 @@ export default function ParentNotificationsPage() {
               disabled={marking}
               className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-xs font-black uppercase tracking-wide text-sky-dark transition hover:opacity-90 disabled:opacity-50"
             >
-              <CheckCheck className="size-4" />
+              <Checks className="size-4" />
               Tout marquer comme lu
             </button>
           )}
         </div>
       </div>
 
-      <div className="mb-6 overflow-hidden rounded-brand border-2 border-[#FFD489] bg-gradient-to-br from-amber-50 to-cream p-6 dark:bg-surface">
+      <div className="mb-6 overflow-hidden rounded-brand border-2 border-border bg-white p-6 dark:bg-surface">
         <div className="flex flex-wrap items-center gap-4">
-          <div className="grid size-14 place-items-center rounded-2xl bg-amber text-3xl">🚀</div>
+          <div className="flex size-14 items-center justify-center rounded-2xl bg-amber/10 text-amber">
+            <RocketLaunch className="size-8" weight="fill" />
+          </div>
           <div className="min-w-0 flex-1">
             <h2 className="font-display text-lg font-black text-ink">Mission Planète Mars</h2>
             <p className="text-sm font-semibold text-ink-soft">
@@ -130,7 +134,7 @@ export default function ParentNotificationsPage() {
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex size-11 items-center justify-center rounded-xl bg-coral/10 text-coral">
-              <BellRing className="size-5" />
+              <BellRinging className="size-5" />
             </div>
             <div>
               <h2 className="font-display text-lg font-black text-ink">Mes alertes</h2>
@@ -149,8 +153,10 @@ export default function ParentNotificationsPage() {
           </div>
         ) : alerts.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-2xl bg-surface px-6 py-14 text-center">
-            <div className="text-5xl">🌙</div>
-            <p className="mt-3 font-display text-lg font-bold text-ink">Aucune notification</p>
+            <div className="mb-3 text-ink-soft/40">
+              <Moon className="size-16" weight="fill" />
+            </div>
+            <p className="font-display text-lg font-bold text-ink">Aucune notification</p>
             <p className="mt-1 text-sm text-ink-soft">On te préviendra dès qu&apos;il y a du nouveau !</p>
           </div>
         ) : (
@@ -164,8 +170,8 @@ export default function ParentNotificationsPage() {
                     : "border-sky bg-sky/5"
                 }`}
               >
-                <div className="grid size-12 shrink-0 place-items-center rounded-xl bg-white text-2xl shadow-sm">
-                  {alert.emoji}
+                <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm">
+                  <BellRinging className="size-6 text-brand" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">

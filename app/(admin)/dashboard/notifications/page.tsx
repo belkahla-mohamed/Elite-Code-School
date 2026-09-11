@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Bell, BellOff, CheckCheck, Trash2, Clock } from "lucide-react";
+import { Bell, BellSlash, Checks, Trash, Clock } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 import { showToast } from "@/components/ui/toast";
 import { NotificationIcon } from "@/components/ui/notification-icon";
@@ -65,7 +65,7 @@ export default function NotificationsPage() {
         </div>
         {unreadCount > 0 && (
           <button onClick={markAllRead} disabled={readingAll} className="btn-outline py-2 disabled:opacity-50">
-            {readingAll ? <><Clock className="mr-1 inline size-4 animate-spin" /> Lecture...</> : <><CheckCheck className="mr-1 inline size-4" /> Tout marquer comme lu ({unreadCount})</>}
+            {readingAll ? <><Clock className="mr-1 inline size-4 animate-spin" /> Lecture...</> : <><Checks className="mr-1 inline size-4" /> Tout marquer comme lu ({unreadCount})</>}
           </button>
         )}
       </div>
@@ -76,7 +76,7 @@ export default function NotificationsPage() {
         </div>
       ) : notifications.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-brand border-2 border-border bg-white dark:bg-surface py-20 text-ink-soft">
-          <BellOff className="mb-4 size-12 opacity-40" />
+          <BellSlash className="mb-4 size-12 opacity-40" />
           <p className="text-lg font-bold">Aucune notification</p>
           <p className="mt-1 text-sm">Les notifications apparaîtront ici.</p>
         </div>
@@ -93,11 +93,11 @@ export default function NotificationsPage() {
             >
               <NotificationIcon type={n.type} className="size-10" />
               <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
-                  <h3 className={cn("text-sm", !n.read ? "font-bold text-ink" : "text-ink-soft")}>{n.title}</h3>
+                <div className="flex flex-wrap items-center gap-2">
+                  <h3 className={cn("min-w-0 flex-1 break-words text-sm", !n.read ? "font-bold text-ink" : "text-ink-soft")}>{n.title}</h3>
                   {!n.read && <span className="size-2 shrink-0 rounded-full bg-sky" />}
                 </div>
-                <p className="mt-0.5 text-sm text-ink-soft">{n.description}</p>
+                <p className="mt-0.5 break-words text-sm text-ink-soft">{n.description}</p>
                 <p className="mt-1 text-xs text-ink-soft/50">{timeAgo(n.createdAt)}</p>
               </div>
               <div className="flex shrink-0 items-center gap-2">

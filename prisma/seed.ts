@@ -45,7 +45,7 @@ async function main() {
     id: "stu-youssef", slug: "youssef-alaoui", firstName: "Youssef", lastName: "Alaoui", age: 14,
     avatar: "YA", avatarGradient: "linear-gradient(135deg,#2563EB,#06B6D4)", programId: "robotique-mbot",
     levelLabel: "Robotique mBot · Niveau 2", joinDateLabel: "Sept. 2023", hours: 120, isPublic: true,
-    parentEmail: "parent.youssef@example.com", parentSecretHash: hashSecret("YOUSEEF-2026"),
+    parentEmail: "parent.youssef@example.com", parentSecretHash: hashSecret("YOUSSEF-2026"),
     createdAt: new Date("2023-09-10"),
   }});
   await prisma.student.create({ data: {

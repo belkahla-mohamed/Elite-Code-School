@@ -49,11 +49,43 @@ export async function middleware(request: NextRequest) {
     if (!adminCookie) {
       return NextResponse.redirect(new URL("/admin-login", request.url));
     }
-    const expected = await adminTokenEdge();
-    if (adminCookie !== expected) {
-      const res = NextResponse.redirect(new URL("/admin-login", request.url));
-      res.cookies.delete("ecs_admin");
-      return res;
+    
+    // Check if it's the old static token (legacy fallback)
+    const expectedStatic = await adminTokenEdge();
+    if (adminCookie === expectedStatic) {
+      // Legacy token is ok
+    } else {
+      // Verify JWT
+      const payload = await verifyTokenEdge(adminCookie);
+      if (!payload || (payload.role !== "admin" && payload.role !== "super_admin")) {
+        const res = NextResponse.redirect(new URL("/admin-login", request.url));
+        res.cookies.delete("ecs_admin");
+        return res;
+      }
+
+      // Check specific route permissions for normal admins
+      if (payload.role === "admin") {
+        const permissions = (payload.permissions as string[]) || [];
+        const permissionMap: Record<string, string> = {
+          "/admin/enrollments": "inscriptions",
+          "/admin/students": "students",
+          "/dashboard/parents": "students",
+          "/admin/curricula": "programs",
+          "/dashboard/categories": "categories",
+          "/dashboard/cms": "cms",
+          "/dashboard/projects": "cms",
+          "/dashboard/gallery": "cms",
+          "/dashboard/announcements": "cms",
+          "/dashboard/certifications": "certificates",
+          "/dashboard/admin-users": "admins",
+        };
+
+        for (const [route, requiredPerm] of Object.entries(permissionMap)) {
+          if (pathname.startsWith(route) && !permissions.includes(requiredPerm)) {
+            return NextResponse.redirect(new URL("/dashboard", request.url));
+          }
+        }
+      }
     }
   }
 

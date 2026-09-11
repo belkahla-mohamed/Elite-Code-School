@@ -2,37 +2,33 @@
 
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import type { LucideIcon } from "lucide-react";
-import {
-  FolderOpen, Wrench, Award, Zap, Images, Share2, CalendarDays,
-  CheckCircle2, Brain, Gamepad2, Globe,
-  Cpu, Bot, BarChart3, Code2, Trophy, Sparkles, Clock, Hourglass, X,
-} from "lucide-react";
+import type { IconProps } from "@phosphor-icons/react";
+import { FolderOpen, Wrench, Medal, Lightning, Images, ShareNetwork, CalendarBlank, CheckCircle, Brain, GameController, Globe, DownloadSimple, Cpu, Robot, ChartBar, Code, Trophy, Sparkle, Clock, Hourglass, X } from "@phosphor-icons/react";
 import type { StudentPortfolio } from "@/lib/types";
 import { ShareMenu } from "@/components/ui/share-menu";
 
 type Tab = "projects" | "progress" | "certs" | "skills" | "gallery";
 
-const TABS: { id: Tab; label: string; icon: LucideIcon }[] = [
+const TABS: { id: Tab; label: string; icon: any }[] = [
   { id: "projects", label: "Projets", icon: FolderOpen },
   { id: "progress", label: "En cours", icon: Wrench },
-  { id: "certs", label: "Certificats", icon: Award },
-  { id: "skills", label: "Compétences", icon: Zap },
+  { id: "certs", label: "Certificats", icon: Medal },
+  { id: "skills", label: "Compétences", icon: Lightning },
   { id: "gallery", label: "Galerie", icon: Images },
 ];
 
 const solidCovers = ["bg-brand", "bg-amber", "bg-violet", "bg-lime", "bg-mint", "bg-coral"];
 
-function projectIcon(tags: string[]): LucideIcon {
+function projectIcon(tags: string[]): any {
   const t = tags.join(" ").toLowerCase();
   if (/(ia|vision|machine|ml|nlp|chatbot|brain|reconnaisance)/.test(t)) return Brain;
-  if (/(game|jeu|scratch|animation|histoire)/.test(t)) return Gamepad2;
+  if (/(game|jeu|scratch|animation|histoire)/.test(t)) return GameController;
   if (/(web|react|html|css|javascript|portfolio|site)/.test(t)) return Globe;
   if (/(arduino|iot|capteur|serre|electronique)/.test(t)) return Cpu;
-  if (/(vincibot|robot|robotique|mbot)/.test(t)) return Bot;
-  if (/(data|pandas|analys|ventes|dashboard)/.test(t)) return BarChart3;
-  if (/(python|code|api)/.test(t)) return Code2;
-  return Sparkles;
+  if (/(vincibot|robot|robotique|mbot)/.test(t)) return Robot;
+  if (/(data|pandas|analys|ventes|dashboard)/.test(t)) return ChartBar;
+  if (/(python|code|api)/.test(t)) return Code;
+  return Sparkle;
 }
 
 export function PortfolioTabs({ student }: { student: StudentPortfolio }) {
@@ -87,7 +83,7 @@ export function PortfolioTabs({ student }: { student: StudentPortfolio }) {
             <article key={certification.id} className="overflow-hidden rounded-brand border border-border bg-white dark:border-white/10 dark:bg-[#1e293b]">
               <div className={`p-8 text-white ${solidCovers[ci % solidCovers.length]}`}>
                 <div className="mb-5 grid size-14 place-items-center rounded-brand-sm bg-white/20">
-                  <Award className="size-7" />
+                  <Medal className="size-7" />
                 </div>
                 <h3 className="font-display text-2xl font-semibold">{certification.title}</h3>
                 <p className="mt-2 text-sm font-medium text-white/80">Elite Code School · Marrakech</p>
@@ -97,13 +93,18 @@ export function PortfolioTabs({ student }: { student: StudentPortfolio }) {
               </div>
               <div className="flex items-center justify-between p-5 text-sm">
                 <span className="flex items-center gap-1.5 text-xs font-medium text-ink-soft dark:text-slate-400">
-                  <CalendarDays className="size-4" /> {certification.dateLabel}
+                  <CalendarBlank className="size-4" /> {certification.dateLabel}
                 </span>
-                <ShareMenu
-                  title={`${certification.title} — ${student.firstName} ${student.lastName}`}
-                  triggerClassName="flex items-center gap-1.5 text-xs font-bold text-brand"
-                  label={<>Partager <Share2 className="size-4" /></>}
-                />
+                <div className="flex items-center gap-4">
+                  <a href={`/verify-certificate?id=${certification.id}`} className="flex items-center gap-1.5 text-xs font-bold text-ink-soft hover:text-ink dark:text-slate-400 dark:hover:text-white transition">
+                    <DownloadSimple className="size-4" /> PDF
+                  </a>
+                  <ShareMenu
+                    title={`${certification.title} — ${student.firstName} ${student.lastName}`}
+                    triggerClassName="flex items-center gap-1.5 text-xs font-bold text-brand"
+                    label={<>Partager <ShareNetwork className="size-4" /></>}
+                  />
+                </div>
               </div>
             </article>
           ))}
@@ -181,7 +182,7 @@ function SkillsSection({ student }: { student: StudentPortfolio }) {
       name: "Projets complétés",
       percent: totalProjects > 0 ? Math.round((completedProjects / totalProjects) * 100) : 0,
       color: "bg-lime",
-      icon: CheckCircle2,
+      icon: CheckCircle,
     },
     {
       name: "Projets en cours",
@@ -200,7 +201,7 @@ function SkillsSection({ student }: { student: StudentPortfolio }) {
       name: "Certifications",
       percent: Math.min(100, student.certifications.length * 25),
       color: "bg-violet",
-      icon: Award,
+      icon: Medal,
     },
   ];
 
@@ -238,7 +239,7 @@ function ProjectGrid({ projects, empty }: { projects: StudentPortfolio["projects
             <div className={`relative flex h-32 items-center justify-center ${solidCovers[pi % solidCovers.length]}`}>
               <Icon className="size-12 text-white" />
               <span className="absolute right-4 top-4 inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-ink">
-                {project.status === "completed" ? <><CheckCircle2 className="size-3.5 text-lime" /> Terminé</> : <><Hourglass className="size-3.5 text-amber" /> En cours</>}
+                {project.status === "completed" ? <><CheckCircle className="size-3.5 text-lime" /> Terminé</> : <><Hourglass className="size-3.5 text-amber" /> En cours</>}
               </span>
             </div>
             <div className="flex flex-1 flex-col p-5">

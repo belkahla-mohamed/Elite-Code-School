@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ArrowRight, Clock, CalendarDays, Users } from "lucide-react"
+import { ArrowRight, Clock, CalendarBlank, Users } from "@phosphor-icons/react";
 import { AnimatePresence, motion } from "framer-motion"
 import type { Program } from "@/lib/types"
 
@@ -109,7 +109,7 @@ export function ProgramsSection({ programs }: { programs: Program[] }) {
                       <div className="mt-auto">
                         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border pt-4 text-xs font-medium text-ink-soft dark:border-white/10 dark:text-slate-400">
                           <span className="inline-flex items-center gap-1.5"><Clock className="size-3.5 text-brand" /> {program.schedule}</span>
-                          <span className="inline-flex items-center gap-1.5"><CalendarDays className="size-3.5 text-brand" /> {program.duration}</span>
+                          <span className="inline-flex items-center gap-1.5"><CalendarBlank className="size-3.5 text-brand" /> {program.duration}</span>
                           <span className="inline-flex items-center gap-1.5"><Users className="size-3.5 text-brand" /> 8 élèves max</span>
                         </div>
 

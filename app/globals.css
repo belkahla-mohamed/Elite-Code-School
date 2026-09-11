@@ -121,11 +121,11 @@
   }
 
   .dash-table th {
-    @apply px-4 py-3 font-bold text-xs uppercase tracking-wider text-ink-soft;
+    @apply px-3 py-2.5 font-bold text-xs uppercase tracking-wider text-ink-soft 2xl:px-4 2xl:py-3;
   }
 
   .dash-table td {
-    @apply border-t border-border px-4 py-3;
+    @apply border-t border-border px-3 py-2.5 2xl:px-4 2xl:py-3;
   }
 
   .dash-badge {

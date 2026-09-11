@@ -1,23 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowUpRight,
-  ArrowRight,
-  CalendarDays,
-  Check,
-  Clock,
-  Facebook,
-  GraduationCap,
-  Instagram,
-  Mail,
-  MapPin,
-  Phone,
-  Puzzle,
-  Rocket,
-  Sparkles,
-  Users,
-  Youtube,
-} from "lucide-react";
+import { ArrowUpRight, ArrowRight, CalendarBlank, Check, Clock, FacebookLogo, GraduationCap, InstagramLogo, EnvelopeSimple, MapPin, Phone, PuzzlePiece, Rocket, Sparkle, Users, YoutubeLogo } from "@phosphor-icons/react/dist/ssr";
 import { QuickContactForm } from "@/components/QuickContactForm";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { AnimatedNumber } from "@/components/ui/animated-number";
@@ -82,14 +65,14 @@ function TopBar() {
             <MapPin className="size-3.5" /> Marrakech, Maroc
           </span>
           <span className="hidden items-center gap-3 md:flex">
-            <a aria-label="Facebook" href="https://facebook.com" target="_blank" rel="noreferrer" className="transition duration-200 ease-out hover:opacity-80">
-              <Facebook className="size-3.5" />
+            <a aria-label="FacebookLogo" href="https://facebook.com" target="_blank" rel="noreferrer" className="transition duration-200 ease-out hover:opacity-80">
+              <FacebookLogo className="size-3.5" />
             </a>
-            <a aria-label="Instagram" href="https://instagram.com" target="_blank" rel="noreferrer" className="transition duration-200 ease-out hover:opacity-80">
-              <Instagram className="size-3.5" />
+            <a aria-label="InstagramLogo" href="https://instagram.com" target="_blank" rel="noreferrer" className="transition duration-200 ease-out hover:opacity-80">
+              <InstagramLogo className="size-3.5" />
             </a>
             <a aria-label="YouTube" href="https://youtube.com" target="_blank" rel="noreferrer" className="transition duration-200 ease-out hover:opacity-80">
-              <Youtube className="size-3.5" />
+              <YoutubeLogo className="size-3.5" />
             </a>
           </span>
         </div>
@@ -114,7 +97,7 @@ function Hero() {
         {/* Left — content */}
         <div className="min-w-0">
           <p className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/15 px-4 py-1.5 text-xs font-bold text-white">
-            <Sparkles className="size-3.5 text-amber" /> École de coding, robotique &amp; IA — Marrakech
+            <Sparkle className="size-3.5 text-amber" /> École de coding, robotique &amp; IA — Marrakech
           </p>
           <h1 className="mt-5 font-display text-4xl font-semibold leading-[1.08] tracking-[-0.01em] text-white sm:text-5xl lg:text-6xl">
             Une nouvelle façon d&apos;apprendre{" "}
@@ -191,7 +174,7 @@ function Hero() {
 }
 
 const welcomeItems = [
-  { icon: Puzzle, tint: "bg-brand/10 text-brand", title: "Apprentissage actif", text: "On touche, on teste, on casse, on répare : chaque notion passe par un projet concret." },
+  { icon: PuzzlePiece, tint: "bg-brand/10 text-brand", title: "Apprentissage actif", text: "On touche, on teste, on casse, on répare : chaque notion passe par un projet concret." },
   { icon: Users, tint: "bg-amber/15 text-amber", title: "Espace parents", text: "Portail sécurisé pour suivre les heures de code, projets, certificats et séances." },
   { icon: GraduationCap, tint: "bg-violet/15 text-violet", title: "Formateurs experts", text: "Des passionnés de tech, formés à la pédagogie pour les 7–17 ans." },
   { icon: Rocket, tint: "bg-sky/15 text-sky", title: "Projets réels", text: "Jeux, robots, sites web et IA : chaque parcours se termine par une démo publique." },
@@ -571,7 +554,7 @@ function ContactCta() {
             </a>
             <a href="mailto:contact@elitecodeschool.ma" className="flex items-center gap-4 rounded-brand border border-white/20 bg-white/10 p-4 transition duration-300 ease-out hover:-translate-y-0.5 hover:border-white/40 hover:bg-white/15 hover:shadow-lg">
               <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-white/15">
-                <Mail className="size-5 text-white" />
+                <EnvelopeSimple className="size-5 text-white" />
               </span>
               <div>
                 <strong className="block text-sm font-bold text-white">contact@elitecodeschool.ma</strong>

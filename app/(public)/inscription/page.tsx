@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight, CheckCircle } from "@phosphor-icons/react/dist/ssr";
 import { EnrollmentForm } from "@/components/forms/enrollment-form";
 import { getPrograms } from "@/lib/store";
 
@@ -30,7 +30,7 @@ export default async function InscriptionPage({ searchParams }: Props) {
               {reassurances.map((item) => (
                 <div key={item} className="flex items-center gap-3 rounded-brand border border-border bg-surface p-4 text-sm font-semibold text-ink-soft transition duration-300 ease-out hover:-translate-y-0.5 hover:border-brand/30 hover:shadow-md dark:border-white/10 dark:bg-[#1e293b] dark:text-slate-300">
                   <span className="flex size-10 shrink-0 items-center justify-center rounded-brand-sm bg-brand/10">
-                    <CheckCircle2 className="size-5 text-brand" />
+                    <CheckCircle className="size-5 text-brand" />
                   </span>
                   {item}
                 </div>

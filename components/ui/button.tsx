@@ -2,7 +2,7 @@
 
 import { forwardRef } from "react";
 import { cn } from "@/lib/utils";
-import { Loader2 } from "lucide-react";
+import { SpinnerGap } from "@phosphor-icons/react";
 
 type ButtonVariant = "primary" | "secondary" | "ghost" | "danger" | "icon";
 type ButtonSize = "sm" | "md" | "lg";
@@ -61,7 +61,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       )}
       {...props}
     >
-      {isLoading && <Loader2 className="size-4 animate-spin" />}
+      {isLoading && <SpinnerGap className="size-4 animate-spin" />}
       {children}
     </button>
   )

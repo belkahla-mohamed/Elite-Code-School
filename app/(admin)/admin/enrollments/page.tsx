@@ -13,11 +13,7 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  CheckCircle, XCircle, Clock, ChevronDown, ChevronUp, Loader2,
-  Mail, Phone, User, CalendarDays, Download, ArrowUpDown,
-  Square, CheckSquare, FileText, LayoutGrid, LayoutList
-} from "lucide-react";
+import { CheckCircle, XCircle, Clock, CaretDown, CaretUp, SpinnerGap, EnvelopeSimple, Phone, User, CalendarBlank, DownloadSimple, ArrowsDownUp, Square, CheckSquare, FileText, GridFour, ListDashes } from "@phosphor-icons/react";
 
 interface InscriptionRequest {
   id: string;
@@ -183,7 +179,7 @@ export default function EnrollmentsPage() {
   function renderTable() {
     return (
       <div className="overflow-x-auto rounded-brand border-2 border-border bg-white dark:bg-surface">
-        <table className="w-full text-sm">
+        <table className="w-full min-w-[620px] text-sm">
           <thead>
             <tr className="border-b-2 border-border bg-surface text-left">
               <th className="px-3 py-3.5 w-10">
@@ -193,7 +189,7 @@ export default function EnrollmentsPage() {
               </th>
               <th className="px-3 py-3.5 font-black text-xs uppercase tracking-wider text-ink-soft">
                 <button onClick={() => toggleSort("name")} className="flex items-center gap-1 hover:text-ink transition">
-                  Élève <ArrowUpDown className="size-3" />
+                  Élève <ArrowsDownUp className="size-3" />
                 </button>
               </th>
               <th className="px-3 py-3.5 font-black text-xs uppercase tracking-wider text-ink-soft hidden md:table-cell">Âge</th>
@@ -201,12 +197,12 @@ export default function EnrollmentsPage() {
               <th className="px-3 py-3.5 font-black text-xs uppercase tracking-wider text-ink-soft hidden lg:table-cell">Tél</th>
               <th className="px-3 py-3.5 font-black text-xs uppercase tracking-wider text-ink-soft">
                 <button onClick={() => toggleSort("status")} className="flex items-center gap-1 hover:text-ink transition">
-                  Statut <ArrowUpDown className="size-3" />
+                  Statut <ArrowsDownUp className="size-3" />
                 </button>
               </th>
               <th className="px-3 py-3.5 font-black text-xs uppercase tracking-wider text-ink-soft hidden sm:table-cell">
                 <button onClick={() => toggleSort("date")} className="flex items-center gap-1 hover:text-ink transition">
-                  Date <ArrowUpDown className="size-3" />
+                  Date <ArrowsDownUp className="size-3" />
                 </button>
               </th>
               <th className="px-3 py-3.5 font-black text-xs uppercase tracking-wider text-ink-soft text-right">Actions</th>
@@ -260,7 +256,7 @@ export default function EnrollmentsPage() {
                       ) : (
                         <button onClick={() => setExpanded(expanded === req.id ? null : req.id)}
                           className="rounded-full bg-ink-soft/10 p-2 text-ink-soft hover:bg-ink-soft/20 transition">
-                          {expanded === req.id ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />}
+                          {expanded === req.id ? <CaretUp className="size-4" /> : <CaretDown className="size-4" />}
                         </button>
                       )}
                     </div>
@@ -295,32 +291,32 @@ export default function EnrollmentsPage() {
                   Voir
                 </button>
                 <button onClick={() => setExpanded(isOpen ? null : req.id)}
-                  className="flex-1 flex items-center justify-between text-left hover:bg-surface/50 transition">
-                  <div className="flex items-center gap-4">
-                    <div className="flex size-10 items-center justify-center rounded-full bg-gradient-to-br from-sky to-cyan font-display text-sm font-black text-white">
+                  className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-2 text-left hover:bg-surface/50 transition">
+                  <div className="flex min-w-0 items-center gap-4">
+                    <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-sky to-cyan font-display text-sm font-black text-white">
                       {req.studentFirstName[0]}{req.studentLastName[0]}
                     </div>
-                    <div>
-                      <span className="font-bold text-ink">{req.studentFirstName} {req.studentLastName}</span>
-                      <p className="text-xs text-ink-soft">{req.age} ans · {programMap[req.programId] || req.programId}</p>
+                    <div className="min-w-0">
+                      <span className="block truncate font-bold text-ink">{req.studentFirstName} {req.studentLastName}</span>
+                      <p className="truncate text-xs text-ink-soft">{req.age} ans · {programMap[req.programId] || req.programId}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex shrink-0 items-center gap-3">
                     <span className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold ${st.color}`}>
                       <StatusIcon className="size-3" />
                       {st.label}
                     </span>
-                    {isOpen ? <ChevronUp className="size-4 text-ink-soft" /> : <ChevronDown className="size-4 text-ink-soft" />}
+                    {isOpen ? <CaretUp className="size-4 text-ink-soft" /> : <CaretDown className="size-4 text-ink-soft" />}
                   </div>
                 </button>
               </div>
               {isOpen && (
                 <div className="px-5 pb-5 border-t-2 border-border pt-4 mt-4 space-y-4">
                   <div className="grid gap-3 sm:grid-cols-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <Mail className="size-4 text-ink-soft" />
-                      <span className="text-ink-soft">Parent:</span>
-                      <span className="font-semibold text-ink">{req.parentEmail}</span>
+                    <div className="flex min-w-0 items-center gap-2">
+                      <EnvelopeSimple className="size-4 shrink-0 text-ink-soft" />
+                      <span className="shrink-0 text-ink-soft">Parent:</span>
+                      <span className="min-w-0 flex-1 truncate break-all font-semibold text-ink">{req.parentEmail}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Phone className="size-4 text-ink-soft" />
@@ -333,7 +329,7 @@ export default function EnrollmentsPage() {
                       <span className="font-semibold text-ink">{req.schoolLevel || "—"}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CalendarDays className="size-4 text-ink-soft" />
+                      <CalendarBlank className="size-4 text-ink-soft" />
                       <span className="text-ink-soft">Date:</span>
                       <span className="font-semibold text-ink">{new Date(req.createdAt).toLocaleDateString("fr-FR")}</span>
                     </div>
@@ -360,7 +356,7 @@ export default function EnrollmentsPage() {
                     </div>
                   )}
                   {req.status === "pending" && (
-                    <div className="flex gap-3 pt-1">
+                    <div className="flex flex-wrap gap-3 pt-1">
                       <button onClick={() => openActionModal("accept", [req.id])} disabled={isProcessing}
                         className="rounded-full bg-lime px-5 py-2 text-sm font-black uppercase tracking-wide text-white hover:bg-lime/90 transition disabled:opacity-50 flex items-center gap-2">
                         <CheckCircle className="size-4" />
@@ -426,7 +422,7 @@ export default function EnrollmentsPage() {
             <button onClick={executeAction} disabled={processingAction}
               className={cn("rounded-full px-4 py-2 text-sm font-black uppercase tracking-wide text-white transition disabled:opacity-50",
                 dialogMode === "accept" ? "bg-lime hover:bg-lime/90" : "bg-coral hover:bg-coral/90")}>
-              {processingAction ? <><Loader2 className="mr-1 inline size-4 animate-spin" /> Traitement...</> : (dialogMode === "accept" ? "Accepter" : "Refuser")}
+              {processingAction ? <><SpinnerGap className="mr-1 inline size-4 animate-spin" /> Traitement...</> : (dialogMode === "accept" ? "Accepter" : "Refuser")}
             </button>
           </DialogFooter>
         </DialogContent>
@@ -437,7 +433,7 @@ export default function EnrollmentsPage() {
           <h1 className="font-display text-3xl font-black text-ink">Inscriptions</h1>
           <p className="text-sm text-ink-soft mt-1">Gérez les demandes d&apos;inscription</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           {pendingCount > 0 && (
             <span className="rounded-full bg-amber/15 px-4 py-1.5 text-sm font-bold text-amber flex items-center gap-1.5">
               <Clock className="size-4" />
@@ -452,7 +448,7 @@ export default function EnrollmentsPage() {
               Date: new Date(r.createdAt).toLocaleDateString("fr-FR"),
             })), "inscriptions.csv")}
               className="btn-outline py-1.5 text-xs">
-              <Download className="mr-1 inline size-3" /> CSV
+              <DownloadSimple className="mr-1 inline size-3" /> CSV
             </button>
           )}
           <div className="flex items-center gap-1 text-xs text-ink-soft">
@@ -473,11 +469,11 @@ export default function EnrollmentsPage() {
             <div className="flex items-center rounded-full border-2 border-border bg-white dark:bg-surface p-0.5">
               <button onClick={() => setCardColumns(1)}
                 className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold transition ${cardColumns === 1 ? "bg-sky text-white shadow-sm" : "text-ink-soft hover:text-ink"}`}>
-                <LayoutList className="size-3.5" /> 1
+                <ListDashes className="size-3.5" /> 1
               </button>
               <button onClick={() => setCardColumns(2)}
                 className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-bold transition ${cardColumns === 2 ? "bg-sky text-white shadow-sm" : "text-ink-soft hover:text-ink"}`}>
-                <LayoutGrid className="size-3.5" /> 2
+                <GridFour className="size-3.5" /> 2
               </button>
             </div>
           )}
@@ -500,7 +496,7 @@ export default function EnrollmentsPage() {
 
       {/* Bulk Action Bar */}
       {selectedIds.size > 0 && (
-        <div className="mb-4 flex items-center gap-3 rounded-brand border-2 border-sky bg-sky/5 px-4 py-3">
+        <div className="mb-4 flex flex-wrap items-center gap-3 rounded-brand border-2 border-sky bg-sky/5 px-4 py-3">
           <span className="text-sm font-bold text-ink">
             {selectedIds.size} sélectionnée(s)
           </span>

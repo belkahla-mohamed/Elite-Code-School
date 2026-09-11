@@ -1,9 +1,9 @@
 "use client";
 
 import { useParentStudent } from "@/hooks/useParentStudent";
-import { Breadcrumb } from "@/components/layout/parent-nav";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
-import { User, Globe, Lock, Eye, ExternalLink } from "lucide-react";
+import { User, Globe, Lock, Eye, ArrowSquareOut } from "@phosphor-icons/react";
 import Link from "next/link";
 import { showToast } from "@/components/ui/toast";
 import { Switch } from "@/components/ui/switch";
@@ -70,8 +70,8 @@ export default function ParentPrivacyPage() {
         {/* Status Card */}
         <div className={`rounded-brand border-2 p-6 md:p-8 ${
           student.isPublic
-            ? "border-lime/30 bg-gradient-to-br from-lime/5 to-emerald/5"
-            : "border-amber/30 bg-gradient-to-br from-amber/5 to-orange/5"
+            ? "border-lime/30 bg-lime/5"
+            : "border-amber/30 bg-amber/5"
         }`}>
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-start gap-4">

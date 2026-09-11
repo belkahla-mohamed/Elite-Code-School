@@ -2,13 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useParentStudent } from "@/hooks/useParentStudent";
-import { Breadcrumb } from "@/components/layout/parent-nav";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  User, FolderOpen, Award, Clock, Eye, Lock, Bell, BellOff,
-  Download, Loader2, ExternalLink, ChevronRight, BookOpen,
-  Shield, FileText
-} from "lucide-react";
+import { User, FolderOpen, Medal, Clock, Eye, Lock, Bell, BellSlash, DownloadSimple, SpinnerGap, ArrowSquareOut, CaretRight, BookOpen, Shield, FileText } from "@phosphor-icons/react";
 import Link from "next/link";
 import { generateStudentReport, downloadBlob } from "@/lib/pdf-generator";
 import { showToast } from "@/components/ui/toast";
@@ -93,28 +89,28 @@ export default function ParentDashboardPage() {
       label: "Portfolio",
       desc: "Projets, compétences et galerie",
       icon: BookOpen,
-      color: "from-sky to-cyan",
+      color: "bg-sky",
     },
     {
       href: "/parent/certifications",
       label: "Certificats",
       desc: `${student.certifications.length} certification${student.certifications.length > 1 ? "s" : ""}`,
-      icon: Award,
-      color: "from-amber to-orange",
+      icon: Medal,
+      color: "bg-amber",
     },
     {
       href: "/parent/privacy",
       label: "Confidentialité",
       desc: student.isPublic ? "Portfolio public" : "Portfolio privé",
       icon: student.isPublic ? Eye : Lock,
-      color: student.isPublic ? "from-lime to-emerald" : "from-rose to-pink",
+      color: student.isPublic ? "bg-lime" : "bg-rose",
     },
     {
       href: "/parent/report",
       label: "Rapport",
       desc: "Bilan PDF et statistiques",
       icon: FileText,
-      color: "from-violet to-purple",
+      color: "bg-violet",
     },
   ];
 
@@ -160,7 +156,7 @@ export default function ParentDashboardPage() {
                 href={`/portfolios/${student.slug}`}
                 className="btn-outline px-4 py-2 text-sm"
               >
-                <ExternalLink className="mr-1.5 inline size-4" />
+                <ArrowSquareOut className="mr-1.5 inline size-4" />
                 Voir portfolio
               </Link>
             </div>
@@ -170,7 +166,7 @@ export default function ParentDashboardPage() {
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           <div className="rounded-brand border-2 border-border bg-white dark:bg-surface p-4 md:p-5">
-            <div className="inline-flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-sky to-cyan text-white mb-3">
+            <div className="inline-flex size-9 items-center justify-center rounded-xl bg-sky text-white mb-3">
               <FolderOpen className="size-5" />
             </div>
             <div className="font-display text-2xl font-extrabold text-ink">{totalProjects}</div>
@@ -178,15 +174,15 @@ export default function ParentDashboardPage() {
             <div className="mt-0.5 text-[10px] text-ink-soft/60">{completedProjects} terminés</div>
           </div>
           <div className="rounded-brand border-2 border-border bg-white dark:bg-surface p-4 md:p-5">
-            <div className="inline-flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-amber to-orange text-white mb-3">
-              <Award className="size-5" />
+            <div className="inline-flex size-9 items-center justify-center rounded-xl bg-amber text-white mb-3">
+              <Medal className="size-5" />
             </div>
             <div className="font-display text-2xl font-extrabold text-ink">{student.certifications.length}</div>
             <div className="text-xs text-ink-soft">Certifications</div>
             <div className="mt-0.5 text-[10px] text-ink-soft/60">obtenues</div>
           </div>
           <div className="rounded-brand border-2 border-border bg-white dark:bg-surface p-4 md:p-5">
-            <div className="inline-flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-lime to-emerald text-white mb-3">
+            <div className="inline-flex size-9 items-center justify-center rounded-xl bg-lime text-white mb-3">
               <Clock className="size-5" />
             </div>
             <div className="font-display text-2xl font-extrabold text-ink">{student.hours}h</div>
@@ -194,7 +190,7 @@ export default function ParentDashboardPage() {
             <div className="mt-0.5 text-[10px] text-ink-soft/60">cumulées</div>
           </div>
           <div className="rounded-brand border-2 border-border bg-white dark:bg-surface p-4 md:p-5">
-            <div className="inline-flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-violet to-purple text-white mb-3">
+            <div className="inline-flex size-9 items-center justify-center rounded-xl bg-violet text-white mb-3">
               <Shield className="size-5" />
             </div>
             <div className="font-display text-2xl font-extrabold text-ink">
@@ -216,7 +212,7 @@ export default function ParentDashboardPage() {
               <div className="flex items-start justify-between">
                 <div className="flex items-start gap-4">
                   <div
-                    className={`flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${link.color} text-white`}
+                    className={`flex size-11 shrink-0 items-center justify-center rounded-xl ${link.color} text-white`}
                   >
                     <link.icon className="size-5" />
                   </div>
@@ -227,18 +223,18 @@ export default function ParentDashboardPage() {
                     <p className="mt-0.5 text-sm text-ink-soft">{link.desc}</p>
                   </div>
                 </div>
-                <ChevronRight className="size-5 text-ink-soft group-hover:text-sky group-hover:translate-x-0.5 transition-all" />
+                <CaretRight className="size-5 text-ink-soft group-hover:text-sky group-hover:translate-x-0.5 transition-all" />
               </div>
             </Link>
           ))}
         </div>
 
-        {/* PDF Download */}
+        {/* PDF DownloadSimple */}
         <div className="rounded-brand border-2 border-border bg-white dark:bg-surface p-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-start gap-3">
               <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-sky/10 text-sky">
-                <Download className="size-5" />
+                <DownloadSimple className="size-5" />
               </div>
               <div>
                 <h2 className="font-display text-base font-bold text-ink">Bilan PDF</h2>
@@ -253,9 +249,9 @@ export default function ParentDashboardPage() {
               className="btn-primary px-5 py-2.5 disabled:opacity-60"
             >
               {pdfLoading ? (
-                <><Loader2 className="mr-2 inline size-4 animate-spin" />Génération...</>
+                <><SpinnerGap className="mr-2 inline size-4 animate-spin" />Génération...</>
               ) : (
-                <><Download className="mr-2 inline size-4" />Télécharger PDF</>
+                <><DownloadSimple className="mr-2 inline size-4" />Télécharger PDF</>
               )}
             </button>
           </div>
@@ -268,7 +264,7 @@ export default function ParentDashboardPage() {
               <div className={`flex size-10 items-center justify-center rounded-xl ${
                 notifications ? "bg-sky/10 text-sky" : "bg-surface text-ink-soft"
               }`}>
-                {notifications ? <Bell className="size-5" /> : <BellOff className="size-5" />}
+                {notifications ? <Bell className="size-5" /> : <BellSlash className="size-5" />}
               </div>
               <div>
                 <h2 className="font-display text-base font-bold text-ink">Notifications</h2>

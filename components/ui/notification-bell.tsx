@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
-import { Bell, BellOff, CheckCheck, Clock } from "lucide-react";
+import { Bell, BellSlash, Checks, Clock } from "@phosphor-icons/react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import type { AppNotification } from "@/lib/types";
@@ -75,7 +75,7 @@ export function NotificationBell() {
         className="relative flex size-10 items-center justify-center rounded-full border-2 border-border bg-surface text-ink-soft transition hover:border-sky hover:text-sky"
         title="Notifications"
       >
-        {unreadCount > 0 ? <Bell className="size-4" /> : <BellOff className="size-4" />}
+        {unreadCount > 0 ? <Bell className="size-4" /> : <BellSlash className="size-4" />}
         {unreadCount > 0 && (
           <span className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-coral text-[10px] font-black text-white">
             {unreadCount > 9 ? "9+" : unreadCount}
@@ -90,7 +90,7 @@ export function NotificationBell() {
             <div className="flex items-center gap-2">
               {unreadCount > 0 && (
                 <button onClick={markAllRead} className="flex items-center gap-1 text-xs font-bold text-sky hover:text-sky/80 transition" title="Tout marquer comme lu">
-                  <CheckCheck className="size-3" /> Tout lu
+                  <Checks className="size-3" /> Tout lu
                 </button>
               )}
               <button onClick={() => { setOpen(false); router.push("/dashboard/notifications"); }} className="text-xs font-bold text-ink-soft hover:text-ink transition">
@@ -103,7 +103,7 @@ export function NotificationBell() {
             <div className="flex items-center justify-center py-8"><Clock className="size-5 animate-spin text-ink-soft" /></div>
           ) : notifications.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-8 text-ink-soft">
-              <BellOff className="mb-2 size-8 opacity-40" />
+              <BellSlash className="mb-2 size-8 opacity-40" />
               <p className="text-sm font-bold">Aucune notification</p>
             </div>
           ) : (

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Megaphone, Loader2, Plus } from "lucide-react";
+import { Megaphone, SpinnerGap, Plus } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 import { showToast } from "@/components/ui/toast";
 import { apiFetch } from "@/lib/api-fetch";
@@ -116,10 +116,10 @@ export default function AnnouncementsPage() {
               </span>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <h3 className="text-sm font-bold text-ink">{alert.title}</h3>
+                  <h3 className="min-w-0 flex-1 truncate text-sm font-bold text-ink">{alert.title}</h3>
                   {!alert.read && <span className="size-2 shrink-0 rounded-full bg-sky" />}
                 </div>
-                <p className="mt-0.5 text-sm text-ink-soft">{alert.description}</p>
+                <p className="mt-0.5 break-words text-sm text-ink-soft">{alert.description}</p>
                 <p className="mt-1 text-xs text-ink-soft/50">
                   {alert.studentId === "all" ? "Tous les élèves · " : "Élève ciblé · "}
                   {timeAgo(alert.createdAt)}
@@ -196,7 +196,7 @@ export default function AnnouncementsPage() {
               disabled={sending || !title.trim() || !description.trim()}
               className="inline-flex items-center gap-2 rounded-full bg-sky px-5 py-2 text-sm font-black uppercase tracking-wide text-white transition hover:bg-sky-dark disabled:opacity-50"
             >
-              {sending && <Loader2 className="size-4 animate-spin" />}
+              {sending && <SpinnerGap className="size-4 animate-spin" />}
               Envoyer
             </button>
           </DialogFooter>
