@@ -13,6 +13,7 @@ const links = [
   { href: "/curricula", label: "Programmes" },
   { href: "/portfolios", label: "Portfolios" },
   { href: "/about", label: "À propos" },
+  { href: "/blog", label: "Blog" },
   { href: "/contact", label: "Contact" },
 ];
 

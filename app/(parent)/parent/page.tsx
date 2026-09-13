@@ -124,8 +124,8 @@ export default function ParentDashboardPage() {
           <div className="flex flex-wrap items-start justify-between gap-5">
             <div className="flex items-center gap-4">
               <div
-                className="flex size-16 items-center justify-center rounded-2xl font-display text-xl font-bold text-white shadow-md"
-                style={{ background: student.avatarGradient }}
+                className="flex size-16 items-center justify-center rounded-2xl font-display text-xl font-bold text-black dark:text-white shadow"
+                
               >
                 {student.avatar}
               </div>

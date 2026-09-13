@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Footer } from "@/components/layout/footer";
 import PublicNav from "@/components/layout/public-nav";
+import { WhatsAppWidget } from "@/components/whatsapp-widget";
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -23,6 +24,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       </header>
       <main className="animate-page-in">{children}</main>
       <Footer />
+      <WhatsAppWidget />
     </>
   );
 }

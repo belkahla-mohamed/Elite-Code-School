@@ -1,11 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, ArrowRight, CalendarBlank, Check, Clock, FacebookLogo, GraduationCap, InstagramLogo, EnvelopeSimple, MapPin, Phone, PuzzlePiece, Rocket, Sparkle, Users, YoutubeLogo } from "@phosphor-icons/react/dist/ssr";
+import { ArrowRight, Check, Clock, FacebookLogo, GraduationCap, InstagramLogo, EnvelopeSimple, MapPin, Phone, PuzzlePiece, Rocket, Sparkle, Users, YoutubeLogo } from "@phosphor-icons/react/dist/ssr";
 import { QuickContactForm } from "@/components/QuickContactForm";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { AnimatedNumber } from "@/components/ui/animated-number";
 import { ProgramsSection } from "@/components/programs-section";
 import { TestimonialsSection } from "@/components/testimonials-section";
+import { TeamSection } from "@/components/team-section";
+import { FacilitiesSection } from "@/components/facilities-section";
+import { GallerySection } from "@/components/gallery-section";
 import { getPrograms } from "@/lib/store";
 
 export const dynamic = "force-dynamic";
@@ -40,10 +43,11 @@ export default async function HomePage() {
       <About />
       <ProgramsSection programs={programs} />
       <StatsBand />
-      <Team />
-      <Facilities />
-      <Gallery />
+      <TeamSection />
+      <FacilitiesSection />
+      <GallerySection />
       <TestimonialsSection />
+      <BlogFeed />
       <News />
       <ContactCta />
     </div>
@@ -55,10 +59,10 @@ function TopBar() {
     <div className="bg-brand-dark text-white">
       <div className="container-shell flex flex-wrap items-center justify-between gap-x-4 gap-y-1 py-2 text-[11px] font-semibold sm:text-xs">
         <span className="inline-flex items-center gap-1.5">
-          <Clock className="size-3.5" /> Lun – Sam : 9h30 – 18h30
+          <Clock className="size-3.5" /> Lun – Dim : 9h30 – 18h30
         </span>
         <div className="flex items-center gap-4">
-          <a href="tel:+212600000000" suppressHydrationWarning className="inline-flex items-center gap-1.5 transition duration-200 ease-out hover:opacity-80">
+          <a href="https://wa.me/212600000000" target="_blank" rel="noreferrer" suppressHydrationWarning className="inline-flex items-center gap-1.5 transition duration-200 ease-out hover:opacity-80">
             <Phone className="size-3.5" /> +212 600 000 000
           </a>
           <span className="hidden items-center gap-1.5 sm:inline-flex">
@@ -114,7 +118,7 @@ function Hero() {
             </span>
           </h1>
           <p className="mt-6 max-w-xl text-base font-medium leading-7 text-white/90 sm:text-lg sm:leading-8">
-            Dès 7 ans : des missions ludiques sur Scratch et les robots. Ados : de vrais projets en Python, web et IA — avec un portfolio public et un suivi clair pour les parents.
+            Dès 7 ans : des missions ludiques sur Scratch et les robots. Dès 10 ans : de vrais projets en Python, web et IA — avec un portfolio public et un suivi clair pour les parents.
           </p>
 <div className="mt-8 flex flex-wrap gap-3">
             <Link
@@ -277,7 +281,7 @@ function About() {
             <span className="text-cream">créant</span>
           </h2>
           <p className="mt-5 max-w-lg text-sm font-medium leading-7 text-white/80 sm:text-base sm:leading-8">
-            Chez Elite Code School, la tech n&apos;est pas une matière théorique. Les enfants explorent la logique et la créativité numérique, les ados construisent de vrais projets — et chaque famille suit les progrès en temps réel.
+            Chez Elite Code School, la tech n&apos;est pas une matière théorique. Les enfants explorent la logique et la créativité numérique à travers Scratch et la robotique. Les ados construisent de vrais projets en Python, web et IA — et chaque famille suit les progrès en temps réel via notre portail parent.
           </p>
           <ul className="mt-6 grid gap-3">
             {aboutPoints.map((point) => (
@@ -339,141 +343,46 @@ function StatsBand() {
   );
 }
 
-const team = [
-  { name: "Mehdi A.", role: "Robotique & Arduino", image: "/images/teacher-board.jpg", tint: "bg-brand/10 text-brand", initials: "MA" },
-  { name: "Salma B.", role: "Scratch & Créativité", image: null, tint: "bg-violet/15 text-violet", initials: "SB" },
-  { name: "Yassine K.", role: "Développement Web", image: null, tint: "bg-sky/15 text-sky", initials: "YK" },
-  { name: "Nadia R.", role: "Intelligence artificielle", image: null, tint: "bg-amber/15 text-amber", initials: "NR" },
-];
+function BlogFeed() {
+  const posts = [
+    { image: "/images/kids-stem.jpg", date: "10 sept. 2026", title: "Pourquoi apprendre la robotique dès 7 ans ?", excerpt: "Les bienfaits de la robotique éducative sur le développement cognitif des enfants.", slug: "robotique-7-ans" },
+    { image: "/images/kid-elearning.jpg", date: "5 sept. 2026", title: "Scratch vs Python : par où commencer ?", excerpt: "Guide pratique pour choisir le premier langage de programmation de votre enfant.", slug: "scratch-vs-python" },
+    { image: "/images/hero-mentoring.jpg", date: "28 août 2026", title: "5 projets IA accessibles aux ados", excerpt: "Des projets concrets d'intelligence artificielle que les 12-17 ans peuvent réaliser.", slug: "projets-ia-ados" },
+  ];
 
-function Team() {
   return (
-    <section className="bg-white py-16 sm:py-24 dark:bg-body">
+    <section className="bg-surface py-16 sm:py-24 dark:bg-[#0f172a]">
       <div className="container-shell">
-        <SectionHeader
-          eyebrow="Notre équipe"
-          title="Nos formateurs"
-          subtitle="Des professionnels de la tech qui aiment transmettre — et qui savent parler aux enfants comme aux ados."
-        />
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {team.map((member) => (
-            <article key={member.name} className="text-center">
-              {member.image ? (
-                <Image
-                  src={member.image}
-                  alt={member.name}
-                  width={300}
-                  height={300}
-                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 180px"
-                  className="mx-auto size-36 rounded-full object-cover"
-                />
-              ) : (
-                <span className={`mx-auto flex size-36 items-center justify-center rounded-full font-display text-3xl font-semibold ${member.tint}`}>
-                  {member.initials}
-                </span>
-              )}
-              <h3 className="mt-5 font-display text-lg font-semibold text-ink dark:text-ink">{member.name}</h3>
-              <p className="mt-1 text-sm font-medium text-ink-soft dark:text-ink-soft">{member.role}</p>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-const facilities = [
-  { image: "/images/hero-student.jpg", title: "Robotique & hardware", text: "mBot, Arduino, Micro:bit, Raspberry Pi : de vraies machines à programmer, pas des simulations." },
-  { image: "/images/kid-elearning.jpg", title: "Coding & IA", text: "De Scratch à Python jusqu'aux projets d'IA : un cursus structuré qui suit l'élève pendant des années." },
-  { image: "/images/hero-family.jpg", title: "Suivi & certificats", text: "Portfolio public, heures de code comptabilisées, badges et certificats validés par l'administration." },
-];
-
-function Facilities() {
-  return (
-    <section className="relative overflow-hidden bg-brand py-16 sm:py-24 dark:bg-brand-dark">
-      {/* Decorative shapes */}
-      <div aria-hidden className="absolute -left-16 top-12 size-40 rounded-full bg-white/10" />
-      <div aria-hidden className="absolute bottom-8 right-[15%] size-24 rounded-full bg-amber/20" />
-      <div aria-hidden className="absolute left-[8%] top-1/2 size-6 rotate-12 rounded-lg bg-cream/40" />
-      <div aria-hidden className="absolute right-[6%] top-16 size-8 -rotate-12 rounded-lg bg-white/15" />
-
-      <div className="container-shell">
-        {/* Header */}
         <div className="mb-10 text-center sm:mb-14">
-          <span className="inline-flex rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-white">
-            Nos atouts
-          </span>
-          <h2 className="mx-auto mt-4 max-w-3xl font-display text-3xl font-semibold tracking-[-0.02em] text-white md:text-5xl">
-            Ce qui fait la différence
+          <span className="inline-flex rounded-full bg-brand/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-brand">Blog</span>
+          <h2 className="mx-auto mt-4 max-w-3xl font-display text-3xl font-semibold tracking-[-0.02em] text-ink dark:text-ink md:text-5xl">
+            Conseils pour les parents
           </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-sm font-medium leading-7 text-white/80 sm:mt-4 sm:text-base sm:leading-8">
-            Du matériel réel, un cursus complet et un suivi transparent pour toute la famille.
+          <p className="mx-auto mt-3 max-w-2xl text-sm font-medium leading-7 text-ink-soft sm:mt-4 sm:text-base sm:leading-8 dark:text-ink-soft">
+            Articles, guides et actualités pour mieux comprendre l&apos;éducation numérique.
           </p>
         </div>
-
-        {/* Cards */}
-        <div className="grid gap-8 md:grid-cols-3">
-          {facilities.map((item) => (
-            <div key={item.title} className="group overflow-hidden rounded-brand">
-              {/* Image */}
+        <div className="grid gap-6 md:grid-cols-3">
+          {posts.map((post) => (
+            <Link key={post.slug} href={`/blog#${post.slug}`} className="group block overflow-hidden rounded-brand border border-border bg-white transition duration-300 ease-out hover:-translate-y-0.5 hover:border-brand hover:shadow-md dark:border-white/10 dark:bg-[#1e293b]">
               <div className="relative overflow-hidden">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  loading="lazy"
-                  className="aspect-[4/3] w-full object-cover transition duration-700 ease-out group-hover:scale-105"
-                />
+                <Image src={post.image} alt={post.title} width={600} height={400} className="h-44 w-full object-cover transition duration-500 group-hover:scale-105" />
               </div>
-              {/* Content */}
-              <div className="bg-white px-6 py-6 dark:bg-[#1e293b]">
-                <h3 className="font-display text-lg font-semibold text-ink dark:text-white">{item.title}</h3>
-                <p className="mt-2 text-sm font-medium leading-6 text-ink-soft dark:text-slate-300">{item.text}</p>
+              <div className="p-6">
+                <span className="text-xs font-bold text-brand">{post.date}</span>
+                <h3 className="mt-2 font-display text-lg font-semibold text-ink transition group-hover:text-brand dark:text-ink">{post.title}</h3>
+                <p className="mt-2 line-clamp-2 text-sm font-medium leading-6 text-ink-soft dark:text-ink-soft">{post.excerpt}</p>
+                <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-brand transition group-hover:gap-2.5">
+                  Lire l&apos;article <ArrowRight className="size-3.5" />
+                </span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
-      </div>
-    </section>
-  );
-}
-
-const gallery = [
-  { src: "/images/hero-mentoring.jpg", alt: "Accompagnement personnalisé sur un projet", label: "Atelier mentorat" },
-  { src: "/images/kid-elearning.jpg", alt: "Élève en session de code", label: "Session de code" },
-  { src: "/images/kids-stem.jpg", alt: "Expérience STEM en atelier", label: "Atelier STEM" },
-  { src: "/images/girl-writing.jpg", alt: "Élève en train de documenter son projet", label: "Documentation de projet" },
-  { src: "/images/hero-family.jpg", alt: "Parent et enfant devant l'ordinateur", label: "Moment famille" },
-  { src: "/images/teacher-board.jpg", alt: "Explication devant le tableau", label: "Cours magistral" },
-];
-
-function Gallery() {
-  return (
-    <section className="bg-white py-16 sm:py-24 dark:bg-body">
-      <div className="container-shell">
-        <SectionHeader
-          eyebrow="Galerie"
-          title="La vie à l'école"
-          subtitle="Un aperçu des ateliers, des projets et des moments de partage à Elite Code School."
-        />
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
-          {gallery.map((item) => (
-            <figure key={item.src} className="group relative overflow-hidden rounded-brand border border-border dark:border-white/10">
-              <Image
-                src={item.src}
-                alt={item.alt}
-                width={600}
-                height={450}
-                className="h-full w-full object-cover transition duration-500 ease-out group-hover:scale-105"
-              />
-              <figcaption className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 bg-gradient-to-t from-ink/85 via-ink/40 to-transparent p-4 pt-12 text-xs font-bold text-white">
-                <span>{item.label}</span>
-                <span aria-hidden="true" className="flex size-8 shrink-0 items-center justify-center rounded-full bg-white/25">
-                  <ArrowUpRight className="size-4" />
-                </span>
-              </figcaption>
-            </figure>
-          ))}
+        <div className="mt-10 text-center">
+          <Link href="/blog" className="inline-flex items-center gap-2 rounded-full border-2 border-brand/30 bg-brand/10 px-6 py-3 text-sm font-bold text-brand transition hover:bg-brand hover:text-white">
+            Voir tous les articles <ArrowRight className="size-4" />
+          </Link>
         </div>
       </div>
     </section>
