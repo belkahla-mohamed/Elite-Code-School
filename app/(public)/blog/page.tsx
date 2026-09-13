@@ -79,34 +79,36 @@ const articles = [
 function ArticleCard({ article, index }: { article: (typeof articles)[number]; index: number }) {
   return (
     <ScrollReveal delay={index * 80}>
-      <article className="group flex h-full flex-col overflow-hidden rounded-brand border border-border bg-white transition duration-300 ease-out hover:-translate-y-0.5 hover:border-brand hover:shadow-md dark:border-white/10 dark:bg-[#1e293b]">
-        <div className="relative overflow-hidden">
-          <Image
-            src={article.image}
-            alt={article.title}
-            width={600}
-            height={400}
-            className="h-48 w-full object-cover transition duration-500 ease-out group-hover:scale-105"
-          />
-          <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-brand px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
-            <Tag className="size-2.5" /> {categories.find((c) => c.slug === article.category)?.label}
-          </span>
-        </div>
-        <div className="flex flex-1 flex-col p-5">
-          <span className="flex items-center gap-1.5 text-xs font-bold text-ink-soft">
-            <CalendarBlank className="size-3" /> {article.date}
-          </span>
-          <h3 className="mt-2 font-display text-base font-semibold text-ink transition duration-300 ease-out group-hover:text-brand dark:text-ink">
-            {article.title}
-          </h3>
-          <p className="mt-2 line-clamp-2 text-sm font-medium leading-6 text-ink-soft dark:text-ink-soft">
-            {article.excerpt}
-          </p>
-          <span className="mt-auto inline-flex items-center gap-1.5 pt-4 text-xs font-bold text-brand transition duration-300 ease-out group-hover:gap-2.5">
-            Lire la suite <ArrowRight className="size-3.5" />
-          </span>
-        </div>
-      </article>
+      <Link href={`/blog/${article.slug}`} className="group block h-full">
+        <article className="flex h-full flex-col overflow-hidden rounded-brand border border-border bg-white transition duration-300 ease-out hover:-translate-y-0.5 hover:border-brand hover:shadow-md dark:border-white/10 dark:bg-[#1e293b]">
+          <div className="relative overflow-hidden">
+            <Image
+              src={article.image}
+              alt={article.title}
+              width={600}
+              height={400}
+              className="h-48 w-full object-cover transition duration-500 ease-out group-hover:scale-105"
+            />
+            <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-brand px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
+              <Tag className="size-2.5" /> {categories.find((c) => c.slug === article.category)?.label}
+            </span>
+          </div>
+          <div className="flex flex-1 flex-col p-5">
+            <span className="flex items-center gap-1.5 text-xs font-bold text-ink-soft">
+              <CalendarBlank className="size-3" /> {article.date}
+            </span>
+            <h3 className="mt-2 font-display text-base font-semibold text-ink transition duration-300 ease-out group-hover:text-brand dark:text-ink">
+              {article.title}
+            </h3>
+            <p className="mt-2 line-clamp-2 text-sm font-medium leading-6 text-ink-soft dark:text-ink-soft">
+              {article.excerpt}
+            </p>
+            <span className="mt-auto inline-flex items-center gap-1.5 pt-4 text-xs font-bold text-brand transition duration-300 ease-out group-hover:gap-2.5">
+              Lire la suite <ArrowRight className="size-3.5" />
+            </span>
+          </div>
+        </article>
+      </Link>
     </ScrollReveal>
   )
 }
