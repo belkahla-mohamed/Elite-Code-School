@@ -111,12 +111,23 @@ export function CurriculaClient({ programs }: { programs: Program[] }) {
                       <div className="absolute inset-x-0 top-0 flex items-start justify-between p-3">
                         {program.priceMonthly && (
                           <span className="rounded-full bg-brand px-3 py-1 text-xs font-bold text-white shadow-sm">
-                            {program.priceMonthly} DH/mois
+                            {(() => {
+                              if (program.priceType === "hourly") {
+                                return `${program.priceMonthly} DH / ${program.totalHours}h`;
+                              }
+                              if (program.priceType === "monthly" && program.durationMonths) {
+                                const total = program.priceMonthly * program.durationMonths;
+                                return `${program.priceMonthly} DH/mois • ${program.durationMonths} mois (Total: ${total} DH)`;
+                              }
+                              return `${program.priceMonthly} DH/mois`;
+                            })()}
                           </span>
                         )}
-                        <span className="rounded-full bg-ink/70 px-3 py-1 text-xs font-bold text-white backdrop-blur-sm ml-auto">
-                          {program.ageRange}
-                        </span>
+                        {program.ageRange && (
+                          <span className="rounded-full bg-ink/70 px-3 py-1 text-xs font-bold text-white backdrop-blur-sm ml-auto">
+                            {program.ageRange}
+                          </span>
+                        )}
                       </div>
                     </div>
 

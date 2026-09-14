@@ -15,6 +15,13 @@ enum ProgramLevel {
   @@map("program_level")
 }
 
+enum PriceType {
+  monthly
+  hourly
+
+  @@map("price_type")
+}
+
 enum RequestStatus {
   pending
   accepted
@@ -47,11 +54,14 @@ model Category {
 model Program {
   id           String       @id
   title        String
-  ageRange     String       @map("age_range")
+  ageRange     String?      @map("age_range")
   level        ProgramLevel
   description  String
   tools        String[]
   priceMonthly Int?         @map("price_monthly")
+  priceType    PriceType    @default(monthly) @map("price_type")
+  totalHours   Int?         @map("total_hours")
+  durationMonths Int?       @map("duration_months")
   color        String       @default("accent")
   image        String       @default("")
   duration     String       @default("")

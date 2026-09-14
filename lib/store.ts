@@ -21,6 +21,7 @@ import type {
   Category,
   Certification,
   CommunityFeedItem,
+  ContactLead,
   DashboardSnapshot,
   Follow,
   GalleryItem,
@@ -31,6 +32,7 @@ import type {
   Program,
   ProgramColor,
   ProgramLevel,
+  PriceType,
   Project,
   Seance,
   Student,
@@ -69,6 +71,7 @@ type DemoStore = {
   studentMessages: StudentMessage[];
   studentAlerts: StudentAlert[];
   contentBlocks: ContentBlock[];
+  contacts: ContactLead[];
 };
 
 const globalForStore = globalThis as unknown as { eliteCodeSchoolStore?: DemoStore };
@@ -89,10 +92,49 @@ export function demoStore() {
       studentMessages: [],
       studentAlerts: alertsSeed(),
       contentBlocks: [],
+      contacts: [],
     };
   }
 
   return globalForStore.eliteCodeSchoolStore;
+}
+
+export function getContactLeads(): { id: string; name: string; phone: string; message: string; createdAt: string }[] {
+  if (!hasSupabaseConfig()) return demoStore().contacts ?? [];
+  // In production with Supabase, query the contacts table
+  return [];
+}
+
+export async function createContactLead(payload: { name: string; phone: string; message: string }): Promise<{ id: string; name: string; phone: string; message: string; createdAt: string }> {
+  const entry = {
+    id: `contact-${Date.now()}`,
+    name: payload.name.trim(),
+    phone: payload.phone.trim(),
+    message: payload.message.trim(),
+    createdAt: new Date().toISOString(),
+  };
+
+  if (!hasSupabaseConfig()) {
+    const store = demoStore();
+    if (!store.contacts) store.contacts = [];
+    store.contacts.unshift(entry);
+    return entry;
+  }
+
+  const { data, error } = await getSupabaseAdmin()
+    .from("contacts")
+    .insert({
+      id: entry.id,
+      name: entry.name,
+      phone: entry.phone,
+      message: entry.message,
+      created_at: entry.createdAt,
+    })
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
 }
 
 function followsSeed(): Follow[] {
@@ -173,11 +215,14 @@ export async function getPrograms(): Promise<Program[]> {
     return data.map((row) => ({
       id: row.id,
       title: row.title,
-      ageRange: row.age_range,
+      ageRange: row.age_range ?? undefined,
       level: row.level,
       description: row.description,
       tools: row.tools ?? [],
       priceMonthly: row.price_monthly,
+      priceType: row.price_type ?? "monthly",
+      totalHours: row.total_hours ?? undefined,
+      durationMonths: row.duration_months ?? undefined,
       color: row.color,
       image: row.image || FALLBACK_IMAGE,
       duration: row.duration ?? "",
@@ -819,21 +864,21 @@ export async function deleteStudent(id: string) {
   ]);
 }
 
-export async function createProgram(data: { title: string; ageRange: string; level: ProgramLevel; description: string; priceMonthly: number; color: ProgramColor; tools?: string[]; image: string; duration?: string; objectives?: string; prerequisites?: string; schedule?: string; categoryId?: string }) {
+export async function createProgram(data: { title: string; ageRange?: string; level: ProgramLevel; description: string; priceMonthly?: number; priceType?: PriceType; totalHours?: number; durationMonths?: number; color: ProgramColor; tools?: string[]; image: string; duration?: string; objectives?: string; prerequisites?: string; schedule?: string; categoryId?: string }) {
   const safeImage = data.image || FALLBACK_IMAGE
   if (!hasSupabaseConfig()) {
-    const program: Program = { id: `prog-${Date.now()}`, ...data, image: safeImage, tools: data.tools ?? [], duration: data.duration ?? "", objectives: data.objectives ?? "", prerequisites: data.prerequisites ?? "", schedule: data.schedule ?? "", category: undefined };
+    const program: Program = { id: `prog-${Date.now()}`, ...data, image: safeImage, tools: data.tools ?? [], duration: data.duration ?? "", objectives: data.objectives ?? "", prerequisites: data.prerequisites ?? "", schedule: data.schedule ?? "", category: undefined, priceType: data.priceType ?? "monthly" };
     demoStore().programs.push(program);
     return program;
   }
   const id = data.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") + "-" + Date.now()
-  const extended = { id, title: data.title, age_range: data.ageRange, level: data.level, description: data.description, price_monthly: data.priceMonthly, color: data.color, tools: data.tools ?? [], sort_order: 99, image: safeImage, duration: data.duration ?? "", objectives: data.objectives ?? "", prerequisites: data.prerequisites ?? "", schedule: data.schedule ?? "", category_id: data.categoryId || null }
+  const extended = { id, title: data.title, age_range: data.ageRange || null, level: data.level, description: data.description, price_monthly: data.priceMonthly ?? null, price_type: data.priceType ?? "monthly", total_hours: data.totalHours ?? null, duration_months: data.durationMonths ?? null, color: data.color, tools: data.tools ?? [], sort_order: 99, image: safeImage, duration: data.duration ?? "", objectives: data.objectives ?? "", prerequisites: data.prerequisites ?? "", schedule: data.schedule ?? "", category_id: data.categoryId || null }
   const { error } = await getSupabaseAdmin().from("programs").insert(extended)
   if (error) throw error
   return data;
 }
 
-export async function updateProgram(id: string, data: { title?: string; ageRange?: string; level?: ProgramLevel; description?: string; priceMonthly?: number; color?: ProgramColor; tools?: string[]; image?: string; duration?: string; objectives?: string; prerequisites?: string; schedule?: string; categoryId?: string }) {
+export async function updateProgram(id: string, data: { title?: string; ageRange?: string; level?: ProgramLevel; description?: string; priceMonthly?: number; priceType?: string; totalHours?: number; durationMonths?: number; color?: ProgramColor; tools?: string[]; image?: string; duration?: string; objectives?: string; prerequisites?: string; schedule?: string; categoryId?: string }) {
   if (!hasSupabaseConfig()) {
     const store = demoStore()
     const idx = store.programs.findIndex((p) => p.id === id)
@@ -844,6 +889,9 @@ export async function updateProgram(id: string, data: { title?: string; ageRange
     if (data.level !== undefined) program.level = data.level
     if (data.description !== undefined) program.description = data.description
     if (data.priceMonthly !== undefined) program.priceMonthly = data.priceMonthly
+    if (data.priceType !== undefined) program.priceType = data.priceType as any
+    if (data.totalHours !== undefined) program.totalHours = data.totalHours
+    if (data.durationMonths !== undefined) program.durationMonths = data.durationMonths
     if (data.color !== undefined) program.color = data.color
     if (data.tools !== undefined) program.tools = data.tools
     if (data.image !== undefined) program.image = data.image || FALLBACK_IMAGE
@@ -856,10 +904,13 @@ export async function updateProgram(id: string, data: { title?: string; ageRange
   }
   const payload: Record<string, any> = {
     ...(data.title !== undefined && { title: data.title }),
-    ...(data.ageRange !== undefined && { age_range: data.ageRange }),
+    ...(data.ageRange !== undefined && { age_range: data.ageRange || null }),
     ...(data.level !== undefined && { level: data.level }),
     ...(data.description !== undefined && { description: data.description }),
     ...(data.priceMonthly !== undefined && { price_monthly: data.priceMonthly }),
+    ...(data.priceType !== undefined && { price_type: data.priceType }),
+    ...(data.totalHours !== undefined && { total_hours: data.totalHours }),
+    ...(data.durationMonths !== undefined && { duration_months: data.durationMonths }),
     ...(data.color !== undefined && { color: data.color }),
     ...(data.tools !== undefined && { tools: data.tools }),
     ...(data.image !== undefined && { image: data.image || null }),

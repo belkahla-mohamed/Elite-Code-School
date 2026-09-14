@@ -254,6 +254,54 @@ function buildPasswordResetHtml(payload: { parentName: string; resetUrl: string 
   `
 }
 
+function buildContactFormHtml(payload: { name: string; phone: string; message: string }): string {
+  return `
+    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="background: linear-gradient(135deg,#06b6d4,#0ea5e9); padding: 24px; text-align: center;">
+        <h1 style="color: #fff; margin: 0; font-size: 24px;">Nouveau message de contact</h1>
+      </div>
+      <div style="padding: 24px; background: #f9fafb;">
+        <p style="color: #374151; font-size: 16px;"><strong>Nom:</strong> ${payload.name}</p>
+        <p style="color: #374151; font-size: 16px;"><strong>Téléphone:</strong> ${payload.phone}</p>
+        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 16px 0;" />
+        <p style="color: #374151; font-size: 16px;"><strong>Message:</strong></p>
+        <p style="color: #374151; font-size: 14px; background: #fff; padding: 16px; border-radius: 8px; border: 1px solid #e5e7eb;">${payload.message}</p>
+        <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 16px 0;" />
+        <a href="${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/admin"
+           style="display: inline-block; background: #06b6d4; color: #fff; text-decoration: none; padding: 12px 24px; border-radius: 999px; font-weight: bold;">
+          Voir dans l'administration
+        </a>
+      </div>
+    </div>
+  `;
+}
+
+export async function sendContactFormEmail(payload: { name: string; phone: string; message: string }) {
+  if (!hasEmailConfig()) {
+    addActivity("request", "Contact form", `[EMAIL SIMULÉ] Nouveau message: ${payload.name} (${payload.phone})`)
+    return
+  }
+  const emailFrom = await getEmailFrom()
+  let to = await getAdminEmail()
+  if (!to) to = process.env.CONTACT_EMAIL ?? "contact@elitecodeschool.ma"
+  try {
+    const { Resend } = await import("resend")
+    const resend = new Resend(RESEND_API_KEY!)
+    await resend.emails.send({
+      from: emailFrom,
+      to,
+      subject: `Nouveau message de contact — ${payload.name}`,
+      html: buildContactFormHtml(payload),
+    })
+    addActivity("request", "Contact form", `Email envoyé à ${to}`)
+  } catch (e: any) {
+    const msg = e?.statusCode === 403 ? `Resend 403 — domaine non vérifié` : e?.message ?? String(e)
+    addActivity("request", "Erreur email", `Échec envoi formulaire contact: ${msg}`)
+    if (e?.statusCode === 403) logResend403("sendContactFormEmail")
+    console.warn("Email send failed (contact form):", e)
+  }
+}
+
 export async function sendRejectionEmail(payload: {
   parentName: string
   parentEmail: string

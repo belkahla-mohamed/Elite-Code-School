@@ -64,9 +64,11 @@ export default async function CurriculaDetailPage({ params }: Props) {
             >
               {levelLabel}
             </span>
-            <span className="inline-flex rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-white">
-              {program.ageRange}
-            </span>
+            {program.ageRange && (
+              <span className="inline-flex rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-white">
+                {program.ageRange}
+              </span>
+            )}
             {program.category && (
               <span className="inline-flex rounded-full bg-white/15 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-white">
                 {program.category.name}
@@ -131,7 +133,18 @@ export default async function CurriculaDetailPage({ params }: Props) {
                   <Sparkle className="size-6 text-violet" />
                 </span>
                 <p className="mt-4 text-xs font-bold uppercase tracking-wider text-ink-soft dark:text-slate-400">Prix</p>
-                <p className="mt-1 font-display text-base font-semibold text-ink dark:text-white">{program.priceMonthly} DH/mois</p>
+                <p className="mt-1 font-display text-base font-semibold text-ink dark:text-white">
+                  {(() => {
+                    if (program.priceType === "hourly") {
+                      return `${program.priceMonthly} DH / ${program.totalHours}h`;
+                    }
+                    if (program.priceType === "monthly" && program.durationMonths) {
+                      const total = program.priceMonthly * program.durationMonths;
+                      return `${program.priceMonthly} DH/mois • ${program.durationMonths} mois (Total: ${total} DH)`;
+                    }
+                    return `${program.priceMonthly} DH/mois`;
+                  })()}
+                </p>
               </div>
             )}
             <div className="rounded-brand border border-border bg-surface p-5 transition duration-300 ease-out hover:-translate-y-0.5 hover:border-brand/30 hover:shadow-md dark:border-white/10 dark:bg-[#1e293b]">

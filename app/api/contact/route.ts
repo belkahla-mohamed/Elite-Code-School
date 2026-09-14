@@ -1,17 +1,8 @@
 import { NextResponse } from "next/server";
-import { addActivity } from "@/lib/activity-log";
 import { validateContentType } from "@/lib/xss-utils";
-
-const globalForContact = globalThis as unknown as {
-  ecsContactMessages?: { id: string; name: string; phone: string; message: string; createdAt: string }[];
-};
-
-function getMessages() {
-  if (!globalForContact.ecsContactMessages) {
-    globalForContact.ecsContactMessages = [];
-  }
-  return globalForContact.ecsContactMessages;
-}
+import { createContactLead } from "@/lib/store";
+import { sendContactFormEmail } from "@/lib/email";
+import { addActivity } from "@/lib/activity-log";
 
 export async function POST(request: Request) {
   try {
@@ -28,19 +19,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Téléphone requis" }, { status: 400 });
     }
 
-    const entry = {
-      id: `contact-${Date.now()}`,
-      name: name.trim(),
-      phone: phone.trim(),
-      message: (message ?? "").trim(),
-      createdAt: new Date().toISOString(),
-    };
+    const lead = await createContactLead({ name: name.trim(), phone: phone.trim(), message: (message ?? "").trim() });
 
-    getMessages().unshift(entry);
-    addActivity("request", "Message contact reçu", `${entry.name} · ${entry.phone}`);
+    addActivity("request", "Message contact reçu", `${lead.name} · ${lead.phone}`);
 
-    return NextResponse.json({ ok: true, message: "Message reçu. Nous vous contacterons bientôt." }, { status: 201 });
+    // Send email notification (non-blocking — don't fail the request if email fails)
+    sendContactFormEmail({ name: lead.name, phone: lead.phone, message: lead.message }).catch((e) => {
+      console.warn("Contact form email failed (lead saved):", e);
+    });
+
+    return NextResponse.json({ ok: true, message: "Message envoyé avec succès ! Notre équipe vous contactera sous 24h." }, { status: 201 });
   } catch (e: any) {
+    console.error("Contact API error:", e);
     return NextResponse.json({ error: e.message ?? "Erreur serveur" }, { status: 500 });
   }
 }

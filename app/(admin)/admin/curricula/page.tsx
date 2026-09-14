@@ -13,10 +13,11 @@ import { FileUpload } from "@/components/ui/file-upload";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 
 interface Program {
-  id: string; title: string; ageRange: string; level: string; priceMonthly: number;
+  id: string; title: string; ageRange?: string; level: string; priceMonthly: number;
   description: string; tools: string[]; color: string;
   image: string; duration?: string; objectives?: string; prerequisites?: string; schedule?: string;
   categoryId?: string; category?: { id: string; name: string; slug: string; description: string; color: string };
+  priceType?: string; totalHours?: number; durationMonths?: number;
 }
 
 interface Category {
@@ -41,8 +42,8 @@ export default function CurriculaAdminPage() {
   const [viewMode, setViewMode] = useViewMode("curricula-view");
   const [cardColumns, setCardColumns] = useState<1 | 2>(2);
 
-  const [form, setForm] = useState({ title: "", ageRange: "", level: "debutant", priceMonthly: 0, description: "", color: "accent", image: "", duration: "", objectives: "", prerequisites: "", schedule: "", categoryId: "" });
-  const [durationMonths, setDurationMonths] = useState("");
+  const [form, setForm] = useState({ title: "", ageRange: "", level: "debutant", priceMonthly: 0, priceType: "monthly", totalHours: 0, durationMonths: 0, description: "", color: "accent", image: "", duration: "", objectives: "", prerequisites: "", schedule: "", categoryId: "" });
+  const [durationMonthsSelect, setDurationMonthsSelect] = useState("");
   const [durationSessions, setDurationSessions] = useState("");
   const [durationCustom, setDurationCustom] = useState("");
 
@@ -61,26 +62,26 @@ export default function CurriculaAdminPage() {
   useEffect(() => { load(); }, []);
 
   function parseDuration(dur: string) {
-    if (!dur) { setDurationMonths(""); setDurationSessions(""); setDurationCustom(""); return }
+    if (!dur) { setDurationMonthsSelect(""); setDurationSessions(""); setDurationCustom(""); return }
     const m = dur.match(/(\d+)\s*mois/i)
     const s = dur.match(/(\d+)\s*séances/i)
     const months = m ? m[1] : ""
     const sessions = s ? s[1] : ""
     if (months || sessions) {
-      setDurationMonths(months || "custom")
+      setDurationMonthsSelect(months || "custom")
       setDurationSessions(sessions || "custom")
       setDurationCustom(dur)
     } else {
-      setDurationMonths("custom")
+      setDurationMonthsSelect("custom")
       setDurationSessions("custom")
       setDurationCustom(dur)
     }
   }
 
   function formatDuration(): string {
-    const months = durationMonths === "custom" ? "" : durationMonths
+    const months = durationMonthsSelect === "custom" ? "" : durationMonthsSelect
     const sessions = durationSessions === "custom" ? "" : durationSessions
-    if (durationMonths === "custom" || durationSessions === "custom") return durationCustom
+    if (durationMonthsSelect === "custom" || durationSessions === "custom") return durationCustom
     const parts: string[] = []
     if (months) parts.push(`${months} mois`)
     if (sessions) parts.push(`${sessions} séances`)
@@ -89,15 +90,15 @@ export default function CurriculaAdminPage() {
 
   function openEdit(p: Program) {
     setEditing(p);
-    setForm({ title: p.title, ageRange: p.ageRange, level: p.level, priceMonthly: p.priceMonthly, description: p.description, color: p.color, image: p.image ?? "", duration: p.duration ?? "", objectives: p.objectives ?? "", prerequisites: p.prerequisites ?? "", schedule: p.schedule ?? "", categoryId: p.categoryId ?? "" });
+    setForm({ title: p.title, ageRange: p.ageRange ?? "", level: p.level, priceMonthly: p.priceMonthly, priceType: p.priceType ?? "monthly", totalHours: p.totalHours ?? 0, durationMonths: p.durationMonths ?? 0, description: p.description, color: p.color, image: p.image ?? "", duration: p.duration ?? "", objectives: p.objectives ?? "", prerequisites: p.prerequisites ?? "", schedule: p.schedule ?? "", categoryId: p.categoryId ?? "" });
     parseDuration(p.duration ?? "")
     setShowForm(true);
   }
 
   function openNew() {
     setEditing(null);
-    setForm({ title: "", ageRange: "", level: "debutant", priceMonthly: 0, description: "", color: "accent", image: "", duration: "", objectives: "", prerequisites: "", schedule: "", categoryId: "" });
-    setDurationMonths(""); setDurationSessions(""); setDurationCustom("")
+    setForm({ title: "", ageRange: "", level: "debutant", priceMonthly: 0, priceType: "monthly", totalHours: 0, durationMonths: 0, description: "", color: "accent", image: "", duration: "", objectives: "", prerequisites: "", schedule: "", categoryId: "" });
+    setDurationMonthsSelect(""); setDurationSessions(""); setDurationCustom("")
     setShowForm(true);
   }
 
@@ -282,7 +283,7 @@ export default function CurriculaAdminPage() {
                 </div>
                 <div>
                   <label className="mb-1.5 block text-xs font-bold text-ink-soft">Tranche d&apos;âge</label>
-                  <input value={form.ageRange} onChange={(e) => setForm({ ...form, ageRange: e.target.value })} placeholder="Ex: 7–10 ans" className="w-full rounded-brand-sm border-2 border-border px-3 py-2.5 text-sm text-ink focus:border-sky focus:outline-none bg-body" />
+                  <input value={form.ageRange} onChange={(e) => setForm({ ...form, ageRange: e.target.value })} placeholder="Ex: 7–10 ans (optionnel)" className="w-full rounded-brand-sm border-2 border-border px-3 py-2.5 text-sm text-ink focus:border-sky focus:outline-none bg-body" />
                 </div>
                 <div>
                   <label className="mb-1.5 block text-xs font-bold text-ink-soft">Niveau</label>
@@ -298,9 +299,33 @@ export default function CurriculaAdminPage() {
                   </Select>
                 </div>
                 <div>
+                  <label className="mb-1.5 block text-xs font-bold text-ink-soft">Mode de facturation</label>
+                  <Select value={form.priceType} onValueChange={(v) => setForm({ ...form, priceType: v })}>
+                    <SelectTrigger className="rounded-brand-sm border-2 border-border">
+                      <SelectValue placeholder="Mode" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="monthly">Mensuel (DH/mois)</SelectItem>
+                      <SelectItem value="hourly">À l&apos;heure (DH / total h)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
                   <label className="mb-1.5 block text-xs font-bold text-ink-soft">Prix (DH/mois)</label>
                   <input value={form.priceMonthly} onChange={(e) => setForm({ ...form, priceMonthly: Number(e.target.value) })} type="number" placeholder="Ex: 650" className="w-full rounded-brand-sm border-2 border-border px-3 py-2.5 text-sm text-ink focus:border-sky focus:outline-none bg-body" />
                 </div>
+                {form.priceType === "hourly" && (
+                  <div>
+                    <label className="mb-1.5 block text-xs font-bold text-ink-soft">Volume total (heures)</label>
+                    <input value={form.totalHours} onChange={(e) => setForm({ ...form, totalHours: Number(e.target.value) })} type="number" placeholder="Ex: 20" className="w-full rounded-brand-sm border-2 border-border px-3 py-2.5 text-sm text-ink focus:border-sky focus:outline-none bg-body" />
+                  </div>
+                )}
+                {form.priceType === "monthly" && (
+                  <div>
+                    <label className="mb-1.5 block text-xs font-bold text-ink-soft">Durée (mois)</label>
+                    <input value={form.durationMonths} onChange={(e) => setForm({ ...form, durationMonths: Number(e.target.value) })} type="number" placeholder="Ex: 3" className="w-full rounded-brand-sm border-2 border-border px-3 py-2.5 text-sm text-ink focus:border-sky focus:outline-none bg-body" />
+                  </div>
+                )}
                 <div>
                   <label className="mb-1.5 block text-xs font-bold text-ink-soft">Catégorie</label>
                   <select value={form.categoryId} onChange={(e) => setForm({ ...form, categoryId: e.target.value })}
@@ -319,7 +344,7 @@ export default function CurriculaAdminPage() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
                     <label className="mb-1.5 block text-xs font-bold text-ink-soft">Mois</label>
-                    <select value={durationMonths} onChange={(e) => setDurationMonths(e.target.value)}
+                    <select value={durationMonthsSelect} onChange={(e) => setDurationMonthsSelect(e.target.value)}
                       className="w-full rounded-brand-sm border-2 border-border bg-body px-3 py-2.5 text-sm text-ink focus:border-sky focus:outline-none appearance-none">
                       <option value="">—</option>
                       {[1,2,3,4,5,6,7,8,9,10,11,12].map((n) => <option key={n} value={n}>{n} mois</option>)}
@@ -336,7 +361,7 @@ export default function CurriculaAdminPage() {
                     </select>
                   </div>
                 </div>
-                {(durationMonths === "custom" || durationSessions === "custom") && (
+                {(durationMonthsSelect === "custom" || durationSessions === "custom") && (
                   <input value={durationCustom} onChange={(e) => setDurationCustom(e.target.value)}
                     placeholder="Durée personnalisée (ex: 2 trimestres · 24 séances)"
                     className="mt-3 w-full rounded-brand-sm border-2 border-border px-3 py-2.5 text-sm text-ink focus:border-sky focus:outline-none bg-body" />

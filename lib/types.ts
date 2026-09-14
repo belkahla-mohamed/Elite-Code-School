@@ -1,5 +1,6 @@
 export type ProgramLevel = "debutant" | "intermediaire" | "avance";
 export type ProgramColor = "accent" | "cyan" | "amber" | "green" | "rose" | "purple";
+export type PriceType = "monthly" | "hourly";
 export type RequestStatus = "pending" | "accepted" | "refused";
 export type ProjectStatus = "completed" | "in_progress";
 
@@ -14,11 +15,14 @@ export type Category = {
 export type Program = {
   id: string;
   title: string;
-  ageRange: string;
+  ageRange?: string;
   level: ProgramLevel;
   description: string;
   tools: string[];
   priceMonthly?: number;
+  priceType?: PriceType;
+  totalHours?: number;
+  durationMonths?: number;
   color: ProgramColor;
   image: string;
   duration?: string;
@@ -62,6 +66,14 @@ export type InscriptionRequest = {
   createdAt: string;
   adminNotes?: string;
   rejectionMessage?: string;
+};
+
+export type ContactLead = {
+  id: string;
+  name: string;
+  phone: string;
+  message: string;
+  createdAt: string;
 };
 
 export type Project = {

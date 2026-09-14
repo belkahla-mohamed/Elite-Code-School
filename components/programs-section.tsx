@@ -84,14 +84,27 @@ export function ProgramsSection({ programs }: { programs: Program[] }) {
                     <div className="relative h-52 overflow-hidden">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={program.image} alt={program.title} loading="lazy" className="size-full object-cover transition duration-700 ease-out group-hover:scale-105" />
-                      <div className="absolute inset-x-0 top-0 flex items-start justify-between p-3">
+<div className="absolute inset-x-0 top-0 flex items-start justify-between p-3">
+                      {program.priceMonthly && (
                         <span className="rounded-full bg-brand px-3 py-1 text-xs font-bold text-white shadow-sm">
-                          {program.priceMonthly} DH/mois
+                          {(() => {
+                            if (program.priceType === "hourly") {
+                              return `${program.priceMonthly} DH / ${program.totalHours}h`;
+                            }
+                            if (program.priceType === "monthly" && program.durationMonths) {
+                              const total = program.priceMonthly * program.durationMonths;
+                              return `${program.priceMonthly} DH/mois • ${program.durationMonths} mois (Total: ${total} DH)`;
+                            }
+                            return `${program.priceMonthly} DH/mois`;
+                          })()}
                         </span>
+                      )}
+                      {program.ageRange && (
                         <span className="rounded-full bg-ink/70 px-3 py-1 text-xs font-bold text-white backdrop-blur-sm">
                           {program.ageRange}
                         </span>
-                      </div>
+                      )}
+                    </div>
                     </div>
 
                     {/* Content */}
