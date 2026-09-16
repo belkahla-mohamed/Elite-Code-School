@@ -63,7 +63,7 @@ test.describe("Admin flow", () => {
   test("curricula page loads with programs list", async ({ page }) => {
     await page.goto("/admin/curricula")
     await page.waitForLoadState("networkidle")
-    await expect(page.getByRole("heading", { name: "Programmes" })).toBeVisible({ timeout: 10000 })
+    await expect(page.getByRole("main").getByRole("heading", { name: "Programmes" })).toBeVisible({ timeout: 10000 })
   })
 })
 

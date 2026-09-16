@@ -16,7 +16,7 @@ test.describe("Public pages", () => {
   test("curricula page shows programs", async ({ page }) => {
     await page.goto("/curricula")
     await page.waitForLoadState("networkidle")
-    await expect(page.getByRole("main").getByRole("heading")).toBeVisible({ timeout: 10000 })
+    await expect(page.getByRole("heading", { name: /Choisis le parcours/i })).toBeVisible({ timeout: 10000 })
   })
 
   test("inscription page has form", async ({ page }) => {

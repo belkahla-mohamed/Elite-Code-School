@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     if (ct) return ct;
 
     const ip = request.headers.get("x-forwarded-for") ?? "admin-login";
-    const { allowed, retryAfter } = rateLimit(`admin:${ip}`, 5, 60_000);
+    const { allowed, retryAfter } = rateLimit(`admin:${ip}`, 20, 60_000);
     if (!allowed) return NextResponse.json({ error: "Trop de tentatives" }, { status: 429, headers: { "Retry-After": String(retryAfter) } });
 
     const parsed = loginSchema.safeParse(await request.json());
