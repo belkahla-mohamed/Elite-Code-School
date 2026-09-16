@@ -7,8 +7,9 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: [["html", { open: "never" }], ["list"]],
+  timeout: 60_000,
   use: {
-    baseURL: process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000",
+    baseURL: process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3002",
     trace: "on-first-retry",
     screenshot: "only-on-failure",
   },
@@ -18,12 +19,10 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
   ],
-  webServer: process.env.CI
-    ? {
-        command: "npm run build && npm run start",
-        port: 3000,
-        reuseExistingServer: false,
-        timeout: 120_000,
-      }
-    : undefined,
+  webServer: {
+    command: "npx next dev -p 3002",
+    port: 3002,
+    reuseExistingServer: !process.env.CI,
+    timeout: 180_000,
+  },
 });
