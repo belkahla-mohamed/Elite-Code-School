@@ -9,26 +9,31 @@ test.describe("Public pages", () => {
 
   test("portfolios list shows public students", async ({ page }) => {
     await page.goto("/portfolios")
-    await expect(page.locator("h1").first()).toContainText("Portfolios")
+    await page.waitForLoadState("networkidle")
+    await expect(page.getByRole("heading", { name: /apprennent|créent/i })).toBeVisible({ timeout: 10000 })
   })
 
   test("curricula page shows programs", async ({ page }) => {
     await page.goto("/curricula")
-    await expect(page.locator("h1").first().or(page.locator("text=Programmes").first())).toBeVisible({ timeout: 5000 })
+    await page.waitForLoadState("networkidle")
+    await expect(page.getByRole("main").getByRole("heading")).toBeVisible({ timeout: 10000 })
   })
 
   test("inscription page has form", async ({ page }) => {
     await page.goto("/inscription")
-    await expect(page.locator("h1").first().or(page.locator("text=Inscription").first())).toBeVisible({ timeout: 5000 })
+    await page.waitForLoadState("networkidle")
+    await expect(page.getByRole("heading", { name: /Inscription/i })).toBeVisible({ timeout: 10000 })
   })
 
   test("contact page loads", async ({ page }) => {
     await page.goto("/contact")
-    await expect(page.locator("h1").first().or(page.locator("text=Contact").first())).toBeVisible({ timeout: 5000 })
+    await page.waitForLoadState("networkidle")
+    await expect(page.getByRole("heading", { name: /Contact/i }).first()).toBeVisible({ timeout: 10000 })
   })
 
   test("about page loads", async ({ page }) => {
     await page.goto("/about")
-    await expect(page.locator("h1").first()).toBeVisible()
+    await page.waitForLoadState("networkidle")
+    await expect(page.locator("h1").first()).toBeVisible({ timeout: 10000 })
   })
 })

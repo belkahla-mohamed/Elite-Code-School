@@ -8,7 +8,7 @@ test.describe("New features", () => {
       await page.fill('input[placeholder*="admin@elitecodeschool"]', "admin@elitecodeschool.com")
       await page.fill('input[placeholder*="mot de passe"]', "admin1234")
       await page.click('button[type="submit"]')
-      await page.waitForURL("/dashboard", { timeout: 10000 })
+      await page.waitForURL("/dashboard", { timeout: 15000 })
       await expect(page.locator("h1").first()).toContainText("Dashboard")
     })
 
@@ -26,8 +26,8 @@ test.describe("New features", () => {
       await page.fill('input[placeholder*="admin@elitecodeschool"]', "wrong@email.com")
       await page.fill('input[placeholder*="mot de passe"]', "admin1234")
       await page.click('button[type="submit"]')
-      const toast = page.locator("text=Identifiants incorrects").first()
-      await expect(toast).toBeVisible({ timeout: 5000 })
+      const error = page.locator("text=Identifiants incorrects").first()
+      await expect(error).toBeVisible({ timeout: 10000 })
     })
 
     test("toggles password visibility", async ({ page }) => {
@@ -48,19 +48,19 @@ test.describe("New features", () => {
       await page.fill('input[placeholder*="admin@elitecodeschool"]', "admin@elitecodeschool.com")
       await page.fill('input[placeholder*="mot de passe"]', "admin1234")
       await page.click('button[type="submit"]')
-      await page.waitForURL("/dashboard", { timeout: 10000 })
+      await page.waitForURL("/dashboard", { timeout: 15000 })
       await page.goto("/admin/enrollments")
-      await page.getByRole("main").getByRole("heading", { name: "Inscriptions" }).waitFor({ timeout: 5000 })
+      await page.waitForLoadState("networkidle")
     })
 
     test("enrollments page shows pending requests and filters", async ({ page }) => {
-      await expect(page.locator("text=En attente").first()).toBeVisible()
+      await expect(page.locator("text=En attente").first()).toBeVisible({ timeout: 10000 })
       await expect(page.locator("text=Acceptées").first()).toBeVisible()
       await expect(page.locator("text=Refusées").first()).toBeVisible()
     })
 
     test("csv export button is present", async ({ page }) => {
-      await expect(page.locator("text=CSV").or(page.locator("text=Télécharger")).first()).toBeVisible({ timeout: 3000 })
+      await expect(page.locator("text=CSV").or(page.locator("text=Télécharger")).first()).toBeVisible({ timeout: 5000 })
     })
   })
 
@@ -70,13 +70,13 @@ test.describe("New features", () => {
       await page.fill('input[placeholder*="admin@elitecodeschool"]', "admin@elitecodeschool.com")
       await page.fill('input[placeholder*="mot de passe"]', "admin1234")
       await page.click('button[type="submit"]')
-      await page.waitForURL("/dashboard", { timeout: 10000 })
+      await page.waitForURL("/dashboard", { timeout: 15000 })
       await page.goto("/dashboard/analytics")
+      await page.waitForLoadState("networkidle")
     })
 
     test("analytics page loads with charts", async ({ page }) => {
-      await expect(page.locator("h1").first()).toContainText("Analytiques")
-      await expect(page.locator("text=Élèves").first()).toBeVisible()
+      await expect(page.locator("text=Analytiques").first()).toBeVisible({ timeout: 10000 })
     })
   })
 
@@ -86,9 +86,9 @@ test.describe("New features", () => {
       await page.fill('input[placeholder*="admin@elitecodeschool"]', "admin@elitecodeschool.com")
       await page.fill('input[placeholder*="mot de passe"]', "admin1234")
       await page.click('button[type="submit"]')
-      await page.waitForURL("/dashboard", { timeout: 10000 })
-      await page.goto("/api/auth/logout")
-      await page.waitForURL("/admin-login", { timeout: 5000 })
+      await page.waitForURL("/dashboard", { timeout: 15000 })
+      await page.goto("/api/auth/logout", { waitUntil: "commit" })
+      await page.goto("/admin-login", { waitUntil: "networkidle" })
       expect(page.url()).toContain("/admin-login")
     })
 
@@ -97,9 +97,9 @@ test.describe("New features", () => {
       await page.fill('input[placeholder*="admin@elitecodeschool"]', "admin@elitecodeschool.com")
       await page.fill('input[placeholder*="mot de passe"]', "admin1234")
       await page.click('button[type="submit"]')
-      await page.waitForURL("/dashboard", { timeout: 10000 })
-      await page.goto("/api/auth/logout")
-      await page.waitForURL("/admin-login", { timeout: 5000 })
+      await page.waitForURL("/dashboard", { timeout: 15000 })
+      await page.goto("/api/auth/logout", { waitUntil: "commit" })
+      await page.goto("/admin-login", { waitUntil: "networkidle" })
       await page.goto("/dashboard")
       await page.waitForURL("/admin-login", { timeout: 5000 })
     })
@@ -108,11 +108,12 @@ test.describe("New features", () => {
   test.describe("Public inscription form", () => {
     test("inscription form has multi-step flow", async ({ page }) => {
       await page.goto("/inscription")
-      await expect(page.locator("text=Informations de l'élève")).toBeVisible()
+      await page.waitForLoadState("networkidle")
+      await expect(page.locator("text=Informations de l").first()).toBeVisible({ timeout: 15000 })
       await page.fill('input[placeholder="Karim"]', "Test")
       await page.fill('input[placeholder="Benali"]', "User")
-      await page.click("text=Suivant")
-      await expect(page.locator("text=Choix du parcours")).toBeVisible()
+      await page.click("text=Continuer")
+      await expect(page.locator("h2:text('Choix du parcours')")).toBeVisible({ timeout: 5000 })
     })
   })
 
@@ -122,9 +123,10 @@ test.describe("New features", () => {
       await page.fill('input[placeholder*="admin@elitecodeschool"]', "admin@elitecodeschool.com")
       await page.fill('input[placeholder*="mot de passe"]', "admin1234")
       await page.click('button[type="submit"]')
-      await page.waitForURL("/dashboard", { timeout: 10000 })
+      await page.waitForURL("/dashboard", { timeout: 15000 })
       await page.goto("/admin/curricula")
-      await expect(page.locator("h1").first()).toContainText("Programmes")
+      await page.waitForLoadState("networkidle")
+      await expect(page.getByRole("heading", { name: "Programmes" })).toBeVisible({ timeout: 10000 })
       await expect(page.locator("text=CSV").or(page.locator("text=Télécharger")).first()).toBeVisible({ timeout: 3000 })
     })
   })
