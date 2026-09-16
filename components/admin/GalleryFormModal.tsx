@@ -141,7 +141,7 @@ export function GalleryFormModal({ onClose, onSuccess }: GalleryFormModalProps) 
                 )}
                 <div className="flex-1">
                   <FileUpload folder="gallery" onUploaded={(url) => setForm({ ...form, imageUrl: url })} />
-                  <p className="mt-2 text-xs text-ink-soft">Laissez vide pour utiliser uniquement l'emoji et la couleur de fond.</p>
+                  <p className="mt-2 text-xs text-ink-soft">Laissez vide pour utiliser uniquement l&apos;emoji et la couleur de fond.</p>
                 </div>
               </div>
             </div>
