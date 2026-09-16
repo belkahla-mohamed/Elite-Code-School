@@ -12,32 +12,50 @@ export function QuickContactForm() {
     setStatus("loading");
     setMessage("");
 
-    const form = new FormData(event.currentTarget);
+    const formEl = event.currentTarget;
+    const formData = new FormData(formEl);
+    const payload = {
+      name: String(formData.get("name") ?? "").trim(),
+      phone: String(formData.get("phone") ?? "").trim(),
+      message: String(formData.get("message") ?? "").trim(),
+    };
+
+    if (!payload.name || payload.name.length < 2) {
+      setStatus("error");
+      setMessage("Veuillez entrer votre nom (min. 2 caractères).");
+      return;
+    }
+    if (!payload.phone || payload.phone.length < 6) {
+      setStatus("error");
+      setMessage("Veuillez entrer un numéro de téléphone valide.");
+      return;
+    }
 
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: form.get("name"),
-          phone: form.get("phone"),
-          message: form.get("message"),
-        }),
+        body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
+      const text = await res.text();
+
+      let data: any;
+      try { data = JSON.parse(text); } catch { data = { error: text }; }
+
       if (!res.ok) {
         setStatus("error");
-        setMessage(data.error ?? "Erreur lors de l'envoi");
+        setMessage(data.error ?? "Erreur lors de l'envoi. Veuillez réessayer.");
         return;
       }
 
-      event.currentTarget.reset();
+      formEl.reset();
       setStatus("success");
-      setMessage(data.message ?? "Message noté. On vous rappelle bientôt.");
-    } catch {
+      setMessage(data.message ?? "Message envoyé avec succès !");
+    } catch (e: any) {
+      console.error("Contact form fetch error:", e);
       setStatus("error");
-      setMessage("Erreur de connexion. Veuillez réessayer.");
+      setMessage("Erreur de connexion. Vérifiez votre connexion internet et réessayez.");
     }
   }
 

@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ArrowRight, CaretLeft, CaretRight, Clock, CalendarBlank, MagnifyingGlass, Users } from "@phosphor-icons/react";
+import { ArrowRight, CaretLeft, CaretRight, Clock, CalendarBlank, MagnifyingGlass, Users, User } from "@phosphor-icons/react";
 import { AnimatePresence, motion } from "framer-motion"
 import type { Program } from "@/lib/types"
 
@@ -146,7 +146,8 @@ export function CurriculaClient({ programs }: { programs: Program[] }) {
                         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border pt-4 text-xs font-medium text-ink-soft dark:border-white/10 dark:text-slate-400">
                           {program.schedule && <span className="inline-flex items-center gap-1.5"><Clock className="size-3.5 text-brand" /> {program.schedule}</span>}
                           {program.duration && <span className="inline-flex items-center gap-1.5"><CalendarBlank className="size-3.5 text-brand" /> {program.duration}</span>}
-                          <span className="inline-flex items-center gap-1.5"><Users className="size-3.5 text-brand" /> 8 élèves max</span>
+                          <span className="inline-flex items-center gap-1.5"><Users className="size-3.5 text-brand" /> 10 élèves max</span>
+                          <span className="inline-flex items-center gap-1.5"><User className="size-3.5 text-brand" /> Individuel dispo.</span>
                         </div>
                         <div className="mt-4">
                           <span className="inline-flex items-center gap-1.5 text-xs font-bold text-brand transition duration-300 ease-out group-hover:gap-2.5">

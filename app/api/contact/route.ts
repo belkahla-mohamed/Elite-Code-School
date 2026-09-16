@@ -28,7 +28,8 @@ export async function POST(request: Request) {
       console.warn("Contact form email failed (lead saved):", e);
     });
 
-    return NextResponse.json({ ok: true, message: "Message envoyé avec succès ! Notre équipe vous contactera sous 24h." }, { status: 201 });
+    const response = NextResponse.json({ ok: true, message: "Message envoyé avec succès ! Notre équipe vous contactera sous 24h." }, { status: 201 });
+    return response;
   } catch (e: any) {
     console.error("Contact API error:", e);
     return NextResponse.json({ error: e.message ?? "Erreur serveur" }, { status: 500 });

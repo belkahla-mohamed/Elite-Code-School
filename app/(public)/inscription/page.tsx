@@ -6,9 +6,9 @@ import { getPrograms } from "@/lib/store";
 interface Props { searchParams: Promise<{ program?: string }> }
 
 const reassurances = [
-  "Âge validé entre 7 et 17 ans.",
-  "Aucun élève n'est créé avant validation admin.",
-  "Le secret parent est généré après acceptation.",
+  "Parcours adapté de 7 à 17 ans, tous niveaux confondus.",
+  "Validation de votre dossier sous 24h par notre équipe pédagogique.",
+  "Accès sécurisé à l'Espace Parent fourni dès validation pour suivre la progression.",
 ];
 
 export default async function InscriptionPage({ searchParams }: Props) {
@@ -24,8 +24,11 @@ export default async function InscriptionPage({ searchParams }: Props) {
           <div>
             <span className="tag">Comment ça marche</span>
             <h2 className="mt-4 font-display text-3xl font-semibold tracking-[-0.02em] text-ink dark:text-white sm:text-4xl">
-              Une demande simple, étape par étape.
+              Inscription en quelques clics.
             </h2>
+            <p className="mt-3 text-sm font-medium text-ink-soft dark:text-slate-400">
+              Remplissez le formulaire, notre équipe vous recontacte sous 24h pour confirmer et organiser la première séance.
+            </p>
             <div className="mt-8 grid gap-3">
               {reassurances.map((item) => (
                 <div key={item} className="flex items-center gap-3 rounded-brand border border-border bg-surface p-4 text-sm font-semibold text-ink-soft transition duration-300 ease-out hover:-translate-y-0.5 hover:border-brand/30 hover:shadow-md dark:border-white/10 dark:bg-[#1e293b] dark:text-slate-300">

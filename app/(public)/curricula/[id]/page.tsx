@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight, BookOpen, CalendarBlank, CheckCircle, Clock, GraduationCap, Sparkle, Target, Users } from "@phosphor-icons/react/dist/ssr";
+import { ArrowLeft, ArrowRight, BookOpen, CalendarBlank, CheckCircle, Clock, GraduationCap, Sparkle, Target, Users, User } from "@phosphor-icons/react/dist/ssr";
 import { getPrograms } from "@/lib/store";
 import { imgSrc } from "@/lib/image-url-server";
 import { ProgramCard } from "@/components/ui/program-card";
+import { ProgramMediaGallery } from "@/components/program-media-gallery";
+import { ProgramToolCard, parseToolsDescription } from "@/components/program-tool-card";
+import { ProgramCertificatePreview } from "@/components/program-certificate-preview";
 
 interface Props { params: Promise<{ id: string }> }
 
@@ -38,6 +41,8 @@ export default async function CurriculaDetailPage({ params }: Props) {
   const levelLabel = levelLabels[program.level] || program.level;
   const levelColor = levelColors[program.level] || "#e41d23";
   const related = programs.filter((p) => p.id !== id).slice(0, 3);
+  const toolInfos = parseToolsDescription(program.toolsDescription, program.tools);
+  const galleryImages = program.galleryImages?.length ? program.galleryImages : [program.image];
 
   return (
     <div className="overflow-hidden bg-white dark:bg-body">
@@ -100,14 +105,13 @@ export default async function CurriculaDetailPage({ params }: Props) {
         </div>
       </section>
 
-      {/* Photo + infos */}
+      {/* Media Gallery + Info Cards */}
       <section className="bg-white py-16 sm:py-24 dark:bg-body">
         <div className="container-shell grid items-start gap-8 lg:grid-cols-2 lg:gap-12">
-          <div className="overflow-hidden rounded-brand border border-border dark:border-white/10">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={imgSrc(program.image, 1200)} alt={program.title} className="aspect-[4/3] w-full object-cover" />
-          </div>
+          {/* Gallery */}
+          <ProgramMediaGallery images={galleryImages} mainImage={program.image} title={program.title} />
 
+          {/* Info Cards */}
           <div className="grid gap-4 sm:grid-cols-2">
             {program.duration && (
               <div className="rounded-brand border border-border bg-surface p-5 transition duration-300 ease-out hover:-translate-y-0.5 hover:border-brand/30 hover:shadow-md dark:border-white/10 dark:bg-[#1e293b]">
@@ -152,26 +156,31 @@ export default async function CurriculaDetailPage({ params }: Props) {
                 <Users className="size-6 text-lime" />
               </span>
               <p className="mt-4 text-xs font-bold uppercase tracking-wider text-ink-soft dark:text-slate-400">Groupe</p>
-              <p className="mt-1 font-display text-base font-semibold text-ink dark:text-white">8 élèves max</p>
+              <p className="mt-1 font-display text-base font-semibold text-ink dark:text-white">10 élèves max</p>
+              <div className="mt-2 flex items-center gap-1.5 text-xs text-ink-soft dark:text-slate-400">
+                <User className="size-3.5" />
+                <span>Cours individuel disponible</span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Outils */}
-        {program.tools.length > 0 && (
+        {/* Outils utilisés — expanded cards */}
+        {toolInfos.length > 0 && (
           <div className="container-shell mt-8">
             <div className="rounded-brand border border-border bg-surface p-6 dark:border-white/10 dark:bg-[#1e293b]">
               <div className="flex items-center gap-3">
                 <span className="flex size-12 shrink-0 items-center justify-center rounded-brand-sm bg-brand/10">
                   <GraduationCap className="size-6 text-brand" />
                 </span>
-                <h2 className="font-display text-lg font-semibold text-ink dark:text-white">Outils utilisés</h2>
+                <div>
+                  <h2 className="font-display text-lg font-semibold text-ink dark:text-white">Outils utilisés</h2>
+                  <p className="text-xs font-medium text-ink-soft dark:text-slate-400">Les équipements et logiciels utilisés en cours</p>
+                </div>
               </div>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {program.tools.map((tool) => (
-                  <span key={tool} className="rounded-full bg-brand/10 px-3 py-1 text-xs font-bold text-brand">
-                    {tool}
-                  </span>
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                {toolInfos.map((tool) => (
+                  <ProgramToolCard key={tool.name} tool={tool} />
                 ))}
               </div>
             </div>
@@ -216,6 +225,11 @@ export default async function CurriculaDetailPage({ params }: Props) {
             </div>
           )}
         </div>
+
+        {/* Certificate Preview */}
+        <div className="container-shell mt-8">
+          <ProgramCertificatePreview programTitle={program.title} customText={program.certificatePreview} />
+        </div>
       </section>
 
       {/* CTA — red band */}
@@ -230,7 +244,7 @@ export default async function CurriculaDetailPage({ params }: Props) {
             Prêt à inscrire votre enfant ?
           </h2>
           <p className="mx-auto mt-3 max-w-2xl text-sm font-medium leading-7 text-white/80 sm:text-base sm:leading-8">
-            Rejoignez {program.title} — les places sont limitées à 8 élèves par groupe.
+            Rejoignez {program.title} — en groupe (10 max) ou en cours individuel.
           </p>
           <div className="mt-8">
             <Link

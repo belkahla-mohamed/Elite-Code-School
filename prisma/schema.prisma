@@ -58,6 +58,9 @@ model Program {
   level        ProgramLevel
   description  String
   tools        String[]
+  toolsDescription String  @default("") @map("tools_description")
+  galleryImages String[]   @default([]) @map("gallery_images")
+  certificatePreview String @default("") @map("certificate_preview")
   priceMonthly Int?         @map("price_monthly")
   priceType    PriceType    @default(monthly) @map("price_type")
   totalHours   Int?         @map("total_hours")

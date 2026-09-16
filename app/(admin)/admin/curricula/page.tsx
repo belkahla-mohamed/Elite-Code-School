@@ -14,7 +14,7 @@ import { OptimizedImage } from "@/components/ui/optimized-image";
 
 interface Program {
   id: string; title: string; ageRange?: string; level: string; priceMonthly: number;
-  description: string; tools: string[]; color: string;
+  description: string; tools: string[]; toolsDescription?: string; galleryImages?: string[]; certificatePreview?: string; color: string;
   image: string; duration?: string; objectives?: string; prerequisites?: string; schedule?: string;
   categoryId?: string; category?: { id: string; name: string; slug: string; description: string; color: string };
   priceType?: string; totalHours?: number; durationMonths?: number;
@@ -42,7 +42,7 @@ export default function CurriculaAdminPage() {
   const [viewMode, setViewMode] = useViewMode("curricula-view");
   const [cardColumns, setCardColumns] = useState<1 | 2>(2);
 
-  const [form, setForm] = useState({ title: "", ageRange: "", level: "debutant", priceMonthly: 0, priceType: "monthly", totalHours: 0, durationMonths: 0, description: "", color: "accent", image: "", duration: "", objectives: "", prerequisites: "", schedule: "", categoryId: "" });
+  const [form, setForm] = useState({ title: "", ageRange: "", level: "debutant", priceMonthly: 0, priceType: "monthly", totalHours: 0, durationMonths: 0, description: "", color: "accent", image: "", duration: "", objectives: "", prerequisites: "", schedule: "", categoryId: "", toolsDescription: "", galleryImages: [] as string[], certificatePreview: "" });
   const [durationMonthsSelect, setDurationMonthsSelect] = useState("");
   const [durationSessions, setDurationSessions] = useState("");
   const [durationCustom, setDurationCustom] = useState("");
@@ -90,14 +90,14 @@ export default function CurriculaAdminPage() {
 
   function openEdit(p: Program) {
     setEditing(p);
-    setForm({ title: p.title, ageRange: p.ageRange ?? "", level: p.level, priceMonthly: p.priceMonthly, priceType: p.priceType ?? "monthly", totalHours: p.totalHours ?? 0, durationMonths: p.durationMonths ?? 0, description: p.description, color: p.color, image: p.image ?? "", duration: p.duration ?? "", objectives: p.objectives ?? "", prerequisites: p.prerequisites ?? "", schedule: p.schedule ?? "", categoryId: p.categoryId ?? "" });
+    setForm({ title: p.title, ageRange: p.ageRange ?? "", level: p.level, priceMonthly: p.priceMonthly, priceType: p.priceType ?? "monthly", totalHours: p.totalHours ?? 0, durationMonths: p.durationMonths ?? 0, description: p.description, color: p.color, image: p.image ?? "", duration: p.duration ?? "", objectives: p.objectives ?? "", prerequisites: p.prerequisites ?? "", schedule: p.schedule ?? "", categoryId: p.categoryId ?? "", toolsDescription: p.toolsDescription ?? "", galleryImages: p.galleryImages ?? [], certificatePreview: p.certificatePreview ?? "" });
     parseDuration(p.duration ?? "")
     setShowForm(true);
   }
 
   function openNew() {
     setEditing(null);
-    setForm({ title: "", ageRange: "", level: "debutant", priceMonthly: 0, priceType: "monthly", totalHours: 0, durationMonths: 0, description: "", color: "accent", image: "", duration: "", objectives: "", prerequisites: "", schedule: "", categoryId: "" });
+    setForm({ title: "", ageRange: "", level: "debutant", priceMonthly: 0, priceType: "monthly", totalHours: 0, durationMonths: 0, description: "", color: "accent", image: "", duration: "", objectives: "", prerequisites: "", schedule: "", categoryId: "", toolsDescription: "", galleryImages: [], certificatePreview: "" });
     setDurationMonthsSelect(""); setDurationSessions(""); setDurationCustom("")
     setShowForm(true);
   }
@@ -388,6 +388,33 @@ export default function CurriculaAdminPage() {
                     <label className="mb-1.5 block text-xs font-bold text-ink-soft">Prérequis <span className="text-ink-soft/60">(optionnel)</span></label>
                     <textarea value={form.prerequisites} onChange={(e) => setForm({ ...form, prerequisites: e.target.value })} placeholder="Ce qu'il faut savoir avant de s'inscrire" rows={2} className="w-full rounded-brand-sm border-2 border-border px-3 py-2.5 text-sm text-ink focus:border-sky focus:outline-none bg-body resize-none" />
                   </div>
+                </div>
+              </div>
+
+              {/* Tools Description */}
+              <div>
+                <p className="mb-3 text-xs font-bold text-ink-soft uppercase tracking-wider">Descriptions des outils</p>
+                <div>
+                  <label className="mb-1.5 block text-xs font-bold text-ink-soft">Description par outil <span className="text-ink-soft/60">(optionnel — un outil par ligne : Nom: Description)</span></label>
+                  <textarea value={form.toolsDescription} onChange={(e) => setForm({ ...form, toolsDescription: e.target.value })} placeholder={"Ex:\nScratch: Plateforme de programmation visuelle\nArduino: Carte électronique open-source"} rows={4} className="w-full rounded-brand-sm border-2 border-border px-3 py-2.5 text-sm text-ink focus:border-sky focus:outline-none bg-body resize-none" />
+                </div>
+              </div>
+
+              {/* Gallery Images */}
+              <div>
+                <p className="mb-3 text-xs font-bold text-ink-soft uppercase tracking-wider">Galerie photos</p>
+                <div>
+                  <label className="mb-1.5 block text-xs font-bold text-ink-soft">Images de la galerie <span className="text-ink-soft/60">(optionnel — URLs une par ligne)</span></label>
+                  <textarea value={form.galleryImages.join("\n")} onChange={(e) => setForm({ ...form, galleryImages: e.target.value.split("\n").map((s) => s.trim()).filter(Boolean) })} placeholder={"https://example.com/photo1.jpg\nhttps://example.com/photo2.jpg"} rows={3} className="w-full rounded-brand-sm border-2 border-border px-3 py-2.5 text-sm text-ink focus:border-sky focus:outline-none bg-body resize-none" />
+                </div>
+              </div>
+
+              {/* Certificate Preview */}
+              <div>
+                <p className="mb-3 text-xs font-bold text-ink-soft uppercase tracking-wider">Certificat</p>
+                <div>
+                  <label className="mb-1.5 block text-xs font-bold text-ink-soft">Texte du certificat <span className="text-ink-soft/60">(optionnel)</span></label>
+                  <textarea value={form.certificatePreview} onChange={(e) => setForm({ ...form, certificatePreview: e.target.value })} placeholder="Ex: Completion du programme avec mention Bien" rows={2} className="w-full rounded-brand-sm border-2 border-border px-3 py-2.5 text-sm text-ink focus:border-sky focus:outline-none bg-body resize-none" />
                 </div>
               </div>
             </div>

@@ -19,6 +19,9 @@ export type Program = {
   level: ProgramLevel;
   description: string;
   tools: string[];
+  toolsDescription?: string;
+  galleryImages?: string[];
+  certificatePreview?: string;
   priceMonthly?: number;
   priceType?: PriceType;
   totalHours?: number;

@@ -19,6 +19,13 @@ export const programs: Program[] = [
     level: "debutant",
     description: "Jeux, histoires animées et premières notions d'algorithmique avec Scratch et Micro:bit. Les enfants développent leur logique tout en s'amusant avec des projets créatifs.",
     tools: ["Scratch", "Micro:bit"],
+    toolsDescription: "Scratch: Plateforme de programmation visuelle pour créer des jeux, animations et histoires interactives.\nMicro:bit: Mini-ordinateur programmable pour découvrir l'électronique et la programmation physique.",
+    galleryImages: [
+      "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80",
+      "https://images.unsplash.com/photo-1587654780291-39c9404d7dd0?w=800&q=80",
+      "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800&q=80"
+    ],
+    certificatePreview: "Completion du programme Créativité Numérique avec mention",
     priceMonthly: 650,
     priceType: "monthly",
     durationMonths: 3,
@@ -37,6 +44,13 @@ export const programs: Program[] = [
     level: "intermediaire",
     description: "Capteurs, moteurs, logique robotique et préparation aux compétitions éducatives avec des robots mBot et Thymio.",
     tools: ["mBot", "Arduino", "Thymio"],
+    toolsDescription: "mBot: Robot éducatif Makeblock avec capteurs ultrasons, lumière et suivi de ligne. Programmable en Scratch et Arduino.\nArduino: Carte électronique open-source pour créer des prototypes intelligents et des systèmes embarqués.\nThymio: Robot mobile suisse pour l'éducation, programmable en aseba et Blockly.",
+    galleryImages: [
+      "https://images.unsplash.com/photo-1535378917042-10a22c95931a?w=800&q=80",
+      "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&q=80",
+      "https://images.unsplash.com/photo-1614728263952-84ea256f9679?w=800&q=80"
+    ],
+    certificatePreview: "Certification Robotique — Compétences en capteurs et autonomie",
     priceMonthly: 750,
     priceType: "monthly",
     durationMonths: 4,
@@ -55,6 +69,13 @@ export const programs: Program[] = [
     level: "intermediaire",
     description: "Électronique, objets connectés, Raspberry Pi et prototypes intelligents. Créez vos propres appareils connectés !",
     tools: ["Arduino", "Raspberry Pi", "Dadabit AI"],
+    toolsDescription: "Arduino: Carte électronique pour créer des circuits, capteurs et objets connectés.\nRaspberry Pi: Mini-ordinateur polyvalent pour des projets IoT avancés et du calcul.\nDadabit AI: Plateforme d'apprentissage IA pour entraîner des modèles sur des capteurs.",
+    galleryImages: [
+      "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800&q=80",
+      "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=800&q=80",
+      "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=800&q=80"
+    ],
+    certificatePreview: "Certification IoT & Électronique — Maîtrise des objets connectés",
     priceMonthly: 850,
     priceType: "monthly",
     durationMonths: 4,
@@ -73,6 +94,13 @@ export const programs: Program[] = [
     level: "avance",
     description: "Python moderne, données, visualisation et automatisation utile pour les adolescents. Devenez autonome en programmation !",
     tools: ["Python", "VS Code", "Pandas"],
+    toolsDescription: "Python: Langage de programmation polyvalent pour l'analyse de données, l'IA et l'automatisation.\nVS Code: Éditeur de code professionnel avec extensions Python, débogueur et terminal intégré.\nPandas: Bibliothèque Python pour manipuler, nettoyer et analyser des données structurées.",
+    galleryImages: [
+      "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&q=80",
+      "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&q=80",
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80"
+    ],
+    certificatePreview: "Certification Python — Compétences en analyse de données",
     priceMonthly: 850,
     priceType: "monthly",
     durationMonths: 4,
@@ -91,6 +119,13 @@ export const programs: Program[] = [
     level: "avance",
     description: "Sites web, interfaces responsives, JavaScript et premières applications React. Construisez votre présence en ligne !",
     tools: ["HTML/CSS", "JavaScript", "React"],
+    toolsDescription: "HTML/CSS: Langages de structure et de style pour créer des sites web responsives et esthétiques.\nJavaScript: Langage de programmation web pour rendre les pages interactives et dynamiques.\nReact: Bibliothèque JavaScript pour construire des interfaces utilisateur modernes et réutilisables.",
+    galleryImages: [
+      "https://images.unsplash.com/photo-1547658719-da2b51169166?w=800&q=80",
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80",
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80"
+    ],
+    certificatePreview: "Certification Web Development — Maîtrise HTML, CSS, JavaScript et React",
     priceMonthly: 900,
     priceType: "monthly",
     durationMonths: 5,
@@ -109,6 +144,13 @@ export const programs: Program[] = [
     level: "avance",
     description: "Vision, machine learning, projets IA éducatifs et robotique VinciBot. Plongez dans le futur de la technologie !",
     tools: ["VinciBot", "Dadabit AI", "Python ML"],
+    toolsDescription: "VinciBot: Robot intelligent avec caméra pour explorer la vision par ordinateur et l'autonomie.\nDadabit AI: Plateforme pour entraîner et déployer des modèles de machine learning.\nPython ML: Bibliothèques scikit-learn, TensorFlow pour créer des modèles prédictifs.",
+    galleryImages: [
+      "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80",
+      "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=800&q=80",
+      "https://images.unsplash.com/photo-1531746790095-e5cb198c10c1?w=800&q=80"
+    ],
+    certificatePreview: "Certification Intelligence Artificielle — Maîtrise du Machine Learning",
     priceMonthly: 950,
     priceType: "monthly",
     durationMonths: 5,
