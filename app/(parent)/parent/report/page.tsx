@@ -1,17 +1,24 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useParentStudent } from "@/hooks/useParentStudent";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
-import { User, DownloadSimple, SpinnerGap, FileText, ChartBar, Clock, FolderOpen, Medal, Eye, CalendarBlank, BookOpen } from "@phosphor-icons/react";
+import { User, DownloadSimple, SpinnerGap, FileText, ChartBar, Clock, FolderOpen, Medal, Eye, CalendarBlank, BookOpen, Printer } from "@phosphor-icons/react";
 import Link from "next/link";
 import { generateStudentReport, downloadBlob } from "@/lib/pdf-generator";
 import { showToast } from "@/components/ui/toast";
+import { StudentAvatar } from "@/components/ui/student-avatar";
 
 export default function ParentReportPage() {
   const { student, loading, error } = useParentStudent();
   const [pdfLoading, setPdfLoading] = useState(false);
+
+  async function handlePrint() {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    window.print();
+  }
 
   async function handleDownloadPdf() {
     if (!student) return;
@@ -76,21 +83,46 @@ export default function ParentReportPage() {
       ]} />
 
       <div className="space-y-6">
+        {/* En-tête visible à l'impression uniquement */}
+        <div className="hidden items-center gap-3 border-b-2 border-brand pb-4 print:flex">
+          <Image
+            src="/logos/logo-icon.png"
+            alt="Elite Code School"
+            width={48}
+            height={48}
+            className="size-12"
+          />
+          <div>
+            <p className="font-display text-lg font-black text-ink">Elite Code School</p>
+            <p className="text-xs font-bold text-ink-soft">Rapport d&apos;évaluation — Marrakech, Maroc</p>
+          </div>
+        </div>
+
         {/* Header */}
         <div className="rounded-brand border-2 border-border bg-white dark:bg-surface p-6 md:p-8">
-          <div className="flex items-center gap-4">
-            <div
-              className="flex size-14 items-center justify-center rounded-2xl font-display text-lg font-bold text-white"
-              style={{ background: student.avatarGradient }}
-            >
-              {student.avatar}
-            </div>
-            <div>
+          <div className="flex flex-wrap items-center gap-4">
+            <StudentAvatar
+              avatar={student.avatar}
+              avatarGradient={student.avatarGradient}
+              firstName={student.firstName}
+              lastName={student.lastName}
+              className="size-14 rounded-2xl"
+              textClassName="text-lg"
+            />
+            <div className="min-w-0 flex-1">
               <h1 className="font-display text-2xl font-extrabold text-ink">
                 Rapport de {student.firstName}
               </h1>
               <p className="text-sm text-ink-soft">{student.levelLabel}</p>
             </div>
+            <button
+              onClick={handlePrint}
+              type="button"
+              className="btn-outline shrink-0 px-5 py-2.5 no-print"
+            >
+              <Printer className="mr-2 inline size-5" />
+              Imprimer
+            </button>
           </div>
         </div>
 
@@ -159,7 +191,7 @@ export default function ParentReportPage() {
         </div>
 
         {/* DownloadSimple Section */}
-        <div className="rounded-brand border-2 border-border bg-sky/5 p-6 md:p-8">
+        <div className="rounded-brand border-2 border-border bg-sky/5 p-6 md:p-8 no-print">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
             <div className="flex items-start gap-4">
               <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-sky/10 text-sky">

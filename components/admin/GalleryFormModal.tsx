@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { X, Image as ImageIcon, MagnifyingGlass, SpinnerGap } from "@phosphor-icons/react";
 import { showToast } from "@/components/ui/toast";
+import { StudentAvatar } from "@/components/ui/student-avatar";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import { FileUpload } from "@/components/ui/file-upload";
 
@@ -114,11 +115,13 @@ export function GalleryFormModal({ onClose, onSuccess }: GalleryFormModalProps) 
                   filteredStudents.map((s) => (
                     <label key={s.id} className={`flex items-center gap-3 rounded-lg border-2 p-2 cursor-pointer transition ${form.studentId === s.id ? "border-sky bg-sky/5" : "border-transparent hover:bg-surface"}`}>
                       <input type="radio" name="student" value={s.id} checked={form.studentId === s.id} onChange={() => setForm({ ...form, studentId: s.id })} className="hidden" />
-                      {s.avatar ? (
-                         <OptimizedImage src={s.avatar} alt="" width={32} height={32} className="size-8 rounded-full object-cover" />
-                      ) : (
-                        <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-surface font-bold text-ink-soft text-xs">{s.firstName[0]}</div>
-                      )}
+                      <StudentAvatar
+                        avatar={s.avatar}
+                        firstName={s.firstName}
+                        lastName={s.lastName}
+                        className="size-8 rounded-full text-xs"
+                        textClassName="text-xs"
+                      />
                       <span className="text-sm font-semibold truncate">{s.firstName} {s.lastName}</span>
                     </label>
                   ))

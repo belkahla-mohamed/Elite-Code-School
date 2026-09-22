@@ -8,6 +8,7 @@ import { downloadCsv } from "@/lib/csv-export";
 import { ViewToggle, useViewMode } from "@/components/ui/view-toggle";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { showToast } from "@/components/ui/toast";
+import { StudentAvatar } from "@/components/ui/student-avatar";
 import type { Program, ProgramLevel, ProgramColor } from "@/lib/types";
 
 interface Student {
@@ -157,9 +158,14 @@ export default function StudentsPage() {
                 </td>
                 <td className="px-5 py-4">
                   <div className="flex items-center gap-3">
-                    <div className="flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-sky to-cyan font-display text-xs font-black text-white">
-                      {s.avatar || s.firstName[0]}
-                    </div>
+                    <StudentAvatar
+                      avatar={s.avatar}
+                      avatarGradient="linear-gradient(135deg,#0ea5e9,#06b6d4)"
+                      firstName={s.firstName}
+                      lastName={s.lastName}
+                      className="size-9 rounded-full"
+                      textClassName="text-xs"
+                    />
                     <span className="font-bold text-ink">{s.firstName} {s.lastName}</span>
                   </div>
                 </td>
@@ -199,9 +205,14 @@ export default function StudentsPage() {
               <input type="checkbox" checked={selectedIds.has(student.id)}
                 onChange={() => toggleSelect(student.id)}
                 className="size-4 rounded border-2 border-border accent-sky cursor-pointer shrink-0" />
-              <div className="flex size-10 items-center justify-center rounded-full bg-gradient-to-br from-sky to-cyan font-display font-black text-sm text-white">
-                {student.avatar || student.firstName[0]}
-              </div>
+              <StudentAvatar
+                avatar={student.avatar}
+                avatarGradient="linear-gradient(135deg,#0ea5e9,#06b6d4)"
+                firstName={student.firstName}
+                lastName={student.lastName}
+                className="size-10 rounded-full"
+                textClassName="text-sm"
+              />
               <div className="min-w-0 flex-1">
                 <h3 className="truncate font-bold text-ink">{student.firstName} {student.lastName}</h3>
                 <p className="truncate text-sm text-ink-soft">{student.age} ans · {student.levelLabel} · {student.hours}h</p>

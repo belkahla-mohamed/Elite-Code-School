@@ -8,6 +8,7 @@ import { apiFetch } from "@/lib/api-fetch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
+import { StudentAvatar } from "@/components/ui/student-avatar";
 import type { StudentPortfolio, StudentRequest } from "@/lib/types";
 
 type Filter = "all" | "pending" | "certificate" | "hours";
@@ -149,12 +150,14 @@ export default function StudentRequestsPage() {
               >
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div className="flex min-w-0 flex-1 items-start gap-3">
-                    <div
-                      className="flex size-11 shrink-0 items-center justify-center rounded-xl font-display text-sm font-black text-white"
-                      style={{ background: student?.avatarGradient ?? "linear-gradient(135deg,#0284c7,#38bdf8)" }}
-                    >
-                      {student?.avatar ?? "?"}
-                    </div>
+                    <StudentAvatar
+                      avatar={student?.avatar ?? ""}
+                      avatarGradient={student?.avatarGradient ?? "linear-gradient(135deg,#0284c7,#38bdf8)"}
+                      firstName={student?.firstName}
+                      lastName={student?.lastName}
+                      className="size-11 shrink-0 rounded-xl"
+                      textClassName="text-sm"
+                    />
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
                         <p className="text-sm font-bold text-ink">

@@ -43,6 +43,7 @@ create table if not exists public.students (
   is_public boolean not null default true,
   parent_email text not null,
   parent_secret_hash text not null,
+  dossier_number text,
   created_at timestamptz not null default now()
 );
 
@@ -57,6 +58,8 @@ create table if not exists public.projects (
   date_label text not null,
   emoji text not null default '💼',
   gradient text not null default 'linear-gradient(135deg,#4f46e5,#818cf8)',
+  cover_image text,
+  demo_url text,
   created_at timestamptz not null default now()
 );
 

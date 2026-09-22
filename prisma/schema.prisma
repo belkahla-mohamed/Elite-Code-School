@@ -123,6 +123,7 @@ model Student {
   parentSecretHash String   @map("parent_secret_hash")
   parentFirstName  String   @default("") @map("parent_first_name")
   parentLastName   String   @default("") @map("parent_last_name")
+  dossierNumber    String?  @map("dossier_number")
   createdAt        DateTime @default(now()) @map("created_at")
 
   projects       Project[]
@@ -148,6 +149,7 @@ model Project {
   emoji       String        @default("💼")
   gradient    String        @default("linear-gradient(135deg,#4f46e5,#818cf8)")
   coverImage  String?       @map("cover_image")
+  demoUrl     String?       @map("demo_url")
   createdAt   DateTime      @default(now()) @map("created_at")
 
   @@index([studentId])
@@ -269,6 +271,14 @@ model Follow {
   @@unique([studentId, targetId])
   @@index([targetId])
   @@map("follows")
+}
+
+model BlogView {
+  slug      String   @id
+  views     Int      @default(0)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("blog_views")
 }
 
 model StudentRequest {

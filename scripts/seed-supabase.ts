@@ -11,6 +11,7 @@ import {
   galleryItems as seedGallery,
   seances as seedSeances,
 } from "../data/seed";
+import { generateMatricule } from "../lib/matricule";
 
 function loadEnvVar(name: string): string {
   const fromEnv = process.env[name];
@@ -93,6 +94,7 @@ async function main() {
       avatar: s.avatar, avatar_gradient: s.avatarGradient, program_id: s.programId,
       level_label: s.levelLabel, join_date_label: s.joinDateLabel, hours: s.hours,
       is_public: s.isPublic, parent_email: s.parentEmail, parent_secret_hash: s.parentSecretHash,
+      dossier_number: generateMatricule(new Date(s.createdAt)),
       created_at: iso(s.createdAt),
     });
     if (error) console.error("student", s.slug, error.message);
@@ -122,6 +124,7 @@ async function main() {
       title: p.title, description: p.description, tags: p.tags ?? [],
       status: p.status, progress: p.progress, date_label: p.dateLabel,
       emoji: p.emoji, gradient: p.gradient, cover_image: p.coverImage ?? null,
+      demo_url: p.demoUrl ?? null,
     });
     if (error) console.error("project", p.id, error.message);
   }

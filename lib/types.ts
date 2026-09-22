@@ -91,6 +91,7 @@ export type Project = {
   emoji: string;
   gradient: string;
   coverImage?: string;
+  demoUrl?: string;
 };
 
 export type Certification = {
@@ -168,6 +169,7 @@ export type Student = {
   isPublic: boolean;
   parentEmail: string;
   parentSecretHash: string;
+  dossierNumber?: string;
   createdAt: string;
 };
 

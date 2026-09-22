@@ -11,9 +11,10 @@ interface ShareMenuProps {
   url?: string;
   label?: ReactNode;
   triggerClassName?: string;
+  whatsappText?: string;
 }
 
-export function ShareMenu({ title, text, url, label, triggerClassName }: ShareMenuProps) {
+export function ShareMenu({ title, text, url, label, triggerClassName, whatsappText }: ShareMenuProps) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [pos, setPos] = useState({ top: 0, left: 0 });
@@ -23,6 +24,10 @@ export function ShareMenu({ title, text, url, label, triggerClassName }: ShareMe
   const shareText = text ?? title;
   const encodedUrl = encodeURIComponent(pageUrl);
   const encodedText = encodeURIComponent(shareText);
+  const whatsappMessage = whatsappText
+    ? whatsappText.replace("{url}", pageUrl)
+    : `${shareText} ${pageUrl}`;
+  const encodedWhatsapp = encodeURIComponent(whatsappMessage);
   const canNativeShare = typeof navigator !== "undefined" && "share" in navigator;
 
   useEffect(() => {
@@ -93,7 +98,7 @@ export function ShareMenu({ title, text, url, label, triggerClassName }: ShareMe
       label: "WhatsApp",
       icon: ChatCircle,
       circle: "bg-[#25D366]/10 text-[#25D366]",
-      href: `https://wa.me/?text=${encodedText}%20${encodedUrl}`,
+      href: `https://wa.me/?text=${encodedWhatsapp}`,
     },
     {
       key: "facebook",

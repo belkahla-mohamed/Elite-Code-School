@@ -431,7 +431,8 @@ export const projects: Project[] = [
     dateLabel: "Jan. 2024",
     emoji: "🎮",
     gradient: "linear-gradient(135deg,#F59E0B,#FB7185)",
-    coverImage: "https://images.unsplash.com/photo-1553481187-be93c21490a9?w=600&q=80"
+    coverImage: "https://images.unsplash.com/photo-1553481187-be93c21490a9?w=600&q=80",
+    demoUrl: "https://scratch.mit.edu/"
   },
   {
     id: "proj-s-1",

@@ -161,6 +161,68 @@
   animation: scale-in 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
+/* ─── Impression (rapport d'évaluation, PDF navigateur) ─── */
+@media print {
+  @page {
+    margin: 14mm;
+  }
+
+  /* Forcer le thème clair + couleurs de marque conservées */
+  :root,
+  html.dark {
+    --background: #ffffff;
+    --surface: #f2f2f2;
+    --text: #111111;
+    --text-soft: #444444;
+    --border: #dddddd;
+    --brand: #e41d23;
+    --background-rgb: 255 255 255;
+    --surface-rgb: 242 242 242;
+    --text-rgb: 17 17 17;
+    --text-soft-rgb: 68 68 68;
+    --border-rgb: 221 221 221;
+    color-scheme: light;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    transition: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    transition: none !important;
+    animation: none !important;
+  }
+
+  /* Chrome de l'application masqué */
+  aside,
+  header,
+  footer,
+  nav,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Réinitialiser la marge laissée par la sidebar */
+  [class*="ml-64"],
+  [class*="ml-20"] {
+    margin-left: 0 !important;
+  }
+
+  main {
+    padding: 0 !important;
+  }
+
+  img {
+    max-width: 100% !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

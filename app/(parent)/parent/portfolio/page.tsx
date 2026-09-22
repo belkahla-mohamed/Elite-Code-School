@@ -6,6 +6,7 @@ import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { LoadingPage } from "@/components/ui/loading-spinner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { User, ArrowSquareOut } from "@phosphor-icons/react";
+import { StudentAvatar } from "@/components/ui/student-avatar";
 import Link from "next/link";
 
 export default function ParentPortfolioPage() {
@@ -54,12 +55,14 @@ export default function ParentPortfolioPage() {
       <div className="rounded-brand border-2 border-border bg-white dark:bg-surface p-6 md:p-8">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
           <div className="flex items-center gap-4">
-            <div
-              className="flex size-14 items-center justify-center rounded-2xl font-display text-lg font-bold text-white"
-              style={{ background: student.avatarGradient }}
-            >
-              {student.avatar}
-            </div>
+            <StudentAvatar
+              avatar={student.avatar}
+              avatarGradient={student.avatarGradient}
+              firstName={student.firstName}
+              lastName={student.lastName}
+              className="size-14 rounded-2xl"
+              textClassName="text-lg"
+            />
             <div>
               <h1 className="font-display text-2xl font-extrabold text-ink">
                 Portfolio de {student.firstName}

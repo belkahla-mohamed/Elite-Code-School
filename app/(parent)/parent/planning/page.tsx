@@ -6,6 +6,7 @@ import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CalendarBlank, CheckCircle, XCircle, Clock, BookOpen, Target, CaretRight, Medal, User, Warning, WarningCircle, Lightning, ListChecks } from "@phosphor-icons/react";
 import Link from "next/link";
+import { StudentAvatar } from "@/components/ui/student-avatar";
 import type { StudentPlanning, WeeklySlot } from "@/lib/types";
 
 const dayLabels: Record<string, string> = {
@@ -125,12 +126,14 @@ export default function ParentPlanningPage() {
         <div className="rounded-brand border-2 border-border bg-white dark:bg-surface p-6 md:p-8">
           <div className="flex flex-wrap items-start justify-between gap-5">
             <div className="flex items-center gap-4">
-              <div
-                className="flex size-16 items-center justify-center rounded-2xl font-display text-xl font-bold text-white shadow-md"
-                style={{ background: student.avatarGradient }}
-              >
-                {student.avatar}
-              </div>
+              <StudentAvatar
+                avatar={student.avatar}
+                avatarGradient={student.avatarGradient}
+                firstName={student.firstName}
+                lastName={student.lastName}
+                className="size-16 rounded-2xl shadow-md"
+                textClassName="text-xl"
+              />
               <div>
                 <span className="tag">Planning</span>
                 <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">

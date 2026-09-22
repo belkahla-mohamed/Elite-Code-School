@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { showToast } from "@/components/ui/toast";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { ViewToggle, useViewMode } from "@/components/ui/view-toggle";
 import { GalleryFormModal } from "./GalleryFormModal";
 
@@ -56,9 +57,13 @@ export function GalleryContent() {
             {paged.map((item, i) => (
               <tr key={i} className="hover:bg-surface/50 transition">
                 <td className="px-5 py-4">
-                  <div className="flex size-12 items-center justify-center rounded-brand-sm text-2xl"
-                    style={{ background: item.gradient || "linear-gradient(135deg, #12AEEA, #06B6D4)" }}>
-                    {item.emoji ?? "🖼️"}
+                  <div className="flex size-12 items-center justify-center overflow-hidden rounded-brand-sm text-2xl"
+                    style={item.imageUrl ? undefined : { background: item.gradient || "linear-gradient(135deg, #12AEEA, #06B6D4)" }}>
+                    {item.imageUrl ? (
+                      <OptimizedImage src={item.imageUrl} alt={item.label ?? ""} width={48} height={48} className="size-full object-cover" />
+                    ) : (
+                      item.emoji ?? "🖼️"
+                    )}
                   </div>
                 </td>
                 <td className="px-5 py-4">
@@ -95,9 +100,13 @@ export function GalleryContent() {
       <div className={cardColumns === 2 ? "grid grid-cols-1 md:grid-cols-2 gap-4" : "space-y-4"}>
         {paged.map((item, i) => (
           <div key={i} className="rounded-brand border-2 border-border bg-white dark:bg-surface overflow-hidden transition hover:shadow-sm hover:-translate-y-0.5">
-            <div className="flex aspect-square items-center justify-center text-5xl"
-              style={{ background: item.gradient || "linear-gradient(135deg, #12AEEA, #06B6D4)" }}>
-              {item.emoji ?? "🖼️"}
+            <div className="flex aspect-square items-center justify-center overflow-hidden text-5xl"
+              style={item.imageUrl ? undefined : { background: item.gradient || "linear-gradient(135deg, #12AEEA, #06B6D4)" }}>
+              {item.imageUrl ? (
+                <OptimizedImage src={item.imageUrl} alt={item.label ?? ""} width={400} height={400} className="size-full object-cover" />
+              ) : (
+                item.emoji ?? "🖼️"
+              )}
             </div>
             <div className="p-4">
               <p className="truncate font-bold text-ink">{item.label ?? "Sans titre"}</p>

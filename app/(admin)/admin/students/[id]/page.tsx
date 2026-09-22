@@ -6,8 +6,9 @@ import { ArrowLeft, Trash, Plus, SpinnerGap, Camera, X, Pencil } from "@phosphor
 import { showToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { FileUpload } from "@/components/ui/file-upload";
+import { StudentAvatar } from "@/components/ui/student-avatar";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { DetailSkeleton } from "@/components/ui/skeleton";
-import Image from "next/image";
 
 interface Student {
   id: string;
@@ -42,6 +43,7 @@ export default function StudentDetailPage() {
   const [deletingItem, setDeletingItem] = useState(false);
   const [deleteStudentConfirm, setDeleteStudentConfirm] = useState(false);
   const [deletingStudent, setDeletingStudent] = useState(false);
+  const [uploadingGallery, setUploadingGallery] = useState(false);
 
   useEffect(() => {
     fetch(`/api/students/${id}`).then((r) => r.json()).then((data) => {
@@ -74,6 +76,7 @@ export default function StudentDetailPage() {
         emoji: form.get("emoji") || "💼",
         gradient: "linear-gradient(135deg,#2563EB,#06B6D4)",
         coverImage: projectCover || undefined,
+        demoUrl: String(form.get("demoUrl") ?? "").trim() || undefined,
       }),
     });
     if (res.ok) {
@@ -115,11 +118,41 @@ export default function StudentDetailPage() {
     const res = await fetch(`/api/students/${id}/gallery`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ label: "Upload", imageUrl: url }),
+      body: JSON.stringify({ label: "Photo", imageUrl: url }),
     });
     if (res.ok) {
       showToast("Image ajoutée", "success");
       reload();
+    } else {
+      showToast("Échec de l'ajout à la galerie", "error");
+    }
+  }
+
+  async function addGalleryImages(urls: string[]) {
+    let ok = 0;
+    for (const url of urls) {
+      const res = await fetch(`/api/students/${id}/gallery`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ label: "Photo", imageUrl: url }),
+      });
+      if (res.ok) ok += 1;
+    }
+    if (ok > 0) {
+      showToast(ok > 1 ? `${ok} images ajoutées` : "Image ajoutée", "success");
+      reload();
+    } else {
+      showToast("Échec de l'ajout à la galerie", "error");
+    }
+  }
+
+  async function deleteGalleryImage(itemId: string) {
+    const res = await fetch(`/api/students/${id}/gallery?id=${itemId}`, { method: "DELETE" });
+    if (res.ok) {
+      showToast("Image supprimée", "info");
+      reload();
+    } else {
+      showToast("Échec de la suppression", "error");
     }
   }
 
@@ -170,21 +203,28 @@ export default function StudentDetailPage() {
 
       <div className="mb-8 flex flex-wrap items-center gap-4">
         <div className="group relative shrink-0">
-          <div
-            className="flex size-16 items-center justify-center rounded-2xl font-display text-2xl font-black text-white"
-            style={{ background: student.avatarGradient }}>
-            {student.avatar}
-          </div>
-          <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/40 opacity-0 transition group-hover:opacity-100">
-            <FileUpload folder={`avatars/${id}`} onUploaded={async (url) => {
-              const res = await fetch(`/api/students/${id}`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ avatar: url, avatarGradient: "linear-gradient(135deg,#4f46e5,#06b6d4)" }),
-              });
-              if (res.ok) { showToast("Avatar mis à jour", "success"); reload(); }
-              else showToast("Erreur mise à jour avatar", "error");
-            }}>
+          <StudentAvatar
+            avatar={student.avatar}
+            avatarGradient={student.avatarGradient}
+            firstName={student.firstName}
+            lastName={student.lastName}
+            className="size-16 rounded-2xl text-2xl"
+            textClassName="text-2xl"
+          />
+          <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-black/40 opacity-0 transition group-hover:pointer-events-auto group-hover:opacity-100">
+            <FileUpload
+              folder={`avatars/${id}`}
+              label="Changer la photo de profil"
+              onUploaded={async (url) => {
+                const res = await fetch(`/api/students/${id}`, {
+                  method: "PATCH",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ avatar: url, avatarGradient: "linear-gradient(135deg,#4f46e5,#06b6d4)" }),
+                });
+                if (res.ok) { showToast("Avatar mis à jour", "success"); reload(); }
+                else showToast("Erreur mise à jour avatar", "error");
+              }}
+            >
               <Camera className="size-5 text-white" />
             </FileUpload>
           </div>
@@ -206,17 +246,32 @@ export default function StudentDetailPage() {
           {student.gallery.map((g: any) => (
             <div key={g.id} className="group relative h-24 w-24 overflow-hidden rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-surface">
               {g.imageUrl ? (
-                <Image src={g.imageUrl} alt={g.label} fill className="object-cover" />
+                <OptimizedImage src={g.imageUrl} alt={g.label} width={96} height={96} className="size-full object-cover" />
               ) : (
                 <div className="flex h-full items-center justify-center text-3xl" style={{ background: g.gradient }}>
                   {g.emoji}
                 </div>
               )}
+              <button
+                type="button"
+                aria-label={`Supprimer ${g.label}`}
+                onClick={() => deleteGalleryImage(g.id)}
+                className="absolute right-1 top-1 hidden rounded-full bg-black/60 p-1 text-white transition hover:bg-coral group-hover:block"
+              >
+                <X className="size-3" />
+              </button>
             </div>
           ))}
           <div className="flex h-24 w-24 items-center justify-center rounded-brand-sm border-2 border-dashed border-[#E8EEF6] dark:border-border bg-white dark:bg-surface">
-            <FileUpload folder={`gallery/${id}`} onUploaded={addGalleryImage}>
-              <Plus className="size-6 text-ink-soft" />
+            <FileUpload
+              folder={`gallery/${id}`}
+              multiple
+              label="Ajouter des photos à la galerie"
+              onUploaded={addGalleryImage}
+              onUploadedMultiple={addGalleryImages}
+              onUploadingChange={setUploadingGallery}
+            >
+              {uploadingGallery ? <SpinnerGap className="size-6 animate-spin text-sky" /> : <Plus className="size-6 text-ink-soft" />}
             </FileUpload>
           </div>
         </div>
@@ -239,6 +294,7 @@ export default function StudentDetailPage() {
           <input name="title" required placeholder="Titre du projet" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
           <input name="description" required placeholder="Description" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
           <input name="tags" placeholder="Tags (virgule)" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
+          <input name="demoUrl" type="url" placeholder="Lien de démo (https://...)" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
           <input name="dateLabel" placeholder="Date affichée" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
           <select name="status" className="rounded-brand-sm border-2 border-border bg-surface px-3 py-2 text-sm text-ink focus:border-sky focus:outline-none">
             <option value="progress">En cours</option>

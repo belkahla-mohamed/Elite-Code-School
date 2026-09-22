@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, CheckCircle, ArrowSquareOut, LinkedinLogo, ShareNetwork } from "@phosphor-icons/react/dist/ssr";
+import { QrCode } from "@/components/ui/qr-code";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -30,7 +31,9 @@ export default async function CertificationPage({ params }: Props) {
   }
 
   const { certification, student } = result;
-  const shareUrl = `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://elitecodeschool.ma"}/certification/${id}`;
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://elitecodeschool.ma";
+  const shareUrl = `${baseUrl}/certification/${id}`;
+  const verifyUrl = `${baseUrl}/verify/${certification.serialCode || id}`;
   const linkedinShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
   const whatsappShareUrl = `https://wa.me/?text=${encodeURIComponent(`🎓 ${certification.emoji} ${certification.title} — ${certification.mention}\n${shareUrl}`)}`;
 
@@ -72,6 +75,14 @@ export default async function CertificationPage({ params }: Props) {
             <div className="mt-4 rounded-xl bg-white dark:bg-surface p-3 border border-border">
               <p className="text-[10px] font-black uppercase tracking-wider text-ink-soft">Code de vérification unique</p>
               <p className="mt-1 font-mono text-sm font-bold tracking-wider text-sky break-all">{id}</p>
+            </div>
+          </div>
+
+          {/* QR Code */}
+          <div className="mt-8 flex flex-col items-center">
+            <p className="text-xs font-black uppercase tracking-wide text-ink-soft mb-3">Scanner pour vérifier</p>
+            <div className="rounded-2xl bg-white p-3 shadow-sm border border-border">
+              <QrCode value={verifyUrl} size={140} />
             </div>
           </div>
 

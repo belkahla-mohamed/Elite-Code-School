@@ -4,6 +4,7 @@ import Image from "next/image"
 import { ArrowRight, CalendarBlank, Tag, ArrowLeft } from "@phosphor-icons/react/dist/ssr"
 import { PageHero, CtaBand } from "@/components/page-sections"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
+import { ViewCounter } from "@/components/ui/view-counter"
 
 export const metadata: Metadata = {
   title: "Blog — Elite Code School",
@@ -94,9 +95,12 @@ function ArticleCard({ article, index }: { article: (typeof articles)[number]; i
             </span>
           </div>
           <div className="flex flex-1 flex-col p-5">
-            <span className="flex items-center gap-1.5 text-xs font-bold text-ink-soft">
+            <div className="flex items-center justify-between gap-2 text-xs font-bold text-ink-soft">
+            <span className="flex items-center gap-1.5">
               <CalendarBlank className="size-3" /> {article.date}
             </span>
+            <ViewCounter slug={article.slug} />
+          </div>
             <h3 className="mt-2 font-display text-base font-semibold text-ink transition duration-300 ease-out group-hover:text-brand dark:text-ink">
               {article.title}
             </h3>

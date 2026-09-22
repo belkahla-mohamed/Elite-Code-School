@@ -1,4 +1,5 @@
 import jsPDF from "jspdf";
+import QRCode from "qrcode";
 import type { StudentPortfolio } from "@/lib/types";
 
 export async function generateStudentReport(student: StudentPortfolio): Promise<Blob> {
@@ -64,6 +65,7 @@ export async function generateStudentReport(student: StudentPortfolio): Promise<
   y = kv("Niveau", student.levelLabel, y);
   y = kv("Programme", student.program?.title ?? "-", y);
   y = kv("Heures", `${student.hours}h`, y);
+  if (student.dossierNumber) y = kv("Dossier", student.dossierNumber, y);
   y += 2;
 
   doc.setDrawColor(200, 200, 200);
@@ -109,6 +111,16 @@ export async function generateStudentReport(student: StudentPortfolio): Promise<
   doc.setFontSize(7);
   doc.setFont("helvetica", "normal");
   doc.text(`Généré le ${new Date().toLocaleDateString("fr-FR")} · Elite Code School · Marrakech`, 15, y);
+
+  if (student.certifications.length > 0 && student.certifications[0].serialCode) {
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://elitecodeschool.ma";
+    const verifyUrl = `${baseUrl}/verify/${student.certifications[0].serialCode}`;
+    try {
+      const qrDataUrl = await QRCode.toDataURL(verifyUrl, { width: 120, margin: 1 });
+      const qrImg = await fetch(qrDataUrl).then((r) => r.blob()).then((b) => b.arrayBuffer());
+      doc.addImage(new Uint8Array(qrImg), "PNG", pageW - 35, y - 20, 18, 18);
+    } catch {}
+  }
 
   return doc.output("blob");
 }

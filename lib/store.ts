@@ -44,6 +44,7 @@ import type {
   WeeklySlot
 } from "@/lib/types";
 import { slugify } from "@/lib/utils";
+import { generateMatricule } from "@/lib/matricule";
 import { addActivity, type ActivityEntry } from "@/lib/activity-log";
 
 const notifTitles: Record<string, Record<string, string>> = {
@@ -72,6 +73,7 @@ type DemoStore = {
   studentAlerts: StudentAlert[];
   contentBlocks: ContentBlock[];
   contacts: ContactLead[];
+  blogViews: Record<string, number>;
 };
 
 const globalForStore = globalThis as unknown as { eliteCodeSchoolStore?: DemoStore };
@@ -93,6 +95,14 @@ export function demoStore() {
       studentAlerts: alertsSeed(),
       contentBlocks: [],
       contacts: [],
+      blogViews: {
+        "robotique-7-ans": 142,
+        "scratch-vs-python": 98,
+        "projets-ia-ados": 211,
+        "portail-parent": 64,
+        "hackathon-marrakech": 87,
+        "seance-essai": 53,
+      },
     };
   }
 
@@ -148,7 +158,7 @@ export async function createContactLead(payload: { name: string; phone: string; 
 function followsSeed(): Follow[] {
   const now = Date.now()
   const make = (studentId: string, targetId: string, hoursAgo: number): Follow => ({
-    id: `fol-${targetId}`,
+    id: `fol-${studentId}-${targetId}`,
     studentId,
     targetId,
     createdAt: new Date(now - hoursAgo * 3_600_000).toISOString(),
@@ -376,6 +386,7 @@ export async function acceptInscriptionRequest(id: string, notes?: string) {
       isPublic: true,
       parentEmail: request.parentEmail,
       parentSecretHash: hashSecret(parentSecret),
+      dossierNumber: generateMatricule(new Date()),
       createdAt: new Date().toISOString()
     };
 
@@ -434,7 +445,8 @@ export async function acceptInscriptionRequest(id: string, notes?: string) {
       hours: 0,
       is_public: true,
       parent_email: request.parent_email,
-      parent_secret_hash: hashSecret(parentSecret)
+      parent_secret_hash: hashSecret(parentSecret),
+      dossier_number: generateMatricule(new Date())
     })
     .select("*")
     .single();
@@ -591,11 +603,11 @@ export async function getCertificationById(certId: string) {
     if (!cert) return null;
     const student = demoStore().students.find((s) => s.id === cert.studentId);
     if (!student) return null;
-    return { certification: cert, student: { firstName: student.firstName, lastName: student.lastName, slug: student.slug } };
+    return { certification: cert, student: { firstName: student.firstName, lastName: student.lastName, slug: student.slug, dossierNumber: student.dossierNumber } };
   }
   const { data, error } = await getSupabaseAdmin()
     .from("certifications")
-    .select("*, students(first_name, last_name, slug)")
+    .select("*, students(first_name, last_name, slug, dossier_number)")
     .eq("id", certId)
     .single();
 
@@ -606,6 +618,7 @@ export async function getCertificationById(certId: string) {
       firstName: data.students?.first_name || "",
       lastName: data.students?.last_name || "",
       slug: data.students?.slug || "",
+      dossierNumber: data.students?.dossier_number || undefined,
     },
   };
 }
@@ -618,7 +631,7 @@ export async function getAllCertifications() {
       if (student) {
         allCerts.push({
           certification: cert,
-          student: { firstName: student.firstName, lastName: student.lastName, slug: student.slug },
+          student: { firstName: student.firstName, lastName: student.lastName, slug: student.slug, dossierNumber: student.dossierNumber },
         });
       }
     });
@@ -627,7 +640,7 @@ export async function getAllCertifications() {
 
   const { data, error } = await getSupabaseAdmin()
     .from("certifications")
-    .select("*, students(first_name, last_name, slug)")
+    .select("*, students(first_name, last_name, slug, dossier_number)")
     .order("issue_date", { ascending: false });
 
   if (error || !data) return [];
@@ -637,6 +650,7 @@ export async function getAllCertifications() {
       firstName: d.students?.first_name || "",
       lastName: d.students?.last_name || "",
       slug: d.students?.slug || "",
+      dossierNumber: d.students?.dossier_number || undefined,
     },
   }));
 }
@@ -790,6 +804,7 @@ export async function createStudent(data: {
       isPublic: true,
       parentEmail: data.parentEmail ?? "",
       parentSecretHash: hashSecret(`ECS-${generateAccessSecret()}`),
+      dossierNumber: generateMatricule(new Date()),
       createdAt: new Date().toISOString()
     };
     demoStore().students.unshift(student);
@@ -815,6 +830,7 @@ export async function createStudent(data: {
       is_public: true,
       parent_email: data.parentEmail ?? "",
       parent_secret_hash: hashSecret(`ECS-${generateAccessSecret()}`),
+      dossier_number: generateMatricule(new Date())
     })
     .select("*")
     .single();
@@ -1058,7 +1074,8 @@ export async function addProject(studentId: string, payload: Omit<Project, "id" 
         date_label: payload.dateLabel,
         emoji: payload.emoji,
         gradient: payload.gradient,
-        cover_image: payload.coverImage ?? null
+        cover_image: payload.coverImage ?? null,
+        demo_url: payload.demoUrl ?? null
       })
       .select("*")
       .single();
@@ -1605,7 +1622,7 @@ export async function toggleFollow(studentId: string, targetId: string): Promise
       return false
     }
     store.follows.push({
-      id: `fol-${Date.now()}`,
+      id: `fol-${studentId}-${targetId}-${Date.now()}`,
       studentId,
       targetId,
       createdAt: new Date().toISOString(),
@@ -2479,7 +2496,8 @@ function mapProject(row: any): Project {
     dateLabel: row.date_label,
     emoji: row.emoji,
     gradient: row.gradient,
-    coverImage: row.cover_image ?? undefined
+    coverImage: row.cover_image ?? undefined,
+    demoUrl: row.demo_url ?? undefined
   };
 }
 
@@ -2525,6 +2543,7 @@ function mapStudentPortfolio(row: any, programs: Program[]): StudentPortfolio {
     isPublic: row.is_public,
     parentEmail: row.parent_email,
     parentSecretHash: row.parent_secret_hash,
+    dossierNumber: row.dossier_number ?? undefined,
     createdAt: row.created_at
   };
 
@@ -2559,9 +2578,48 @@ export async function updateContentBlock(key: string, value: string) {
       demoStore().contentBlocks.push({ key, value, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
     }
     return;
-  }
-  const { error } = await getSupabaseAdmin()
-    .from("content_blocks")
-    .upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: "key" });
+  }  const { error } = await getSupabaseAdmin().from("content_blocks").upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: "key" });
   if (error) throw error;
+}
+
+// ─── Blog vues ────────────────────────────────────────────
+
+export async function getBlogViews(): Promise<Record<string, number>> {
+  if (!hasSupabaseConfig()) return demoStore().blogViews ?? {};
+  try {
+    const { data, error } = await getSupabaseAdmin().from("blog_views").select("slug, views");
+    if (error) throw error;
+    const counts: Record<string, number> = {};
+    for (const row of data ?? []) counts[row.slug] = row.views ?? 0;
+    return counts;
+  } catch (e) {
+    console.warn("getBlogViews: Supabase table missing, falling back to demo store", e);
+    return demoStore().blogViews ?? {};
+  }
+}
+
+export async function incrementBlogView(slug: string): Promise<number> {
+  if (!hasSupabaseConfig()) {
+    const store = demoStore();
+    if (!store.blogViews) store.blogViews = {};
+    store.blogViews[slug] = (store.blogViews[slug] ?? 0) + 1;
+    return store.blogViews[slug];
+  }
+  try {
+    const supabase = getSupabaseAdmin();
+    const { data: row, error } = await supabase.from("blog_views").select("views").eq("slug", slug).maybeSingle();
+    if (error) throw error;
+    const next = (row?.views ?? 0) + 1;
+    const { error: upsertError } = await supabase
+      .from("blog_views")
+      .upsert({ slug, views: next, updated_at: new Date().toISOString() }, { onConflict: "slug" });
+    if (upsertError) throw upsertError;
+    return next;
+  } catch (e) {
+    console.warn("incrementBlogView: Supabase table missing, falling back to demo store", e);
+    const store = demoStore();
+    if (!store.blogViews) store.blogViews = {};
+    store.blogViews[slug] = (store.blogViews[slug] ?? 0) + 1;
+    return store.blogViews[slug];
+  }
 }

@@ -3,6 +3,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { ArrowLeft, CalendarBlank, Tag } from "@phosphor-icons/react/dist/ssr"
 import { CtaBand } from "@/components/page-sections"
+import { ViewCounter } from "@/components/ui/view-counter"
 
 const articles = [
   { slug: "robotique-7-ans", image: "/images/kids-stem.jpg", date: "10 sept. 2026", category: "robotique", title: "Pourquoi apprendre la robotique des 7 ans ?", excerpt: "Les bienfaits de la robotique educative sur le developpement cognitif des enfants.", content: "Des 7 ans, les enfants commencent a comprendre la relation cause-effet. La robotique exploite cette curiosite naturelle en transformant des concepts abstraits en actions concretes. Un robot qui avance, tourne ou evite un obstacle, c'est la physique et la logique en mouvement.\n\nChez Elite Code School, nous utilisons des kits mBot et Micro:bit adaptes aux petits : assemblage visuel, capteurs simples, programmation par blocs. Chaque session se termine par un defi concret que l'enfant resout en equipe.\n\nLes bienfaits se mesurent rapidement : meilleure concentration, capacite a decomposer les problemes, et confiance en soi quand le robot execute enfin le programme. La robotique n'est pas un loisir — c'est un veritable outil de developpement cognitif." },
@@ -80,8 +81,11 @@ export default async function BlogArticlePage({ params }: { params: Promise<{ sl
         </Link>
 
         <div className="mx-auto max-w-3xl">
-          <span className="flex items-center gap-1.5 text-xs font-bold text-ink-soft">
-            <CalendarBlank className="size-3" /> {article.date}
+          <span className="flex flex-wrap items-center gap-4 text-xs font-bold text-ink-soft">
+            <span className="flex items-center gap-1.5">
+              <CalendarBlank className="size-3" /> {article.date}
+            </span>
+            <ViewCounter slug={article.slug} increment />
           </span>
 
           <h1 className="mt-3 font-display text-3xl font-semibold tracking-[-0.02em] text-ink dark:text-ink sm:text-4xl lg:text-5xl">

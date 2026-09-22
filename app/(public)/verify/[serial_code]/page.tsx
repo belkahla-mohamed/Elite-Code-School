@@ -1,16 +1,18 @@
 "use client";
 
 import { useEffect, useState, use } from "react";
-import { Medal, CheckCircle, XCircle, MagnifyingGlass, CalendarBlank, User, Hash } from "@phosphor-icons/react";
+import { Medal, CheckCircle, XCircle, MagnifyingGlass, CalendarBlank, User, Hash, IdentificationCard } from "@phosphor-icons/react";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
+import QRCode from "qrcode";
 
 export default function VerifyCertificatePage({ params }: { params: Promise<{ serial_code: string }> }) {
   const { serial_code } = use(params);
   const [cert, setCert] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
 
   useEffect(() => {
     fetch(`/api/verify/${serial_code}`)
@@ -19,6 +21,8 @@ export default function VerifyCertificatePage({ params }: { params: Promise<{ se
         if (data.certification) {
           setCert(data);
           setError(false);
+          const verifyUrl = `${window.location.origin}/verify/${serial_code}`;
+          QRCode.toDataURL(verifyUrl, { width: 140, margin: 2, color: { dark: "#1e293b", light: "#ffffff" } }).then(setQrDataUrl).catch(() => {});
         } else {
           setError(true);
         }
@@ -92,6 +96,11 @@ export default function VerifyCertificatePage({ params }: { params: Promise<{ se
                           <User className="size-3.5" /> Décerné à
                         </p>
                         <p className="font-bold text-ink">{cert.student.firstName} {cert.student.lastName}</p>
+                        {cert.student.dossierNumber && (
+                          <p className="mt-1 text-xs font-mono text-ink-soft flex items-center gap-1">
+                            <IdentificationCard className="size-3" /> {cert.student.dossierNumber}
+                          </p>
+                        )}
                       </div>
                       
                       <div className="bg-body p-4 rounded-brand-sm border-2 border-border">
@@ -113,6 +122,14 @@ export default function VerifyCertificatePage({ params }: { params: Promise<{ se
                         {cert.certification.emoji}
                       </div>
                     </div>
+
+                    {qrDataUrl && (
+                      <div className="flex flex-col items-center pt-2">
+                        <p className="text-xs font-bold text-ink-soft uppercase tracking-wider mb-2">QR Code de vérification</p>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={qrDataUrl} alt="QR Code" width={140} height={140} className="rounded-xl border border-border" />
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

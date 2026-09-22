@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { showToast } from "@/components/ui/toast";
 import { apiFetch } from "@/lib/api-fetch";
 import { Skeleton } from "@/components/ui/skeleton";
+import { StudentAvatar } from "@/components/ui/student-avatar";
 import type { StudentMessage, StudentPortfolio } from "@/lib/types";
 
 export default function StudentMessagesPage() {
@@ -99,12 +100,14 @@ export default function StudentMessagesPage() {
           return (
             <div key={message.id} className={cn("rounded-brand border-2 bg-white dark:bg-surface p-5", !message.reply ? "border-sky" : "border-border")}>
               <div className="flex items-start gap-3">
-                <div
-                  className="flex size-10 shrink-0 items-center justify-center rounded-xl font-display text-xs font-black text-white"
-                  style={{ background: student?.avatarGradient ?? "linear-gradient(135deg,#0284c7,#38bdf8)" }}
-                >
-                  {student?.avatar ?? "?"}
-                </div>
+                <StudentAvatar
+                  avatar={student?.avatar ?? ""}
+                  avatarGradient={student?.avatarGradient ?? "linear-gradient(135deg,#0284c7,#38bdf8)"}
+                  firstName={student?.firstName}
+                  lastName={student?.lastName}
+                  className="size-10 shrink-0 rounded-xl"
+                  textClassName="text-xs"
+                />
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="text-sm font-bold text-ink">

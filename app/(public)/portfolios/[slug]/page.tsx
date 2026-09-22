@@ -5,6 +5,8 @@ import { ArrowLeft, Lock, Cake, MapPin, CalendarCheck, Medal, ShareNetwork, Cloc
 import { getPortfolioBySlug } from "@/lib/store";
 import { PortfolioTabs } from "@/components/PortfolioTabs";
 import { ShareMenu } from "@/components/ui/share-menu";
+import { FollowButton } from "@/components/ui/follow-button";
+import { StudentAvatar } from "@/components/ui/student-avatar";
 
 interface Props { params: Promise<{ slug: string }> }
 
@@ -69,9 +71,14 @@ export default async function PortfolioDetailPage({ params }: Props) {
           </Link>
 
           <div className="mt-6 flex flex-wrap items-center gap-5 sm:gap-6">
-            <div className={`flex size-20 shrink-0 items-center justify-center rounded-brand font-display text-3xl font-semibold text-white ring-4 ring-white/30 md:size-24 md:text-4xl ${avatarColors[portfolio.id.length % avatarColors.length]}`}>
-              {portfolio.avatar}
-            </div>
+            <StudentAvatar
+              avatar={portfolio.avatar}
+              avatarGradient={portfolio.avatarGradient}
+              firstName={portfolio.firstName}
+              lastName={portfolio.lastName}
+              className="size-20 shrink-0 rounded-brand ring-4 ring-white/30 md:size-24"
+              textClassName="text-3xl font-semibold md:text-4xl"
+            />
             <div className="min-w-0 flex-1">
               <h1 className="font-display text-3xl font-semibold tracking-[-0.02em] text-white sm:text-4xl">
                 {portfolio.firstName} {portfolio.lastName}
@@ -92,12 +99,16 @@ export default async function PortfolioDetailPage({ params }: Props) {
                 </span>
               </div>
             </div>
-            <ShareMenu
-              title={`Portfolio de ${portfolio.firstName} ${portfolio.lastName}`}
-              text={`Découvre le portfolio de ${portfolio.firstName} ${portfolio.lastName} sur Elite Code School`}
-              triggerClassName="inline-flex items-center gap-2 rounded-full border-2 border-white/40 bg-white/10 px-5 py-2.5 text-xs font-bold text-white transition duration-200 ease-out hover:border-white hover:bg-white/20"
-              label={<><ShareNetwork className="size-4" /> Partager</>}
-            />
+            <div className="flex flex-wrap items-center gap-3">
+              <ShareMenu
+                title={`Portfolio de ${portfolio.firstName} ${portfolio.lastName}`}
+                text={`Découvre le portfolio de ${portfolio.firstName} ${portfolio.lastName} sur Elite Code School`}
+                whatsappText={`Découvrez le projet de ${portfolio.firstName} ${portfolio.lastName} à Elite Code School : {url} 🚀`}
+                triggerClassName="inline-flex items-center gap-2 rounded-full border-2 border-white/40 bg-white/10 px-5 py-2.5 text-xs font-bold text-white transition duration-200 ease-out hover:border-white hover:bg-white/20"
+                label={<><ShareNetwork className="size-4" /> Partager</>}
+              />
+              <FollowButton targetId={portfolio.id} />
+            </div>
           </div>
         </div>
       </section>

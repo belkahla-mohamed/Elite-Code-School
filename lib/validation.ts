@@ -23,6 +23,7 @@ export const projectSchema = z.object({
   emoji: z.string().trim().default("💼"),
   gradient: z.string().trim().default("linear-gradient(135deg,#4f46e5,#818cf8)"),
   coverImage: z.string().trim().optional(),
+  demoUrl: z.string().trim().optional().refine((v) => !v || /^https?:\/\//.test(v), "Lien de démo invalide"),
 });
 
 export const certificationSchema = z.object({
@@ -39,6 +40,10 @@ export const certificationSchema = z.object({
   emoji: z.string().trim().default("📸"),
   gradient: z.string().trim().default("linear-gradient(135deg,#06b6d4,#0ea5e9)"),
   imageUrl: z.string().trim().optional(),
+});
+
+export const blogViewSchema = z.object({
+  slug: z.string().trim().min(1).max(120).regex(/^[a-z0-9-]+$/, "Slug invalide"),
 });
 
 export const followRequestSchema = z.object({
@@ -82,4 +87,4 @@ export const requestActionSchema = z.object({
 
 export const messageReplySchema = z.object({
   reply: z.string().trim().min(1, "Réponse requise").max(1000),
-});
+});

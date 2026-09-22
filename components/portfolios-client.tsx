@@ -4,6 +4,7 @@ import { useMemo, useState } from "react"
 import Link from "next/link"
 import { ArrowRight, CaretLeft, CaretRight, MagnifyingGlass, Users } from "@phosphor-icons/react";
 import { AnimatePresence, motion } from "framer-motion"
+import { StudentAvatar } from "@/components/ui/student-avatar"
 import type { StudentPortfolio } from "@/lib/types"
 
 const PAGE_SIZE = 6
@@ -110,9 +111,14 @@ export function PortfoliosClient({ portfolios, programs }: { portfolios: Student
                       className="group flex h-full flex-col overflow-hidden rounded-brand border border-border bg-white p-6 transition duration-300 ease-out hover:-translate-y-0.5 hover:border-brand hover:shadow-md dark:border-white/10 dark:bg-[#1e293b]"
                     >
                       <div className="flex items-center gap-4">
-                        <div className={`flex size-14 shrink-0 items-center justify-center rounded-brand-sm font-display text-xl font-semibold text-white ${avatarColors[i % avatarColors.length]}`}>
-                          {student.avatar}
-                        </div>
+                        <StudentAvatar
+                          avatar={student.avatar}
+                          avatarGradient={student.avatarGradient}
+                          firstName={student.firstName}
+                          lastName={student.lastName}
+                          className="size-14 shrink-0 rounded-brand-sm"
+                          textClassName="text-xl font-semibold"
+                        />
                         <div className="min-w-0">
                           <h3 className="truncate font-display text-lg font-semibold text-ink transition duration-300 ease-out group-hover:text-brand dark:text-white">{student.firstName} {student.lastName}</h3>
                           <p className="text-xs font-bold text-ink-soft dark:text-slate-400">{student.levelLabel}</p>

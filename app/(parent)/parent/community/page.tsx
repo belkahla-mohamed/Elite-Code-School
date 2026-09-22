@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { showToast } from "@/components/ui/toast";
 import { apiFetch } from "@/lib/api-fetch";
 import { cn } from "@/lib/utils";
+import { StudentAvatar } from "@/components/ui/student-avatar";
 import type { CommunityFeedItem, StudentPortfolio } from "@/lib/types";
 import { User, Users, Globe, LockKey, Sparkle, Link as LinkIcon, ShareNetwork, Star, Megaphone, Bell, MagnifyingGlass, Lightbulb, Lightning, Briefcase, CheckCircle, Wrench, FolderOpen } from "@phosphor-icons/react/dist/ssr";
 import { Check, Copy, Heart } from "@phosphor-icons/react";
@@ -23,8 +24,8 @@ export default function ParentCommunityPage() {
   const [copied, setCopied] = useState(false);
   const [processingId, setProcessingId] = useState("");
 
-  const loadData = useCallback(async () => {
-    setPageLoading(true);
+  const loadData = useCallback(async (silent = false) => {
+    if (!silent) setPageLoading(true);
     try {
       const [feedRes, folRes, catRes] = await Promise.all([
         fetch("/api/parent/feed"),
@@ -44,7 +45,7 @@ export default function ParentCommunityPage() {
     } catch {
       showToast("Erreur de chargement de la communauté", "error");
     } finally {
-      setPageLoading(false);
+      if (!silent) setPageLoading(false);
     }
   }, []);
 
@@ -68,7 +69,7 @@ export default function ParentCommunityPage() {
         return next;
       });
       showToast(data.following ? "Abonnement ajouté 🌟" : "Abonnement annulé", data.following ? "success" : "info");
-      await loadData();
+      await loadData(true);
     } catch (e: any) {
       showToast(e.message ?? "Action impossible", "error");
     } finally {
@@ -89,8 +90,8 @@ export default function ParentCommunityPage() {
   function shareWhatsApp() {
     if (!student) return;
     const url = `${window.location.origin}/portfolios/${student.slug}`;
-    const text = `🚀 Découvre les créations technologiques de ${student.firstName} ${student.lastName} !\nElite Code School\n🔗 ${url}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+    const message = `Découvrez le projet de ${student.firstName} ${student.lastName} à Elite Code School : ${url} 🚀`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, "_blank");
   }
 
   if (loading) {
@@ -188,11 +189,14 @@ export default function ParentCommunityPage() {
               {feed.map(({ student: followed, projects }) => (
                 <div key={followed.id} className="rounded-2xl border-2 border-border bg-surface p-4">
                   <div className="mb-3 flex items-center gap-3">
-                    <div
-                      className="flex size-10 items-center justify-center rounded-xl bg-brand font-display text-sm font-black text-white"
-                    >
-                      {followed.avatar}
-                    </div>
+                    <StudentAvatar
+                      avatar={followed.avatar}
+                      avatarGradient={followed.avatarGradient}
+                      firstName={followed.firstName}
+                      lastName={followed.lastName}
+                      className="size-10 shrink-0 rounded-xl"
+                      textClassName="text-sm"
+                    />
                     <div className="min-w-0 flex-1">
                       <Link href={`/portfolios/${followed.slug}`} className="font-display text-sm font-black text-ink hover:text-sky transition">
                         {followed.firstName} {followed.lastName}
@@ -263,11 +267,14 @@ export default function ParentCommunityPage() {
           </div>
           <div className="overflow-hidden rounded-2xl border-2 border-white bg-white p-4">
             <div className="flex items-center gap-3">
-              <div
-                className="flex size-12 items-center justify-center rounded-xl bg-brand font-display text-base font-black text-white"
-              >
-                {student.avatar}
-              </div>
+              <StudentAvatar
+                avatar={student.avatar}
+                avatarGradient={student.avatarGradient}
+                firstName={student.firstName}
+                lastName={student.lastName}
+                className="size-12 shrink-0 rounded-xl"
+                textClassName="text-base"
+              />
               <div className="min-w-0 flex-1">
                 <p className="truncate font-display text-sm font-black text-ink">
                   {student.firstName} {student.lastName}
@@ -343,11 +350,14 @@ export default function ParentCommunityPage() {
                     className="group flex flex-col rounded-2xl border-2 border-border bg-surface p-4 transition hover:border-sky"
                   >
                     <div className="mb-3 flex items-center gap-3">
-                      <div
-                        className={`flex size-12 items-center justify-center rounded-xl font-display text-base font-black text-white ${avatarColors[index % avatarColors.length]}`}
-                      >
-                        {portfolio.avatar}
-                      </div>
+                      <StudentAvatar
+                        avatar={portfolio.avatar}
+                        avatarGradient={portfolio.avatarGradient}
+                        firstName={portfolio.firstName}
+                        lastName={portfolio.lastName}
+                        className="size-12 shrink-0 rounded-xl"
+                        textClassName="text-base"
+                      />
                       <div className="min-w-0 flex-1">
                         <Link
                           href={`/portfolios/${portfolio.slug}`}
@@ -381,7 +391,7 @@ export default function ParentCommunityPage() {
                         )}
                       >
                         <Heart className={cn("size-3.5", isFollowing && "fill-white")} />
-                        {isFollowing ? "Suivi" : "Suivre"}
+                        {isFollowing ? "Se désabonner" : "S'abonner"}
                       </button>
                     </div>
                   </div>

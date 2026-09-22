@@ -48,6 +48,7 @@ create table if not exists public.students (
   is_public boolean not null default true,
   parent_email text not null,
   parent_secret_hash text not null,
+  dossier_number text,
   created_at timestamptz not null default now()
 );
 
@@ -68,6 +69,9 @@ create table if not exists public.projects (
   gradient text not null default 'linear-gradient(135deg,#12AEEA,#75D64B)',
   created_at timestamptz not null default now()
 );
+
+alter table public.projects add column if not exists cover_image text;
+alter table public.projects add column if not exists demo_url text;
 
 create table if not exists public.certifications (
   id uuid primary key default gen_random_uuid(),
@@ -596,6 +600,8 @@ create index if not exists seances_student_idx on public.seances (student_id, da
 
 -- Colonnes manquantes utilisÃ©es par le store
 alter table public.projects add column if not exists cover_image text;
+alter table public.projects add column if not exists demo_url text;
+
 alter table public.gallery_items add column if not exists image_url text;
 alter table public.certifications add column if not exists image_url text;
 

@@ -14,7 +14,7 @@ export async function GET(request: Request, context: { params: Promise<{ serial_
       
       return NextResponse.json({
         certification: cert,
-        student: { firstName: student.firstName, lastName: student.lastName, slug: student.slug }
+        student: { firstName: student.firstName, lastName: student.lastName, slug: student.slug, dossierNumber: student.dossierNumber }
       });
     }
 
@@ -43,6 +43,7 @@ export async function GET(request: Request, context: { params: Promise<{ serial_
         firstName: data.students?.first_name || "",
         lastName: data.students?.last_name || "",
         slug: data.students?.slug || "",
+        dossierNumber: data.students?.dossier_number || undefined,
       }
     });
 

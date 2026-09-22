@@ -4,10 +4,12 @@ import { useState, useEffect } from "react";
 import { useParentStudent } from "@/hooks/useParentStudent";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
-import { User, FolderOpen, Medal, Clock, Eye, Lock, Bell, BellSlash, DownloadSimple, SpinnerGap, ArrowSquareOut, CaretRight, BookOpen, Shield, FileText } from "@phosphor-icons/react";
+import { User, FolderOpen, Medal, Clock, Eye, Lock, Bell, BellSlash, DownloadSimple, SpinnerGap, ArrowSquareOut, CaretRight, BookOpen, Shield, FileText, Camera } from "@phosphor-icons/react";
 import Link from "next/link";
 import { generateStudentReport, downloadBlob } from "@/lib/pdf-generator";
 import { showToast } from "@/components/ui/toast";
+import { StudentAvatar } from "@/components/ui/student-avatar";
+import { FileUpload } from "@/components/ui/file-upload";
 
 function useNotifications() {
   const [enabled, setEnabled] = useState(() => {
@@ -20,9 +22,29 @@ function useNotifications() {
 }
 
 export default function ParentDashboardPage() {
-  const { student, loading, error, togglePrivacy } = useParentStudent();
+  const { student, loading, error, togglePrivacy, refetch } = useParentStudent();
   const [pdfLoading, setPdfLoading] = useState(false);
   const [notifications, setNotifications] = useNotifications();
+  const [avatarUploading, setAvatarUploading] = useState(false);
+
+  async function handleAvatarUploaded(url: string) {
+    if (!student) return;
+    try {
+      const res = await fetch("/api/parent/avatar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ avatarUrl: url }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? "Erreur");
+      }
+      showToast("Photo de profil mise à jour", "success");
+      refetch();
+    } catch (e: any) {
+      showToast(e.message ?? "Erreur lors de la mise à jour", "error");
+    }
+  }
 
   async function handleDownloadPdf() {
     if (!student) return;
@@ -123,12 +145,31 @@ export default function ParentDashboardPage() {
         <div className="rounded-brand border-2 border-border bg-white dark:bg-surface p-6 md:p-8">
           <div className="flex flex-wrap items-start justify-between gap-5">
             <div className="flex items-center gap-4">
-              <div
-                className="flex size-16 items-center justify-center rounded-2xl font-display text-xl font-bold text-black dark:text-white shadow"
-                
-              >
-                {student.avatar}
+              <div className="group relative shrink-0">
+                <StudentAvatar
+                  avatar={student.avatar}
+                  avatarGradient={student.avatarGradient}
+                  firstName={student.firstName}
+                  lastName={student.lastName}
+                  className="size-16 rounded-2xl text-xl shadow"
+                  textClassName="text-xl"
+                />
+                <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-black/40 opacity-0 transition group-hover:pointer-events-auto group-hover:opacity-100">
+                  <FileUpload
+                    folder={`avatars/${student.id}`}
+                    label="Changer la photo de profil"
+                    onUploaded={handleAvatarUploaded}
+                    onUploadingChange={setAvatarUploading}
+                  >
+                    <Camera className="size-5 text-white" />
+                  </FileUpload>
+                </div>
               </div>
+              {avatarUploading && (
+                <span className="inline-flex items-center gap-1 text-xs font-semibold text-sky">
+                  <SpinnerGap className="size-3.5 animate-spin" /> Envoi...
+                </span>
+              )}
               <div>
                 <span className="tag">Espace parent</span>
                 <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowLeft, CheckCircle, Medal, CalendarBlank, Hash, DownloadSimple } from "@phosphor-icons/react/dist/ssr";
 import { getCertificationById } from "@/lib/store";
 import { PrintButton } from "@/components/ui/print-button";
+import { QrCode } from "@/components/ui/qr-code";
 
 export const metadata = {
   title: "Vérification de Certificat | Elite Code School",
@@ -38,6 +39,8 @@ export default async function VerifyCertificatePage({ searchParams }: { searchPa
   }
 
   const { certification: cert, student } = result;
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://elitecodeschool.ma";
+  const verifyUrl = `${baseUrl}/verify/${cert.serialCode || id}`;
 
   return (
     <div className="bg-body py-12 sm:py-24">
@@ -69,6 +72,13 @@ export default async function VerifyCertificatePage({ searchParams }: { searchPa
             <p className="mt-2 font-display text-3xl font-bold text-white">{student.firstName} {student.lastName}</p>
             <div className="mt-8 inline-block rounded-full bg-white/20 px-6 py-2 backdrop-blur-sm">
               <p className="text-lg font-bold text-white">{cert.mention}</p>
+            </div>
+          </div>
+
+          <div className="flex flex-col items-center py-6 bg-white dark:bg-[#1e293b]">
+            <p className="text-xs font-bold uppercase tracking-wider text-ink-soft dark:text-slate-500 mb-3">Scanner pour vérifier</p>
+            <div className="rounded-2xl bg-white p-3 shadow-sm border border-border">
+              <QrCode value={verifyUrl} size={140} />
             </div>
           </div>
 
