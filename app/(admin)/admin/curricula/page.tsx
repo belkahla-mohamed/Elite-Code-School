@@ -53,9 +53,12 @@ export default function CurriculaAdminPage() {
       fetch("/api/programs").then((r) => r.json()),
       fetch("/api/categories").then((r) => r.json()),
     ]).then(([programsData, categoriesData]) => {
-      setPrograms(Array.isArray(programsData) ? programsData : []);
-      setCategories(Array.isArray(categoriesData) ? categoriesData : []);
+      setPrograms(Array.isArray(programsData) ? programsData : (programsData as any)?.programs ?? []);
+      setCategories(Array.isArray(categoriesData) ? categoriesData : (categoriesData as any)?.categories ?? []);
       setLoading(false);
+    }).catch(() => {
+      setLoading(false);
+      showToast("Erreur de chargement des données", "error");
     });
   }
 

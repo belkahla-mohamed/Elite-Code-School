@@ -43,10 +43,13 @@ export default function StudentsPage() {
     fetch("/api/students").then((r) => r.json()).then((data) => {
       setStudents(data.students ?? []);
       setLoading(false);
+    }).catch(() => {
+      setLoading(false);
+      showToast("Erreur de chargement des élèves", "error");
     });
     fetch("/api/programs").then((r) => r.json()).then((data) => {
-      setPrograms(data.programs ?? []);
-    });
+      setPrograms(Array.isArray(data) ? data : (data as any)?.programs ?? []);
+    }).catch(() => showToast("Erreur de chargement des programmes", "error"));
   }, []);
 
   const filtered = students.filter((s) =>
@@ -332,9 +335,12 @@ export default function StudentsPage() {
                 type="number" min="7" max="17" placeholder="Âge" required className="rounded-brand-sm border-2 border-border bg-body px-3 py-2 text-sm text-ink focus:border-sky focus:outline-none w-full" />
               <select value={addForm.programId} onChange={(e) => setAddForm({ ...addForm, programId: e.target.value })}
                 required className="rounded-brand-sm border-2 border-border bg-body px-3 py-2 text-sm text-ink focus:border-sky focus:outline-none w-full">
-                <option value="">Sélectionner un programme</option>
+                <option value="">{programs.length === 0 ? "Aucun programme disponible" : "Sélectionner un programme"}</option>
                 {programs.map((p) => <option key={p.id} value={p.id}>{p.title}</option>)}
               </select>
+              {programs.length === 0 && (
+                <p className="text-xs font-semibold text-coral">Aucun programme chargé — vérifiez votre connexion puis réessayez.</p>
+              )}
               <input value={addForm.parentEmail} onChange={(e) => setAddForm({ ...addForm, parentEmail: e.target.value })}
                 type="email" placeholder="Email parent (optionnel)" className="rounded-brand-sm border-2 border-border bg-body px-3 py-2 text-sm text-ink focus:border-sky focus:outline-none w-full" />
               <button type="submit" disabled={saving} className="btn-primary w-full py-2">

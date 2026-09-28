@@ -29,8 +29,11 @@ export default function CategoriesPage() {
 
   function load() {
     fetch("/api/categories").then((r) => r.json()).then((data) => {
-      setCategories(Array.isArray(data) ? data : []);
+      setCategories(Array.isArray(data) ? data : (data as any)?.categories ?? []);
       setLoading(false);
+    }).catch(() => {
+      setLoading(false);
+      showToast("Erreur de chargement des catégories", "error");
     });
   }
 

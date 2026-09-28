@@ -78,6 +78,9 @@ export default function EnrollmentsPage() {
       for (const p of list) map[p.id] = p.title;
       setProgramMap(map);
       setLoading(false);
+    }).catch(() => {
+      setLoading(false);
+      showToast("Erreur de chargement des inscriptions", "error");
     });
   }, []);
 

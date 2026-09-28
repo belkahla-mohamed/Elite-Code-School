@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { showToast } from "@/components/ui/toast";
 import { Card, CardHeader, CardBody } from "@/components/ui/card";
 import { Users, BookOpen, CheckCircle, Clock } from "@phosphor-icons/react";
 
@@ -42,6 +43,9 @@ export default function AnalyticsPage() {
       setRequests((insData as any)?.requests ?? []);
       setStudents(Array.isArray(stuData) ? stuData : (stuData as any)?.students ?? []);
       setLoading(false);
+    }).catch(() => {
+      setLoading(false);
+      showToast("Erreur de chargement des statistiques", "error");
     });
   }, []);
 

@@ -102,7 +102,7 @@ export function ShareMenu({ title, text, url, label, triggerClassName, whatsappT
     },
     {
       key: "facebook",
-      label: "FacebookLogo",
+      label: "Facebook",
       icon: FacebookLogo,
       circle: "bg-[#1877F2]/10 text-[#1877F2]",
       href: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,

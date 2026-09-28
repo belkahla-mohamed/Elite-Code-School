@@ -7,36 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum ProgramLevel {
-  debutant
-  intermediaire
-  avance
-
-  @@map("program_level")
-}
-
-enum PriceType {
-  monthly
-  hourly
-
-  @@map("price_type")
-}
-
-enum RequestStatus {
-  pending
-  accepted
-  refused
-
-  @@map("request_status")
-}
-
-enum ProjectStatus {
-  completed
-  in_progress
-
-  @@map("project_status")
-}
-
 model Category {
   id          String    @id
   name        String
@@ -45,40 +15,37 @@ model Category {
   color       String    @default("sky")
   sortOrder   Int       @default(0) @map("sort_order")
   createdAt   DateTime  @default(now()) @map("created_at")
-
   programs    Program[]
 
   @@map("categories")
 }
 
 model Program {
-  id           String       @id
-  title        String
-  ageRange     String?      @map("age_range")
-  level        ProgramLevel
-  description  String
-  tools        String[]
-  toolsDescription String  @default("") @map("tools_description")
-  galleryImages String[]   @default([]) @map("gallery_images")
-  certificatePreview String @default("") @map("certificate_preview")
-  priceMonthly Int?         @map("price_monthly")
-  priceType    PriceType    @default(monthly) @map("price_type")
-  totalHours   Int?         @map("total_hours")
-  durationMonths Int?       @map("duration_months")
-  color        String       @default("accent")
-  image        String       @default("")
-  duration     String       @default("")
-  objectives   String       @default("")
-  prerequisites String      @default("")
-  schedule     String       @default("")
-  sortOrder    Int          @default(0) @map("sort_order")
-  createdAt    DateTime     @default(now()) @map("created_at")
-
-  categoryId   String?      @map("category_id")
-  category     Category?    @relation(fields: [categoryId], references: [id])
-
-  students          Student[]
+  id                  String               @id
+  title               String
+  ageRange            String?              @map("age_range")
+  level               ProgramLevel
+  description         String
+  tools               String[]
+  priceMonthly        Int?                 @map("price_monthly")
+  color               String               @default("accent")
+  sortOrder           Int                  @default(0) @map("sort_order")
+  createdAt           DateTime             @default(now()) @map("created_at")
+  image               String               @default("")
+  duration            String               @default("")
+  objectives          String               @default("")
+  prerequisites       String               @default("")
+  schedule            String               @default("")
+  categoryId          String?              @map("category_id")
+  durationMonths      Int?                 @map("duration_months")
+  priceType           PriceType            @default(monthly) @map("price_type")
+  totalHours          Int?                 @map("total_hours")
+  certificatePreview  String               @default("") @map("certificate_preview")
+  galleryImages       String[]             @default([]) @map("gallery_images")
+  toolsDescription    String               @default("") @map("tools_description")
   inscriptionRequests InscriptionRequest[]
+  category            Category?            @relation(fields: [categoryId], references: [id])
+  students            Student[]
 
   @@map("programs")
 }
@@ -90,46 +57,45 @@ model InscriptionRequest {
   age              Int
   schoolLevel      String?       @map("school_level")
   programId        String        @map("program_id")
-  program          Program       @relation(fields: [programId], references: [id])
-  parentFirstName  String        @default("") @map("parent_first_name")
-  parentLastName   String        @default("") @map("parent_last_name")
   parentPhone      String        @map("parent_phone")
   parentEmail      String        @map("parent_email")
   message          String?
-  adminNotes       String?       @map("admin_notes")
-  rejectionMessage String?       @map("rejection_message")
   status           RequestStatus @default(pending)
   createdAt        DateTime      @default(now()) @map("created_at")
+  adminNotes       String?       @map("admin_notes")
+  rejectionMessage String?       @map("rejection_message")
+  parentFirstName  String        @default("") @map("parent_first_name")
+  parentLastName   String        @default("") @map("parent_last_name")
+  program          Program       @relation(fields: [programId], references: [id])
 
   @@index([status])
   @@map("inscription_requests")
 }
 
 model Student {
-  id               String   @id @default(cuid())
-  slug             String   @unique
-  firstName        String   @map("first_name")
-  lastName         String   @map("last_name")
+  id               String          @id @default(cuid())
+  slug             String          @unique
+  firstName        String          @map("first_name")
+  lastName         String          @map("last_name")
   age              Int
   avatar           String
-  avatarGradient   String   @default("linear-gradient(135deg,#4f46e5,#06b6d4)") @map("avatar_gradient")
-  programId        String   @map("program_id")
-  program          Program  @relation(fields: [programId], references: [id])
-  levelLabel       String   @map("level_label")
-  joinDateLabel    String   @map("join_date_label")
-  hours            Int      @default(0)
-  isPublic         Boolean  @default(true) @map("is_public")
-  parentEmail      String   @map("parent_email")
-  parentSecretHash String   @map("parent_secret_hash")
-  parentFirstName  String   @default("") @map("parent_first_name")
-  parentLastName   String   @default("") @map("parent_last_name")
-  dossierNumber    String?  @map("dossier_number")
-  createdAt        DateTime @default(now()) @map("created_at")
-
-  projects       Project[]
+  avatarGradient   String          @default("linear-gradient(135deg,#4f46e5,#06b6d4)") @map("avatar_gradient")
+  programId        String          @map("program_id")
+  levelLabel       String          @map("level_label")
+  joinDateLabel    String          @map("join_date_label")
+  hours            Int             @default(0)
+  isPublic         Boolean         @default(true) @map("is_public")
+  parentEmail      String          @map("parent_email")
+  parentSecretHash String          @map("parent_secret_hash")
+  createdAt        DateTime        @default(now()) @map("created_at")
+  parentFirstName  String          @default("") @map("parent_first_name")
+  parentLastName   String          @default("") @map("parent_last_name")
+  dossierNumber  String?         @map("dossier_number")
   certifications Certification[]
   galleryItems   GalleryItem[]
-  parents        Parent[] @ignore
+  parents        Parent[]        @ignore
+  projects       Project[]
+  program          Program         @relation(fields: [programId], references: [id])
 
   @@index([slug])
   @@index([isPublic])
@@ -139,7 +105,6 @@ model Student {
 model Project {
   id          String        @id @default(cuid())
   studentId   String        @map("student_id")
-  student     Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
   title       String
   description String
   tags        String[]
@@ -148,9 +113,10 @@ model Project {
   dateLabel   String        @map("date_label")
   emoji       String        @default("💼")
   gradient    String        @default("linear-gradient(135deg,#4f46e5,#818cf8)")
+  createdAt   DateTime      @default(now()) @map("created_at")
   coverImage  String?       @map("cover_image")
   demoUrl     String?       @map("demo_url")
-  createdAt   DateTime      @default(now()) @map("created_at")
+  student     Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
   @@index([studentId])
   @@map("projects")
@@ -159,45 +125,46 @@ model Project {
 model Certification {
   id         String   @id @default(cuid())
   studentId  String   @map("student_id")
-  student    Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
   title      String
   mention    String   @default("Validé")
   dateLabel  String   @map("date_label")
   emoji      String   @default("🏅")
   gradient   String   @default("linear-gradient(135deg,#f59e0b,#f97316)")
-  imageUrl   String?  @map("image_url")
-  serialCode String   @unique @default(cuid()) @map("serial_code")
-  issueDate  DateTime @default(now()) @map("issue_date")
   createdAt  DateTime @default(now()) @map("created_at")
+  imageUrl   String?  @map("image_url")
+  issueDate  DateTime @default(now()) @map("issue_date")
+  serialCode String   @unique @default(cuid()) @map("serial_code")
+  student    Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
   @@index([studentId])
   @@map("certifications")
 }
 
 model GalleryItem {
-  id         String   @id @default(cuid())
-  studentId  String   @map("student_id")
-  student    Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  label      String
-  emoji      String   @default("📸")
-  gradient   String   @default("linear-gradient(135deg,#06b6d4,#0ea5e9)")
-  imageUrl   String?  @map("image_url")
-  createdAt  DateTime @default(now()) @map("created_at")
+  id        String   @id @default(cuid())
+  studentId String   @map("student_id")
+  label     String
+  emoji     String   @default("📸")
+  gradient  String   @default("linear-gradient(135deg,#06b6d4,#0ea5e9)")
+  createdAt DateTime @default(now()) @map("created_at")
+  imageUrl  String?  @map("image_url")
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
   @@index([studentId])
   @@map("gallery_items")
 }
 
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model AdminUser {
   id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email        String    @unique
   firstName    String    @map("first_name")
   lastName     String    @map("last_name")
   role         String    @default("admin")
-  permissions  String[]  @default([])
   passwordHash String    @map("password_hash")
   createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
   lastLogin    DateTime? @map("last_login") @db.Timestamptz(6)
+  permissions  String[]  @default([])
 
   @@map("admin_users")
   @@ignore
@@ -234,6 +201,7 @@ model Notification {
   @@ignore
 }
 
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model Parent {
   id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   email        String
@@ -241,10 +209,10 @@ model Parent {
   lastName     String   @map("last_name")
   phone        String   @default("")
   secretHash   String   @map("secret_hash")
-  passwordHash String?  @map("password_hash")
   studentId    String   @map("student_id")
-  student      Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
   createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  passwordHash String?  @map("password_hash")
+  student      Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
   @@map("parents")
   @@ignore
@@ -273,14 +241,6 @@ model Follow {
   @@map("follows")
 }
 
-model BlogView {
-  slug      String   @id
-  views     Int      @default(0)
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
-
-  @@map("blog_views")
-}
-
 model StudentRequest {
   id                   String        @id @default(cuid())
   studentId            String        @map("student_id")
@@ -304,11 +264,11 @@ model StudentRequest {
 }
 
 model StudentMessage {
-  id        String   @id @default(cuid())
-  studentId String   @map("student_id")
+  id        String    @id @default(cuid())
+  studentId String    @map("student_id")
   message   String
   reply     String?
-  createdAt DateTime @default(now()) @map("created_at")
+  createdAt DateTime  @default(now()) @map("created_at")
   repliedAt DateTime? @map("replied_at")
 
   @@index([studentId])
@@ -336,4 +296,51 @@ model ContentBlock {
 
   @@map("content_blocks")
   @@ignore
+}
+
+model contacts {
+  id         String    @id
+  name       String
+  phone      String
+  message    String?   @default("")
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model BlogView {
+  slug      String   @id
+  views     Int      @default(0)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("blog_views")
+}
+
+enum ProgramLevel {
+  debutant
+  intermediaire
+  avance
+
+  @@map("program_level")
+}
+
+enum PriceType {
+  monthly
+  hourly
+
+  @@map("price_type")
+}
+
+enum RequestStatus {
+  pending
+  accepted
+  refused
+
+  @@map("request_status")
+}
+
+enum ProjectStatus {
+  completed
+  in_progress
+
+  @@map("project_status")
 }
