@@ -17,8 +17,8 @@
 ## Key Routes
 - `/` — Home page
 - `/inscription` — Enrollment form
-- `/login` — Parent login
-- `/admin-login` — Admin login
+- `/login` — Unified login (admin + parent, role-based redirect)
+- `/admin-login` — Legacy alias, redirects to `/login`
 - `/dashboard/*` — Admin dashboard
 - `/parent/*` — Parent portal
 - `/portfolios/[slug]` — Public student portfolios

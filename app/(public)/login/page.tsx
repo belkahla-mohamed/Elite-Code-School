@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowRight, Eye, EyeClosed, SpinnerGap } from "@phosphor-icons/react";
+import { ArrowLeft, Eye, EyeClosed, SpinnerGap } from "@phosphor-icons/react";
 import { useAuth } from "@/lib/auth-context";
 import { showToast } from "@/components/ui/toast";
 
@@ -44,10 +44,10 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/parent", {
+      const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, secret: password }),
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
@@ -59,7 +59,7 @@ export default function LoginPage() {
       }
 
       login(data.user, data.token);
-      router.replace("/parent");
+      router.replace(data.role === "admin" ? "/dashboard" : "/parent");
     } catch {
       setError("Erreur de connexion");
       showToast("Erreur de connexion", "error");
@@ -150,15 +150,15 @@ export default function LoginPage() {
             className="size-9"
           />
           <div className="mt-4">
-            <span className="tag">Espace parent</span>
+            <span className="tag">Espace sécurisé</span>
           </div>
           <h1 className="mt-3 font-display text-3xl font-semibold tracking-[-0.02em] text-ink dark:text-white">
-            {mode === "forgot" ? "Mot de passe oublié" : "Connexion Parent"}
+            {mode === "forgot" ? "Mot de passe oublié" : "Connexion"}
           </h1>
           <p className="mt-2 text-sm font-medium leading-6 text-ink-soft dark:text-slate-300">
             {mode === "forgot"
               ? "Entrez votre email pour recevoir un lien de réinitialisation."
-              : "Entrez votre email et votre mot de passe (ou le code d'accès fourni par l'école) pour accéder au portfolio de votre enfant."}
+              : "Entrez votre email et votre mot de passe (ou le code d'accès fourni par l'école) pour accéder à votre espace."}
           </p>
 
         {mode === "login" && (
@@ -171,7 +171,7 @@ export default function LoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
-              placeholder="parent@email.com"
+              placeholder="vous@email.com"
               className={inputClass}
             />
           </label>
@@ -298,15 +298,13 @@ export default function LoginPage() {
 
         {mode === "login" && (
           <p className="mt-6 text-center text-sm font-medium text-ink-soft dark:text-slate-400">
-            Pas de code d&apos;accès? Contactez l&apos;école.
+            Pas de code d&apos;accès?{" "}
+            <Link href="/contact" className="font-bold text-ink transition duration-200 ease-out hover:text-brand dark:text-white">
+              Contactez l&apos;école
+            </Link>
+            .
           </p>
         )}
-
-        <div className="mt-6 text-center">
-          <Link href="/admin-login" className="inline-flex items-center gap-1 text-sm font-bold text-ink-soft transition duration-200 ease-out hover:text-brand">
-            Espace administration <ArrowRight className="size-4" />
-          </Link>
-        </div>
       </div>
     </div>
   );

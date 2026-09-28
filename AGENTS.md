@@ -34,7 +34,7 @@ Never import `@/lib/prisma` in API routes — the store layer is the single entr
 | Group | Paths | Layout |
 |---|---|---|
 | `(public)` | `/`, `/about`, `/curricula`, `/inscription`, `/contact`, `/login`, `/portfolios/[slug]` | Public header + nav + footer |
-| `(auth)` | `/admin-login` | Minimal |
+| `(auth)` | `/admin-login` (redirects to `/login`) | Minimal |
 | `(admin)` | `/admin/*`, `/dashboard/*` | Sidebar + admin header |
 | `(parent)` | `/parent/*` | Parent portal |
 

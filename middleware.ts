@@ -40,16 +40,20 @@ export async function middleware(request: NextRequest) {
   const adminCookie = request.cookies.get("ecs_admin")?.value;
   const parentCookie = request.cookies.get("ecs_parent_student")?.value;
 
-  // Protect admin/dashboard routes – redirect to standalone admin login
+  // Protect admin/dashboard routes – only admins may enter
   if (
     (pathname.startsWith("/admin") || pathname.startsWith("/dashboard")) &&
     pathname !== "/admin-login" &&
     !pathname.startsWith("/api/")
   ) {
     if (!adminCookie) {
-      return NextResponse.redirect(new URL("/admin-login", request.url));
+      // Parent/student already signed in -> send them to their own space
+      if (parentCookie && (await verifyTokenEdge(parentCookie))?.studentId) {
+        return NextResponse.redirect(new URL("/parent", request.url));
+      }
+      return NextResponse.redirect(new URL("/login", request.url));
     }
-    
+
     // Check if it's the old static token (legacy fallback)
     const expectedStatic = await adminTokenEdge();
     if (adminCookie === expectedStatic) {
@@ -58,7 +62,7 @@ export async function middleware(request: NextRequest) {
       // Verify JWT
       const payload = await verifyTokenEdge(adminCookie);
       if (!payload || (payload.role !== "admin" && payload.role !== "super_admin")) {
-        const res = NextResponse.redirect(new URL("/admin-login", request.url));
+        const res = NextResponse.redirect(new URL("/login", request.url));
         res.cookies.delete("ecs_admin");
         return res;
       }
@@ -89,13 +93,17 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Protect parent routes
+  // Protect parent routes – admins get bounced to the dashboard
   if (pathname.startsWith("/parent") && !pathname.startsWith("/api/")) {
-    if (!parentCookie) {
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
-    const payload = await verifyTokenEdge(parentCookie);
-    if (!payload || typeof payload.studentId !== "string") {
+    const parentPayload = parentCookie ? await verifyTokenEdge(parentCookie) : null;
+    if (!parentPayload || typeof parentPayload.studentId !== "string") {
+      if (adminCookie) {
+        const expectedStatic = await adminTokenEdge();
+        const adminPayload = adminCookie === expectedStatic ? { role: "super_admin" } : await verifyTokenEdge(adminCookie);
+        if (adminPayload && (adminPayload.role === "admin" || adminPayload.role === "super_admin")) {
+          return NextResponse.redirect(new URL("/dashboard", request.url));
+        }
+      }
       return NextResponse.redirect(new URL("/login", request.url));
     }
   }

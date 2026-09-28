@@ -65,7 +65,7 @@
 
 ```
   ┌──────────────┐
-  │  Login       │  /admin-login
+  │  Login       │  /login       
   │              │  email + password (ADMIN_PASSWORD env var)
   │              │  rate-limited: 5 attempts / 60s per IP
   │              │  → ecs_admin cookie (httpOnly, 8h)

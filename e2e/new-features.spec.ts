@@ -4,7 +4,7 @@ test.describe("New features", () => {
 
   test.describe("Admin login with email+password", () => {
     test("logs in with email and password", async ({ page }) => {
-      await page.goto("/admin-login")
+      await page.goto("/login")
       await page.fill('input[placeholder*="admin@elitecodeschool"]', "admin@elitecodeschool.com")
       await page.fill('input[placeholder*="mot de passe"]', "admin1234")
       await page.click('button[type="submit"]')
@@ -13,7 +13,7 @@ test.describe("New features", () => {
     })
 
     test("shows error on wrong password", async ({ page }) => {
-      await page.goto("/admin-login")
+      await page.goto("/login")
       await page.fill('input[placeholder*="admin@elitecodeschool"]', "admin@elitecodeschool.com")
       await page.fill('input[placeholder*="mot de passe"]', "wrongpass")
       await page.click('button[type="submit"]')
@@ -22,7 +22,7 @@ test.describe("New features", () => {
     })
 
     test("shows error on wrong email", async ({ page }) => {
-      await page.goto("/admin-login")
+      await page.goto("/login")
       await page.fill('input[placeholder*="admin@elitecodeschool"]', "wrong@email.com")
       await page.fill('input[placeholder*="mot de passe"]', "admin1234")
       await page.click('button[type="submit"]')
@@ -31,7 +31,7 @@ test.describe("New features", () => {
     })
 
     test("toggles password visibility", async ({ page }) => {
-      await page.goto("/admin-login")
+      await page.goto("/login")
       const passwordInput = page.locator('input[placeholder*="mot de passe"]')
       await passwordInput.fill("admin1234")
       await expect(passwordInput).toHaveAttribute("type", "password")
@@ -44,7 +44,7 @@ test.describe("New features", () => {
 
   test.describe("Enrollment processing", () => {
     test.beforeEach(async ({ page }) => {
-      await page.goto("/admin-login")
+      await page.goto("/login")
       await page.fill('input[placeholder*="admin@elitecodeschool"]', "admin@elitecodeschool.com")
       await page.fill('input[placeholder*="mot de passe"]', "admin1234")
       await page.click('button[type="submit"]')
@@ -66,7 +66,7 @@ test.describe("New features", () => {
 
   test.describe("Analytics page", () => {
     test.beforeEach(async ({ page }) => {
-      await page.goto("/admin-login")
+      await page.goto("/login")
       await page.fill('input[placeholder*="admin@elitecodeschool"]', "admin@elitecodeschool.com")
       await page.fill('input[placeholder*="mot de passe"]', "admin1234")
       await page.click('button[type="submit"]')
@@ -82,26 +82,26 @@ test.describe("New features", () => {
 
   test.describe("Logout flow", () => {
     test("sidebar logout link navigates to admin-login", async ({ page }) => {
-      await page.goto("/admin-login")
+      await page.goto("/login")
       await page.fill('input[placeholder*="admin@elitecodeschool"]', "admin@elitecodeschool.com")
       await page.fill('input[placeholder*="mot de passe"]', "admin1234")
       await page.click('button[type="submit"]')
       await page.waitForURL("/dashboard", { timeout: 15000 })
       await page.goto("/api/auth/logout", { waitUntil: "commit" })
-      await page.goto("/admin-login", { waitUntil: "networkidle" })
-      expect(page.url()).toContain("/admin-login")
+      await page.goto("/login", { waitUntil: "networkidle" })
+      expect(page.url()).toContain("/login")
     })
 
     test("redirects to login after logout", async ({ page }) => {
-      await page.goto("/admin-login")
+      await page.goto("/login")
       await page.fill('input[placeholder*="admin@elitecodeschool"]', "admin@elitecodeschool.com")
       await page.fill('input[placeholder*="mot de passe"]', "admin1234")
       await page.click('button[type="submit"]')
       await page.waitForURL("/dashboard", { timeout: 15000 })
       await page.goto("/api/auth/logout", { waitUntil: "commit" })
-      await page.goto("/admin-login", { waitUntil: "networkidle" })
+      await page.goto("/login", { waitUntil: "networkidle" })
       await page.goto("/dashboard")
-      await page.waitForURL("/admin-login", { timeout: 5000 })
+      await page.waitForURL("/login", { timeout: 5000 })
     })
   })
 
@@ -121,7 +121,7 @@ test.describe("New features", () => {
 
   test.describe("Curricula CSV export", () => {
     test("curricula page has CSV export", async ({ page }) => {
-      await page.goto("/admin-login")
+      await page.goto("/login")
       await page.fill('input[placeholder*="admin@elitecodeschool"]', "admin@elitecodeschool.com")
       await page.fill('input[placeholder*="mot de passe"]', "admin1234")
       await page.click('button[type="submit"]')

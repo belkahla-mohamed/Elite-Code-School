@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test"
 
 test.describe("Admin flow", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/admin-login")
+    await page.goto("/login")
     await page.fill('input[placeholder*="admin@elitecodeschool"]', "admin@elitecodeschool.com")
     await page.fill('input[placeholder*="mot de passe"]', "admin1234")
     await page.click('button[type="submit"]')
@@ -70,7 +70,7 @@ test.describe("Admin flow", () => {
 test.describe("Admin unauth redirect", () => {
   test("redirects to login when not authenticated", async ({ page }) => {
     await page.goto("/dashboard")
-    await page.waitForURL("/admin-login", { timeout: 5000 })
-    expect(page.url()).toContain("/admin-login")
+    await page.waitForURL("/login", { timeout: 5000 })
+    expect(page.url()).toContain("/login")
   })
 })

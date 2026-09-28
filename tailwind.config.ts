@@ -10,11 +10,31 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        background: "rgb(var(--background-rgb) / <alpha-value>)",
+        foreground: "rgb(var(--text-rgb) / <alpha-value>)",
         body: "rgb(var(--background-rgb) / <alpha-value>)",
         surface: "rgb(var(--surface-rgb) / <alpha-value>)",
         ink: "rgb(var(--text-rgb) / <alpha-value>)",
         "ink-soft": "rgb(var(--text-soft-rgb) / <alpha-value>)",
         border: "rgb(var(--border-rgb) / <alpha-value>)",
+        input: "rgb(var(--border-rgb) / <alpha-value>)",
+        ring: "#2563eb",
+        primary: {
+          DEFAULT: "#2563eb",
+          foreground: "#ffffff",
+        },
+        popover: {
+          DEFAULT: "rgb(var(--background-rgb) / <alpha-value>)",
+          foreground: "rgb(var(--text-rgb) / <alpha-value>)",
+        },
+        muted: {
+          DEFAULT: "rgb(var(--surface-rgb) / <alpha-value>)",
+          foreground: "rgb(var(--text-soft-rgb) / <alpha-value>)",
+        },
+        accent: {
+          DEFAULT: "rgb(var(--surface-rgb) / <alpha-value>)",
+          foreground: "rgb(var(--text-rgb) / <alpha-value>)",
+        },
         sky: {
           DEFAULT: "#2563eb",
           dark: "#1d4ed8",
@@ -26,7 +46,6 @@ const config: Config = {
           light: "#f0555a",
           soft: "#fde9ea",
         },
-        accent: "#e41d23",
         amber: "#f59e0b",
         lime: "#84cc16",
         violet: "#8b5cf6",
