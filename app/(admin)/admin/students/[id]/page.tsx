@@ -62,7 +62,8 @@ export default function StudentDetailPage() {
     e.preventDefault();
     if (addingProject) return;
     setAddingProject(true);
-    const form = new FormData(e.currentTarget);
+    const formEl = e.currentTarget;
+    const form = new FormData(formEl);
     const res = await fetch(`/api/students/${id}/projects`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -81,7 +82,7 @@ export default function StudentDetailPage() {
     });
     if (res.ok) {
       showToast("Projet ajouté", "success");
-      e.currentTarget.reset();
+      formEl.reset();
       setProjectCover("");
       reload();
     }
@@ -92,7 +93,8 @@ export default function StudentDetailPage() {
     e.preventDefault();
     if (addingCert) return;
     setAddingCert(true);
-    const form = new FormData(e.currentTarget);
+    const formEl = e.currentTarget;
+    const form = new FormData(formEl);
     const res = await fetch(`/api/students/${id}/certifications`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -107,7 +109,7 @@ export default function StudentDetailPage() {
     });
     if (res.ok) {
       showToast("Certificat ajouté", "success");
-      e.currentTarget.reset();
+      formEl.reset();
       setCertifImage("");
       reload();
     }
