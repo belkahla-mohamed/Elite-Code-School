@@ -23,9 +23,9 @@ export default async function InscriptionPage({ searchParams }: Props) {
         <div className="container-shell grid items-start gap-10 lg:grid-cols-[.9fr_1.1fr] lg:gap-12">
           <div>
             <span className="tag">Comment ça marche</span>
-            <h2 className="mt-4 font-display text-3xl font-semibold tracking-[-0.02em] text-ink dark:text-white sm:text-4xl">
+            <h1 className="mt-4 font-display text-3xl font-semibold tracking-[-0.02em] text-ink dark:text-white sm:text-4xl">
               Inscription en quelques clics.
-            </h2>
+            </h1>
             <p className="mt-3 text-sm font-medium text-ink-soft dark:text-slate-400">
               Remplissez le formulaire, notre équipe vous recontacte sous 24h pour confirmer et organiser la première séance.
             </p>

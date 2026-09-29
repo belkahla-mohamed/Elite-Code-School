@@ -1,6 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getAdminSession } from "@/lib/auth";
+import { requireCsrf } from "@/lib/csrf";
 import { updateAdminUser, deleteAdminUser } from "@/lib/store";
 
 const updateSchema = z.object({
@@ -11,12 +12,21 @@ const updateSchema = z.object({
   permissions: z.array(z.string()).optional(),
 });
 
-export async function PUT(request: Request, context: { params: Promise<{ id: string }> }) {
+async function requireAdminsPermission() {
+  const session = await getAdminSession();
+  if (!session || (session.role !== "super_admin" && !session.permissions?.includes("admins"))) {
+    return { session: null, denied: NextResponse.json({ error: "Non autorisé" }, { status: 403 }) };
+  }
+  return { session, denied: null };
+}
+
+export async function PUT(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
-    const session = await getAdminSession();
-    if (!session || session.role !== "super_admin") {
-      return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
-    }
+    const { session, denied } = await requireAdminsPermission();
+    if (denied) return denied;
+
+    const csrfError = requireCsrf(request);
+    if (csrfError) return csrfError;
 
     const { id } = await context.params;
     if (!id) return NextResponse.json({ error: "ID manquant" }, { status: 400 });
@@ -24,6 +34,10 @@ export async function PUT(request: Request, context: { params: Promise<{ id: str
     const parsed = updateSchema.safeParse(await request.json());
     if (!parsed.success) {
       return NextResponse.json({ error: "Données invalides", details: parsed.error.issues }, { status: 400 });
+    }
+
+    if (parsed.data.role === "super_admin" && session!.role !== "super_admin") {
+      return NextResponse.json({ error: "Seul le super administrateur peut promouvoir un compte" }, { status: 403 });
     }
 
     const updated = await updateAdminUser(id, parsed.data);
@@ -36,12 +50,13 @@ export async function PUT(request: Request, context: { params: Promise<{ id: str
   }
 }
 
-export async function DELETE(request: Request, context: { params: Promise<{ id: string }> }) {
+export async function DELETE(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
-    const session = await getAdminSession();
-    if (!session || session.role !== "super_admin") {
-      return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
-    }
+    const { denied } = await requireAdminsPermission();
+    if (denied) return denied;
+
+    const csrfError = requireCsrf(request);
+    if (csrfError) return csrfError;
 
     const { id } = await context.params;
     if (!id) return NextResponse.json({ error: "ID manquant" }, { status: 400 });

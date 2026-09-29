@@ -11,6 +11,7 @@ import { showToast } from "@/components/ui/toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { NotificationIcon } from "@/components/ui/notification-icon";
+import { apiFetch } from "@/lib/api-fetch";
 
 const BarChart = dynamic(() => import("recharts").then((m) => m.BarChart), { ssr: false })
 const Bar = dynamic(() => import("recharts").then((m) => m.Bar), { ssr: false })
@@ -105,9 +106,8 @@ export function AdminDashboard() {
   async function updateRequest(id: string, action: "accept" | "reject") {
     setProcessingDashboard(true);
     setConfirmAction(null);
-    const res = await fetch(`/api/inscriptions/${id}`, {
+    const res = await apiFetch(`/api/inscriptions/${id}`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action }),
     });
     const result = await res.json();

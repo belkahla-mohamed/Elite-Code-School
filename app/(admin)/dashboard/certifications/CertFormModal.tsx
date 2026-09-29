@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { X, Medal, MagnifyingGlass, SpinnerGap } from "@phosphor-icons/react";
 import { showToast } from "@/components/ui/toast";
 import { StudentAvatar } from "@/components/ui/student-avatar";
+import { apiFetch } from "@/lib/api-fetch";
 
 interface Student {
   id: string;
@@ -70,9 +71,8 @@ export function CertFormModal({ onClose, onSuccess }: CertFormModalProps) {
     }
 
     setSaving(true);
-    const res = await fetch("/api/certifications", {
+    const res = await apiFetch("/api/certifications", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),
     });
 

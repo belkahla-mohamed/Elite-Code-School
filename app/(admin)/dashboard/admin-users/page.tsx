@@ -7,6 +7,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ViewToggle, useViewMode } from "@/components/ui/view-toggle";
 import { GridFour, ListDashes } from "@phosphor-icons/react";
+import { apiFetch } from "@/lib/api-fetch";
 
 interface AdminUser {
   id: string;
@@ -47,9 +48,8 @@ export default function AdminUsersPage() {
     e.preventDefault();
     if (!form.email || !form.firstName || !form.lastName || !form.password) return;
     setSaving(true);
-    const res = await fetch("/api/admin-users", {
+    const res = await apiFetch("/api/admin-users", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),
     });
     const data = await res.json();
@@ -70,9 +70,8 @@ export default function AdminUsersPage() {
     e.preventDefault();
     if (!editUser) return;
     setSaving(true);
-    const res = await fetch(`/api/admin-users/${editUser.id}`, {
+    const res = await apiFetch(`/api/admin-users/${editUser.id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(editForm),
     });
     if (!res.ok) { showToast("Erreur lors de la modification", "error"); setSaving(false); return; }
@@ -85,7 +84,7 @@ export default function AdminUsersPage() {
   async function deleteUser(id: string) {
     setDeletingAdmin(true);
     setDeleteId(null);
-    const res = await fetch(`/api/admin-users/${id}`, { method: "DELETE" });
+    const res = await apiFetch(`/api/admin-users/${id}`, { method: "DELETE" });
     if (!res.ok) { showToast("Erreur lors de la suppression", "error"); setDeletingAdmin(false); return; }
     showToast("Administrateur supprimé", "info");
     await load();

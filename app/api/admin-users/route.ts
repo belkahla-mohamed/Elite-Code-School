@@ -1,14 +1,21 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getAdminSession } from "@/lib/auth";
+import { requireCsrf } from "@/lib/csrf";
 import { getAdminUsers, createAdminUser } from "@/lib/store";
+
+async function requireAdminsPermission() {
+  const session = await getAdminSession();
+  if (!session || (session.role !== "super_admin" && !session.permissions?.includes("admins"))) {
+    return { session: null, denied: NextResponse.json({ error: "Non autorisé" }, { status: 403 }) };
+  }
+  return { session, denied: null };
+}
 
 export async function GET() {
   try {
-    const session = await getAdminSession();
-    if (!session || session.role !== "super_admin") {
-      return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
-    }
+    const { denied } = await requireAdminsPermission();
+    if (denied) return denied;
     const admins = await getAdminUsers();
     return NextResponse.json({ adminUsers: admins });
   } catch (e: any) {
@@ -24,12 +31,13 @@ const adminSchema = z.object({
   permissions: z.array(z.string()).optional(),
 });
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const session = await getAdminSession();
-    if (!session || session.role !== "super_admin") {
-      return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
-    }
+    const { denied } = await requireAdminsPermission();
+    if (denied) return denied;
+
+    const csrfError = requireCsrf(request);
+    if (csrfError) return csrfError;
 
     const parsed = adminSchema.safeParse(await request.json());
     if (!parsed.success) {

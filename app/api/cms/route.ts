@@ -1,5 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getContentBlocks, updateContentBlock } from "@/lib/store";
+import { isAdminAuthenticated } from "@/lib/auth";
+import { requireCsrf } from "@/lib/csrf";
 import { z } from "zod";
 
 const blockSchema = z.object({
@@ -16,8 +18,14 @@ export async function GET() {
   }
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
+    if (!(await isAdminAuthenticated())) {
+      return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+    }
+    const csrfError = requireCsrf(req);
+    if (csrfError) return csrfError;
+
     const body = await req.json();
     const parsed = z.array(blockSchema).parse(body.blocks);
     

@@ -109,10 +109,21 @@ export function demoStore() {
   return globalForStore.eliteCodeSchoolStore;
 }
 
-export function getContactLeads(): { id: string; name: string; phone: string; message: string; createdAt: string }[] {
+export async function getContactLeads(): Promise<{ id: string; name: string; phone: string; message: string; createdAt: string }[]> {
   if (!hasSupabaseConfig()) return demoStore().contacts ?? [];
-  // In production with Supabase, query the contacts table
-  return [];
+  const { data, error } = await getSupabaseAdmin()
+    .from("contacts")
+    .select("id, name, phone, message, created_at")
+    .order("created_at", { ascending: false })
+    .limit(100);
+  if (error) throw error;
+  return (data ?? []).map((c) => ({
+    id: c.id,
+    name: c.name,
+    phone: c.phone,
+    message: c.message,
+    createdAt: c.created_at,
+  }));
 }
 
 export async function createContactLead(payload: { name: string; phone: string; message: string }): Promise<{ id: string; name: string; phone: string; message: string; createdAt: string }> {
@@ -146,12 +157,9 @@ export async function createContactLead(payload: { name: string; phone: string; 
 
     if (error) throw error;
     return data;
-  } catch (e) {
-    console.warn("createContactLead: Supabase table missing, falling back to demo store", e);
-    const store = demoStore();
-    if (!store.contacts) store.contacts = [];
-    store.contacts.unshift(entry);
-    return entry;
+  } catch (e: any) {
+    console.error("createContactLead: Supabase insert failed", e);
+    throw new Error(`Échec de l'enregistrement du message: ${e?.message ?? "erreur Supabase"}`);
   }
 }
 
@@ -254,8 +262,8 @@ export async function getPrograms(): Promise<Program[]> {
       category: categories.find(c => c.id === row.category_id),
     }));
   } catch (e) {
-    console.error("getPrograms: Supabase unavailable, falling back to demo data", e);
-    return demoStore().programs.map(fillImage).map(p => ({ ...p, category: demoStore().categories.find(c => c.id === p.categoryId) }));
+    console.error("getPrograms: Supabase query failed", e);
+    throw e;
   }
 }
 
@@ -370,7 +378,7 @@ export async function acceptInscriptionRequest(id: string, notes?: string) {
     const program = programs.find((p) => p.id === request.programId);
     const levelLabel = `Nouveau parcours · ${program?.title ?? "Niveau 1"}`;
 
-    const studentId = `stu-${Date.now()}`;
+    const studentId = `stu-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
     const student: Student = {
       id: studentId,
       slug: slugify(`${request.studentFirstName}-${request.studentLastName}`),
@@ -547,8 +555,8 @@ export async function getPublicPortfolios() {
     if (error) throw error;
     return data.map((row) => mapStudentPortfolio(row, programs));
   } catch (e) {
-    console.error("getPublicPortfolios: Supabase unavailable, falling back to demo data", e);
-    return demoStore().students.filter((student) => student.isPublic).map((student) => withPortfolio(student));
+    console.error("getPublicPortfolios: Supabase query failed", e);
+    throw e;
   }
 }
 
@@ -568,10 +576,8 @@ export async function getPortfolioBySlug(slug: string, allowPrivate = false) {
     if (error) throw error;
     return data ? mapStudentPortfolio(data, programs) : null;
   } catch (e) {
-    console.error("getPortfolioBySlug: Supabase unavailable, falling back to demo data", e);
-    const student = demoStore().students.find((item) => item.slug === slug);
-    if (!student || (!student.isPublic && !allowPrivate)) return null;
-    return withPortfolio(student);
+    console.error("getPortfolioBySlug: Supabase query failed", e);
+    throw e;
   }
 }
 
@@ -1232,36 +1238,29 @@ export async function batchDeleteStudents(ids: string[]) {
 }
 
 export async function batchAcceptEnrollments(ids: string[]) {
-  if (!hasSupabaseConfig()) {
-    const store = demoStore();
-    for (const id of ids) {
-      const req = store.requests.find((r) => r.id === id);
-      if (req && req.status === "pending") {
-        req.status = "accepted";
-        addActivityAndNotify("request", "Inscription acceptée", `${req.studentFirstName} ${req.studentLastName}`);
-      }
+  const results: { id: string; student?: StudentPortfolio; parentSecret?: string; error?: string }[] = [];
+  for (const id of ids) {
+    try {
+      const result = await acceptInscriptionRequest(id);
+      results.push({ id, student: result.student, parentSecret: result.parentSecret });
+    } catch (e: any) {
+      results.push({ id, error: e.message ?? "Erreur lors de l'acceptation" });
     }
-    return;
   }
-  await getSupabaseAdmin().from("inscription_requests").update({ status: "accepted" }).in("id", ids);
+  return results;
 }
 
 export async function batchRejectEnrollments(ids: string[], rejectionMessage?: string) {
-  if (!hasSupabaseConfig()) {
-    const store = demoStore();
-    for (const id of ids) {
-      const req = store.requests.find((r) => r.id === id);
-      if (req && req.status === "pending") {
-        req.status = "refused";
-        if (rejectionMessage) req.rejectionMessage = rejectionMessage;
-        addActivityAndNotify("request", "Inscription refusée", `${req.studentFirstName} ${req.studentLastName}`);
-      }
+  const results: { id: string; error?: string }[] = [];
+  for (const id of ids) {
+    try {
+      await refuseInscriptionRequest(id, undefined, rejectionMessage);
+      results.push({ id });
+    } catch (e: any) {
+      results.push({ id, error: e.message ?? "Erreur lors du refus" });
     }
-    return;
   }
-  const updateData: Record<string, any> = { status: "refused" };
-  if (rejectionMessage) updateData.rejection_message = rejectionMessage;
-  await getSupabaseAdmin().from("inscription_requests").update(updateData).in("id", ids);
+  return results;
 }
 
 // ─── Admin Users ─────────────────────────────────────────────
@@ -1424,21 +1423,30 @@ export async function createAdminUser(data: { email: string; firstName: string; 
     addActivityAndNotify("request", "Admin créé", `${data.firstName} ${data.lastName} (${data.email})`);
     return toAdminUser(user);
   }
-  const { error } = await getSupabaseAdmin().from("admin_users").insert({
-    id: crypto.randomUUID(),
+  const newId = crypto.randomUUID();
+  const { data: created, error } = await getSupabaseAdmin().from("admin_users").insert({
+    id: newId,
     email: data.email,
     first_name: data.firstName,
     last_name: data.lastName,
     role: "admin",
     permissions: data.permissions || [],
     password_hash: passwordHash,
-  });
+  }).select("*").single();
   if (error) {
     if (error.code === "23505") throw new Error("Cet email est déjà utilisé");
     throw error;
   }
   addActivityAndNotify("request", "Admin créé", `${data.firstName} ${data.lastName} (${data.email})`);
-  return { id: "", email: data.email, firstName: data.firstName, lastName: data.lastName, role: "admin", permissions: data.permissions || [], createdAt: new Date().toISOString() };
+  return {
+    id: created.id,
+    email: created.email,
+    firstName: created.first_name,
+    lastName: created.last_name,
+    role: created.role,
+    permissions: created.permissions ?? [],
+    createdAt: created.created_at,
+  };
 }
 
 export async function updateAdminUser(id: string, data: { firstName?: string; lastName?: string; email?: string; role?: string; permissions?: string[] }) {
@@ -2274,45 +2282,55 @@ export async function createParent(data: {
   }
 }
 
-export async function getParentByEmail(email: string): Promise<Parent | null> {
+export async function getParentsByEmail(email: string): Promise<Parent[]> {
   if (!hasSupabaseConfig()) {
     const store = demoStore() as any
     if (!store.parents) store.parents = structuredClone(parentSeed)
-    return store.parents.find((p: Parent) => p.email.toLowerCase() === email.toLowerCase()) ?? null
+    return store.parents.filter((p: Parent) => p.email.toLowerCase() === email.toLowerCase())
   }
 
   const { data, error } = await getSupabaseAdmin()
     .from("parents")
     .select("*")
     .ilike("email", email)
-    .maybeSingle()
+    .limit(20)
 
-  if (error || !data) return null
+  if (error || !data) return []
 
-  return {
-    id: data.id,
-    email: data.email,
-    firstName: data.first_name,
-    lastName: data.last_name,
-    phone: data.phone,
-    secretHash: data.secret_hash,
-    passwordHash: data.password_hash ?? undefined,
-    studentId: data.student_id,
-    createdAt: data.created_at,
-  }
+  return data.map((row: any) => ({
+    id: row.id,
+    email: row.email,
+    firstName: row.first_name,
+    lastName: row.last_name,
+    phone: row.phone,
+    secretHash: row.secret_hash,
+    passwordHash: row.password_hash ?? undefined,
+    studentId: row.student_id,
+    createdAt: row.created_at,
+  }))
+}
+
+export async function getParentByEmail(email: string): Promise<Parent | null> {
+  const parents = await getParentsByEmail(email)
+  if (parents.length === 0) return null
+  return parents.find((p) => p.passwordHash) ?? parents[parents.length - 1]
 }
 
 export async function getParentByPassword(email: string, password: string): Promise<{ parent: Parent; student: StudentPortfolio } | null> {
-  const parent = await getParentByEmail(email)
-  if (!parent?.passwordHash) return null
+  const candidates = await getParentsByEmail(email)
 
-  const ok = await verifyPassword(password, parent.passwordHash)
-  if (!ok) return null
+  for (const parent of candidates) {
+    if (!parent.passwordHash) continue
+    const ok = await verifyPassword(password, parent.passwordHash)
+    if (!ok) continue
 
-  const student = await loadStudentPortfolio(parent.studentId)
-  if (!student) return null
+    const student = await loadStudentPortfolio(parent.studentId)
+    if (!student) continue
 
-  return { parent, student }
+    return { parent, student }
+  }
+
+  return null
 }
 
 export async function setParentPassword(parentId: string, passwordHash: string): Promise<void> {
@@ -2593,8 +2611,8 @@ export async function getBlogViews(): Promise<Record<string, number>> {
     for (const row of data ?? []) counts[row.slug] = row.views ?? 0;
     return counts;
   } catch (e) {
-    console.warn("getBlogViews: Supabase table missing, falling back to demo store", e);
-    return demoStore().blogViews ?? {};
+    console.error("getBlogViews: Supabase query failed", e);
+    return {};
   }
 }
 
@@ -2616,10 +2634,7 @@ export async function incrementBlogView(slug: string): Promise<number> {
     if (upsertError) throw upsertError;
     return next;
   } catch (e) {
-    console.warn("incrementBlogView: Supabase table missing, falling back to demo store", e);
-    const store = demoStore();
-    if (!store.blogViews) store.blogViews = {};
-    store.blogViews[slug] = (store.blogViews[slug] ?? 0) + 1;
-    return store.blogViews[slug];
+    console.error("incrementBlogView: Supabase upsert failed", e);
+    return 0;
   }
 }

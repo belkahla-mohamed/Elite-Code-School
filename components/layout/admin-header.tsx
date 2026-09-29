@@ -20,6 +20,7 @@ const pageTitles: Record<string, string> = {
   "/dashboard/profile": "Mon Profil",
   "/dashboard/settings": "Paramètres",
   "/dashboard/activity": "Activité",
+  "/dashboard/contacts": "Messages contact",
   "/dashboard/notifications": "Notifications",
   "/dashboard/admin-users": "Admin Users",
   "/admin/enrollments": "Inscriptions",
@@ -39,9 +40,12 @@ export function AdminHeader({ collapsed, onToggleSidebar, onOpenMobile }: AdminH
   const router = useRouter();
   const { user, logout } = useAuth();
   const [loggingOut, setLoggingOut] = useState(false);
-  const title = Object.entries(pageTitles).find(([key]) =>
-    pathname === key || pathname.startsWith(key + "/")
-  )?.[1] ?? "Dashboard";
+  const title =
+    pageTitles[pathname] ??
+    Object.entries(pageTitles)
+      .filter(([key]) => pathname.startsWith(key + "/"))
+      .sort((a, b) => b[0].length - a[0].length)[0]?.[1] ??
+    "Dashboard";
 
   const adminName = user?.name ?? "Admin"
   const adminRole = user?.role === "admin" ? "Admin" : "Super Admin"
@@ -107,7 +111,7 @@ export function AdminHeader({ collapsed, onToggleSidebar, onOpenMobile }: AdminH
               </div>
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
+          <DropdownMenuContent align="end" className="w-48 z-[999]">
             <DropdownMenuItem onClick={() => router.push("/dashboard/profile")}>
               <IdentificationCard className="mr-2 size-4" /> Mon Profil
             </DropdownMenuItem>

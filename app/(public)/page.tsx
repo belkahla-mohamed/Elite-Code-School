@@ -364,7 +364,7 @@ function BlogFeed() {
         </div>
         <div className="grid gap-6 md:grid-cols-3">
           {posts.map((post) => (
-            <Link key={post.slug} href={`/blog#${post.slug}`} className="group block overflow-hidden rounded-brand border border-border bg-white transition duration-300 ease-out hover:-translate-y-0.5 hover:border-brand hover:shadow-md dark:border-white/10 dark:bg-[#1e293b]">
+            <Link key={post.slug} href={`/blog/${post.slug}`} className="group block overflow-hidden rounded-brand border border-border bg-white transition duration-300 ease-out hover:-translate-y-0.5 hover:border-brand hover:shadow-md dark:border-white/10 dark:bg-[#1e293b]">
               <div className="relative overflow-hidden">
                 <Image src={post.image} alt={post.title} width={600} height={400} className="h-44 w-full object-cover transition duration-500 group-hover:scale-105" />
               </div>

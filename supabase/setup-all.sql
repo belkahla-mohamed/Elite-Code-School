@@ -337,7 +337,7 @@ create table if not exists public.parents (
   created_at timestamptz not null default now()
 );
 
-create unique index if not exists parents_email_lower_key on public.parents(lower(email));
+create index if not exists parents_email_lower_idx on public.parents(lower(email));
 create index if not exists parents_student_id_idx on public.parents(student_id);
 
 alter table public.parents enable row level security;
@@ -638,5 +638,31 @@ BEGIN
     ALTER TABLE public.parents RENAME COLUMN student_id_new TO student_id;
   END IF;
 END $$;
+
+commit;
+
+-- ===== 20260928190000_parents_allow_siblings.sql =====
+
+begin;
+
+-- Siblings: one parent row per student, same family email must be allowed
+drop index if exists public.parents_email_lower_key;
+drop index if exists public.n_lower_key;
+
+create index if not exists parents_email_lower_idx on public.parents(lower(email));
+
+commit;
+
+-- ===== 20260928200000_content_blocks.sql =====
+
+begin;
+
+-- CMS content blocks (was created manually in production; needed for fresh installs)
+create table if not exists public.content_blocks (
+  key text primary key,
+  value text not null default '',
+  created_at timestamp not null default CURRENT_TIMESTAMP,
+  updated_at timestamp not null default CURRENT_TIMESTAMP
+);
 
 commit;

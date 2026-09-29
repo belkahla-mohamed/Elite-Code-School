@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { showToast } from "@/components/ui/toast";
+import { apiFetch } from "@/lib/api-fetch";
 import { FloppyDisk, Globe, FileText, Image as ImageIcon } from "@phosphor-icons/react";
 import type { ContentBlock } from "@/lib/types";
 
@@ -41,9 +42,8 @@ export default function CmsPage() {
     setSaving(true);
     try {
       const payload = Object.entries(blocks).map(([key, value]) => ({ key, value }));
-      const res = await fetch("/api/cms", {
+      const res = await apiFetch("/api/cms", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ blocks: payload }),
       });
       if (res.ok) {

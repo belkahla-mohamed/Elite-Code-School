@@ -66,6 +66,14 @@ export default function EnrollmentsPage() {
   const [processingAction, setProcessingAction] = useState(false);
   const [viewingRequest, setViewingRequest] = useState<InscriptionRequest | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
+  const [createdSecrets, setCreatedSecrets] = useState<{ label: string; secret: string }[]>([]);
+  const [copiedSecret, setCopiedSecret] = useState<string | null>(null);
+
+  function copySecret(secret: string) {
+    navigator.clipboard.writeText(secret);
+    setCopiedSecret(secret);
+    setTimeout(() => setCopiedSecret(null), 2000);
+  }
 
   useEffect(() => {
     Promise.all([
@@ -145,8 +153,16 @@ export default function EnrollmentsPage() {
         }),
       });
       if (res.ok) {
+        const result = await res.json().catch(() => ({} as any));
         const newStatus = mode === "accept" ? "accepted" : "refused";
         setRequests((prev) => prev.map((r) => r.id === id ? { ...r, status: newStatus, adminNotes: notes || r.adminNotes, rejectionMessage: rejectionMsg || r.rejectionMessage } : r));
+        if (mode === "accept" && result.parentSecret) {
+          const req = requests.find((r) => r.id === id);
+          setCreatedSecrets([{
+            label: `${req?.studentFirstName ?? ""} ${req?.studentLastName ?? ""}`.trim(),
+            secret: result.parentSecret,
+          }]);
+        }
         showToast(mode === "accept" ? "Demande acceptée" : "Demande refusée", mode === "accept" ? "success" : "info");
       } else showToast("Erreur lors du traitement", "error");
       setProcessingId(null);
@@ -164,10 +180,27 @@ export default function EnrollmentsPage() {
       }),
     });
     if (res.ok) {
+      const data = await res.json().catch(() => ({} as any));
+      const results: any[] = Array.isArray(data.results) ? data.results : [];
+      const okIds = results.filter((r) => !r.error).map((r) => r.id);
+      const failedCount = Array.isArray(data.failed) ? data.failed.length : 0;
       const newStatus = mode === "accept" ? "accepted" : "refused";
-      setRequests((prev) => prev.map((r) => ids.includes(r.id) ? { ...r, status: newStatus } : r));
+      setRequests((prev) => prev.map((r) => okIds.includes(r.id) ? { ...r, status: newStatus } : r));
       setSelectedIds(new Set());
-      showToast(`${ids.length} demande(s) ${mode === "accept" ? "acceptée(s)" : "refusée(s)"}`, mode === "accept" ? "success" : "info");
+      if (mode === "accept") {
+        const secrets = results
+          .filter((r) => r.parentSecret)
+          .map((r) => ({
+            label: `${r.student?.firstName ?? ""} ${r.student?.lastName ?? ""}`.trim(),
+            secret: r.parentSecret,
+          }));
+        if (secrets.length) setCreatedSecrets(secrets);
+      }
+      if (failedCount > 0) {
+        showToast(`${failedCount} demande(s) non traitée(s) (déjà traitées ou introuvables)`, "error");
+      } else {
+        showToast(data.message ?? `${okIds.length} demande(s) ${mode === "accept" ? "acceptée(s)" : "refusée(s)"}`, mode === "accept" ? "success" : "info");
+      }
     } else showToast("Erreur lors du traitement", "error");
     setProcessingAction(false);
   }
@@ -390,6 +423,42 @@ export default function EnrollmentsPage() {
         open={detailOpen}
         onOpenChange={setDetailOpen}
       />
+
+      {/* Generated parent access codes */}
+      {createdSecrets.length > 0 && (
+        <div className="mb-6 rounded-brand border-2 border-amber/40 bg-amber/10 p-4">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="text-sm font-black text-amber">
+              Code(s) d&apos;accès parent — à transmettre au parent une seule fois
+            </p>
+            <button
+              onClick={() => setCreatedSecrets([])}
+              className="text-xs font-bold text-ink-soft transition hover:text-ink"
+            >
+              Fermer
+            </button>
+          </div>
+          <ul className="mt-3 space-y-2">
+            {createdSecrets.map((s) => (
+              <li
+                key={s.secret}
+                className="flex flex-wrap items-center justify-between gap-2 rounded-brand-sm bg-white px-3 py-2 text-sm dark:bg-surface"
+              >
+                <span className="font-semibold text-ink">{s.label || "Élève"}</span>
+                <span className="flex items-center gap-2">
+                  <code className="font-mono font-bold text-ink">{s.secret}</code>
+                  <button
+                    onClick={() => copySecret(s.secret)}
+                    className="rounded-full border border-border px-2 py-1 text-xs font-bold text-ink-soft transition hover:border-sky hover:text-sky"
+                  >
+                    {copiedSecret === s.secret ? "Copié ✓" : "Copier"}
+                  </button>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* Action Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

@@ -1,6 +1,7 @@
-import { NextResponse } from "next/server";
-import { getAllCertifications, createCertification } from "@/lib/store";
+import { NextRequest, NextResponse } from "next/server";
+import { getAllCertifications, createCertification, deleteCertification } from "@/lib/store";
 import { getAdminSession } from "@/lib/auth";
+import { requireCsrf } from "@/lib/csrf";
 import { z } from "zod";
 
 export async function GET() {
@@ -10,6 +11,14 @@ export async function GET() {
   } catch (e: any) {
     return NextResponse.json({ error: e.message ?? "Erreur serveur" }, { status: 500 });
   }
+}
+
+async function requireCertPermission(): Promise<NextResponse | null> {
+  const session = await getAdminSession();
+  if (!session || (session.role !== "super_admin" && !session.permissions?.includes("certificates"))) {
+    return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
+  }
+  return null;
 }
 
 const certSchema = z.object({
@@ -23,12 +32,13 @@ const certSchema = z.object({
   serialCode: z.string().trim().min(5, "Numéro de série requis"),
 });
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const session = await getAdminSession();
-    if (!session || (session.role !== "super_admin" && !session.permissions?.includes("certificates"))) {
-      return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
-    }
+    const denied = await requireCertPermission();
+    if (denied) return denied;
+
+    const csrfError = requireCsrf(request);
+    if (csrfError) return csrfError;
 
     const parsed = certSchema.safeParse(await request.json());
     if (!parsed.success) {
@@ -37,6 +47,34 @@ export async function POST(request: Request) {
 
     const created = await createCertification(parsed.data);
     return NextResponse.json(created);
+  } catch (e: any) {
+    return NextResponse.json({ error: e.message ?? "Erreur serveur" }, { status: 500 });
+  }
+}
+
+const deleteSchema = z.object({
+  ids: z.array(z.string().min(1)).min(1, "Aucun certificat sélectionné"),
+});
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const denied = await requireCertPermission();
+    if (denied) return denied;
+
+    const csrfError = requireCsrf(request);
+    if (csrfError) return csrfError;
+
+    const parsed = deleteSchema.safeParse(await request.json());
+    if (!parsed.success) {
+      return NextResponse.json({ error: "Données invalides", details: parsed.error.issues }, { status: 400 });
+    }
+
+    let deleted = 0;
+    for (const id of parsed.data.ids) {
+      await deleteCertification(id);
+      deleted += 1;
+    }
+    return NextResponse.json({ ok: true, deleted });
   } catch (e: any) {
     return NextResponse.json({ error: e.message ?? "Erreur serveur" }, { status: 500 });
   }

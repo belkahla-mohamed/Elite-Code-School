@@ -22,7 +22,7 @@ create table if not exists public.parents (
   created_at timestamptz not null default now()
 );
 
-create unique index if not exists parents_email_lower_key on public.parents(lower(email));
+create index if not exists parents_email_lower_idx on public.parents(lower(email));
 create index if not exists parents_student_id_idx on public.parents(student_id);
 
 alter table public.parents enable row level security;

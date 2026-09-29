@@ -1,13 +1,32 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { ArrowLeft, ArrowRight, CheckCircle, Clock, EnvelopeSimple, Confetti, Sparkle, ShieldCheck } from "@phosphor-icons/react";
+import { ArrowLeft, ArrowRight, CheckCircle, Clock, Copy, EnvelopeSimple, Confetti, Sparkle, ShieldCheck } from "@phosphor-icons/react";
+import { showToast } from "@/components/ui/toast";
+
+function shortCode(id: string): string {
+  const clean = id.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
+  if (clean.length < 8) return id.toUpperCase();
+  return `ECS-${clean.slice(0, 4)}-${clean.slice(4, 8)}`;
+}
 
 function ConfirmationContent() {
   const searchParams = useSearchParams();
   const requestId = searchParams.get("id");
+  const [copied, setCopied] = useState<"" | "short" | "full">("");
+
+  async function copy(text: string, which: "short" | "full") {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(which);
+      showToast(which === "short" ? "Numéro de dossier copié" : "Référence complète copiée", "success");
+      setTimeout(() => setCopied(""), 2000);
+    } catch {
+      showToast("Copie impossible — sélectionnez le texte manuellement", "error");
+    }
+  }
 
   return (
     <div className="min-h-screen bg-white dark:bg-body">
@@ -40,12 +59,26 @@ function ConfirmationContent() {
               <p className="text-xs font-bold uppercase tracking-wider text-ink-soft dark:text-slate-400">
                 Numéro de dossier
               </p>
-              <p className="mt-2 font-mono text-2xl font-black text-brand tracking-wider">
-                {requestId}
-              </p>
+              <button
+                type="button"
+                onClick={() => copy(shortCode(requestId), "short")}
+                className="mt-2 inline-flex items-center gap-2 font-mono text-2xl font-black tracking-wider text-brand transition hover:opacity-80"
+                title="Copier le numéro de dossier"
+              >
+                {shortCode(requestId)}
+                {copied === "short" ? <CheckCircle className="size-5" /> : <Copy className="size-5" />}
+              </button>
               <p className="mt-2 text-xs text-ink-soft dark:text-slate-400">
                 Gardez ce numéro — vous en aurez besoin pour le suivi.
               </p>
+              <button
+                type="button"
+                onClick={() => copy(requestId, "full")}
+                className="mt-3 w-full break-all rounded-brand-sm bg-white/60 px-3 py-2 font-mono text-[11px] text-ink-soft transition hover:bg-white dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10"
+                title="Copier la référence complète"
+              >
+                Réf. complète : {requestId} {copied === "full" ? "✓" : ""}
+              </button>
             </div>
           )}
 

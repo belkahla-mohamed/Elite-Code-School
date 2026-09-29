@@ -8,6 +8,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Plus, Trash, Medal, DownloadSimple, GridFour, ListDashes, CheckSquare, Square } from "@phosphor-icons/react";
 import type { Certification, Student } from "@/lib/types";
 import { downloadCsv } from "@/lib/csv-export";
+import { apiFetch } from "@/lib/api-fetch";
 import Link from "next/link";
 import { CertFormModal } from "./CertFormModal";
 
@@ -23,6 +24,7 @@ export default function CertificationsPage() {
   const [cardColumns, setCardColumns] = useState<1 | 2>(2);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const [confirmIds, setConfirmIds] = useState<string[]>([]);
   const [deleting, setDeleting] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
@@ -60,13 +62,34 @@ export default function CertificationsPage() {
   }
 
   async function batchDelete() {
-    if (selectedIds.size === 0) return;
+    if (confirmIds.length === 0) return;
     setDeleting(true);
-    // Note: To implement a real batch delete, we need an API endpoint. 
-    // Here we'll just mock it or wait for actual endpoint.
-    showToast("Suppression en cours...", "info");
+    try {
+      const res = await apiFetch("/api/certifications", {
+        method: "DELETE",
+        body: JSON.stringify({ ids: confirmIds }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        showToast(data.error ?? "Erreur lors de la suppression", "error");
+        setDeleting(false);
+        setDeleteConfirm(false);
+        return;
+      }
+      setCerts((prev) => prev.filter((c) => !confirmIds.includes(c.certification.id)));
+      setSelectedIds(new Set());
+      showToast(`${data.deleted ?? confirmIds.length} certificat(s) révoqué(s)`, "success");
+    } catch {
+      showToast("Erreur lors de la suppression", "error");
+    }
     setDeleting(false);
     setDeleteConfirm(false);
+  }
+
+  function askDelete(ids: string[]) {
+    if (ids.length === 0) return;
+    setConfirmIds(ids);
+    setDeleteConfirm(true);
   }
 
   function renderTable() {
@@ -113,7 +136,8 @@ export default function CertificationsPage() {
                 <td className="px-5 py-4 text-ink-soft hidden lg:table-cell">{new Date(c.issueDate).toLocaleDateString("fr-FR")}</td>
                 <td className="px-5 py-4 text-right">
                   <div className="flex justify-end gap-2">
-                    <button className="rounded-full bg-coral/10 p-2 text-coral hover:bg-coral/20 transition">
+                    <button onClick={() => askDelete([c.id])} aria-label="Révoquer le certificat"
+                      className="rounded-full bg-coral/10 p-2 text-coral hover:bg-coral/20 transition">
                       <Trash className="size-4" />
                     </button>
                   </div>
@@ -211,7 +235,7 @@ export default function CertificationsPage() {
             <div className="mb-4 flex flex-wrap items-center gap-2 rounded-brand border-2 border-sky bg-sky/5 px-4 py-3">
               <CheckSquare className="size-4 text-sky" />
               <span className="text-sm font-bold text-ink mr-auto">{selectedIds.size} sélectionné(s)</span>
-              <button onClick={() => setDeleteConfirm(true)} disabled={deleting}
+              <button onClick={() => askDelete(Array.from(selectedIds))} disabled={deleting}
                 className="rounded-full bg-coral/10 px-3 py-1.5 text-xs font-bold text-coral hover:bg-coral/20 transition disabled:opacity-50 flex items-center gap-1">
                 <Trash className="size-3" /> Révoquer
               </button>
@@ -222,8 +246,8 @@ export default function CertificationsPage() {
       )}
 
       {deleteConfirm && (
-        <ConfirmDialog title="Révoquer ces certificats ?"
-          description={`Cette action est irréversible. ${selectedIds.size} certificat(s) seront supprimés des profils publics des élèves.`}
+        <ConfirmDialog title={confirmIds.length > 1 ? "Révoquer ces certificats ?" : "Révoquer ce certificat ?"}
+          description={`Cette action est irréversible. ${confirmIds.length} certificat(s) seront supprimés des profils publics des élèves.`}
           confirmLabel="Révoquer" variant="danger"
           onConfirm={batchDelete} onCancel={() => setDeleteConfirm(false)} loading={deleting} />
       )}

@@ -297,13 +297,21 @@ export default function LoginPage() {
         </div>
 
         {mode === "login" && (
-          <p className="mt-6 text-center text-sm font-medium text-ink-soft dark:text-slate-400">
-            Pas de code d&apos;accès?{" "}
-            <Link href="/contact" className="font-bold text-ink transition duration-200 ease-out hover:text-brand dark:text-white">
-              Contactez l&apos;école
-            </Link>
-            .
-          </p>
+          <>
+            <p className="mt-6 text-center text-sm font-medium text-ink-soft dark:text-slate-400">
+              Pas encore de compte?{" "}
+              <Link href="/inscription" className="font-bold text-brand transition duration-200 ease-out hover:underline">
+                Inscrivez-vous
+              </Link>
+            </p>
+            <p className="mt-3 text-center text-sm font-medium text-ink-soft dark:text-slate-400">
+              Déjà inscrit mais pas de code d&apos;accès?{" "}
+              <Link href="/contact" className="font-bold text-ink transition duration-200 ease-out hover:text-brand dark:text-white">
+                Contactez l&apos;école
+              </Link>
+              .
+            </p>
+          </>
         )}
       </div>
     </div>

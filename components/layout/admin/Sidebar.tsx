@@ -7,7 +7,7 @@ import { useTheme } from "next-themes";
 import { useAuth } from "@/lib/auth-context";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { SquaresFour, BookOpen, Medal, Image as ImageIcon, Gear, SignOut, CaretLeft, Shield, Pulse, Users, Books, ChartBar, Bell, Faders, Globe, User, Chat, Megaphone, ClipboardText } from "@phosphor-icons/react";
+import { SquaresFour, BookOpen, Medal, Image as ImageIcon, Gear, SignOut, CaretLeft, Shield, Pulse, Users, Books, ChartBar, Bell, Faders, Globe, User, Chat, Megaphone, ClipboardText, EnvelopeSimple } from "@phosphor-icons/react";
 import { Separator } from "@/components/ui/separator";
 
 const sidebarLinks = [
@@ -31,6 +31,7 @@ const sidebarLinks = [
 
   { type: "separator", label: "Communication" },
   { href: "/dashboard/messages", label: "Messages familles", icon: Chat },
+  { href: "/dashboard/contacts", label: "Messages contact", icon: EnvelopeSimple },
   { href: "/dashboard/requests", label: "Demandes", icon: ClipboardText },
 
   { type: "separator", label: "Système & Paramètres" },

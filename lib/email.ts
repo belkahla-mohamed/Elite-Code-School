@@ -29,6 +29,17 @@ function logResend403(method: string) {
   addActivity("request", "Erreur email", `Resend 403: vérifie que le domaine est approuvé dans le dashboard Resend, ou utilise onboarding@resend.dev`)
 }
 
+async function sendViaResend(opts: { from: string; to: string | string[]; subject: string; html: string }) {
+  const { Resend } = await import("resend")
+  const resend = new Resend(RESEND_API_KEY!)
+  const { error } = await resend.emails.send(opts)
+  if (error) {
+    const err: any = new Error(error.message ?? "Resend error")
+    if (/domain|verified|not allowed|testing emails/i.test(error.message ?? "")) err.statusCode = 403
+    throw err
+  }
+}
+
 function buildAdminNotificationHtml(payload: {
   studentFirstName: string
   studentLastName: string
@@ -154,9 +165,7 @@ export async function sendAdminNotification(payload: {
   let to = await getAdminEmail()
   if (!to) to = payload.parentEmail
   try {
-    const { Resend } = await import("resend")
-    const resend = new Resend(RESEND_API_KEY!)
-    await resend.emails.send({
+    await sendViaResend({
       from: emailFrom,
       to,
       subject: `Nouvelle demande d'inscription — ${payload.studentFirstName} ${payload.studentLastName}`,
@@ -184,9 +193,7 @@ export async function sendAcceptanceEmail(payload: {
   }
   const emailFrom = await getEmailFrom()
   try {
-    const { Resend } = await import("resend")
-    const resend = new Resend(RESEND_API_KEY!)
-    await resend.emails.send({
+    await sendViaResend({
       from: emailFrom,
       to: payload.parentEmail,
       subject: `Inscription acceptée — Elite Code School`,
@@ -215,9 +222,7 @@ export async function sendPasswordResetEmail(payload: {
 
   const emailFrom = await getEmailFrom()
   try {
-    const { Resend } = await import("resend")
-    const resend = new Resend(RESEND_API_KEY!)
-    await resend.emails.send({
+    await sendViaResend({
       from: emailFrom,
       to: payload.parentEmail,
       subject: `Réinitialisation de votre mot de passe — Elite Code School`,
@@ -285,9 +290,7 @@ export async function sendContactFormEmail(payload: { name: string; phone: strin
   let to = await getAdminEmail()
   if (!to) to = process.env.CONTACT_EMAIL ?? "contact@elitecodeschool.ma"
   try {
-    const { Resend } = await import("resend")
-    const resend = new Resend(RESEND_API_KEY!)
-    await resend.emails.send({
+    await sendViaResend({
       from: emailFrom,
       to,
       subject: `Nouveau message de contact — ${payload.name}`,
@@ -315,9 +318,7 @@ export async function sendRejectionEmail(payload: {
   }
   const emailFrom = await getEmailFrom()
   try {
-    const { Resend } = await import("resend")
-    const resend = new Resend(RESEND_API_KEY!)
-    await resend.emails.send({
+    await sendViaResend({
       from: emailFrom,
       to: payload.parentEmail,
       subject: `Suivi de votre demande d'inscription — Elite Code School`,
