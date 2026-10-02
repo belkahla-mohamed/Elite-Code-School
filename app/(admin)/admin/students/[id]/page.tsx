@@ -2,7 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Trash, Plus, SpinnerGap, Camera, X, Pencil } from "@phosphor-icons/react";
+import { ArrowLeft } from "@phosphor-icons/react/dist/csr/ArrowLeft";
+import { Trash } from "@phosphor-icons/react/dist/csr/Trash";
+import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
+import { SpinnerGap } from "@phosphor-icons/react/dist/csr/SpinnerGap";
+import { Camera } from "@phosphor-icons/react/dist/csr/Camera";
+import { X } from "@phosphor-icons/react/dist/csr/X";
+import { Pencil } from "@phosphor-icons/react/dist/csr/Pencil";
 import { showToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { FileUpload } from "@/components/ui/file-upload";

@@ -13,7 +13,23 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { CheckCircle, XCircle, Clock, CaretDown, CaretUp, SpinnerGap, EnvelopeSimple, Phone, User, CalendarBlank, DownloadSimple, ArrowsDownUp, Square, CheckSquare, FileText, GridFour, ListDashes } from "@phosphor-icons/react";
+import { CheckCircle } from "@phosphor-icons/react/dist/csr/CheckCircle";
+import { XCircle } from "@phosphor-icons/react/dist/csr/XCircle";
+import { Clock } from "@phosphor-icons/react/dist/csr/Clock";
+import { CaretDown } from "@phosphor-icons/react/dist/csr/CaretDown";
+import { CaretUp } from "@phosphor-icons/react/dist/csr/CaretUp";
+import { SpinnerGap } from "@phosphor-icons/react/dist/csr/SpinnerGap";
+import { EnvelopeSimple } from "@phosphor-icons/react/dist/csr/EnvelopeSimple";
+import { Phone } from "@phosphor-icons/react/dist/csr/Phone";
+import { User } from "@phosphor-icons/react/dist/csr/User";
+import { CalendarBlank } from "@phosphor-icons/react/dist/csr/CalendarBlank";
+import { DownloadSimple } from "@phosphor-icons/react/dist/csr/DownloadSimple";
+import { ArrowsDownUp } from "@phosphor-icons/react/dist/csr/ArrowsDownUp";
+import { Square } from "@phosphor-icons/react/dist/csr/Square";
+import { CheckSquare } from "@phosphor-icons/react/dist/csr/CheckSquare";
+import { FileText } from "@phosphor-icons/react/dist/csr/FileText";
+import { GridFour } from "@phosphor-icons/react/dist/csr/GridFour";
+import { ListDashes } from "@phosphor-icons/react/dist/csr/ListDashes";
 
 interface InscriptionRequest {
   id: string;

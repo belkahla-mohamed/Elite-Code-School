@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { X, PaperPlaneRight } from "@phosphor-icons/react";
+import { X } from "@phosphor-icons/react/dist/csr/X";
+import { PaperPlaneRight } from "@phosphor-icons/react/dist/csr/PaperPlaneRight";
 
 const WHATSAPP_NUMBER = "212600000000";
 

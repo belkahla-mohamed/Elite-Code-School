@@ -1,7 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Gear, Shield, Bell, Eye, FileText, FloppyDisk, EnvelopeSimple, Clock, Key, Warning } from "@phosphor-icons/react";
+import { Gear } from "@phosphor-icons/react/dist/csr/Gear";
+import { Shield } from "@phosphor-icons/react/dist/csr/Shield";
+import { Bell } from "@phosphor-icons/react/dist/csr/Bell";
+import { Eye } from "@phosphor-icons/react/dist/csr/Eye";
+import { FileText } from "@phosphor-icons/react/dist/csr/FileText";
+import { FloppyDisk } from "@phosphor-icons/react/dist/csr/FloppyDisk";
+import { EnvelopeSimple } from "@phosphor-icons/react/dist/csr/EnvelopeSimple";
+import { Clock } from "@phosphor-icons/react/dist/csr/Clock";
+import { Key } from "@phosphor-icons/react/dist/csr/Key";
+import { Warning } from "@phosphor-icons/react/dist/csr/Warning";
 import { Button } from "@/components/ui/button";
 import { showToast } from "@/components/ui/toast";
 import { Switch } from "@/components/ui/switch";

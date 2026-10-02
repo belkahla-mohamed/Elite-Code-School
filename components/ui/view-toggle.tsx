@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { GridFour, List } from "@phosphor-icons/react";
+import { GridFour } from "@phosphor-icons/react/dist/csr/GridFour";
+import { List } from "@phosphor-icons/react/dist/csr/List";
 import { cn } from "@/lib/utils";
 
 export type ViewMode = "cards" | "table";

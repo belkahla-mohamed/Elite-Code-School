@@ -2,7 +2,11 @@
 
 import { useMemo, useState } from "react"
 import Link from "next/link"
-import { ArrowRight, CaretLeft, CaretRight, MagnifyingGlass, Users } from "@phosphor-icons/react";
+import { ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight";
+import { CaretLeft } from "@phosphor-icons/react/dist/csr/CaretLeft";
+import { CaretRight } from "@phosphor-icons/react/dist/csr/CaretRight";
+import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
+import { Users } from "@phosphor-icons/react/dist/csr/Users";
 import { AnimatePresence, motion } from "framer-motion"
 import { StudentAvatar } from "@/components/ui/student-avatar"
 import type { StudentPortfolio } from "@/lib/types"

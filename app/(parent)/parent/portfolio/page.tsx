@@ -5,7 +5,8 @@ import { PortfolioTabs } from "@/components/PortfolioTabs";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { LoadingPage } from "@/components/ui/loading-spinner";
 import { Skeleton } from "@/components/ui/skeleton";
-import { User, ArrowSquareOut } from "@phosphor-icons/react";
+import { User } from "@phosphor-icons/react/dist/csr/User";
+import { ArrowSquareOut } from "@phosphor-icons/react/dist/csr/ArrowSquareOut";
 import { StudentAvatar } from "@/components/ui/student-avatar";
 import Link from "next/link";
 

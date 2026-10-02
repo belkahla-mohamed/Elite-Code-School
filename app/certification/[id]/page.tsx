@@ -2,7 +2,11 @@ import { getCertificationById } from "@/lib/store";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, CheckCircle, ArrowSquareOut, LinkedinLogo, ShareNetwork } from "@phosphor-icons/react/dist/ssr";
+import { ArrowLeft } from "@phosphor-icons/react/dist/ssr/ArrowLeft";
+import { CheckCircle } from "@phosphor-icons/react/dist/ssr/CheckCircle";
+import { ArrowSquareOut } from "@phosphor-icons/react/dist/ssr/ArrowSquareOut";
+import { LinkedinLogo } from "@phosphor-icons/react/dist/ssr/LinkedinLogo";
+import { ShareNetwork } from "@phosphor-icons/react/dist/ssr/ShareNetwork";
 import { QrCode } from "@/components/ui/qr-code";
 
 type Props = { params: Promise<{ id: string }> };

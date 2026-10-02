@@ -2,7 +2,14 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
-import { Check, FacebookLogo, Link, LinkedinLogo, ChatCircle, ShareNetwork, TwitterLogo, X } from "@phosphor-icons/react";
+import { Check } from "@phosphor-icons/react/dist/csr/Check";
+import { FacebookLogo } from "@phosphor-icons/react/dist/csr/FacebookLogo";
+import { Link } from "@phosphor-icons/react/dist/csr/Link";
+import { LinkedinLogo } from "@phosphor-icons/react/dist/csr/LinkedinLogo";
+import { ChatCircle } from "@phosphor-icons/react/dist/csr/ChatCircle";
+import { ShareNetwork } from "@phosphor-icons/react/dist/csr/ShareNetwork";
+import { TwitterLogo } from "@phosphor-icons/react/dist/csr/TwitterLogo";
+import { X } from "@phosphor-icons/react/dist/csr/X";
 import { showToast } from "./toast";
 
 interface ShareMenuProps {

@@ -1,7 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Medal, ArrowSquareOut, CaretLeft, CaretRight, CheckCircle, Clock, GridFour, ListDashes } from "@phosphor-icons/react";
+import { Medal } from "@phosphor-icons/react/dist/csr/Medal";
+import { ArrowSquareOut } from "@phosphor-icons/react/dist/csr/ArrowSquareOut";
+import { CaretLeft } from "@phosphor-icons/react/dist/csr/CaretLeft";
+import { CaretRight } from "@phosphor-icons/react/dist/csr/CaretRight";
+import { CheckCircle } from "@phosphor-icons/react/dist/csr/CheckCircle";
+import { Clock } from "@phosphor-icons/react/dist/csr/Clock";
+import { GridFour } from "@phosphor-icons/react/dist/csr/GridFour";
+import { ListDashes } from "@phosphor-icons/react/dist/csr/ListDashes";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";

@@ -3,7 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
-import { List, X, CaretDown, SquaresFour, SignOut, GraduationCap } from "@phosphor-icons/react";
+import { List } from "@phosphor-icons/react/dist/csr/List";
+import { X } from "@phosphor-icons/react/dist/csr/X";
+import { CaretDown } from "@phosphor-icons/react/dist/csr/CaretDown";
+import { SquaresFour } from "@phosphor-icons/react/dist/csr/SquaresFour";
+import { SignOut } from "@phosphor-icons/react/dist/csr/SignOut";
+import { GraduationCap } from "@phosphor-icons/react/dist/csr/GraduationCap";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useAuth } from "@/lib/auth-context";
 import Image from "next/image";

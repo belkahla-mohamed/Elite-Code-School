@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
-import { Bell, BellSlash, Checks, Clock } from "@phosphor-icons/react";
+import { Bell } from "@phosphor-icons/react/dist/csr/Bell";
+import { BellSlash } from "@phosphor-icons/react/dist/csr/BellSlash";
+import { Checks } from "@phosphor-icons/react/dist/csr/Checks";
+import { Clock } from "@phosphor-icons/react/dist/csr/Clock";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import type { AppNotification } from "@/lib/types";

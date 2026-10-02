@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Image as ImageIcon, MagnifyingGlass, SpinnerGap } from "@phosphor-icons/react";
+import { X } from "@phosphor-icons/react/dist/csr/X";
+import { Image as ImageIcon } from "@phosphor-icons/react/dist/csr/Image";
+import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
+import { SpinnerGap } from "@phosphor-icons/react/dist/csr/SpinnerGap";
 import { showToast } from "@/components/ui/toast";
 import { StudentAvatar } from "@/components/ui/student-avatar";
 import { OptimizedImage } from "@/components/ui/optimized-image";

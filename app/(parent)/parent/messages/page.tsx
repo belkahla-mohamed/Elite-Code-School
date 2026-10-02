@@ -7,7 +7,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { showToast } from "@/components/ui/toast";
 import { apiFetch } from "@/lib/api-fetch";
 import type { StudentMessage } from "@/lib/types";
-import { User, ChatCircle, PaperPlaneRight, SpinnerGap, EnvelopeSimple } from "@phosphor-icons/react/dist/ssr";
+import { User } from "@phosphor-icons/react/dist/ssr/User";
+import { ChatCircle } from "@phosphor-icons/react/dist/ssr/ChatCircle";
+import { PaperPlaneRight } from "@phosphor-icons/react/dist/ssr/PaperPlaneRight";
+import { SpinnerGap } from "@phosphor-icons/react/dist/ssr/SpinnerGap";
+import { EnvelopeSimple } from "@phosphor-icons/react/dist/ssr/EnvelopeSimple";
 import Link from "next/link";
 
 export default function ParentMessagesPage() {

@@ -1,7 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowUpRight, X, ArrowLeft, ArrowRight } from "@phosphor-icons/react";
+import { ArrowUpRight } from "@phosphor-icons/react/dist/csr/ArrowUpRight";
+import { X } from "@phosphor-icons/react/dist/csr/X";
+import { ArrowLeft } from "@phosphor-icons/react/dist/csr/ArrowLeft";
+import { ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight";
 import { useState, useCallback, useEffect } from "react";
 import { createPortal } from "react-dom";
 

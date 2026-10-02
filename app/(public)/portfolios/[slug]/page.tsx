@@ -1,7 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Lock, Cake, MapPin, CalendarCheck, Medal, ShareNetwork, Clock, FolderOpen } from "@phosphor-icons/react/dist/ssr";
+import { ArrowLeft } from "@phosphor-icons/react/dist/ssr/ArrowLeft";
+import { Lock } from "@phosphor-icons/react/dist/ssr/Lock";
+import { Cake } from "@phosphor-icons/react/dist/ssr/Cake";
+import { MapPin } from "@phosphor-icons/react/dist/ssr/MapPin";
+import { CalendarCheck } from "@phosphor-icons/react/dist/ssr/CalendarCheck";
+import { Medal } from "@phosphor-icons/react/dist/ssr/Medal";
+import { ShareNetwork } from "@phosphor-icons/react/dist/ssr/ShareNetwork";
+import { Clock } from "@phosphor-icons/react/dist/ssr/Clock";
+import { FolderOpen } from "@phosphor-icons/react/dist/ssr/FolderOpen";
 import { getPortfolioBySlug } from "@/lib/store";
 import { PortfolioTabs } from "@/components/PortfolioTabs";
 import { ShareMenu } from "@/components/ui/share-menu";

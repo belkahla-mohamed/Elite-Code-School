@@ -1,7 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { User, Key, EnvelopeSimple, CalendarBlank, Shield, FloppyDisk, Camera } from "@phosphor-icons/react";
+import { User } from "@phosphor-icons/react/dist/csr/User";
+import { Key } from "@phosphor-icons/react/dist/csr/Key";
+import { EnvelopeSimple } from "@phosphor-icons/react/dist/csr/EnvelopeSimple";
+import { CalendarBlank } from "@phosphor-icons/react/dist/csr/CalendarBlank";
+import { Shield } from "@phosphor-icons/react/dist/csr/Shield";
+import { FloppyDisk } from "@phosphor-icons/react/dist/csr/FloppyDisk";
+import { Camera } from "@phosphor-icons/react/dist/csr/Camera";
 import { Button } from "@/components/ui/button";
 import { showToast } from "@/components/ui/toast";
 import { useAuth } from "@/lib/auth-context";

@@ -5,7 +5,13 @@ import { showToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { ViewToggle, useViewMode } from "@/components/ui/view-toggle";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Plus, Trash, Pencil, X, Faders, GridFour, ListDashes } from "@phosphor-icons/react";
+import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
+import { Trash } from "@phosphor-icons/react/dist/csr/Trash";
+import { Pencil } from "@phosphor-icons/react/dist/csr/Pencil";
+import { X } from "@phosphor-icons/react/dist/csr/X";
+import { Faders } from "@phosphor-icons/react/dist/csr/Faders";
+import { GridFour } from "@phosphor-icons/react/dist/csr/GridFour";
+import { ListDashes } from "@phosphor-icons/react/dist/csr/ListDashes";
 
 interface Category {
   id: string;

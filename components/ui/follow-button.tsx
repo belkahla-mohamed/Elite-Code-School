@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Heart } from "@phosphor-icons/react";
+import { Heart } from "@phosphor-icons/react/dist/csr/Heart";
 import { apiFetch } from "@/lib/api-fetch";
 import { showToast } from "./toast";
 import { cn } from "@/lib/utils";

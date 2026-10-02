@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Eye } from "@phosphor-icons/react";
+import { Eye } from "@phosphor-icons/react/dist/csr/Eye";
 
 let cachedViews: Record<string, number> | null = null;
 let inflight: Promise<Record<string, number>> | null = null;

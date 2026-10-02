@@ -4,7 +4,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Eye, EyeClosed, SpinnerGap } from "@phosphor-icons/react";
+import { ArrowLeft } from "@phosphor-icons/react/dist/csr/ArrowLeft";
+import { Eye } from "@phosphor-icons/react/dist/csr/Eye";
+import { EyeClosed } from "@phosphor-icons/react/dist/csr/EyeClosed";
+import { SpinnerGap } from "@phosphor-icons/react/dist/csr/SpinnerGap";
 import { useAuth } from "@/lib/auth-context";
 import { showToast } from "@/components/ui/toast";
 

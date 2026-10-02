@@ -2,7 +2,12 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { EnvelopeSimple, Phone, MapPin, FacebookLogo, InstagramLogo, YoutubeLogo } from "@phosphor-icons/react";
+import { EnvelopeSimple } from "@phosphor-icons/react/dist/csr/EnvelopeSimple";
+import { Phone } from "@phosphor-icons/react/dist/csr/Phone";
+import { MapPin } from "@phosphor-icons/react/dist/csr/MapPin";
+import { FacebookLogo } from "@phosphor-icons/react/dist/csr/FacebookLogo";
+import { InstagramLogo } from "@phosphor-icons/react/dist/csr/InstagramLogo";
+import { YoutubeLogo } from "@phosphor-icons/react/dist/csr/YoutubeLogo";
 
 export function Footer() {
   return (

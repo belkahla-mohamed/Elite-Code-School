@@ -2,7 +2,12 @@
 
 import Image from "next/image";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Medal, Code, Cpu, Brain, Wrench, BookOpen } from "@phosphor-icons/react";
+import { Medal } from "@phosphor-icons/react/dist/csr/Medal";
+import { Code } from "@phosphor-icons/react/dist/csr/Code";
+import { Cpu } from "@phosphor-icons/react/dist/csr/Cpu";
+import { Brain } from "@phosphor-icons/react/dist/csr/Brain";
+import { Wrench } from "@phosphor-icons/react/dist/csr/Wrench";
+import { BookOpen } from "@phosphor-icons/react/dist/csr/BookOpen";
 import { useState } from "react";
 
 const team = [

@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { EnvelopeSimple, Phone, User, Clock, ChatsCircle } from "@phosphor-icons/react";
+import { EnvelopeSimple } from "@phosphor-icons/react/dist/csr/EnvelopeSimple";
+import { Phone } from "@phosphor-icons/react/dist/csr/Phone";
+import { User } from "@phosphor-icons/react/dist/csr/User";
+import { Clock } from "@phosphor-icons/react/dist/csr/Clock";
+import { ChatsCircle } from "@phosphor-icons/react/dist/csr/ChatsCircle";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose,
 } from "@/components/ui/dialog";

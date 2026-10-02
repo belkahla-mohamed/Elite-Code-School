@@ -5,7 +5,10 @@ import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { showToast } from "@/components/ui/toast";
 import { Card, CardHeader, CardBody } from "@/components/ui/card";
-import { Users, BookOpen, CheckCircle, Clock } from "@phosphor-icons/react";
+import { Users } from "@phosphor-icons/react/dist/csr/Users";
+import { BookOpen } from "@phosphor-icons/react/dist/csr/BookOpen";
+import { CheckCircle } from "@phosphor-icons/react/dist/csr/CheckCircle";
+import { Clock } from "@phosphor-icons/react/dist/csr/Clock";
 
 const BarChart = dynamic(() => import("recharts").then((m) => m.BarChart), { ssr: false })
 const Bar = dynamic(() => import("recharts").then((m) => m.Bar), { ssr: false })

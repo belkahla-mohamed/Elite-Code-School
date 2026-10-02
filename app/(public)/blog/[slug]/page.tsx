@@ -1,7 +1,9 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowLeft, CalendarBlank, Tag } from "@phosphor-icons/react/dist/ssr"
+import { ArrowLeft } from "@phosphor-icons/react/dist/ssr/ArrowLeft";
+import { CalendarBlank } from "@phosphor-icons/react/dist/ssr/CalendarBlank";
+import { Tag } from "@phosphor-icons/react/dist/ssr/Tag";
 import { CtaBand } from "@/components/page-sections"
 import { ViewCounter } from "@/components/ui/view-counter"
 

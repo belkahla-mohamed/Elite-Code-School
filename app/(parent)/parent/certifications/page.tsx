@@ -4,7 +4,13 @@ import { useState } from "react";
 import { useParentStudent } from "@/hooks/useParentStudent";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
-import { User, ShareNetwork, Copy, Check, LinkedinLogo, ArrowSquareOut, Medal } from "@phosphor-icons/react";
+import { User } from "@phosphor-icons/react/dist/csr/User";
+import { ShareNetwork } from "@phosphor-icons/react/dist/csr/ShareNetwork";
+import { Copy } from "@phosphor-icons/react/dist/csr/Copy";
+import { Check } from "@phosphor-icons/react/dist/csr/Check";
+import { LinkedinLogo } from "@phosphor-icons/react/dist/csr/LinkedinLogo";
+import { ArrowSquareOut } from "@phosphor-icons/react/dist/csr/ArrowSquareOut";
+import { Medal } from "@phosphor-icons/react/dist/csr/Medal";
 import Link from "next/link";
 import { showToast } from "@/components/ui/toast";
 

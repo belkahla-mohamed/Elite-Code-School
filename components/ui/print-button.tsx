@@ -1,6 +1,6 @@
 "use client";
 
-import { DownloadSimple } from "@phosphor-icons/react";
+import { DownloadSimple } from "@phosphor-icons/react/dist/csr/DownloadSimple";
 
 export function PrintButton() {
   return (

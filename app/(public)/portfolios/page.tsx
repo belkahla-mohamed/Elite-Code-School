@@ -1,7 +1,9 @@
 import type { Metadata } from "next"
 import { getPublicPortfolios, getPrograms } from "@/lib/store"
 import { PageHero, CtaBand } from "@/components/page-sections"
-import { PortfoliosClient } from "@/components/portfolios-client"
+import nextDynamic from "next/dynamic"
+
+const PortfoliosClient = nextDynamic(() => import("@/components/portfolios-client").then((m) => m.PortfoliosClient))
 
 export const metadata: Metadata = {
   title: "Portfolios — Elite Code School",

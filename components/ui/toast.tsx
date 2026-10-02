@@ -2,7 +2,11 @@
 
 import dynamic from "next/dynamic";
 import { toast } from "react-hot-toast";
-import { CheckCircle, XCircle, Warning, Info, X } from "@phosphor-icons/react";
+import { CheckCircle } from "@phosphor-icons/react/dist/csr/CheckCircle";
+import { XCircle } from "@phosphor-icons/react/dist/csr/XCircle";
+import { Warning } from "@phosphor-icons/react/dist/csr/Warning";
+import { Info } from "@phosphor-icons/react/dist/csr/Info";
+import { X } from "@phosphor-icons/react/dist/csr/X";
 import { cn } from "@/lib/utils";
 
 type ToastVariant = "success" | "error" | "warning" | "info";

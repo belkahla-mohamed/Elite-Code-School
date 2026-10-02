@@ -1,8 +1,8 @@
-import jsPDF from "jspdf";
 import QRCode from "qrcode";
 import type { StudentPortfolio } from "@/lib/types";
 
 export async function generateStudentReport(student: StudentPortfolio): Promise<Blob> {
+  const { default: jsPDF } = await import("jspdf");
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const pageW = 210;
 

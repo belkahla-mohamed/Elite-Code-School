@@ -1,12 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Trash, Shield, ShieldWarning, X, EnvelopeSimple, Pencil, Eye } from "@phosphor-icons/react";
+import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
+import { Trash } from "@phosphor-icons/react/dist/csr/Trash";
+import { Shield } from "@phosphor-icons/react/dist/csr/Shield";
+import { ShieldWarning } from "@phosphor-icons/react/dist/csr/ShieldWarning";
+import { X } from "@phosphor-icons/react/dist/csr/X";
+import { EnvelopeSimple } from "@phosphor-icons/react/dist/csr/EnvelopeSimple";
+import { Pencil } from "@phosphor-icons/react/dist/csr/Pencil";
+import { Eye } from "@phosphor-icons/react/dist/csr/Eye";
 import { showToast } from "@/components/ui/toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ViewToggle, useViewMode } from "@/components/ui/view-toggle";
-import { GridFour, ListDashes } from "@phosphor-icons/react";
+import { GridFour } from "@phosphor-icons/react/dist/csr/GridFour";
+import { ListDashes } from "@phosphor-icons/react/dist/csr/ListDashes";
 import { apiFetch } from "@/lib/api-fetch";
 
 interface AdminUser {

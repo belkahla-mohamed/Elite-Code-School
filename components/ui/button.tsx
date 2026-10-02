@@ -2,7 +2,7 @@
 
 import { forwardRef } from "react";
 import { cn } from "@/lib/utils";
-import { SpinnerGap } from "@phosphor-icons/react";
+import { SpinnerGap } from "@phosphor-icons/react/dist/csr/SpinnerGap";
 
 type ButtonVariant = "primary" | "secondary" | "ghost" | "danger" | "icon";
 type ButtonSize = "sm" | "md" | "lg";

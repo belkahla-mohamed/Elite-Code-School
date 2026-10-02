@@ -1,6 +1,6 @@
 "use client";
 
-import { ShareNetwork } from "@phosphor-icons/react";
+import { ShareNetwork } from "@phosphor-icons/react/dist/csr/ShareNetwork";
 import { showToast } from "./toast";
 import { cn } from "@/lib/utils";
 

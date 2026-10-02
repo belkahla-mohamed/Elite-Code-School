@@ -1,7 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowRight, BookOpen, CalendarBlank, CheckCircle, Clock, GraduationCap, Sparkle, Target, Users, User } from "@phosphor-icons/react/dist/ssr";
+import { ArrowLeft } from "@phosphor-icons/react/dist/ssr/ArrowLeft";
+import { ArrowRight } from "@phosphor-icons/react/dist/ssr/ArrowRight";
+import { BookOpen } from "@phosphor-icons/react/dist/ssr/BookOpen";
+import { CalendarBlank } from "@phosphor-icons/react/dist/ssr/CalendarBlank";
+import { CheckCircle } from "@phosphor-icons/react/dist/ssr/CheckCircle";
+import { Clock } from "@phosphor-icons/react/dist/ssr/Clock";
+import { GraduationCap } from "@phosphor-icons/react/dist/ssr/GraduationCap";
+import { Sparkle } from "@phosphor-icons/react/dist/ssr/Sparkle";
+import { Target } from "@phosphor-icons/react/dist/ssr/Target";
+import { Users } from "@phosphor-icons/react/dist/ssr/Users";
+import { User } from "@phosphor-icons/react/dist/ssr/User";
 import { getPrograms } from "@/lib/store";
 import { imgSrc } from "@/lib/image-url-server";
 import { ProgramCard } from "@/components/ui/program-card";

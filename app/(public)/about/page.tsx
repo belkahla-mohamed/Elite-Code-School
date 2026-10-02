@@ -1,5 +1,9 @@
 import type { Metadata } from "next"
-import { Target, Heart, Lightbulb, Users, Check } from "@phosphor-icons/react/dist/ssr";
+import { Target } from "@phosphor-icons/react/dist/ssr/Target";
+import { Heart } from "@phosphor-icons/react/dist/ssr/Heart";
+import { Lightbulb } from "@phosphor-icons/react/dist/ssr/Lightbulb";
+import { Users } from "@phosphor-icons/react/dist/ssr/Users";
+import { Check } from "@phosphor-icons/react/dist/ssr/Check";
 import { PageHero, CtaBand } from "@/components/page-sections"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 

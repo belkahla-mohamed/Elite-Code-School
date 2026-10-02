@@ -1,10 +1,25 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Check, Clock, FacebookLogo, GraduationCap, InstagramLogo, EnvelopeSimple, MapPin, Phone, PuzzlePiece, Rocket, Sparkle, Users, YoutubeLogo } from "@phosphor-icons/react/dist/ssr";
+import { ArrowRight } from "@phosphor-icons/react/dist/ssr/ArrowRight";
+import { Check } from "@phosphor-icons/react/dist/ssr/Check";
+import { Clock } from "@phosphor-icons/react/dist/ssr/Clock";
+import { FacebookLogo } from "@phosphor-icons/react/dist/ssr/FacebookLogo";
+import { GraduationCap } from "@phosphor-icons/react/dist/ssr/GraduationCap";
+import { InstagramLogo } from "@phosphor-icons/react/dist/ssr/InstagramLogo";
+import { EnvelopeSimple } from "@phosphor-icons/react/dist/ssr/EnvelopeSimple";
+import { MapPin } from "@phosphor-icons/react/dist/ssr/MapPin";
+import { Phone } from "@phosphor-icons/react/dist/ssr/Phone";
+import { PuzzlePiece } from "@phosphor-icons/react/dist/ssr/PuzzlePiece";
+import { Rocket } from "@phosphor-icons/react/dist/ssr/Rocket";
+import { Sparkle } from "@phosphor-icons/react/dist/ssr/Sparkle";
+import { Users } from "@phosphor-icons/react/dist/ssr/Users";
+import { YoutubeLogo } from "@phosphor-icons/react/dist/ssr/YoutubeLogo";
 import { QuickContactForm } from "@/components/QuickContactForm";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { AnimatedNumber } from "@/components/ui/animated-number";
-import { ProgramsSection } from "@/components/programs-section";
+import nextDynamic from "next/dynamic";
+
+const ProgramsSection = nextDynamic(() => import("@/components/programs-section").then((m) => m.ProgramsSection));
 import { TestimonialsSection } from "@/components/testimonials-section";
 import { TeamSection } from "@/components/team-section";
 import { FacilitiesSection } from "@/components/facilities-section";

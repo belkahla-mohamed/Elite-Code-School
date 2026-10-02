@@ -2,7 +2,8 @@
 
 import { useState } from "react"
 import { createPortal } from "react-dom"
-import { X, Medal } from "@phosphor-icons/react"
+import { X } from "@phosphor-icons/react/dist/csr/X";
+import { Medal } from "@phosphor-icons/react/dist/csr/Medal";
 
 interface Props {
   programTitle: string

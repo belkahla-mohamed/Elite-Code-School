@@ -1,7 +1,9 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { SpinnerGap, UploadSimple, Warning } from "@phosphor-icons/react";
+import { SpinnerGap } from "@phosphor-icons/react/dist/csr/SpinnerGap";
+import { UploadSimple } from "@phosphor-icons/react/dist/csr/UploadSimple";
+import { Warning } from "@phosphor-icons/react/dist/csr/Warning";
 
 type FileUploadProps = {
   folder: string;

@@ -1,7 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MagnifyingGlass, Pulse, UserPlus, FileText, Medal, ClipboardText, CaretLeft, CaretRight, DownloadSimple } from "@phosphor-icons/react";
+import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
+import { Pulse } from "@phosphor-icons/react/dist/csr/Pulse";
+import { UserPlus } from "@phosphor-icons/react/dist/csr/UserPlus";
+import { FileText } from "@phosphor-icons/react/dist/csr/FileText";
+import { Medal } from "@phosphor-icons/react/dist/csr/Medal";
+import { ClipboardText } from "@phosphor-icons/react/dist/csr/ClipboardText";
+import { CaretLeft } from "@phosphor-icons/react/dist/csr/CaretLeft";
+import { CaretRight } from "@phosphor-icons/react/dist/csr/CaretRight";
+import { DownloadSimple } from "@phosphor-icons/react/dist/csr/DownloadSimple";
 import { Button } from "@/components/ui/button";
 import { showToast } from "@/components/ui/toast";
 import { downloadCsv } from "@/lib/csv-export";

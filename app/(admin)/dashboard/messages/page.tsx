@@ -1,7 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Chat, SpinnerGap, PaperPlaneRight } from "@phosphor-icons/react";
+import { Chat } from "@phosphor-icons/react/dist/csr/Chat";
+import { SpinnerGap } from "@phosphor-icons/react/dist/csr/SpinnerGap";
+import { PaperPlaneRight } from "@phosphor-icons/react/dist/csr/PaperPlaneRight";
 import { cn } from "@/lib/utils";
 import { showToast } from "@/components/ui/toast";
 import { apiFetch } from "@/lib/api-fetch";

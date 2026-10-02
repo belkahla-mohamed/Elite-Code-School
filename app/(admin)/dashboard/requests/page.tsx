@@ -1,7 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { ClipboardText, SpinnerGap, Check, X } from "@phosphor-icons/react";
+import { ClipboardText } from "@phosphor-icons/react/dist/csr/ClipboardText";
+import { SpinnerGap } from "@phosphor-icons/react/dist/csr/SpinnerGap";
+import { Check } from "@phosphor-icons/react/dist/csr/Check";
+import { X } from "@phosphor-icons/react/dist/csr/X";
 import { cn } from "@/lib/utils";
 import { showToast } from "@/components/ui/toast";
 import { apiFetch } from "@/lib/api-fetch";

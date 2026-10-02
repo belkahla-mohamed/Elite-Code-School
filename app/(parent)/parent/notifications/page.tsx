@@ -7,7 +7,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { showToast } from "@/components/ui/toast";
 import { apiFetch } from "@/lib/api-fetch";
 import type { StudentAlert } from "@/lib/types";
-import { User, BellRinging, Checks, RocketLaunch, Moon } from "@phosphor-icons/react/dist/ssr";
+import { User } from "@phosphor-icons/react/dist/ssr/User";
+import { BellRinging } from "@phosphor-icons/react/dist/ssr/BellRinging";
+import { Checks } from "@phosphor-icons/react/dist/ssr/Checks";
+import { RocketLaunch } from "@phosphor-icons/react/dist/ssr/RocketLaunch";
+import { Moon } from "@phosphor-icons/react/dist/ssr/Moon";
 import Link from "next/link";
 
 export default function ParentNotificationsPage() {

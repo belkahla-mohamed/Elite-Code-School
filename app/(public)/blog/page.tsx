@@ -1,7 +1,10 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowRight, CalendarBlank, Tag, ArrowLeft } from "@phosphor-icons/react/dist/ssr"
+import { ArrowRight } from "@phosphor-icons/react/dist/ssr/ArrowRight";
+import { CalendarBlank } from "@phosphor-icons/react/dist/ssr/CalendarBlank";
+import { Tag } from "@phosphor-icons/react/dist/ssr/Tag";
+import { ArrowLeft } from "@phosphor-icons/react/dist/ssr/ArrowLeft";
 import { PageHero, CtaBand } from "@/components/page-sections"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
 import { ViewCounter } from "@/components/ui/view-counter"

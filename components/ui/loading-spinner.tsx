@@ -1,4 +1,4 @@
-import { SpinnerGap } from "@phosphor-icons/react/dist/ssr";
+import { SpinnerGap } from "@phosphor-icons/react/dist/ssr/SpinnerGap";
 import { cn } from "@/lib/utils";
 
 type SpinnerSize = "sm" | "md" | "lg";

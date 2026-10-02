@@ -1,7 +1,9 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { List, Moon, Sun } from "@phosphor-icons/react/dist/ssr";
+import { List } from "@phosphor-icons/react/dist/ssr/List";
+import { Moon } from "@phosphor-icons/react/dist/ssr/Moon";
+import { Sun } from "@phosphor-icons/react/dist/ssr/Sun";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import Image from "next/image";

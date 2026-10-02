@@ -7,7 +7,18 @@ import { useTheme } from "next-themes";
 import { useAuth } from "@/lib/auth-context";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { SquaresFour, CalendarBlank, FolderOpen, Medal, Users, ClipboardText, ChatCircle, BellRinging, Shield, FileText, SignOut, CaretLeft } from "@phosphor-icons/react/dist/ssr";
+import { SquaresFour } from "@phosphor-icons/react/dist/ssr/SquaresFour";
+import { CalendarBlank } from "@phosphor-icons/react/dist/ssr/CalendarBlank";
+import { FolderOpen } from "@phosphor-icons/react/dist/ssr/FolderOpen";
+import { Medal } from "@phosphor-icons/react/dist/ssr/Medal";
+import { Users } from "@phosphor-icons/react/dist/ssr/Users";
+import { ClipboardText } from "@phosphor-icons/react/dist/ssr/ClipboardText";
+import { ChatCircle } from "@phosphor-icons/react/dist/ssr/ChatCircle";
+import { BellRinging } from "@phosphor-icons/react/dist/ssr/BellRinging";
+import { Shield } from "@phosphor-icons/react/dist/ssr/Shield";
+import { FileText } from "@phosphor-icons/react/dist/ssr/FileText";
+import { SignOut } from "@phosphor-icons/react/dist/ssr/SignOut";
+import { CaretLeft } from "@phosphor-icons/react/dist/ssr/CaretLeft";
 import { Separator } from "@/components/ui/separator";
 
 const parentLinks = [

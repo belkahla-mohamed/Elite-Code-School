@@ -1,5 +1,9 @@
 import type { Metadata } from "next"
-import { EnvelopeSimple, Phone, MapPin, Clock, CalendarCheck } from "@phosphor-icons/react/dist/ssr";
+import { EnvelopeSimple } from "@phosphor-icons/react/dist/ssr/EnvelopeSimple";
+import { Phone } from "@phosphor-icons/react/dist/ssr/Phone";
+import { MapPin } from "@phosphor-icons/react/dist/ssr/MapPin";
+import { Clock } from "@phosphor-icons/react/dist/ssr/Clock";
+import { CalendarCheck } from "@phosphor-icons/react/dist/ssr/CalendarCheck";
 import { QuickContactForm } from "@/components/QuickContactForm"
 import { PageHero, CtaBand } from "@/components/page-sections"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"

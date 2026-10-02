@@ -1,5 +1,7 @@
 import Link from "next/link"
-import { Sparkle, ArrowRight, Phone } from "@phosphor-icons/react/dist/ssr";
+import { Sparkle } from "@phosphor-icons/react/dist/ssr/Sparkle";
+import { ArrowRight } from "@phosphor-icons/react/dist/ssr/ArrowRight";
+import { Phone } from "@phosphor-icons/react/dist/ssr/Phone";
 
 interface PageHeroProps {
   badge: string

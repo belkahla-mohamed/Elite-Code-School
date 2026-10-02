@@ -1,4 +1,10 @@
-import { Medal, Bell, Briefcase, ClipboardText, GraduationCap, EnvelopeSimple, Package } from "@phosphor-icons/react/dist/ssr";
+import { Medal } from "@phosphor-icons/react/dist/ssr/Medal";
+import { Bell } from "@phosphor-icons/react/dist/ssr/Bell";
+import { Briefcase } from "@phosphor-icons/react/dist/ssr/Briefcase";
+import { ClipboardText } from "@phosphor-icons/react/dist/ssr/ClipboardText";
+import { GraduationCap } from "@phosphor-icons/react/dist/ssr/GraduationCap";
+import { EnvelopeSimple } from "@phosphor-icons/react/dist/ssr/EnvelopeSimple";
+import { Package } from "@phosphor-icons/react/dist/ssr/Package";
 import type { Icon } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 

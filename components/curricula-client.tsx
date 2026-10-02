@@ -2,7 +2,14 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ArrowRight, CaretLeft, CaretRight, Clock, CalendarBlank, MagnifyingGlass, Users, User } from "@phosphor-icons/react";
+import { ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight";
+import { CaretLeft } from "@phosphor-icons/react/dist/csr/CaretLeft";
+import { CaretRight } from "@phosphor-icons/react/dist/csr/CaretRight";
+import { Clock } from "@phosphor-icons/react/dist/csr/Clock";
+import { CalendarBlank } from "@phosphor-icons/react/dist/csr/CalendarBlank";
+import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
+import { Users } from "@phosphor-icons/react/dist/csr/Users";
+import { User } from "@phosphor-icons/react/dist/csr/User";
 import { AnimatePresence, motion } from "framer-motion"
 import type { Program } from "@/lib/types"
 

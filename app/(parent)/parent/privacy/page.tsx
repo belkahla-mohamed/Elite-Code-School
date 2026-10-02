@@ -3,7 +3,11 @@
 import { useParentStudent } from "@/hooks/useParentStudent";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
-import { User, Globe, Lock, Eye, ArrowSquareOut } from "@phosphor-icons/react";
+import { User } from "@phosphor-icons/react/dist/csr/User";
+import { Globe } from "@phosphor-icons/react/dist/csr/Globe";
+import { Lock } from "@phosphor-icons/react/dist/csr/Lock";
+import { Eye } from "@phosphor-icons/react/dist/csr/Eye";
+import { ArrowSquareOut } from "@phosphor-icons/react/dist/csr/ArrowSquareOut";
 import Link from "next/link";
 import { showToast } from "@/components/ui/toast";
 import { Switch } from "@/components/ui/switch";

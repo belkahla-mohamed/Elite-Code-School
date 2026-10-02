@@ -1,7 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { X, CaretLeft, CaretRight } from "@phosphor-icons/react"
+import { X } from "@phosphor-icons/react/dist/csr/X";
+import { CaretLeft } from "@phosphor-icons/react/dist/csr/CaretLeft";
+import { CaretRight } from "@phosphor-icons/react/dist/csr/CaretRight";
 import { createPortal } from "react-dom"
 import { imgSrc } from "@/lib/image-url-server"
 

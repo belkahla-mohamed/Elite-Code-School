@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ArrowRight, CheckCircle } from "@phosphor-icons/react/dist/ssr";
+import { ArrowRight } from "@phosphor-icons/react/dist/ssr/ArrowRight";
+import { CheckCircle } from "@phosphor-icons/react/dist/ssr/CheckCircle";
 import { EnrollmentForm } from "@/components/forms/enrollment-form";
 import { getPrograms } from "@/lib/store";
 

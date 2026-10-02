@@ -2,7 +2,18 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { User, EnvelopeSimple, Phone, CalendarBlank, BookOpen, Clock, FileText, CheckCircle, XCircle, Chat, Hash, GraduationCap } from "@phosphor-icons/react";
+import { User } from "@phosphor-icons/react/dist/csr/User";
+import { EnvelopeSimple } from "@phosphor-icons/react/dist/csr/EnvelopeSimple";
+import { Phone } from "@phosphor-icons/react/dist/csr/Phone";
+import { CalendarBlank } from "@phosphor-icons/react/dist/csr/CalendarBlank";
+import { BookOpen } from "@phosphor-icons/react/dist/csr/BookOpen";
+import { Clock } from "@phosphor-icons/react/dist/csr/Clock";
+import { FileText } from "@phosphor-icons/react/dist/csr/FileText";
+import { CheckCircle } from "@phosphor-icons/react/dist/csr/CheckCircle";
+import { XCircle } from "@phosphor-icons/react/dist/csr/XCircle";
+import { Chat } from "@phosphor-icons/react/dist/csr/Chat";
+import { Hash } from "@phosphor-icons/react/dist/csr/Hash";
+import { GraduationCap } from "@phosphor-icons/react/dist/csr/GraduationCap";
 
 interface InscriptionRequest {
   id: string;

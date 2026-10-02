@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { MagnifyingGlass, ShieldCheck } from "@phosphor-icons/react";
+import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
+import { ShieldCheck } from "@phosphor-icons/react/dist/csr/ShieldCheck";
 
 export default function VerifyPage() {
   const [code, setCode] = useState("");

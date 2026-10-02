@@ -8,7 +8,13 @@ import { showToast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
 import { apiFetch } from "@/lib/api-fetch";
 import type { StudentRequest } from "@/lib/types";
-import { User, ClipboardText, Clock, Medal, SpinnerGap, PaperPlaneTilt, ChatCircleText } from "@phosphor-icons/react/dist/ssr";
+import { User } from "@phosphor-icons/react/dist/ssr/User";
+import { ClipboardText } from "@phosphor-icons/react/dist/ssr/ClipboardText";
+import { Clock } from "@phosphor-icons/react/dist/ssr/Clock";
+import { Medal } from "@phosphor-icons/react/dist/ssr/Medal";
+import { SpinnerGap } from "@phosphor-icons/react/dist/ssr/SpinnerGap";
+import { PaperPlaneTilt } from "@phosphor-icons/react/dist/ssr/PaperPlaneTilt";
+import { ChatCircleText } from "@phosphor-icons/react/dist/ssr/ChatCircleText";
 import Link from "next/link";
 
 const statusConfig: Record<string, { label: string; classes: string; dot: string }> = {

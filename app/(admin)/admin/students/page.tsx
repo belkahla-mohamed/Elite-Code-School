@@ -2,7 +2,17 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { MagnifyingGlass, Eye, DownloadSimple, Globe, Lock, Trash, CheckSquare, Plus, X, GridFour, ListDashes } from "@phosphor-icons/react";
+import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
+import { Eye } from "@phosphor-icons/react/dist/csr/Eye";
+import { DownloadSimple } from "@phosphor-icons/react/dist/csr/DownloadSimple";
+import { Globe } from "@phosphor-icons/react/dist/csr/Globe";
+import { Lock } from "@phosphor-icons/react/dist/csr/Lock";
+import { Trash } from "@phosphor-icons/react/dist/csr/Trash";
+import { CheckSquare } from "@phosphor-icons/react/dist/csr/CheckSquare";
+import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
+import { X } from "@phosphor-icons/react/dist/csr/X";
+import { GridFour } from "@phosphor-icons/react/dist/csr/GridFour";
+import { ListDashes } from "@phosphor-icons/react/dist/csr/ListDashes";
 import { Skeleton } from "@/components/ui/skeleton";
 import { downloadCsv } from "@/lib/csv-export";
 import { ViewToggle, useViewMode } from "@/components/ui/view-toggle";

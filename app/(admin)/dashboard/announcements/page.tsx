@@ -1,7 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Megaphone, SpinnerGap, Plus } from "@phosphor-icons/react";
+import { Megaphone } from "@phosphor-icons/react/dist/csr/Megaphone";
+import { SpinnerGap } from "@phosphor-icons/react/dist/csr/SpinnerGap";
+import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
 import { cn } from "@/lib/utils";
 import { showToast } from "@/components/ui/toast";
 import { apiFetch } from "@/lib/api-fetch";

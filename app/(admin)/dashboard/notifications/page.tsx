@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Bell, BellSlash, Checks, Trash, Clock } from "@phosphor-icons/react";
+import { Bell } from "@phosphor-icons/react/dist/csr/Bell";
+import { BellSlash } from "@phosphor-icons/react/dist/csr/BellSlash";
+import { Checks } from "@phosphor-icons/react/dist/csr/Checks";
+import { Trash } from "@phosphor-icons/react/dist/csr/Trash";
+import { Clock } from "@phosphor-icons/react/dist/csr/Clock";
 import { cn } from "@/lib/utils";
 import { showToast } from "@/components/ui/toast";
 import { NotificationIcon } from "@/components/ui/notification-icon";

@@ -1,7 +1,14 @@
 "use client";
 
 import { useEffect, useState, use } from "react";
-import { Medal, CheckCircle, XCircle, MagnifyingGlass, CalendarBlank, User, Hash, IdentificationCard } from "@phosphor-icons/react";
+import { Medal } from "@phosphor-icons/react/dist/csr/Medal";
+import { CheckCircle } from "@phosphor-icons/react/dist/csr/CheckCircle";
+import { XCircle } from "@phosphor-icons/react/dist/csr/XCircle";
+import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
+import { CalendarBlank } from "@phosphor-icons/react/dist/csr/CalendarBlank";
+import { User } from "@phosphor-icons/react/dist/csr/User";
+import { Hash } from "@phosphor-icons/react/dist/csr/Hash";
+import { IdentificationCard } from "@phosphor-icons/react/dist/csr/IdentificationCard";
 import { OptimizedImage } from "@/components/ui/optimized-image";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";

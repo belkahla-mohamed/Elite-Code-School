@@ -7,7 +7,26 @@ import { useTheme } from "next-themes";
 import { useAuth } from "@/lib/auth-context";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { SquaresFour, BookOpen, Medal, Image as ImageIcon, Gear, SignOut, CaretLeft, Shield, Pulse, Users, Books, ChartBar, Bell, Faders, Globe, User, Chat, Megaphone, ClipboardText, EnvelopeSimple } from "@phosphor-icons/react";
+import { SquaresFour } from "@phosphor-icons/react/dist/csr/SquaresFour";
+import { BookOpen } from "@phosphor-icons/react/dist/csr/BookOpen";
+import { Medal } from "@phosphor-icons/react/dist/csr/Medal";
+import { Image as ImageIcon } from "@phosphor-icons/react/dist/csr/Image";
+import { Gear } from "@phosphor-icons/react/dist/csr/Gear";
+import { SignOut } from "@phosphor-icons/react/dist/csr/SignOut";
+import { CaretLeft } from "@phosphor-icons/react/dist/csr/CaretLeft";
+import { Shield } from "@phosphor-icons/react/dist/csr/Shield";
+import { Pulse } from "@phosphor-icons/react/dist/csr/Pulse";
+import { Users } from "@phosphor-icons/react/dist/csr/Users";
+import { Books } from "@phosphor-icons/react/dist/csr/Books";
+import { ChartBar } from "@phosphor-icons/react/dist/csr/ChartBar";
+import { Bell } from "@phosphor-icons/react/dist/csr/Bell";
+import { Faders } from "@phosphor-icons/react/dist/csr/Faders";
+import { Globe } from "@phosphor-icons/react/dist/csr/Globe";
+import { User } from "@phosphor-icons/react/dist/csr/User";
+import { Chat } from "@phosphor-icons/react/dist/csr/Chat";
+import { Megaphone } from "@phosphor-icons/react/dist/csr/Megaphone";
+import { ClipboardText } from "@phosphor-icons/react/dist/csr/ClipboardText";
+import { EnvelopeSimple } from "@phosphor-icons/react/dist/csr/EnvelopeSimple";
 import { Separator } from "@/components/ui/separator";
 
 const sidebarLinks = [

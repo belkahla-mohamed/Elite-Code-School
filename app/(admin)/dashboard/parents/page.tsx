@@ -1,7 +1,20 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { Users, MagnifyingGlass, Plus, Trash, X, SpinnerGap, EnvelopeSimple, Phone, User, Shield, ArrowSquareOut, Key, Copy, Check } from "@phosphor-icons/react";
+import { Users } from "@phosphor-icons/react/dist/csr/Users";
+import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
+import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
+import { Trash } from "@phosphor-icons/react/dist/csr/Trash";
+import { X } from "@phosphor-icons/react/dist/csr/X";
+import { SpinnerGap } from "@phosphor-icons/react/dist/csr/SpinnerGap";
+import { EnvelopeSimple } from "@phosphor-icons/react/dist/csr/EnvelopeSimple";
+import { Phone } from "@phosphor-icons/react/dist/csr/Phone";
+import { User } from "@phosphor-icons/react/dist/csr/User";
+import { Shield } from "@phosphor-icons/react/dist/csr/Shield";
+import { ArrowSquareOut } from "@phosphor-icons/react/dist/csr/ArrowSquareOut";
+import { Key } from "@phosphor-icons/react/dist/csr/Key";
+import { Copy } from "@phosphor-icons/react/dist/csr/Copy";
+import { Check } from "@phosphor-icons/react/dist/csr/Check";
 import { Skeleton } from "@/components/ui/skeleton";
 import { showToast } from "@/components/ui/toast";
 import {

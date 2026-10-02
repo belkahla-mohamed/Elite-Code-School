@@ -1,5 +1,6 @@
 import Link from "next/link"
-import { ArrowRight, User } from "@phosphor-icons/react/dist/ssr";
+import { ArrowRight } from "@phosphor-icons/react/dist/ssr/ArrowRight";
+import { User } from "@phosphor-icons/react/dist/ssr/User";
 
 interface Category {
   id: string

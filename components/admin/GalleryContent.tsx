@@ -1,7 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Image as ImageIcon, User, CaretLeft, CaretRight, CalendarBlank, Eye, GridFour, ListDashes } from "@phosphor-icons/react";
+import { Image as ImageIcon } from "@phosphor-icons/react/dist/csr/Image";
+import { User } from "@phosphor-icons/react/dist/csr/User";
+import { CaretLeft } from "@phosphor-icons/react/dist/csr/CaretLeft";
+import { CaretRight } from "@phosphor-icons/react/dist/csr/CaretRight";
+import { CalendarBlank } from "@phosphor-icons/react/dist/csr/CalendarBlank";
+import { Eye } from "@phosphor-icons/react/dist/csr/Eye";
+import { GridFour } from "@phosphor-icons/react/dist/csr/GridFour";
+import { ListDashes } from "@phosphor-icons/react/dist/csr/ListDashes";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";

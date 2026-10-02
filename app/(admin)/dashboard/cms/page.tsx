@@ -3,7 +3,10 @@
 import { useState, useEffect } from "react";
 import { showToast } from "@/components/ui/toast";
 import { apiFetch } from "@/lib/api-fetch";
-import { FloppyDisk, Globe, FileText, Image as ImageIcon } from "@phosphor-icons/react";
+import { FloppyDisk } from "@phosphor-icons/react/dist/csr/FloppyDisk";
+import { Globe } from "@phosphor-icons/react/dist/csr/Globe";
+import { FileText } from "@phosphor-icons/react/dist/csr/FileText";
+import { Image as ImageIcon } from "@phosphor-icons/react/dist/csr/Image";
 import type { ContentBlock } from "@/lib/types";
 
 export default function CmsPage() {

@@ -1,6 +1,11 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, CheckCircle, Medal, CalendarBlank, Hash, DownloadSimple } from "@phosphor-icons/react/dist/ssr";
+import { ArrowLeft } from "@phosphor-icons/react/dist/ssr/ArrowLeft";
+import { CheckCircle } from "@phosphor-icons/react/dist/ssr/CheckCircle";
+import { Medal } from "@phosphor-icons/react/dist/ssr/Medal";
+import { CalendarBlank } from "@phosphor-icons/react/dist/ssr/CalendarBlank";
+import { Hash } from "@phosphor-icons/react/dist/ssr/Hash";
+import { DownloadSimple } from "@phosphor-icons/react/dist/ssr/DownloadSimple";
 import { getCertificationById } from "@/lib/store";
 import { PrintButton } from "@/components/ui/print-button";
 import { QrCode } from "@/components/ui/qr-code";

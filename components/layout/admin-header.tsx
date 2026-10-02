@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { List, MagnifyingGlass, User, SignOut, Gear, IdentificationCard } from "@phosphor-icons/react";
+import { List } from "@phosphor-icons/react/dist/csr/List";
+import { MagnifyingGlass } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
+import { User } from "@phosphor-icons/react/dist/csr/User";
+import { SignOut } from "@phosphor-icons/react/dist/csr/SignOut";
+import { Gear } from "@phosphor-icons/react/dist/csr/Gear";
+import { IdentificationCard } from "@phosphor-icons/react/dist/csr/IdentificationCard";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { NotificationBell } from "@/components/ui/notification-bell";
 import { useAuth } from "@/lib/auth-context";

@@ -3,7 +3,15 @@
 import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { ArrowLeft, ArrowRight, CheckCircle, Clock, Copy, EnvelopeSimple, Confetti, Sparkle, ShieldCheck } from "@phosphor-icons/react";
+import { ArrowLeft } from "@phosphor-icons/react/dist/csr/ArrowLeft";
+import { ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight";
+import { CheckCircle } from "@phosphor-icons/react/dist/csr/CheckCircle";
+import { Clock } from "@phosphor-icons/react/dist/csr/Clock";
+import { Copy } from "@phosphor-icons/react/dist/csr/Copy";
+import { EnvelopeSimple } from "@phosphor-icons/react/dist/csr/EnvelopeSimple";
+import { Confetti } from "@phosphor-icons/react/dist/csr/Confetti";
+import { Sparkle } from "@phosphor-icons/react/dist/csr/Sparkle";
+import { ShieldCheck } from "@phosphor-icons/react/dist/csr/ShieldCheck";
 import { showToast } from "@/components/ui/toast";
 
 function shortCode(id: string): string {

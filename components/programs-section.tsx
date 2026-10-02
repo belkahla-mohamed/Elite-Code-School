@@ -2,7 +2,10 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ArrowRight, Clock, CalendarBlank, Users } from "@phosphor-icons/react";
+import { ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight";
+import { Clock } from "@phosphor-icons/react/dist/csr/Clock";
+import { CalendarBlank } from "@phosphor-icons/react/dist/csr/CalendarBlank";
+import { Users } from "@phosphor-icons/react/dist/csr/Users";
 import { AnimatePresence, motion } from "framer-motion"
 import type { Program } from "@/lib/types"
 
