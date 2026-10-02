@@ -45,6 +45,8 @@ export default function StudentDetailPage() {
   const [editForm, setEditForm] = useState({ firstName: "", lastName: "", age: 0, levelLabel: "", hours: 0, parentEmail: "" });
   const [saving, setSaving] = useState(false);
   const [addingProject, setAddingProject] = useState(false);
+  const [editingProject, setEditingProject] = useState<any | null>(null);
+  const [showProjectForm, setShowProjectForm] = useState(false);
   const [addingCert, setAddingCert] = useState(false);
   const [deletingItem, setDeletingItem] = useState(false);
   const [deleteStudentConfirm, setDeleteStudentConfirm] = useState(false);
@@ -64,14 +66,34 @@ export default function StudentDetailPage() {
     });
   }
 
-  async function addProject(e: React.FormEvent<HTMLFormElement>) {
+  function startEditProject(p: any) {
+    setEditingProject(p);
+    setProjectCover(p.coverImage || "");
+    setShowProjectForm(true);
+    setTimeout(() => document.getElementById("project-form")?.scrollIntoView({ behavior: "smooth", block: "center" }), 80);
+  }
+
+  function cancelEditProject() {
+    setEditingProject(null);
+    setProjectCover("");
+    setShowProjectForm(false);
+  }
+
+  function openAddProject() {
+    setEditingProject(null);
+    setProjectCover("");
+    setShowProjectForm(true);
+  }
+
+  async function submitProject(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (addingProject) return;
     setAddingProject(true);
     const formEl = e.currentTarget;
     const form = new FormData(formEl);
-    const res = await fetch(`/api/students/${id}/projects`, {
-      method: "POST",
+    const isEdit = !!editingProject;
+    const res = await fetch(`/api/students/${id}/projects${isEdit ? `?id=${editingProject.id}` : ""}`, {
+      method: isEdit ? "PUT" : "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         title: form.get("title"),
@@ -87,13 +109,15 @@ export default function StudentDetailPage() {
       }),
     });
     if (res.ok) {
-      showToast("Projet ajouté", "success");
+      showToast(isEdit ? "Projet modifié" : "Projet ajouté", "success");
       formEl.reset();
       setProjectCover("");
+      setEditingProject(null);
+      setShowProjectForm(false);
       reload();
     } else {
       const data = await res.json().catch(() => null);
-      showToast(data?.error ?? "Erreur lors de l'ajout du projet", "error");
+      showToast(data?.error ?? (isEdit ? "Erreur lors de la modification du projet" : "Erreur lors de l'ajout du projet"), "error");
     }
     setAddingProject(false);
   }
@@ -298,32 +322,44 @@ export default function StudentDetailPage() {
           {student.projects.map((p: any) => (
             <div key={p.id} className="flex items-center justify-between gap-3 rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface px-4 py-3">
               <span className="min-w-0 flex-1 truncate text-sm font-bold">{p.emoji} {p.title}</span>
+              <button onClick={() => startEditProject(p)} aria-label={`Modifier ${p.title}`} className="shrink-0 text-sky hover:text-sky/80">
+                <Pencil className="size-4" />
+              </button>
               <button onClick={() => setConfirmDelete({ type: "project", name: p.title, id: p.id })} className="shrink-0 text-coral hover:text-coral/80">
                 <Trash className="size-4" />
               </button>
             </div>
           ))}
         </div>
-        <form onSubmit={addProject} className="grid gap-3 rounded-brand border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface p-4 sm:grid-cols-2">
-          <input name="title" required placeholder="Titre du projet" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
-          <input name="description" required placeholder="Description" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
-          <input name="tags" placeholder="Tags (virgule)" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
-          <input name="demoUrl" type="url" placeholder="Lien de démo (https://...)" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
-          <input name="dateLabel" placeholder="Date affichée" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
-          <select name="status" className="rounded-brand-sm border-2 border-border bg-surface px-3 py-2 text-sm text-ink focus:border-sky focus:outline-none">
+        {showProjectForm ? (
+        <form key={editingProject?.id ?? "new"} id="project-form" onSubmit={submitProject} className={`grid gap-3 rounded-brand border-2 ${editingProject ? "border-sky" : "border-[#E8EEF6]"} dark:border-border bg-white dark:bg-surface p-4 sm:grid-cols-2`}>
+          <input name="title" required defaultValue={editingProject?.title ?? ""} placeholder="Titre du projet" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
+          <input name="description" required defaultValue={editingProject?.description ?? ""} placeholder="Description" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
+          <input name="tags" defaultValue={(editingProject?.tags ?? []).join(", ")} placeholder="Tags (virgule)" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
+          <input name="demoUrl" type="url" defaultValue={editingProject?.demoUrl ?? ""} placeholder="Lien de démo (https://...)" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
+          <input name="dateLabel" defaultValue={editingProject?.dateLabel ?? ""} placeholder="Date affichée" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
+          <select name="status" defaultValue={editingProject?.status ?? "in_progress"} className="rounded-brand-sm border-2 border-border bg-surface px-3 py-2 text-sm text-ink focus:border-sky focus:outline-none">
             <option value="in_progress">En cours</option>
             <option value="completed">Terminé</option>
           </select>
-          <input name="progress" type="number" min="0" max="100" defaultValue="40" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
+          <input name="progress" type="number" min="0" max="100" defaultValue={editingProject?.progress ?? 40} className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
           <div className="flex flex-wrap items-center gap-3 sm:col-span-2">
             <FileUpload folder={`projects/${id}`} onUploaded={(url) => { setProjectCover(url); showToast("Cover ajoutée", "success"); }}>
               <span className="inline-flex items-center gap-1 rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm font-semibold text-ink-soft hover:border-sky transition">
                  {projectCover ? "✅ Cover" : "🖼️ Cover"}
               </span>
             </FileUpload>
-            <button type="submit" disabled={addingProject} className="flex-1 btn-primary py-2 disabled:opacity-50">{addingProject ? <><SpinnerGap className="mr-1 inline size-4 animate-spin" /> Ajout...</> : <><Plus className="mr-1 inline size-4" /> Ajouter</>}</button>
+            <button type="button" onClick={cancelEditProject} className="btn-outline px-4 py-2">Annuler</button>
+            <button type="submit" disabled={addingProject} className="flex-1 btn-primary py-2 disabled:opacity-50">
+              {addingProject ? <><SpinnerGap className="mr-1 inline size-4 animate-spin" /> {editingProject ? "Enregistrement..." : "Ajout..."}</> : editingProject ? <><Pencil className="mr-1 inline size-4" /> Enregistrer</> : <><Plus className="mr-1 inline size-4" /> Ajouter</>}
+            </button>
           </div>
         </form>
+        ) : (
+          <button onClick={openAddProject} className="btn-outline py-2">
+            <Plus className="mr-1 inline size-4" /> Ajouter un projet
+          </button>
+        )}
       </section>
 
       {/* Certifications */}

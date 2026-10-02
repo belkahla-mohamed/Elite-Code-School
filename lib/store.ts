@@ -1041,6 +1041,35 @@ export async function deleteProject(projectId: string) {
   if (error) throw error
 }
 
+export async function updateProject(projectId: string, payload: Omit<Project, "id" | "studentId">) {
+  if (!hasSupabaseConfig()) {
+    const store = demoStore()
+    const idx = store.projects.findIndex((p) => p.id === projectId)
+    if (idx === -1) throw new Error("Projet introuvable")
+    store.projects[idx] = { ...store.projects[idx], ...payload }
+    return store.projects[idx]
+  }
+  const { data, error } = await getSupabaseAdmin()
+    .from("projects")
+    .update({
+      title: payload.title,
+      description: payload.description,
+      tags: payload.tags,
+      status: payload.status,
+      progress: payload.progress,
+      date_label: payload.dateLabel,
+      emoji: payload.emoji,
+      gradient: payload.gradient,
+      cover_image: payload.coverImage ?? null,
+      demo_url: payload.demoUrl ?? null
+    })
+    .eq("id", projectId)
+    .select("*")
+    .single()
+  if (error) throw error
+  return mapProject(data)
+}
+
 export async function deleteCertification(certId: string) {
   if (!hasSupabaseConfig()) {
     const store = demoStore()

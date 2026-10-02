@@ -324,30 +324,34 @@ function SkillsSection({ student }: { student: StudentPortfolio }) {
   const totalProjects = student.projects.length;
   const completedProjects = student.projects.filter((p) => p.status === "completed").length;
   const inProgress = student.projects.filter((p) => p.status !== "completed").length;
+  const hoursGoal = Math.max(1, student.program?.totalHours ?? 40);
 
   const skills = [
     {
       name: "Projets complétés",
       percent: totalProjects > 0 ? Math.round((completedProjects / totalProjects) * 100) : 0,
+      display: `${completedProjects} / ${totalProjects}`,
       color: "bg-lime",
       icon: CheckCircle,
     },
     {
       name: "Projets en cours",
       percent: totalProjects > 0 ? Math.round((inProgress / totalProjects) * 100) : 0,
+      display: `${inProgress} / ${totalProjects}`,
       color: "bg-brand",
       icon: Wrench,
     },
     {
       name: "Heures de code",
-      percent: Math.min(100, Math.round((student.hours / 40) * 100)),
-      display: `${student.hours}h / 40h`,
+      percent: Math.min(100, Math.round((student.hours / hoursGoal) * 100)),
+      display: student.hours >= hoursGoal ? `${student.hours}h ✓` : `${student.hours}h / ${hoursGoal}h`,
       color: "bg-amber",
       icon: Clock,
     },
     {
       name: "Certifications",
       percent: Math.min(100, student.certifications.length * 25),
+      display: `${student.certifications.length}`,
       color: "bg-violet",
       icon: Medal,
     },
