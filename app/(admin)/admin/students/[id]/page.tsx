@@ -48,6 +48,8 @@ export default function StudentDetailPage() {
   const [editingProject, setEditingProject] = useState<any | null>(null);
   const [showProjectForm, setShowProjectForm] = useState(false);
   const [addingCert, setAddingCert] = useState(false);
+  const [editingCert, setEditingCert] = useState<any | null>(null);
+  const [showCertForm, setShowCertForm] = useState(false);
   const [deletingItem, setDeletingItem] = useState(false);
   const [deleteStudentConfirm, setDeleteStudentConfirm] = useState(false);
   const [deletingStudent, setDeletingStudent] = useState(false);
@@ -122,14 +124,34 @@ export default function StudentDetailPage() {
     setAddingProject(false);
   }
 
-  async function addCertification(e: React.FormEvent<HTMLFormElement>) {
+  function startEditCert(c: any) {
+    setEditingCert(c);
+    setCertifImage(c.imageUrl || "");
+    setShowCertForm(true);
+    setTimeout(() => document.getElementById("cert-form")?.scrollIntoView({ behavior: "smooth", block: "center" }), 80);
+  }
+
+  function openAddCert() {
+    setEditingCert(null);
+    setCertifImage("");
+    setShowCertForm(true);
+  }
+
+  function cancelCertForm() {
+    setEditingCert(null);
+    setCertifImage("");
+    setShowCertForm(false);
+  }
+
+  async function submitCertification(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (addingCert) return;
     setAddingCert(true);
     const formEl = e.currentTarget;
     const form = new FormData(formEl);
-    const res = await fetch(`/api/students/${id}/certifications`, {
-      method: "POST",
+    const isEdit = !!editingCert;
+    const res = await fetch(`/api/students/${id}/certifications${isEdit ? `?id=${editingCert.id}` : ""}`, {
+      method: isEdit ? "PUT" : "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         title: form.get("title"),
@@ -141,13 +163,15 @@ export default function StudentDetailPage() {
       }),
     });
     if (res.ok) {
-      showToast("Certificat ajouté", "success");
+      showToast(isEdit ? "Certificat modifié" : "Certificat ajouté", "success");
       formEl.reset();
       setCertifImage("");
+      setEditingCert(null);
+      setShowCertForm(false);
       reload();
     } else {
       const data = await res.json().catch(() => null);
-      showToast(data?.error ?? "Erreur lors de l'ajout du certificat", "error");
+      showToast(data?.error ?? (isEdit ? "Erreur lors de la modification du certificat" : "Erreur lors de l'ajout du certificat"), "error");
     }
     setAddingCert(false);
   }
@@ -369,25 +393,37 @@ export default function StudentDetailPage() {
           {student.certifications.map((c: any) => (
               <div key={c.id} className="flex items-center justify-between gap-3 rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface px-4 py-3">
               <span className="min-w-0 flex-1 truncate text-sm font-bold">{c.emoji} {c.title} — {c.mention}</span>
+              <button onClick={() => startEditCert(c)} aria-label={`Modifier ${c.title}`} className="shrink-0 text-sky hover:text-sky/80">
+                <Pencil className="size-4" />
+              </button>
               <button onClick={() => setConfirmDelete({ type: "certification", name: c.title, id: c.id })} className="shrink-0 text-coral hover:text-coral/80">
                 <Trash className="size-4" />
               </button>
             </div>
           ))}
         </div>
-        <form onSubmit={addCertification} className="grid gap-3 rounded-brand border-2 border-[#E8EEF6] dark:border-border bg-white dark:bg-surface p-4 sm:grid-cols-2">
-          <input name="title" required placeholder="Titre" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
-          <input name="mention" required placeholder="Mention" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
-          <input name="dateLabel" placeholder="Date" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
+        {showCertForm ? (
+        <form key={editingCert?.id ?? "new"} id="cert-form" onSubmit={submitCertification} className={`grid gap-3 rounded-brand border-2 ${editingCert ? "border-sky" : "border-[#E8EEF6]"} dark:border-border bg-white dark:bg-surface p-4 sm:grid-cols-2`}>
+          <input name="title" required defaultValue={editingCert?.title ?? ""} placeholder="Titre" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
+          <input name="mention" required defaultValue={editingCert?.mention ?? ""} placeholder="Mention" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
+          <input name="dateLabel" defaultValue={editingCert?.dateLabel ?? ""} placeholder="Date" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
           <div className="flex flex-wrap items-center gap-3">
             <FileUpload folder={`certifications/${id}`} onUploaded={(url) => { setCertifImage(url); showToast("Image ajoutée", "success"); }}>
               <span className="inline-flex items-center gap-1 rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm font-semibold text-ink-soft hover:border-sky transition">
                  {certifImage ? "✅ Image" : "🖼️ Image"}
               </span>
             </FileUpload>
-            <button type="submit" disabled={addingCert} className="flex-1 btn-primary py-2 disabled:opacity-50">{addingCert ? <><SpinnerGap className="mr-1 inline size-4 animate-spin" /> Ajout...</> : <><Plus className="mr-1 inline size-4" /> Ajouter</>}</button>
+            <button type="button" onClick={cancelCertForm} className="btn-outline px-4 py-2">Annuler</button>
+            <button type="submit" disabled={addingCert} className="flex-1 btn-primary py-2 disabled:opacity-50">
+              {addingCert ? <><SpinnerGap className="mr-1 inline size-4 animate-spin" /> {editingCert ? "Enregistrement..." : "Ajout..."}</> : editingCert ? <><Pencil className="mr-1 inline size-4" /> Enregistrer</> : <><Plus className="mr-1 inline size-4" /> Ajouter</>}
+            </button>
           </div>
         </form>
+        ) : (
+          <button onClick={openAddCert} className="btn-outline py-2">
+            <Plus className="mr-1 inline size-4" /> Ajouter une certification
+          </button>
+        )}
       </section>
 
       {confirmDelete && (

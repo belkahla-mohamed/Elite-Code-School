@@ -1080,6 +1080,31 @@ export async function deleteCertification(certId: string) {
   if (error) throw error
 }
 
+export async function updateCertification(certId: string, payload: Omit<Certification, "id" | "studentId" | "serialCode" | "issueDate">) {
+  if (!hasSupabaseConfig()) {
+    const store = demoStore()
+    const idx = store.certifications.findIndex((c) => c.id === certId)
+    if (idx === -1) throw new Error("Certificat introuvable")
+    store.certifications[idx] = { ...store.certifications[idx], ...payload }
+    return store.certifications[idx]
+  }
+  const { data, error } = await getSupabaseAdmin()
+    .from("certifications")
+    .update({
+      title: payload.title,
+      mention: payload.mention,
+      date_label: payload.dateLabel,
+      emoji: payload.emoji,
+      gradient: payload.gradient,
+      ...(payload.imageUrl !== undefined ? { image_url: payload.imageUrl } : {})
+    })
+    .eq("id", certId)
+    .select("*")
+    .single()
+  if (error) throw error
+  return mapCertification(data)
+}
+
 export async function deleteGalleryItem(itemId: string) {
   if (!hasSupabaseConfig()) {
     const store = demoStore()
@@ -1826,25 +1851,6 @@ export async function processStudentRequest(id: string, action: "approve" | "ref
 async function studentHours(studentId: string): Promise<number> {
   const student = await getStudentById(studentId)
   return student?.hours ?? 0
-}
-
-async function updateCertification(certId: string, payload: { title: string; mention: string; dateLabel: string; emoji: string; gradient: string }) {
-  if (!hasSupabaseConfig()) {
-    const cert = demoStore().certifications.find((c) => c.id === certId)
-    if (cert) Object.assign(cert, payload)
-    return
-  }
-  const { error } = await getSupabaseAdmin()
-    .from("certifications")
-    .update({
-      title: payload.title,
-      mention: payload.mention,
-      date_label: payload.dateLabel,
-      emoji: payload.emoji,
-      gradient: payload.gradient,
-    })
-    .eq("id", certId)
-  if (error) throw error
 }
 
 // ─── Messages vers l'administration ───────────────────────
