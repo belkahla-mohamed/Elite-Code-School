@@ -1,3 +1,4 @@
+import "@/lib/zod-fr";
 import { NextResponse } from "next/server";
 import { randomBytes } from "crypto";
 import { z } from "zod";

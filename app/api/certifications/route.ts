@@ -1,3 +1,4 @@
+import "@/lib/zod-fr";
 import { NextRequest, NextResponse } from "next/server";
 import { getAllCertifications, createCertification, deleteCertification } from "@/lib/store";
 import { getAdminSession } from "@/lib/auth";

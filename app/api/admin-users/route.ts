@@ -1,3 +1,4 @@
+import "@/lib/zod-fr";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getAdminSession } from "@/lib/auth";

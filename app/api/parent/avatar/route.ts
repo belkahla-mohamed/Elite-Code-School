@@ -1,3 +1,4 @@
+import "@/lib/zod-fr";
 import { NextResponse } from "next/server";
 import { getParentStudentId } from "@/lib/auth";
 import { updateStudent } from "@/lib/store";

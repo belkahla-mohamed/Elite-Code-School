@@ -1,3 +1,4 @@
+import "@/lib/zod-fr";
 import { NextRequest, NextResponse } from "next/server";
 import { getContentBlocks, updateContentBlock } from "@/lib/store";
 import { isAdminAuthenticated } from "@/lib/auth";

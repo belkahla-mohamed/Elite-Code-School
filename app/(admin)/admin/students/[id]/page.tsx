@@ -91,6 +91,9 @@ export default function StudentDetailPage() {
       formEl.reset();
       setProjectCover("");
       reload();
+    } else {
+      const data = await res.json().catch(() => null);
+      showToast(data?.error ?? "Erreur lors de l'ajout du projet", "error");
     }
     setAddingProject(false);
   }
@@ -118,6 +121,9 @@ export default function StudentDetailPage() {
       formEl.reset();
       setCertifImage("");
       reload();
+    } else {
+      const data = await res.json().catch(() => null);
+      showToast(data?.error ?? "Erreur lors de l'ajout du certificat", "error");
     }
     setAddingCert(false);
   }
@@ -305,8 +311,8 @@ export default function StudentDetailPage() {
           <input name="demoUrl" type="url" placeholder="Lien de démo (https://...)" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
           <input name="dateLabel" placeholder="Date affichée" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
           <select name="status" className="rounded-brand-sm border-2 border-border bg-surface px-3 py-2 text-sm text-ink focus:border-sky focus:outline-none">
-            <option value="progress">En cours</option>
-            <option value="done">Terminé</option>
+            <option value="in_progress">En cours</option>
+            <option value="completed">Terminé</option>
           </select>
           <input name="progress" type="number" min="0" max="100" defaultValue="40" className="rounded-brand-sm border-2 border-[#E8EEF6] dark:border-border px-3 py-2 text-sm focus:border-sky focus:outline-none" />
           <div className="flex flex-wrap items-center gap-3 sm:col-span-2">

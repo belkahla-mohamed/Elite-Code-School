@@ -1,3 +1,4 @@
+import "@/lib/zod-fr";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { setAdminSession, setParentSession, generateToken } from "@/lib/auth";
