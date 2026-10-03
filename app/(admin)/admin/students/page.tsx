@@ -46,7 +46,7 @@ export default function StudentsPage() {
   const [processing, setProcessing] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
   const [programs, setPrograms] = useState<Program[]>([]);
-  const [addForm, setAddForm] = useState({ firstName: "", lastName: "", age: "", programId: "", parentEmail: "" });
+  const [addForm, setAddForm] = useState({ firstName: "", lastName: "", age: "", programId: "", parentEmail: "", createdAt: new Date().toISOString().slice(0, 10) });
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -113,7 +113,7 @@ export default function StudentsPage() {
     if (res.ok) {
       showToast("Élève créé avec succès", "success");
       setShowAddForm(false);
-      setAddForm({ firstName: "", lastName: "", age: "", programId: "", parentEmail: "" });
+      setAddForm({ firstName: "", lastName: "", age: "", programId: "", parentEmail: "", createdAt: new Date().toISOString().slice(0, 10) });
       const data = await fetch("/api/students").then((r) => r.json());
       setStudents(data.students ?? []);
     } else {
@@ -342,7 +342,11 @@ export default function StudentsPage() {
                   placeholder="Nom" required className="rounded-brand-sm border-2 border-border bg-body px-3 py-2 text-sm text-ink focus:border-sky focus:outline-none" />
               </div>
               <input value={addForm.age} onChange={(e) => setAddForm({ ...addForm, age: e.target.value })}
-                type="number" min="7" max="17" placeholder="Âge" required className="rounded-brand-sm border-2 border-border bg-body px-3 py-2 text-sm text-ink focus:border-sky focus:outline-none w-full" />
+                type="number" min="6" max="20" placeholder="Âge" required className="rounded-brand-sm border-2 border-border bg-body px-3 py-2 text-sm text-ink focus:border-sky focus:outline-none w-full" />
+              <label className="block text-xs font-bold text-ink-soft">Date de création
+                <input value={addForm.createdAt} onChange={(e) => setAddForm({ ...addForm, createdAt: e.target.value })}
+                  type="date" required className="mt-1.5 block w-full rounded-brand-sm border-2 border-border bg-body px-3 py-2 text-sm text-ink focus:border-sky focus:outline-none" />
+              </label>
               <select value={addForm.programId} onChange={(e) => setAddForm({ ...addForm, programId: e.target.value })}
                 required className="rounded-brand-sm border-2 border-border bg-body px-3 py-2 text-sm text-ink focus:border-sky focus:outline-none w-full">
                 <option value="">{programs.length === 0 ? "Aucun programme disponible" : "Sélectionner un programme"}</option>

@@ -107,7 +107,7 @@ export default async function PortfolioDetailPage({ params }: Props) {
                 </span>
               </div>
             </div>
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex w-full flex-wrap items-center gap-3 sm:w-auto sm:justify-end">
               <ShareMenu
                 title={`Portfolio de ${portfolio.firstName} ${portfolio.lastName}`}
                 text={`Découvre le portfolio de ${portfolio.firstName} ${portfolio.lastName} sur Elite Code School`}

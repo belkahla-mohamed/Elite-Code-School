@@ -24,6 +24,12 @@ export async function POST(request: Request) {
     if (!body.firstName || !body.lastName || !body.age || !body.programId) {
       return NextResponse.json({ error: "Champs requis manquants (firstName, lastName, age, programId)" }, { status: 400 });
     }
+    if (!Number.isInteger(body.age) || body.age < 6 || body.age > 20) {
+      return NextResponse.json({ error: "L'âge doit être compris entre 6 et 20 ans" }, { status: 400 });
+    }
+    if (body.createdAt && isNaN(Date.parse(body.createdAt))) {
+      return NextResponse.json({ error: "Date de création invalide" }, { status: 400 });
+    }
     const student = await createStudent(body);
     return NextResponse.json({ student }, { status: 201 });
   } catch (e: any) {

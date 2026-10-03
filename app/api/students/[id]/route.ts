@@ -25,6 +25,9 @@ export async function PATCH(request: Request, { params }: Props) {
     if (!(await isAdminAuthenticated())) return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
     const { id } = await params;
     const body = await request.json();
+    if (body.age !== undefined && (!Number.isInteger(body.age) || body.age < 6 || body.age > 20)) {
+      return NextResponse.json({ error: "L'âge doit être compris entre 6 et 20 ans" }, { status: 400 });
+    }
     const student = await updateStudent(id, body);
     return NextResponse.json({ student });
   } catch (e: any) {

@@ -24,6 +24,8 @@ import { Sparkle } from "@phosphor-icons/react/dist/csr/Sparkle";
 import { Clock } from "@phosphor-icons/react/dist/csr/Clock";
 import { Hourglass } from "@phosphor-icons/react/dist/csr/Hourglass";
 import { X } from "@phosphor-icons/react/dist/csr/X";
+import { CaretLeft } from "@phosphor-icons/react/dist/csr/CaretLeft";
+import { CaretRight } from "@phosphor-icons/react/dist/csr/CaretRight";
 import { ArrowSquareOut } from "@phosphor-icons/react/dist/csr/ArrowSquareOut";
 import type { StudentPortfolio } from "@/lib/types";
 import { ShareMenu } from "@/components/ui/share-menu";
@@ -54,15 +56,24 @@ function projectIcon(tags: string[]): any {
 
 export function PortfolioTabs({ student }: { student: StudentPortfolio }) {
   const [tab, setTab] = useState<Tab>("projects");
-  const [lightbox, setLightbox] = useState<{ src: string; label: string } | null>(null);
+  const [lightbox, setLightbox] = useState<number | null>(null);
   const [selectedProject, setSelectedProject] = useState<StudentPortfolio["projects"][number] | null>(null);
+  const galleryImages = student.gallery.filter((item) => item.imageUrl);
 
   useEffect(() => {
-    if (!lightbox && !selectedProject) return;
+    if (lightbox === null && !selectedProject) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setLightbox(null);
         setSelectedProject(null);
+      }
+      if (lightbox !== null && galleryImages.length > 1) {
+        if (e.key === "ArrowRight") {
+          setLightbox((i) => (i === null ? i : (i + 1) % galleryImages.length));
+        }
+        if (e.key === "ArrowLeft") {
+          setLightbox((i) => (i === null ? i : (i - 1 + galleryImages.length) % galleryImages.length));
+        }
       }
     };
     document.addEventListener("keydown", onKey);
@@ -71,7 +82,7 @@ export function PortfolioTabs({ student }: { student: StudentPortfolio }) {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [lightbox, selectedProject]);
+  }, [lightbox, selectedProject, galleryImages.length]);
 
   const done = student.projects.filter((project) => project.status === "completed");
   const progress = student.projects.filter((project) => project.status !== "completed");
@@ -145,7 +156,7 @@ export function PortfolioTabs({ student }: { student: StudentPortfolio }) {
               <button
                 key={item.id}
                 type="button"
-                onClick={() => item.imageUrl && setLightbox({ src: item.imageUrl, label: item.label })}
+                onClick={() => item.imageUrl && setLightbox(Math.max(0, galleryImages.findIndex((g) => g.id === item.id)))}
                 aria-label={`Agrandir : ${item.label}`}
                 className="group relative block w-full cursor-zoom-in overflow-hidden rounded-brand border border-border text-left dark:border-white/10"
               >
@@ -168,28 +179,62 @@ export function PortfolioTabs({ student }: { student: StudentPortfolio }) {
       )}
       </div>
 
-      {lightbox &&
+      {lightbox !== null && galleryImages[lightbox] &&
         createPortal(
           <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-ink/80 p-4 backdrop-blur-sm sm:p-8"
             onClick={() => setLightbox(null)}
             role="dialog"
             aria-modal="true"
-            aria-label={lightbox.label}
+            aria-label={galleryImages[lightbox].label}
           >
-            <div className="animate-scale-in w-full max-w-4xl" onClick={(e) => e.stopPropagation()}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={lightbox.src} alt={lightbox.label} className="max-h-[80vh] w-full rounded-brand object-contain" />
-              <div className="mt-3 flex items-center justify-between gap-3">
-                <p className="min-w-0 truncate text-sm font-bold text-white">{lightbox.label}</p>
+            {galleryImages.length > 1 && (
+              <>
                 <button
                   type="button"
-                  onClick={() => setLightbox(null)}
-                  aria-label="Fermer"
-                  className="flex size-10 shrink-0 items-center justify-center rounded-full bg-white/15 text-white transition duration-200 ease-out hover:bg-white/25"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLightbox((i) => (i === null ? i : (i - 1 + galleryImages.length) % galleryImages.length));
+                  }}
+                  aria-label="Image précédente"
+                  className="absolute left-2 top-1/2 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/15 text-white ring-1 ring-white/20 backdrop-blur-sm transition duration-200 hover:bg-white/30 sm:left-5 sm:size-12"
                 >
-                  <X className="size-5" />
+                  <CaretLeft className="size-6" />
                 </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLightbox((i) => (i === null ? i : (i + 1) % galleryImages.length));
+                  }}
+                  aria-label="Image suivante"
+                  className="absolute right-2 top-1/2 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/15 text-white ring-1 ring-white/20 backdrop-blur-sm transition duration-200 hover:bg-white/30 sm:right-5 sm:size-12"
+                >
+                  <CaretRight className="size-6" />
+                </button>
+              </>
+            )}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightbox(null);
+              }}
+              aria-label="Fermer"
+              className="absolute right-3 top-3 z-10 flex size-10 items-center justify-center rounded-full bg-white/15 text-white transition duration-200 hover:bg-white/30 sm:right-6 sm:top-6"
+            >
+              <X className="size-5" />
+            </button>
+            <div className="animate-scale-in w-full max-w-4xl" onClick={(e) => e.stopPropagation()}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={galleryImages[lightbox].imageUrl} alt={galleryImages[lightbox].label} className="max-h-[75vh] w-full rounded-brand object-contain sm:max-h-[80vh]" />
+              <div className="mt-3 flex items-center gap-3">
+                <p className="min-w-0 truncate text-sm font-bold text-white">
+                  {galleryImages[lightbox].label}
+                  {galleryImages.length > 1 && (
+                    <span className="ml-2 font-mono text-xs text-white/70">{lightbox + 1} / {galleryImages.length}</span>
+                  )}
+                </p>
               </div>
             </div>
           </div>,

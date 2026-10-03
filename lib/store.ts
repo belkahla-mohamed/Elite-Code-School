@@ -792,8 +792,14 @@ export async function getStudentPlanning(studentId: string): Promise<StudentPlan
 export async function createStudent(data: {
   firstName: string; lastName: string; age: number; programId: string;
   levelLabel?: string; hours?: number; parentEmail?: string;
-  avatar?: string; avatarGradient?: string;
+  avatar?: string; avatarGradient?: string; createdAt?: string;
 }) {
+  const created = data.createdAt && !isNaN(Date.parse(data.createdAt)) ? new Date(data.createdAt) : new Date();
+  const createdLabel = created.toDateString() === new Date().toDateString()
+    ? "Aujourd'hui"
+    : created.toLocaleDateString("fr-FR", { month: "short", year: "numeric" });
+  const programTitle = (hasSupabaseConfig() ? await getPrograms() : demoStore().programs).find((p) => p.id === data.programId)?.title;
+  const defaultLevelLabel = programTitle ? `${programTitle} → Niveau 1` : "Nouveau parcours → Niveau 1";
   if (!hasSupabaseConfig()) {
     const student: Student = {
       id: `stu-${Date.now()}`,
@@ -804,14 +810,14 @@ export async function createStudent(data: {
       avatar: data.avatar ?? `${data.firstName[0]}${data.lastName[0]}`.toUpperCase(),
       avatarGradient: data.avatarGradient ?? "linear-gradient(135deg,#4f46e5,#06b6d4)",
       programId: data.programId,
-      levelLabel: data.levelLabel ?? "Nouveau parcours · Niveau 1",
-      joinDateLabel: "Aujourd'hui",
+      levelLabel: data.levelLabel ?? defaultLevelLabel,
+      joinDateLabel: createdLabel,
       hours: data.hours ?? 0,
       isPublic: true,
       parentEmail: data.parentEmail ?? "",
       parentSecretHash: hashSecret(`ECS-${generateAccessSecret()}`),
-      dossierNumber: generateMatricule(new Date()),
-      createdAt: new Date().toISOString()
+      dossierNumber: generateMatricule(created),
+      createdAt: created.toISOString()
     };
     demoStore().students.unshift(student);
     addActivityAndNotify("student", "Élève créé", `${student.firstName} ${student.lastName}`);
@@ -830,13 +836,14 @@ export async function createStudent(data: {
       avatar: data.avatar ?? `${data.firstName[0]}${data.lastName[0]}`.toUpperCase(),
       avatar_gradient: data.avatarGradient ?? "linear-gradient(135deg,#4f46e5,#06b6d4)",
       program_id: data.programId,
-      level_label: data.levelLabel ?? "Nouveau parcours · Niveau 1",
-      join_date_label: "Aujourd'hui",
+      level_label: data.levelLabel ?? defaultLevelLabel,
+      join_date_label: createdLabel,
       hours: data.hours ?? 0,
       is_public: true,
       parent_email: data.parentEmail ?? "",
       parent_secret_hash: hashSecret(`ECS-${generateAccessSecret()}`),
-      dossier_number: generateMatricule(new Date())
+      dossier_number: generateMatricule(created),
+      created_at: created.toISOString()
     })
     .select("*")
     .single();
