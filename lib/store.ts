@@ -342,26 +342,34 @@ export async function getDashboardSnapshot(): Promise<DashboardSnapshot> {
       requests: store.requests,
       students: store.students.map((student) => withPortfolio(student)),
       programs: store.programs,
-      categories: store.categories
+      categories: store.categories,
+      unassignedProjects: store.projects.filter((p) => p.studentId === null),
+      unassignedCertifications: store.certifications.filter((c) => c.studentId === null)
     };
   }
 
   const supabase = getSupabaseAdmin();
-  const [requestsResult, studentsResult, programs, categoriesResult] = await Promise.all([
+  const [requestsResult, studentsResult, programs, categoriesResult, unassignedProjectsResult, unassignedCertificationsResult] = await Promise.all([
     supabase.from("inscription_requests").select("*").order("created_at", { ascending: false }),
     supabase.from("students").select("*, projects(*), certifications(*), gallery_items(*)").order("created_at", { ascending: false }),
     getPrograms(),
-    getCategories()
+    getCategories(),
+    supabase.from("projects").select("*").is("student_id", null),
+    supabase.from("certifications").select("*").is("student_id", null)
   ]);
 
   if (requestsResult.error) throw requestsResult.error;
   if (studentsResult.error) throw studentsResult.error;
+  if (unassignedProjectsResult.error) throw unassignedProjectsResult.error;
+  if (unassignedCertificationsResult.error) throw unassignedCertificationsResult.error;
 
   return {
     requests: requestsResult.data.map(mapRequest),
     students: studentsResult.data.map((row) => mapStudentPortfolio(row, programs)),
     programs,
-    categories: categoriesResult
+    categories: categoriesResult,
+    unassignedProjects: unassignedProjectsResult.data.map(mapProject),
+    unassignedCertifications: unassignedCertificationsResult.data.map(mapCertification)
   };
 }
 
@@ -1048,6 +1056,50 @@ export async function deleteProject(projectId: string) {
   if (error) throw error
 }
 
+export async function assignProjectToStudent(projectId: string, studentId: string) {
+  if (!hasSupabaseConfig()) {
+    const project = demoStore().projects.find((p) => p.id === projectId)
+    if (!project) throw new Error("Projet introuvable")
+    project.studentId = studentId
+    return
+  }
+  const { error } = await getSupabaseAdmin().from("projects").update({ student_id: studentId }).eq("id", projectId)
+  if (error) throw error
+}
+
+export async function assignCertificationToStudent(certId: string, studentId: string) {
+  if (!hasSupabaseConfig()) {
+    const cert = demoStore().certifications.find((c) => c.id === certId)
+    if (!cert) throw new Error("Certificat introuvable")
+    cert.studentId = studentId
+    return
+  }
+  const { error } = await getSupabaseAdmin().from("certifications").update({ student_id: studentId }).eq("id", certId)
+  if (error) throw error
+}
+
+export async function dissociateProject(projectId: string) {
+  if (!hasSupabaseConfig()) {
+    const project = demoStore().projects.find((p) => p.id === projectId)
+    if (!project) throw new Error("Projet introuvable")
+    project.studentId = null
+    return
+  }
+  const { error } = await getSupabaseAdmin().from("projects").update({ student_id: null }).eq("id", projectId)
+  if (error) throw error
+}
+
+export async function dissociateCertification(certId: string) {
+  if (!hasSupabaseConfig()) {
+    const cert = demoStore().certifications.find((c) => c.id === certId)
+    if (!cert) throw new Error("Certificat introuvable")
+    cert.studentId = null
+    return
+  }
+  const { error } = await getSupabaseAdmin().from("certifications").update({ student_id: null }).eq("id", certId)
+  if (error) throw error
+}
+
 export async function updateProject(projectId: string, payload: Omit<Project, "id" | "studentId">) {
   if (!hasSupabaseConfig()) {
     const store = demoStore()
@@ -1280,8 +1332,8 @@ export async function batchDeleteStudents(ids: string[]) {
       if (student) addActivityAndNotify("student", "Élève supprimé", `${student.firstName} ${student.lastName}`);
     }
     store.students = store.students.filter((s) => !ids.includes(s.id));
-    store.projects = store.projects.filter((p) => !ids.includes(p.studentId));
-    store.certifications = store.certifications.filter((c) => !ids.includes(c.studentId));
+    store.projects = store.projects.filter((p) => p.studentId === null || !ids.includes(p.studentId));
+    store.certifications = store.certifications.filter((c) => c.studentId === null || !ids.includes(c.studentId));
     store.gallery = store.gallery.filter((g) => !ids.includes(g.studentId));
     return;
   }

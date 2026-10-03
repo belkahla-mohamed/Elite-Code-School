@@ -120,7 +120,7 @@ async function main() {
   // Projects
   for (const p of seedProjects) {
     const { error } = await db.from("projects").insert({
-      id: uuidFromDemo(p.id), student_id: studentUuids.get(p.studentId),
+      id: uuidFromDemo(p.id), student_id: studentUuids.get(p.studentId!),
       title: p.title, description: p.description, tags: p.tags ?? [],
       status: p.status, progress: p.progress, date_label: p.dateLabel,
       emoji: p.emoji, gradient: p.gradient, cover_image: p.coverImage ?? null,
@@ -133,7 +133,7 @@ async function main() {
   // Certifications
   for (const c of seedCertifications) {
     const { error } = await db.from("certifications").insert({
-      id: uuidFromDemo(c.id), student_id: studentUuids.get(c.studentId),
+      id: uuidFromDemo(c.id), student_id: studentUuids.get(c.studentId!),
       title: c.title, mention: c.mention, date_label: c.dateLabel,
       emoji: c.emoji, gradient: c.gradient, image_url: c.imageUrl ?? null,
     });

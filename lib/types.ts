@@ -81,7 +81,7 @@ export type ContactLead = {
 
 export type Project = {
   id: string;
-  studentId: string;
+  studentId: string | null;
   title: string;
   description: string;
   tags: string[];
@@ -96,7 +96,7 @@ export type Project = {
 
 export type Certification = {
   id: string;
-  studentId: string;
+  studentId: string | null;
   title: string;
   mention: string;
   dateLabel: string;
@@ -185,6 +185,8 @@ export type DashboardSnapshot = {
   students: StudentPortfolio[];
   programs: Program[];
   categories: Category[];
+  unassignedProjects: Project[];
+  unassignedCertifications: Certification[];
 };
 
 export type AdminUser = {

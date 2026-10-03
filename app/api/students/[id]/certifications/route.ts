@@ -1,6 +1,6 @@
 ﻿import { NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/auth";
-import { addCertification, deleteCertification, updateCertification } from "@/lib/store";
+import { addCertification, deleteCertification, updateCertification, assignCertificationToStudent, dissociateCertification } from "@/lib/store";
 import { certificationSchema } from "@/lib/validation";
 
 type Props = {
@@ -44,6 +44,31 @@ export async function PUT(request: Request, { params }: Props) {
 
     await params;
     return NextResponse.json({ certification: await updateCertification(certId, parsed.data) });
+  } catch (e: any) {
+    return NextResponse.json({ error: e.message ?? "Erreur serveur" }, { status: 500 });
+  }
+}
+
+export async function PATCH(request: Request, { params }: Props) {
+  try {
+    if (!(await isAdminAuthenticated())) {
+      return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+    }
+
+    const { id: studentId } = await params;
+    const { searchParams } = new URL(request.url);
+    const certId = searchParams.get("id");
+    if (!certId) {
+      return NextResponse.json({ error: "ID du certificat requis" }, { status: 400 });
+    }
+
+    if (searchParams.get("dissociate") === "1") {
+      await dissociateCertification(certId);
+      return NextResponse.json({ message: "Certificat dissocié de l'élève" });
+    }
+
+    await assignCertificationToStudent(certId, studentId);
+    return NextResponse.json({ message: "Certificat associé à cet élève" });
   } catch (e: any) {
     return NextResponse.json({ error: e.message ?? "Erreur serveur" }, { status: 500 });
   }

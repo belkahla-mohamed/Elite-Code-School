@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft } from "@phosphor-icons/react/dist/csr/ArrowLeft";
 import { Trash } from "@phosphor-icons/react/dist/csr/Trash";
+import { LinkSimpleBreak } from "@phosphor-icons/react/dist/csr/LinkSimpleBreak";
 import { Plus } from "@phosphor-icons/react/dist/csr/Plus";
 import { SpinnerGap } from "@phosphor-icons/react/dist/csr/SpinnerGap";
 import { Camera } from "@phosphor-icons/react/dist/csr/Camera";
@@ -38,7 +39,7 @@ export default function StudentDetailPage() {
   const router = useRouter();
   const [student, setStudent] = useState<Student | null>(null);
   const [loading, setLoading] = useState(true);
-  const [confirmDelete, setConfirmDelete] = useState<{ type: string; name: string; id: string } | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<{ type: string; name: string; id: string; action: "delete" | "dissociate" } | null>(null);
   const [projectCover, setProjectCover] = useState("");
   const [certifImage, setCertifImage] = useState("");
   const [editOpen, setEditOpen] = useState(false);
@@ -50,6 +51,12 @@ export default function StudentDetailPage() {
   const [addingCert, setAddingCert] = useState(false);
   const [editingCert, setEditingCert] = useState<any | null>(null);
   const [showCertForm, setShowCertForm] = useState(false);
+  const [existingProjects, setExistingProjects] = useState<{ id: string; label: string }[]>([]);
+  const [existingCertifications, setExistingCertifications] = useState<{ id: string; label: string }[]>([]);
+  const [linkProjectId, setLinkProjectId] = useState("");
+  const [linkCertId, setLinkCertId] = useState("");
+  const [unassignedProjects, setUnassignedProjects] = useState<{ id: string; label: string }[]>([]);
+  const [unassignedCertifications, setUnassignedCertifications] = useState<{ id: string; label: string }[]>([]);
   const [deletingItem, setDeletingItem] = useState(false);
   const [deleteStudentConfirm, setDeleteStudentConfirm] = useState(false);
   const [deletingStudent, setDeletingStudent] = useState(false);
@@ -61,6 +68,36 @@ export default function StudentDetailPage() {
       setLoading(false);
     });
   }, [id]);
+
+  useEffect(() => {
+    fetch("/api/students").then((r) => r.json()).then((data) => {
+      const students: any[] = data.students ?? [];
+      const others = students.filter((s) => s.id !== id);
+      setExistingProjects(
+        others.flatMap((s) => (s.projects ?? []).map((p: any) => ({ id: p.id, label: `${p.title} — ${s.firstName} ${s.lastName}` })))
+      );
+      setExistingCertifications(
+        others.flatMap((s) => (s.certifications ?? []).map((c: any) => ({ id: c.id, label: `${c.title} — ${s.firstName} ${s.lastName}` })))
+      );
+      setUnassignedProjects((data.unassignedProjects ?? []).map((p: any) => ({ id: p.id, label: p.title })));
+      setUnassignedCertifications((data.unassignedCertifications ?? []).map((c: any) => ({ id: c.id, label: c.title })));
+    });
+  }, [id]);
+
+  async function linkExisting(type: "project" | "certification", itemId: string) {
+    if (!itemId) return;
+    const endpoint = type === "project" ? `/api/students/${id}/projects` : `/api/students/${id}/certifications`;
+    const res = await fetch(`${endpoint}?id=${itemId}`, { method: "PATCH" });
+    if (res.ok) {
+      showToast(type === "project" ? "Projet associé à cet élève" : "Certificat associé à cet élève", "success");
+      setLinkProjectId("");
+      setLinkCertId("");
+      reload();
+    } else {
+      const data = await res.json().catch(() => null);
+      showToast(data?.error ?? "Erreur lors de l'association", "error");
+    }
+  }
 
   function reload() {
     fetch(`/api/students/${id}`).then((r) => r.json()).then((data) => {
@@ -218,11 +255,11 @@ export default function StudentDetailPage() {
     }
   }
 
-  async function deleteItem(type: string, itemId: string) {
+  async function deleteItem(type: string, itemId: string, action: "delete" | "dissociate" = "delete") {
     setDeletingItem(true);
     const endpoint = type === "project" ? `/api/students/${id}/projects` : `/api/students/${id}/certifications`;
-    const res = await fetch(`${endpoint}?id=${itemId}`, { method: "DELETE" });
-    if (res.ok) { showToast("Supprimé", "info"); reload(); }
+    const res = await fetch(`${endpoint}?id=${itemId}${action === "dissociate" ? "&dissociate=1" : ""}`, { method: action === "dissociate" ? "PATCH" : "DELETE" });
+    if (res.ok) { showToast(action === "dissociate" ? "Dissocié — reste en base, réassignable" : "Supprimé", "info"); reload(); }
     setConfirmDelete(null);
     setDeletingItem(false);
   }
@@ -349,7 +386,10 @@ export default function StudentDetailPage() {
               <button onClick={() => startEditProject(p)} aria-label={`Modifier ${p.title}`} className="shrink-0 text-sky hover:text-sky/80">
                 <Pencil className="size-4" />
               </button>
-              <button onClick={() => setConfirmDelete({ type: "project", name: p.title, id: p.id })} className="shrink-0 text-coral hover:text-coral/80">
+              <button onClick={() => setConfirmDelete({ type: "project", name: p.title, id: p.id, action: "dissociate" })} aria-label={`Dissocier ${p.title}`} className="shrink-0 text-ink-soft hover:text-ink">
+                <LinkSimpleBreak className="size-4" />
+              </button>
+              <button onClick={() => setConfirmDelete({ type: "project", name: p.title, id: p.id, action: "delete" })} aria-label={`Supprimer ${p.title}`} className="shrink-0 text-coral hover:text-coral/80">
                 <Trash className="size-4" />
               </button>
             </div>
@@ -384,6 +424,21 @@ export default function StudentDetailPage() {
             <Plus className="mr-1 inline size-4" /> Ajouter un projet
           </button>
         )}
+        <div className="mt-3 flex flex-wrap items-center gap-2 rounded-brand border-2 border-dashed border-[#E8EEF6] p-3 dark:border-border">
+          <span className="text-xs font-bold text-ink-soft">Associer un projet existant :</span>
+          <select value={linkProjectId} onChange={(e) => setLinkProjectId(e.target.value)} className="min-w-0 flex-1 rounded-brand-sm border-2 border-[#E8EEF6] bg-white px-3 py-2 text-sm text-ink focus:border-sky focus:outline-none dark:border-border dark:bg-surface">
+            <option value="">Choisir un projet…</option>
+            {unassignedProjects.length > 0 && (
+              <optgroup label="Non assignés">
+                {unassignedProjects.map((o) => <option key={o.id} value={o.id}>{o.label}</option>)}
+              </optgroup>
+            )}
+            <optgroup label="Autres élèves">
+              {existingProjects.map((o) => <option key={o.id} value={o.id}>{o.label}</option>)}
+            </optgroup>
+          </select>
+          <button onClick={() => linkExisting("project", linkProjectId)} disabled={!linkProjectId} className="btn-outline px-4 py-2 disabled:opacity-50">Associer</button>
+        </div>
       </section>
 
       {/* Certifications */}
@@ -396,7 +451,10 @@ export default function StudentDetailPage() {
               <button onClick={() => startEditCert(c)} aria-label={`Modifier ${c.title}`} className="shrink-0 text-sky hover:text-sky/80">
                 <Pencil className="size-4" />
               </button>
-              <button onClick={() => setConfirmDelete({ type: "certification", name: c.title, id: c.id })} className="shrink-0 text-coral hover:text-coral/80">
+              <button onClick={() => setConfirmDelete({ type: "certification", name: c.title, id: c.id, action: "dissociate" })} aria-label={`Dissocier ${c.title}`} className="shrink-0 text-ink-soft hover:text-ink">
+                <LinkSimpleBreak className="size-4" />
+              </button>
+              <button onClick={() => setConfirmDelete({ type: "certification", name: c.title, id: c.id, action: "delete" })} aria-label={`Supprimer ${c.title}`} className="shrink-0 text-coral hover:text-coral/80">
                 <Trash className="size-4" />
               </button>
             </div>
@@ -424,16 +482,35 @@ export default function StudentDetailPage() {
             <Plus className="mr-1 inline size-4" /> Ajouter une certification
           </button>
         )}
+        <div className="mt-3 flex flex-wrap items-center gap-2 rounded-brand border-2 border-dashed border-[#E8EEF6] p-3 dark:border-border">
+          <span className="text-xs font-bold text-ink-soft">Associer un certificat existant :</span>
+          <select value={linkCertId} onChange={(e) => setLinkCertId(e.target.value)} className="min-w-0 flex-1 rounded-brand-sm border-2 border-[#E8EEF6] bg-white px-3 py-2 text-sm text-ink focus:border-sky focus:outline-none dark:border-border dark:bg-surface">
+            <option value="">Choisir un certificat…</option>
+            {unassignedCertifications.length > 0 && (
+              <optgroup label="Non assignés">
+                {unassignedCertifications.map((o) => <option key={o.id} value={o.id}>{o.label}</option>)}
+              </optgroup>
+            )}
+            <optgroup label="Autres élèves">
+              {existingCertifications.map((o) => <option key={o.id} value={o.id}>{o.label}</option>)}
+            </optgroup>
+          </select>
+          <button onClick={() => linkExisting("certification", linkCertId)} disabled={!linkCertId} className="btn-outline px-4 py-2 disabled:opacity-50">Associer</button>
+        </div>
       </section>
 
       {confirmDelete && (
         <ConfirmDialog
-          title={`Supprimer ${confirmDelete.type === "project" ? "le projet" : "le certificat"} ?`}
-          description={`"${confirmDelete.name}" sera définitivement supprimé.`}
-          confirmLabel="Supprimer"
+          title={confirmDelete.action === "dissociate"
+            ? `Dissocier ${confirmDelete.type === "project" ? "le projet" : "le certificat"} ?`
+            : `Supprimer ${confirmDelete.type === "project" ? "le projet" : "le certificat"} ?`}
+          description={confirmDelete.action === "dissociate"
+            ? `"${confirmDelete.name}" sera retiré de cet élève mais restera en base (réassignable).`
+            : `"${confirmDelete.name}" sera définitivement supprimé.`}
+          confirmLabel={confirmDelete.action === "dissociate" ? "Dissocier" : "Supprimer"}
           loading={deletingItem}
           onCancel={() => setConfirmDelete(null)}
-          onConfirm={() => deleteItem(confirmDelete.type, confirmDelete.id)}
+          onConfirm={() => deleteItem(confirmDelete.type, confirmDelete.id, confirmDelete.action)}
         />
       )}
 
